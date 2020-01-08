@@ -1,0 +1,49 @@
+package com.mud.game.server;
+
+import com.mud.game.commands.CommandSetHandler;
+import com.mud.game.condition.ConditionHandler;
+import com.mud.game.object.builder.UniqueWorldObjectBuilder;
+import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.GameSetting;
+
+public class ServerManager {
+
+    public static GameSetting gameSetting;
+
+    public static void start(){
+        // 拿到游戏配置信息
+        try {
+            gameSetting = DbMapper.gameSettingRepository.findAll().iterator().next();
+        }catch (Exception e){
+            e.printStackTrace();
+            gameSetting = null;
+        }
+        ConditionHandler.initConditionHandler();
+        CommandSetHandler.initUnLoginCommandSet();
+        CommandSetHandler.initAccountCommandSet();
+        CommandSetHandler.initPlayerCharacterCommandSet();
+    }
+
+    public static void stop(){
+        ;
+    }
+
+    public static void restart(){
+        start();
+        stop();
+    }
+
+    public static void update(){
+        ;
+    }
+
+    public static void apply(){
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldAreaObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldRoomObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldExitObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectCreator");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldNpcObject");
+    }
+
+}

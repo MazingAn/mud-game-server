@@ -1,0 +1,483 @@
+package com.mud.game.object.manager;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mongodb.Mongo;
+import com.mud.game.condition.ConditionHandler;
+import com.mud.game.messages.*;
+import com.mud.game.net.session.CallerType;
+import com.mud.game.net.session.GameSessionService;
+import com.mud.game.object.account.Player;
+import com.mud.game.object.typeclass.*;
+import com.mud.game.server.ServerManager;
+import com.mud.game.structs.*;
+import com.mud.game.utils.jsonutils.Attr2Map;
+import com.mud.game.utils.jsonutils.JsonResponse;
+import com.mud.game.utils.resultutils.GameWords;
+import com.mud.game.utils.resultutils.UserOptionCode;
+import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.CharacterModel;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.json.JSONException;
+import org.yeauty.pojo.Session;
+
+import java.lang.reflect.Field;
+import java.util.*;
+
+public class PlayerCharacterManager {
+    /*
+    * @ 角色管理
+    * @ 负责角色的创建，销毁，进入游戏，状态返回
+    * */
+
+    public static PlayerCharacter create(String name, String gender, int arm, int bone, int body, int smart, Session session) throws JsonProcessingException {
+        /*
+         * @ 创建一个玩家角色
+         * */
+        if(MongoMapper.playerCharacterRepository.existsByName(name)){
+            session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USERNAME_EXIST_ERROR)));
+            return null;
+        }else{
+            PlayerCharacter playerCharacter = new PlayerCharacter();
+            // 设置角色归属
+            String playerId = GameSessionService.getCallerIdBySessionId(session.id());
+            playerCharacter.setPlayer(playerId);
+            // 根据注册的信息设置角色信息
+            playerCharacter.setName(name);
+            playerCharacter.setGender(gender);
+            playerCharacter.setArm(arm);
+            playerCharacter.setBody(body);
+            playerCharacter.setBone(bone);
+            playerCharacter.setSmart(smart);
+            playerCharacter.setLooks(20);
+            playerCharacter.setLucky(20);
+            // 从玩家模版加载初始化信息
+            String playerTemplateKey = ServerManager.gameSetting.getDefaultPlayerTemplate();
+            CharacterModel playerTemplate = DbMapper.characterModelRepository.findCharacterModelByDataKey(playerTemplateKey);
+            playerCharacter.setCustomerAttr(Attr2Map.transform(playerTemplate.getAttrs()));
+            // 玩家信息的初始化设置
+            playerCharacter.setAfter_arm(0);
+            playerCharacter.setAfter_body(0);
+            playerCharacter.setAfter_bone(0);
+            playerCharacter.setAfter_smart(0);
+            playerCharacter.setAfter_looks(0);
+            playerCharacter.setAfter_lucky(0);
+            //TODO 加载默认技能信息
+            playerCharacter.setSkills(new ArrayList<>());
+            playerCharacter.setEquipments(new ArrayList<>());
+            playerCharacter.setEquipped_equipments(new HashMap<>());
+            playerCharacter.setEquipped_skills(new HashMap<>());
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+            // 同时更新player信息
+            Player player = MongoMapper.playerRepository.findPlayerById(playerId);
+            Set<SimplePlayerCharacter> infos = player.getPlayerCharacters();
+            infos.add(new SimplePlayerCharacter(playerCharacter));
+            player.setPlayerCharacters(infos);
+            MongoMapper.playerRepository.save(player);
+            return playerCharacter;
+        }
+    }
+
+
+    public static void puppet(String playerCharacterId, Session session) throws JsonProcessingException {
+        /*
+        * 把一个玩家角色放入游戏世界
+        * */
+        try{
+            PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacterId);
+            WorldRoomObject location = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+            if(location == null){
+                location = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(ServerManager.gameSetting.getStartLocation());
+            }
+            // 玩家上线之后 正式进入游戏，转换身份
+            String newCallerId = playerCharacter.getId();
+            String oldCallerId = GameSessionService.getCallerIdBySessionId(session.id());
+            if(GameSessionService.callerId2SessionMap.containsKey(newCallerId)){
+                // 如果使用了同一个账号重复登录，先踢掉线上的玩家
+                PlayerCharacterManager.clearSession(newCallerId);
+            }
+            GameSessionService.updateCallerId(oldCallerId, newCallerId, CallerType.CHARACTER);
+
+            // 获取地图，进入对应位置
+            PlayerCharacterManager.pushMap(playerCharacter, location.getLocation(), session);
+            PlayerCharacterManager.moveTo(playerCharacter, location.getDataKey(), session);
+            // 玩家上线之后，还要通过房间通知上线锁在房间内的其他玩家，玩家上线
+            Map<String, Object> onlineMessage = new HashMap<>();
+            ObjectMoveInfo moveInfo = new ObjectMoveInfo("players", Arrays.asList(new SimplePlayerCharacter[]{new SimplePlayerCharacter(playerCharacter)}));
+            onlineMessage.put("obj_moved_in", moveInfo.getInfo());
+            onlineMessage.put("msg", String.format(GameWords.PLAYER_ONLINE, playerCharacter.getName()));
+            WorldRoomObjectManager.broadcast(location, onlineMessage, playerCharacterId);
+            // 发送玩家的属性信息
+             PlayerCharacterManager.showStatus(playerCharacter, session);
+        }catch (Exception e){
+            e.printStackTrace();
+            session.sendText(JsonResponse.JsonStringResponse(new AlertMessage("进入游戏失败，请稍后重试")));
+        }
+    }
+
+    public static void clearSession(String playerCharacterId) throws JsonProcessingException {
+        /*
+        * @ 玩家角色进入游戏的时候，要清空掉原来的session信息
+        * */
+        Session session = GameSessionService.getSessionByCallerId(playerCharacterId);
+        if(session != null){
+            session.sendText(JsonResponse.JsonStringResponse(new AlertMessage("你的帐号已在别处上线，你已被强制下线！")));
+            session.close();
+        }
+        GameSessionService.removeSessionBySessionId(session.id());
+    }
+
+    public static void lookAround(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException, JSONException {
+        /* ******************************************************************************
+         * 进入某一个地方之后： 返回这个地方的所有信息
+         *  @ 玩家查看周围的信息
+         * @ 周围信息包含当前房间的基本信息 dbref, name, background, peaceful, desc, icon
+         * @ 房间内可以看到的物体 things
+         * @ 房间内可以看到的NPC npcs
+         * @ 房间内可以用的出口  exits
+         * @ 房间内可以执行的命令 commands
+         * @ 房间内的其他玩家  players
+         ******************************************************************************/
+        WorldRoomObject location = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+        // 查看周围信息之前，先看一眼，先解锁一下地图
+        PlayerCharacterManager.revealMap(playerCharacter, location, session, false);
+        // 拼接返回信息 数据太多，如果直接把mongodb的文档返回过去倒是很省事，但是流量很贵，我们要为老板考虑！:)
+        // 所以只能这样自己根据前端需求 手动拼装JSON数据格式 这个工作一点都不好玩 :(
+        Map<String, Object> location_info = new HashMap<String, Object>();
+        //基本信息设置
+        location_info.put("name", location.getName());
+        location_info.put("dbref", location.getId());
+        location_info.put("background", location.getBackground());
+        location_info.put("peaceful", location.isPeaceful());
+        location_info.put("desc", location.getDescription());
+        location_info.put("icon", location.getIcon());
+        // 可以看到的物体和物品生成器
+        List<SimpleObject> objects = new ArrayList<SimpleObject>();
+        // 可以看到的物体
+        for(String objectKey : location.getThings()){
+            WorldObjectObject object = MongoMapper.worldObjectObjectRepository.findWorldObjectObjectByDataKey(objectKey);
+            if(GameWorldManager.isVisibleForPlayerCharacter(object, playerCharacter)) {
+                objects.add(new SimpleObject(object));
+            }
+        }
+        // 可以看到的物品生成器
+        for(String objectKey : location.getCreators()){
+            WorldObjectCreator creator = MongoMapper.worldObjectCreatorRepository.findWorldObjectCreatorByDataKey(objectKey);
+            if(GameWorldManager.isVisibleForPlayerCharacter(creator, playerCharacter)) {
+                objects.add(new SimpleObject(creator));
+            }
+        }
+        location_info.put("things", objects);
+        // 可以看到的出口
+        List<SimpleObject> exits = new ArrayList<SimpleObject>();
+        for (String exitKey : location.getExits()){
+            WorldExitObject exit = MongoMapper.worldExitObjectRepository.findWorldExitObjectByDataKey(exitKey);
+            if(GameWorldManager.isVisibleForPlayerCharacter(exit, playerCharacter)){
+                exits.add(new SimpleObject(exit));
+            }
+        }
+        location_info.put("exits",exits);
+        // 可以看到的玩家
+        List<SimplePlayerCharacter> playerCharacters = new ArrayList<SimplePlayerCharacter>();
+        for (String playerId: location.getPlayers()){
+            PlayerCharacter otherPlayerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerId);
+            if(PlayerCharacterManager.isVisibleForOtherPlayerCharacter(playerCharacter, otherPlayerCharacter)){
+                playerCharacters.add(new SimplePlayerCharacter(otherPlayerCharacter));
+            }
+        }
+        location_info.put("players", playerCharacters);
+        // 可以看到的NPC
+        List<SimplePlayerCharacter> npcs = new ArrayList<>();
+        for(String npcDataKey: location.getNpcs()){
+            WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+            if(GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)){
+                npcs.add(new SimplePlayerCharacter(npc));
+            }
+        }
+        location_info.put("npcs", npcs);
+        session.sendText(JsonResponse.JsonStringResponse(new LookAroundMessage(location_info)));
+        session.sendText(JsonResponse.JsonStringResponse(new CurrentLocationMessage(new RoomInfo(location))));
+    }
+
+    public static void gotoRoom(PlayerCharacter playerCharacter, String exitId, Session session) throws JsonProcessingException, JSONException {
+        /*
+        * 玩家移动到一个房间，这个过程中不能单纯的把玩家放到这个房间
+        * 而是要在程序内部通过出口，检查出口能否通过
+        * 根据出口的情况，然后才更进行移动
+        * */
+        WorldExitObject exit = MongoMapper.worldExitObjectRepository.findWorldExitObjectById(exitId);
+        // STEP1： 检查出口是不是锁定的，然后看玩家是不是已经解锁
+        if(exit.isLocked() && !playerCharacter.unlockedExit.contains(exitId)){
+            //没有解锁，根据解锁条件判断能否解锁
+            if(WorldExitObjectManager.playerCharacterCanTranverse(playerCharacter, exit)){
+                // 能解锁，显示解锁交互
+                session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(exit.getUnlockDescription())));
+                PlayerCharacterManager.moveTo(playerCharacter, exit.getDestination(), session);
+            }else{
+                // 不能解锁，显示提示信息
+                session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(exit.getLockDescription())));
+            }
+        }else{
+            // 直接通过
+            PlayerCharacterManager.moveTo(playerCharacter, exit.getDestination(), session);
+        }
+    }
+
+
+    public static void moveTo(PlayerCharacter playerCharacter, String roomKey, Session session) throws JsonProcessingException, JSONException {
+        /*
+        * @ 玩家移动到一个新的房间
+        * @ 本质上就是更新玩家的位置
+        * @ 额外的工作室负责两个房间要分别广播玩家进入和离开的消息，并更新房间玩家变动信息给客户端
+        * */
+        WorldRoomObject oldRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+        WorldRoomObject newRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(roomKey);
+        WorldRoomObjectManager.removeOfflinePlayer(oldRoom);
+        WorldRoomObjectManager.removeOfflinePlayer(newRoom);
+        //移动
+        playerCharacter.setLocation(newRoom.getDataKey());
+        PlayerCharacterManager.lookAround(playerCharacter, session);
+        //变更房间内部的玩家信息
+        if(oldRoom!=null){
+            Set<String> playersInOldRoom = oldRoom.getPlayers();
+            playersInOldRoom.remove(playerCharacter.getId());
+            oldRoom.setPlayers(playersInOldRoom);
+            Set<String> playersInNewRoom = newRoom.getPlayers();
+            playersInNewRoom.add(playerCharacter.getId());
+            newRoom.setPlayers(playersInNewRoom);
+            MongoMapper.worldRoomObjectRepository.save(oldRoom);
+            MongoMapper.worldRoomObjectRepository.save(newRoom);
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+            //房间广播玩家动向
+            WorldRoomObjectManager.onPlayerCharacterMove(playerCharacter, oldRoom, newRoom);
+        }
+        //事件监测
+        WorldRoomObjectManager.triggerArriveAction(newRoom, playerCharacter, session);
+    }
+
+
+    public static void revealMap(PlayerCharacter playerCharacter, WorldRoomObject location, Session session, boolean forceUpdateMap) throws JsonProcessingException {
+        /* ****************************************************************************
+        * @ 解锁新的地图
+        * 把当前的地图，放入已经解锁的地图Set里面
+        * 根据当前地图包含的出口，拿到当前地图的邻居
+        * 最终，给客户端返回当前区域已经解锁的所有地图
+        *
+        * 如果已经被解锁则跳过
+        * 如果没有被解锁则要解锁新的地图并发送给客户端
+        * revealedMap的是一个字典，key为区域的标识，内容为当前区域已经解锁地图的Set
+        * @WARNING: 性能瓶颈！ 如果房间特别多，解锁房间和出口信息，会有一个n*1到n*4的循环
+        * @优化之后： STEP2中的地图信息不用每一次都发送到客户端，而是在有解锁操作之后才更新
+        * 每次玩家新进入游戏的时候客户端是没有玩家地图的，需要强制生成已经解锁的地图信息并推送
+        ***************************************************************************/
+
+        // STEP1: 先检查需不需要解锁，如果需要的话顺便初始化数据
+        String areaKey = location.getLocation();
+        Map<String, Set<String>> revealedMap = playerCharacter.getRevealedMap();
+        //当前区域不存在，增加当前区域
+        if(!revealedMap.containsKey(areaKey)){
+            revealedMap.put(areaKey, new HashSet<>());
+        }
+        //当前区域存在，但是房间未解锁
+        if(!revealedMap.get(areaKey).contains(location.getDataKey()) || forceUpdateMap) {
+            Set<String> revealedRoomSet = revealedMap.get(areaKey);
+            revealedRoomSet.add(location.getDataKey());
+            revealedMap.put(areaKey, revealedRoomSet);
+            playerCharacter.setRevealedMap(revealedMap);
+            // STEP2：解锁完成之后，发送当前区域的可用地图和出口给玩家
+            PlayerCharacterManager.pushMap(playerCharacter, areaKey, session);
+            // 数据持久化
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+        }
+    }
+
+    public static void pushMap(PlayerCharacter playerCharacter,String areaKey, Session session) throws JsonProcessingException {
+        /*
+        * @ 针对于一个区域，推送玩家在这个区域内解锁的所有地图和出口
+        * */
+        Map<String, Object> rooms = new HashMap<>();
+        Map<String, ExitInfo> exits = new HashMap<>();
+        if(!playerCharacter.getRevealedMap().containsKey(areaKey)){
+            Map<String, Set<String>> revealedMap = playerCharacter.getRevealedMap();
+            revealedMap.put(areaKey, new HashSet<>());
+            playerCharacter.setRevealedMap(revealedMap);
+        }
+        for (String roomKey : playerCharacter.getRevealedMap().get(areaKey)) {
+            // 增加房间到 房间集合
+            WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(roomKey);
+            RoomInfo roomInfo = new RoomInfo(room);
+            rooms.put(roomKey, roomInfo);
+            // 增加房间包含的出口到出口集合
+            for (String exitKey : room.getExits()) {
+                WorldExitObject exit = MongoMapper.worldExitObjectRepository.findWorldExitObjectByDataKey(exitKey);
+                ExitInfo exitInfo = new ExitInfo(exit);
+                exits.put(exit.getDataKey(), exitInfo);
+                //拿到出口之后还要根据出口拿到房间的邻居,如果出口对于玩家是不可见的，则不用显示
+                if (GameWorldManager.isVisibleForPlayerCharacter(exit, playerCharacter)) {
+                    WorldRoomObject neighbor = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(exit.getDestination());
+                    rooms.put(neighbor.getDataKey(), new CanArriveRoomInfo(neighbor, exit));
+                }
+            }
+        }
+        // 返回信息到客户端
+        Map<String, Object> allRevealedMapInArea = new HashMap<>();
+        allRevealedMapInArea.put("rooms", rooms);
+        allRevealedMapInArea.put("exits", exits);
+        session.sendText(JsonResponse.JsonStringResponse(new RevealedMapMessage(allRevealedMapInArea)));
+    }
+
+
+    public static void showStatus(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+        /*
+        * @ 显示玩家的状态，包含玩家所有的属性
+        * @ 玩的属性详情见客户点或：PlayerCharacterStatus
+        * */
+        session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStatus(playerCharacter)));
+    }
+
+    public static void onPlayerLook(PlayerCharacter target, PlayerCharacter caller, Session session) throws JsonProcessingException {
+        /*
+         * @ 当玩家查看游戏世界内的物体生成器的时候返回物体信息和可执行的命令（操作）
+         * */
+        Map<String, Object> lookMessage = new HashMap<>();
+        PlayerCharacterAppearance appearance = new PlayerCharacterAppearance(target);
+        // 设置玩家可以对此物体执行的命令
+        appearance.setCmds(getAvailableCommands(caller, target));
+        lookMessage.put("look_obj", appearance);
+        session.sendText(JsonResponse.JsonStringResponse(lookMessage));
+    }
+
+
+    private static List<Map<String, Object>> getAvailableCommands(PlayerCharacter caller, PlayerCharacter target){
+        /*
+         * @ 获取玩家对当前对象的可操作命令
+         * @ 对于玩家之间来说 包含的命令有 加好友，秘语，切磋，攻击命令
+         * */
+        List<Map<String, Object>> cmds = new ArrayList<>();
+        // 添加好友命令
+        if(!target.getFriends().containsKey(caller.getId())){
+            Map<String, Object> cmd = new HashMap<>();
+            cmd.put("cmd", "add_friend");
+            cmd.put("name", "结交");
+            cmd.put("args", target.getId());
+            cmds.add(cmd);
+        }
+        return cmds;
+    }
+
+    public static Object findAttributeByName(PlayerCharacter playerCharacter, String attrName) throws NoSuchFieldException, IllegalAccessException {
+        /*
+        * @ 玩家类的反射工具，通过反射把玩家类的属性找到并开放出去
+        *  获取所有的所有成员属性，包括父类，然后在这些属性中查找对应的属性Filed数据更新进行操作
+        *  为了配合这里能够获取到父类的属性，玩家类中所有的成员属性都被设置为了public
+        *  感觉有点怪怪的,对性能有一定影响，暂时还没找到更好的解决方案:(
+        *  聪明的旅行者（接盘侠）你有好办法没？ :)
+        */
+        Field[] fields = playerCharacter.getClass().getFields();
+        // 用了一万年的遍历查找，
+        // 如果要优化的化，可以在服务器启动的时候找到所有的角色属性，建一个静态Map吧
+        Field hitField = null; //命中的字段
+        for(Field field: fields){
+            if (attrName.equals(field.getName())){
+                hitField = field;
+                Object number =  hitField.get(playerCharacter);
+                return number;
+            }
+        }
+        // 如果上面的查找没有成功返回，那么属性可能被包含在了Character.customerAttr中
+        // 所以 如果上面的查询没有命中 就还要在customerAttr里面再找一次, 加油吧~_~!
+        hitField = playerCharacter.getClass().getField("customerAttr");
+        Map<String, Object> customerAttr = (Map<String, Object>) hitField.get(playerCharacter);
+        if(customerAttr.containsKey(attrName)){
+            return customerAttr.get(attrName);
+        }
+        return null;
+    }
+
+    public static boolean isVisibleForOtherPlayerCharacter(PlayerCharacter self, PlayerCharacter other){
+        /*
+        * 玩家是否可以被其他玩家看到
+        * */
+        // 首先自己不能看到自己，在这一块儿客户端自己有处理，后台不需要多此一举把玩家自己显示到房间中
+        if(other != null){
+            return !self.getId().equals(other.getId());
+        }
+        return true;
+    }
+
+
+    public static void requestFriend(PlayerCharacter playerCharacter, String targetId, Session session) throws JsonProcessingException {
+        /*
+        * @ 玩家通过另一个玩家的ID发出好友申请
+        * */
+        PlayerCharacter target =  MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
+        Session targetSession = GameSessionService.getSessionByCallerId(targetId);
+        if(target.getFriendRequests().containsKey(playerCharacter.getId())){
+            // 已经发送过的请求
+            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_REPEAT_REQUEST_FRIEND, target.getName()))));
+        }else{
+            // 对端添加好友申请信息
+            Map<String, SimplePlayerCharacter> friendRequests = target.getFriendRequests();
+            friendRequests.put(playerCharacter.getId(), new SimplePlayerCharacter(playerCharacter));
+            target.setFriendRequests(friendRequests);
+            MongoMapper.playerCharacterRepository.save(target);
+            // 对端显示好友申请信息
+            targetSession.sendText(JsonResponse.JsonStringResponse(new AddFriendRequestMessage(playerCharacter)));
+            targetSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_RECEIVE_FRIEND_REQUEST, playerCharacter.getName()))));
+            targetSession.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(target)));
+            // 己端显示申请成功信息
+            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_REQUEST_FRIEND, target.getName()))));
+        }
+    }
+
+
+    public static void acceptFriendRequest(PlayerCharacter playerCharacter, String friendId, Session session) throws JsonProcessingException {
+        /*
+        * @ 同意好友的请求
+        * @ 把好友信息从申请列表移动到已通过列表
+        * @ 给对方的好友列表里添加自己的信息，如果对方的申请列表里面也有自己的信息则删除
+        * */
+        PlayerCharacter friend = MongoMapper.playerCharacterRepository.findPlayerCharacterById(friendId);
+        // 把好友请求从 requestFriends 移动到 friends 里面
+        Map<String, SimplePlayerCharacter> friends =  playerCharacter.getFriends();
+        Map<String, SimplePlayerCharacter> friendRequests = playerCharacter.getFriendRequests();
+        SimplePlayerCharacter simpleFriendInfo = friendRequests.get(friendId);
+        friends.put(friendId, simpleFriendInfo);
+        friendRequests.remove(friendId);
+        playerCharacter.setFriendRequests(friendRequests);
+        playerCharacter.setFriends(friends);
+        // 把对面好友的 requestFriends 和 friends 两个Map进行同步
+        Map<String, SimplePlayerCharacter> targetsFriends = friend.getFriends();
+        Map<String, SimplePlayerCharacter> targetsFriendRequests = friend.getFriendRequests();
+        targetsFriendRequests.remove(playerCharacter.getId());
+        targetsFriends.put(playerCharacter.getId(), new SimplePlayerCharacter(playerCharacter));
+        friend.setFriends(targetsFriends);
+        friend.setFriendRequests(targetsFriendRequests);
+        // 持久化
+        MongoMapper.playerCharacterRepository.save(playerCharacter);
+        MongoMapper.playerCharacterRepository.save(friend);
+        // 发送新的好友列表的给己方客户端
+        session.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(playerCharacter)));
+        // 发送新的好友列表给对方客户端
+        Session friendsSession = GameSessionService.getSessionByCallerId(friendId);
+        friendsSession.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(friend)));
+        // 发送好友添加之后的消息给双方
+        session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_APPLY_FRIEND_REQUEST, friend.getName()))));
+        friendsSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_BE_APPLIED_FRIEND_REQUEST, playerCharacter.getName()))));
+    }
+
+
+    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String targetId, String message, Session selfSession) throws JsonProcessingException {
+        /*
+        * @发送消息给其他玩家
+        * */
+        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
+        Session targetSession = GameSessionService.getSessionByCallerId(targetId);
+        if(targetSession != null){
+            selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, playerCharacter, target)));
+            targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, playerCharacter, target)));
+        }else{
+            selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("对方可能不在线")));
+        }
+    }
+
+}
