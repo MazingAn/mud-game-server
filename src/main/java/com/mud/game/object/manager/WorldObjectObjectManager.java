@@ -1,14 +1,11 @@
 package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mud.game.condition.ConditionHandler;
-import com.mud.game.events.EventTriggerType;
-import com.mud.game.object.account.Player;
+import com.mud.game.handler.ConditionHandler;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldObjectObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.structs.GameObjectAppearance;
-import com.mud.game.structs.GamePosition;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.EventData;

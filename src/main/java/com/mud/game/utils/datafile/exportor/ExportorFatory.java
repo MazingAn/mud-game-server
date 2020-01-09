@@ -69,6 +69,13 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.drugAndFoodRepository, outFilePath, tableName, type);
             case "Skill":
                 return new Exportor(DbMapper.skillRepository, outFilePath, tableName, type);
+            case "SkillCategoryType":
+                return new Exportor(DbMapper.skillCategoryTypeRepository, outFilePath, tableName, type);
+            case "SkillFunctionType":
+                return new Exportor(DbMapper.skillFunctionTypeRepository, outFilePath, tableName, type);
+            case "SkillPosition":
+                return new Exportor(DbMapper.skillPositionRepository, outFilePath, tableName, type);
+
             default:
                 return null;
         }

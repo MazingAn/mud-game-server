@@ -1,20 +1,15 @@
 package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mud.game.condition.ConditionHandler;
-import com.mud.game.object.supertypeclass.BaseGameObject;
+import com.mud.game.handler.ConditionHandler;
 import com.mud.game.object.supertypeclass.WorldObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldNpcObject;
-import com.mud.game.object.typeclass.WorldObjectObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.structs.ObjectMoveInfo;
 import com.mud.game.structs.SimplePlayerCharacter;
-import com.mud.game.structs.GameObjectAppearance;
-import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.yeauty.pojo.Session;
 
 import java.util.*;
 

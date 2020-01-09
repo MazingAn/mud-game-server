@@ -1,17 +1,11 @@
 package com.mud.game.object.manager;
 
-import com.mud.game.condition.ConditionHandler;
+import com.mud.game.handler.ConditionHandler;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldExitObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
-import com.mud.game.structs.RoomInfo;
 import com.mud.game.worlddata.db.models.WorldExit;
-import com.mud.game.worlddata.db.models.WorldRoom;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.yeauty.pojo.Session;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorldExitObjectManager {
 

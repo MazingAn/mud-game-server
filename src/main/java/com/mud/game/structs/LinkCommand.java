@@ -16,6 +16,7 @@ public class LinkCommand {
             cmd.put("cmd", "friend_chat");
             cmd.put("name", obj.getName());
             cmd.put("args", "");
+            cmd.put("dbref", obj.getId());
             this.cmd = cmd;
         }
     }

@@ -1,6 +1,6 @@
 package com.mud.game.object.typeclass;
 
-import com.mud.game.object.supertypeclass.Character;
+import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.structs.SimplePlayerCharacter;
 
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PlayerCharacter extends Character {
+public class PlayerCharacter extends CommonCharacter {
 
     public String player;
     // 已经解锁的地图

@@ -1,13 +1,11 @@
 package com.mud.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mud.game.condition.ConditionHandler;
 import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.regxutils.InputFieldCheck;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.Objects;

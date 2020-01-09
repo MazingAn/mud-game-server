@@ -1,10 +1,10 @@
 package com.mud.game.object.typeclass;
 
-import com.mud.game.object.supertypeclass.Character;
+import com.mud.game.object.supertypeclass.CommonCharacter;
 
 import java.util.Set;
 
-public class WorldNpcObject extends Character {
+public class WorldNpcObject extends CommonCharacter {
     // 绑定的事件
     public Set<String> events;
     // 绑定的对话

@@ -169,16 +169,18 @@ public class WorldRoomObjectManager {
         /*
         * @ 删除房间内没有在线的玩家
         * */
-        Set<String> playerIds = room.getPlayers();
-        for(String id : playerIds){
-            //如果房间内的玩家没有session或者session为null，证明玩家已经下线，可以从房间移除玩家
-            if(!GameSessionService.callerId2SessionMap.containsKey(id) || GameSessionService.getSessionByCallerId(id) == null){
-                Set<String> players = room.getPlayers();
-                players.remove(id);
-                room.setPlayers(players);
+        if(room!=null){
+            Set<String> playerIds = room.getPlayers();
+            for(String id : playerIds){
+                //如果房间内的玩家没有session或者session为null，证明玩家已经下线，可以从房间移除玩家
+                if(!GameSessionService.callerId2SessionMap.containsKey(id) || GameSessionService.getSessionByCallerId(id) == null){
+                    Set<String> players = room.getPlayers();
+                    players.remove(id);
+                    room.setPlayers(players);
+                }
             }
+            MongoMapper.worldRoomObjectRepository.save(room);
         }
-        MongoMapper.worldRoomObjectRepository.save(room);
     }
 
 

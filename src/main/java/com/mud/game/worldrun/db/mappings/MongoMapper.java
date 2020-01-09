@@ -1,5 +1,6 @@
 package com.mud.game.worldrun.db.mappings;
 
+import com.mud.game.object.typeclass.GemObject;
 import com.mud.game.object.typeclass.WorldObjectCreator;
 import com.mud.game.object.typeclass.WorldObjectObject;
 import com.mud.game.worlddata.db.models.WorldNpc;
@@ -23,6 +24,9 @@ public class MongoMapper<F, S> {
     public static WorldObjectObjectRepository worldObjectObjectRepository;
     public static WorldObjectCreatorRepository worldObjectCreatorRepository;
     public static WorldNpcObjectRepository worldNpcObjectRepository;
+    public static SkillObjectRepository skillObjectRepository;
+    public static GemObjectRepository gemObjectRepository;
+    public static EquipmentObjectRepository equipmentObjectRepository;
 
     @Autowired
     public void setWorldAreaObjectRepository(WorldAreaObjectRepository worldAreaObjectRepository) {
@@ -64,5 +68,19 @@ public class MongoMapper<F, S> {
         MongoMapper.worldNpcObjectRepository = worldNpcObjectRepository;
     }
 
+    @Autowired
+    public void setSkillObjectRepository(SkillObjectRepository skillObjectRepository) {
+        MongoMapper.skillObjectRepository = skillObjectRepository;
+    }
+
+    @Autowired
+    public void setGemObjectRepository(GemObjectRepository gemObjectRepository) {
+        MongoMapper.gemObjectRepository = gemObjectRepository;
+    }
+
+    @Autowired
+    public void setEquipmentObjectRepository(EquipmentObjectRepository equipmentObjectRepository) {
+        MongoMapper.equipmentObjectRepository = equipmentObjectRepository;
+    }
 }
 

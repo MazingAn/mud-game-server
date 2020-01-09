@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Character extends BaseGameObject {
+public class CommonCharacter extends BaseGameObject {
     //基本信息
     public String gender;
     public float age;
@@ -46,7 +46,7 @@ public class Character extends BaseGameObject {
     // 自定义属性
     public Map<String,Map<String, Object>> customerAttr;
 
-    public Character() {
+    public CommonCharacter() {
     }
 
     public String getGender() {

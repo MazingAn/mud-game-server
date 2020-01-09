@@ -72,6 +72,12 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.drugAndFoodRepository);
             case "Skill":
                 return new Importor(stream, fileName, DbMapper.skillRepository);
+            case "SkillCategoryType":
+                return new Importor(stream, fileName, DbMapper.skillCategoryTypeRepository);
+            case "SkillFunctionType":
+                return new Importor(stream, fileName, DbMapper.skillFunctionTypeRepository);
+            case "SkillPosition":
+                return new Importor(stream, fileName, DbMapper.skillPositionRepository);
             default:
                 return null;
         }

@@ -1,4 +1,4 @@
-package com.mud.game.commands;
+package com.mud.game.handler;
 
 import com.mud.game.commands.account.CharCreate;
 import com.mud.game.commands.account.Puppet;

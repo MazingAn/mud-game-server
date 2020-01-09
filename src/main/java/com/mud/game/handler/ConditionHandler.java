@@ -1,5 +1,6 @@
-package com.mud.game.condition;
+package com.mud.game.handler;
 
+import com.mud.game.condition.BaseCondition;
 import com.mud.game.condition.attribute.AttrGt;
 import com.mud.game.condition.general.CheckNumber;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -7,8 +8,6 @@ import com.mud.game.object.typeclass.PlayerCharacter;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ConditionHandler {
     /*

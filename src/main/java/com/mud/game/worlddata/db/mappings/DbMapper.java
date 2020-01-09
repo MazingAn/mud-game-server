@@ -40,7 +40,9 @@ public class DbMapper {
     public static LootListRepository lootListRepository;
     public static DrugAndFoodRepository drugAndFoodRepository;
     public static SkillRepository skillRepository;
-
+    public static SkillCategoryTypeRepository skillCategoryTypeRepository;
+    public static SkillFunctionTypeRepository skillFunctionTypeRepository;
+    public static SkillPositionRepository skillPositionRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -180,6 +182,21 @@ public class DbMapper {
     @Autowired
     public void setSkillRepository(SkillRepository skillRepository) {
         DbMapper.skillRepository = skillRepository;
+    }
+
+    @Autowired
+    public void setSkillCategoryTypeRepository(SkillCategoryTypeRepository skillCategoryTypeRepository) {
+        DbMapper.skillCategoryTypeRepository = skillCategoryTypeRepository;
+    }
+
+    @Autowired
+    public void setSkillFunctionTypeRepository(SkillFunctionTypeRepository skillFunctionTypeRepository) {
+        DbMapper.skillFunctionTypeRepository = skillFunctionTypeRepository;
+    }
+
+    @Autowired
+    public void setSkillPositionRepository(SkillPositionRepository skillPositionRepository) {
+        DbMapper.skillPositionRepository = skillPositionRepository;
     }
 }
 

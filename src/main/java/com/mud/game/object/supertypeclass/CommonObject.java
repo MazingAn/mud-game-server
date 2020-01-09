@@ -7,12 +7,10 @@ import java.util.Set;
 * 游戏中所有可以被玩家携带的物品的基类
 * */
 public class CommonObject extends BaseGameObject {
-    //名字
-    private String name;
     //单位（如：金子的单位是  锭）
     private String unitName;
     //分类
-    //TODO 增加物品分类
+    private String category;
     //效果函数
     private String function;
     //是否唯一(背包里面不得多于一组）
@@ -27,16 +25,6 @@ public class CommonObject extends BaseGameObject {
     private String icon;
     //事件
     private Set<String> gameEvents;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getUnitName() {
         return unitName;
@@ -100,5 +88,13 @@ public class CommonObject extends BaseGameObject {
 
     public void setGameEvents(Set<String> gameEvents) {
         this.gameEvents = gameEvents;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

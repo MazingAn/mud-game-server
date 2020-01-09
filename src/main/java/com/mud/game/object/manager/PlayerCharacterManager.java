@@ -1,8 +1,6 @@
 package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.Mongo;
-import com.mud.game.condition.ConditionHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -362,35 +360,6 @@ public class PlayerCharacterManager {
             cmds.add(cmd);
         }
         return cmds;
-    }
-
-    public static Object findAttributeByName(PlayerCharacter playerCharacter, String attrName) throws NoSuchFieldException, IllegalAccessException {
-        /*
-        * @ 玩家类的反射工具，通过反射把玩家类的属性找到并开放出去
-        *  获取所有的所有成员属性，包括父类，然后在这些属性中查找对应的属性Filed数据更新进行操作
-        *  为了配合这里能够获取到父类的属性，玩家类中所有的成员属性都被设置为了public
-        *  感觉有点怪怪的,对性能有一定影响，暂时还没找到更好的解决方案:(
-        *  聪明的旅行者（接盘侠）你有好办法没？ :)
-        */
-        Field[] fields = playerCharacter.getClass().getFields();
-        // 用了一万年的遍历查找，
-        // 如果要优化的化，可以在服务器启动的时候找到所有的角色属性，建一个静态Map吧
-        Field hitField = null; //命中的字段
-        for(Field field: fields){
-            if (attrName.equals(field.getName())){
-                hitField = field;
-                Object number =  hitField.get(playerCharacter);
-                return number;
-            }
-        }
-        // 如果上面的查找没有成功返回，那么属性可能被包含在了Character.customerAttr中
-        // 所以 如果上面的查询没有命中 就还要在customerAttr里面再找一次, 加油吧~_~!
-        hitField = playerCharacter.getClass().getField("customerAttr");
-        Map<String, Object> customerAttr = (Map<String, Object>) hitField.get(playerCharacter);
-        if(customerAttr.containsKey(attrName)){
-            return customerAttr.get(attrName);
-        }
-        return null;
     }
 
     public static boolean isVisibleForOtherPlayerCharacter(PlayerCharacter self, PlayerCharacter other){

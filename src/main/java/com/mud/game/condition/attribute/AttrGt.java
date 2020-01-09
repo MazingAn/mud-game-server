@@ -1,6 +1,7 @@
 package com.mud.game.condition.attribute;
 
 import com.mud.game.condition.BaseCondition;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 
@@ -18,7 +19,7 @@ public class AttrGt extends BaseCondition {
         String attrKey = args[0].replaceAll("\"", "");
         PlayerCharacter playerCharacter = getPlayerCharacter();
         float matchValue = Float.parseFloat(args[1]);
-        Object originValue =  PlayerCharacterManager.findAttributeByName(playerCharacter, attrKey) ;
+        Object originValue =  GameCharacterManager.findAttributeByName(playerCharacter, attrKey) ;
         if(originValue == null){
             return false;
         }
