@@ -105,6 +105,9 @@ public class WorldRoomObjectManager {
     }
 
     public static void updateNpc(WorldRoomObject room, WorldNpcObject npc) {
+        /*
+        * 为房间内更新（添加）一个Npc
+        * */
         try{
             Set<String> npcs = room.getNpcs();
             npcs.add(npc.getDataKey());

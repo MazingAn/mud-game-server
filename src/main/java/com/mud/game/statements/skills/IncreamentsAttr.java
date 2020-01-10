@@ -24,5 +24,8 @@ public class IncreamentsAttr extends BaseStatement {
         String[] args = getArgs();
         SkillObject skillObject = getSkillObject();
         int skillLevel = skillObject.getLevel();
+        String attrKey = args[0];
+        float value = Float.parseFloat(args[1]);
+        GameCharacterManager.changeStatus(caller, attrKey, value);
     }
 }

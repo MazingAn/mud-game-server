@@ -14,7 +14,6 @@ import java.util.List;
 public class CsvUtils {
     private static final CsvMapper mapper = new CsvMapper();
 
-
     /*
     * Csv文件读取
     * */
@@ -25,6 +24,7 @@ public class CsvUtils {
         ObjectReader reader = mapper.readerFor(clazz).with(schema);
         return reader.<T>readValues(stream).readAll();
     }
+
     /*
     * 写入可迭代对象到csv文件
      */

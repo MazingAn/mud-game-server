@@ -8,8 +8,8 @@ public class ExportContext {
             ExportToCsv exportToCsv = new ExportToCsv(data, tableName, outFilePath);
             this.strategy = exportToCsv;
         }else if ("xls".equals(type)){
-            // TODO: 增加对导出excel文件的支持策略
-            ;
+            ExportToExcel exportToExcel = new ExportToExcel(data, tableName, outFilePath);
+            this.strategy = exportToExcel;
         }else if("xxx".equals(type)) {
             // TODO: 其他文件导出的支持策略
             ;

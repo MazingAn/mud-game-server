@@ -1,12 +1,9 @@
 package com.mud.game.utils.datafile.exportor;
 
 import com.mud.game.utils.datafile.csvutils.CsvUtils;
-import org.springframework.data.repository.CrudRepository;
+import com.mud.game.utils.datafile.excelutils.ExcelUtils;
 
-import java.io.InputStream;
-import java.util.List;
-
-public class ExportToCsv extends ExportStrategy {
+public class ExportToExcel extends ExportStrategy {
     /*
     * 数据库导出文件策略的csv实现
     * */
@@ -16,7 +13,7 @@ public class ExportToCsv extends ExportStrategy {
     private String outFilePath;
 
 
-    public ExportToCsv(Iterable<?> data, String tableName, String outFilePath) {
+    public ExportToExcel(Iterable<?> data, String tableName, String outFilePath) {
         this.data = data;
         this.tableName = tableName;
         this.outFilePath = outFilePath;
@@ -29,8 +26,8 @@ public class ExportToCsv extends ExportStrategy {
             String modelPackagePath = "com.mud.game.worlddata.db.models.";
             Class<?> modelClass = Class.forName(modelPackagePath+tableName);
             //从数据库读取数据
-            String fullPath = outFilePath + "/" + tableName + ".csv";
-            CsvUtils.write(modelClass, data, fullPath);
+            String fullPath = outFilePath + "/" + tableName + ".xlsx";
+            ExcelUtils.write(modelClass, data, fullPath);
             return fullPath;
         }catch (Exception e){
             e.printStackTrace();
