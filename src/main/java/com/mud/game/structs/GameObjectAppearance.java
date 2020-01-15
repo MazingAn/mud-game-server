@@ -11,7 +11,7 @@ public class GameObjectAppearance {
     private String dbref;
     private String name;
     private String desc;
-    private List<Map<String, Object>> cmds;
+    private List<EmbeddedCommand> cmds;
 
     public GameObjectAppearance(BaseGameObject obj) {
         this.dbref = obj.getId();
@@ -44,11 +44,11 @@ public class GameObjectAppearance {
         this.desc = desc;
     }
 
-    public List<Map<String, Object>> getCmds() {
+    public List<EmbeddedCommand> getCmds() {
         return cmds;
     }
 
-    public void setCmds(List<Map<String, Object>> cmds) {
+    public void setCmds(List<EmbeddedCommand> cmds) {
         this.cmds = cmds;
     }
 }

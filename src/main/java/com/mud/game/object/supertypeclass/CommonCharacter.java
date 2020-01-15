@@ -7,10 +7,7 @@ import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 import org.json.JSONObject;
 
 import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CommonCharacter extends BaseGameObject {
     //基本信息
@@ -31,20 +28,24 @@ public class CommonCharacter extends BaseGameObject {
     public int smart; //先天悟性
     public int looks; //先天容貌
     public int lucky; //先天福缘
-    public int after_arm; //后天膂力
-    public int after_bone; //先天根骨
-    public int after_body; //先天身法
-    public int after_smart; //先天悟性
-    public int after_looks; //先天容貌
-    public int after_lucky; //先天福缘
+    public int afterArm; //后天膂力
+    public int afterBone; //先天根骨
+    public int afterBody; //先天身法
+    public int afterSmart; //先天悟性
+    public int afterLooks; //先天容貌
+    public int afterLucky; //先天福缘
     //装备信息
     public List<String> equipments;
-    public Map<String, String> equipped_equipments;
+    public Map<String, String> equippedEquipments;
     //技能信息
-    public List<String> skills;
-    public Map<String, String[]> equipped_skills;
+    public Set<String> skills;
+    public Map<String, String[]> equippedSkills;
+    // 角色的技能位置
+    public Set<String> skillPositions;
     // 自定义属性
     public Map<String,Map<String, Object>> customerAttr;
+
+
 
     public CommonCharacter() {
     }
@@ -161,53 +162,7 @@ public class CommonCharacter extends BaseGameObject {
         this.lucky = lucky;
     }
 
-    public int getAfter_arm() {
-        return after_arm;
-    }
 
-    public void setAfter_arm(int after_arm) {
-        this.after_arm = after_arm;
-    }
-
-    public int getAfter_bone() {
-        return after_bone;
-    }
-
-    public void setAfter_bone(int after_bone) {
-        this.after_bone = after_bone;
-    }
-
-    public int getAfter_body() {
-        return after_body;
-    }
-
-    public void setAfter_body(int after_body) {
-        this.after_body = after_body;
-    }
-
-    public int getAfter_smart() {
-        return after_smart;
-    }
-
-    public void setAfter_smart(int after_smart) {
-        this.after_smart = after_smart;
-    }
-
-    public int getAfter_looks() {
-        return after_looks;
-    }
-
-    public void setAfter_looks(int after_looks) {
-        this.after_looks = after_looks;
-    }
-
-    public int getAfter_lucky() {
-        return after_lucky;
-    }
-
-    public void setAfter_lucky(int after_lucky) {
-        this.after_lucky = after_lucky;
-    }
 
     public List<String> getEquipments() {
         return equipments;
@@ -217,28 +172,84 @@ public class CommonCharacter extends BaseGameObject {
         this.equipments = equipments;
     }
 
-    public Map<String, String> getEquipped_equipments() {
-        return equipped_equipments;
+    public int getAfterArm() {
+        return afterArm;
     }
 
-    public void setEquipped_equipments(Map<String, String> equipped_equipments) {
-        this.equipped_equipments = equipped_equipments;
+    public void setAfterArm(int afterArm) {
+        this.afterArm = afterArm;
     }
 
-    public List<String> getSkills() {
-        return skills;
+    public int getAfterBone() {
+        return afterBone;
     }
 
-    public void setSkills(List<String> skills) {
+    public void setAfterBone(int afterBone) {
+        this.afterBone = afterBone;
+    }
+
+    public int getAfterBody() {
+        return afterBody;
+    }
+
+    public void setAfterBody(int afterBody) {
+        this.afterBody = afterBody;
+    }
+
+    public int getAfterSmart() {
+        return afterSmart;
+    }
+
+    public void setAfterSmart(int afterSmart) {
+        this.afterSmart = afterSmart;
+    }
+
+    public int getAfterLooks() {
+        return afterLooks;
+    }
+
+    public void setAfterLooks(int afterLooks) {
+        this.afterLooks = afterLooks;
+    }
+
+    public int getAfterLucky() {
+        return afterLucky;
+    }
+
+    public void setAfterLucky(int afterLucky) {
+        this.afterLucky = afterLucky;
+    }
+
+    public Map<String, String> getEquippedEquipments() {
+        return equippedEquipments;
+    }
+
+    public void setEquippedEquipments(Map<String, String> equippedEquipments) {
+        this.equippedEquipments = equippedEquipments;
+    }
+
+    public void setSkills(Set<String> skills) {
         this.skills = skills;
     }
 
-    public Map<String, String[]> getEquipped_skills() {
-        return equipped_skills;
+    public Set<String> getSkills() {
+        return skills;
     }
 
-    public void setEquipped_skills(Map<String, String[]> equipped_skills) {
-        this.equipped_skills = equipped_skills;
+    public Map<String, String[]> getEquippedSkills() {
+        return equippedSkills;
+    }
+
+    public void setEquippedSkills(Map<String, String[]> equippedSkills) {
+        this.equippedSkills = equippedSkills;
+    }
+
+    public Set<String> getSkillPositions() {
+        return skillPositions;
+    }
+
+    public void setSkillPositions(Set<String> skillPositions) {
+        this.skillPositions = skillPositions;
     }
 
     public Map<String, Map<String, Object>> getCustomerAttr() {

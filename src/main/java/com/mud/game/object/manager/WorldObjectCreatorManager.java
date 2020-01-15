@@ -6,6 +6,7 @@ import com.mud.game.messages.MsgMessage;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldObjectCreator;
 import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.GameObjectAppearance;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
@@ -82,18 +83,14 @@ public class WorldObjectCreatorManager {
     }
 
 
-    private static List<Map<String, Object>> getAvailableCommands(WorldObjectCreator obj, PlayerCharacter playerCharacter){
+    private static List<EmbeddedCommand> getAvailableCommands(WorldObjectCreator obj, PlayerCharacter playerCharacter){
         /*
          * @ 获取物体生成器的可操作命令
          * @ 对于物品生成器来说 只有一个生成命令
          * @ 返回的命令列表只包含loot命令以及配套参数，玩家执行loot命令之后才进行物品的获取
          * */
-        List<Map<String, Object>> cmds = new ArrayList<>();
-        Map<String, Object> cmd = new HashMap<>();
-        cmd.put("cmd", "loot");
-        cmd.put("name", obj.getActionName());
-        cmd.put("args", obj.getId());
-        cmds.add(cmd);
+        List<EmbeddedCommand> cmds = new ArrayList<>();
+        cmds.add(new EmbeddedCommand(obj.getActionName(), "loot", obj.getId()));
         return cmds;
     }
 

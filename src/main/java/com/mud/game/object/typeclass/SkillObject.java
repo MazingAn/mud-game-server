@@ -1,6 +1,10 @@
 package com.mud.game.object.typeclass;
 
+import com.mud.game.structs.SkillEffect;
+
 import javax.persistence.Id;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,12 +22,17 @@ public class SkillObject {
     private boolean passive;
     private String skillFunction;
     private String learnCondition;
-    private Map<String, Object> effects;
+    private Set<SkillEffect> effects;
     private int expandMp;
     private Set<String> positions;
-    private Set<SkillObject> subSKills;
+    private Set<String> subSKills;
     private String weaponType;
     private String icon;
+    private String owner;
+    private String categoryType;
+    private String functionType;
+    private Set<String> equippedPositions;
+    private Long cdFinishTime;
 
     public String getId() {
         return id;
@@ -113,11 +122,11 @@ public class SkillObject {
         this.learnCondition = learnCondition;
     }
 
-    public Map<String, Object> getEffects() {
+    public Set<SkillEffect> getEffects() {
         return effects;
     }
 
-    public void setEffects(Map<String, Object> effects) {
+    public void setEffects(Set<SkillEffect> effects) {
         this.effects = effects;
     }
 
@@ -137,11 +146,11 @@ public class SkillObject {
         this.positions = positions;
     }
 
-    public Set<SkillObject> getSubSKills() {
+    public Set<String> getSubSKills() {
         return subSKills;
     }
 
-    public void setSubSKills(Set<SkillObject> subSKills) {
+    public void setSubSKills(Set<String> subSKills) {
         this.subSKills = subSKills;
     }
 
@@ -167,5 +176,45 @@ public class SkillObject {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
+    }
+
+    public String getFunctionType() {
+        return functionType;
+    }
+
+    public void setFunctionType(String functionType) {
+        this.functionType = functionType;
+    }
+
+    public Set<String> getEquippedPositions() {
+        return equippedPositions;
+    }
+
+    public void setEquippedPositions(Set<String> equippedPositions) {
+        this.equippedPositions = equippedPositions;
+    }
+
+    public Long getCdFinishTime() {
+        return cdFinishTime;
+    }
+
+    public void setCdFinishTime(Long cdFinishTime) {
+        this.cdFinishTime = cdFinishTime;
     }
 }

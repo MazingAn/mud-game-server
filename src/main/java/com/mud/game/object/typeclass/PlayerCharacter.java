@@ -26,16 +26,16 @@ public class PlayerCharacter extends CommonCharacter {
     public int ennergy;
     public String teacher;
     public int contribution;
-    public float DaoXiShu;
-    public float JianXishu;
-    public float QuanXishu;
-    public float QiMenXishu;
-    public float NeigongXishu;
-    public float QingGongXishu;
-    public float DuXiShu;
-    public float YiXiShu;
-    public float ZaXueXiShu;
-    public float XueXiXishu;
+    public float daoXiShu;
+    public float jianXishu;
+    public float quanXishu;
+    public float qiMenXishu;
+    public float neigongXishu;
+    public float qingGongXishu;
+    public float duXiShu;
+    public float yiXiShu;
+    public float zaXueXiShu;
+    public float xueXiXishu;
     public String family;
     public int xiayi;
     public float tili;
@@ -150,83 +150,83 @@ public class PlayerCharacter extends CommonCharacter {
     }
 
     public float getDaoXiShu() {
-        return DaoXiShu;
+        return daoXiShu;
     }
 
     public void setDaoXiShu(float daoXiShu) {
-        DaoXiShu = daoXiShu;
+        this.daoXiShu = daoXiShu;
     }
 
     public float getJianXishu() {
-        return JianXishu;
+        return jianXishu;
     }
 
     public void setJianXishu(float jianXishu) {
-        JianXishu = jianXishu;
+        this.jianXishu = jianXishu;
     }
 
     public float getQuanXishu() {
-        return QuanXishu;
+        return quanXishu;
     }
 
     public void setQuanXishu(float quanXishu) {
-        QuanXishu = quanXishu;
+        this.quanXishu = quanXishu;
     }
 
     public float getQiMenXishu() {
-        return QiMenXishu;
+        return qiMenXishu;
     }
 
     public void setQiMenXishu(float qiMenXishu) {
-        QiMenXishu = qiMenXishu;
+        this.qiMenXishu = qiMenXishu;
     }
 
     public float getNeigongXishu() {
-        return NeigongXishu;
+        return neigongXishu;
     }
 
     public void setNeigongXishu(float neigongXishu) {
-        NeigongXishu = neigongXishu;
+        this.neigongXishu = neigongXishu;
     }
 
     public float getQingGongXishu() {
-        return QingGongXishu;
+        return qingGongXishu;
     }
 
     public void setQingGongXishu(float qingGongXishu) {
-        QingGongXishu = qingGongXishu;
+        this.qingGongXishu = qingGongXishu;
     }
 
     public float getDuXiShu() {
-        return DuXiShu;
+        return duXiShu;
     }
 
     public void setDuXiShu(float duXiShu) {
-        DuXiShu = duXiShu;
+        this.duXiShu = duXiShu;
     }
 
     public float getYiXiShu() {
-        return YiXiShu;
+        return yiXiShu;
     }
 
     public void setYiXiShu(float yiXiShu) {
-        YiXiShu = yiXiShu;
+        this.yiXiShu = yiXiShu;
     }
 
     public float getZaXueXiShu() {
-        return ZaXueXiShu;
+        return zaXueXiShu;
     }
 
     public void setZaXueXiShu(float zaXueXiShu) {
-        ZaXueXiShu = zaXueXiShu;
+        this.zaXueXiShu = zaXueXiShu;
     }
 
     public float getXueXiXishu() {
-        return XueXiXishu;
+        return xueXiXishu;
     }
 
     public void setXueXiXishu(float xueXiXishu) {
-        XueXiXishu = xueXiXishu;
+        this.xueXiXishu = xueXiXishu;
     }
 
     public String getFamily() {

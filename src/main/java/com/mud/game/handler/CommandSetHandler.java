@@ -44,6 +44,8 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("add_friend", RequestFriend.class);
         playerCharacterCommandSet.put("accept_friend", AcceptFriend.class);
         playerCharacterCommandSet.put("friend_chat", FriendChat.class);
+        playerCharacterCommandSet.put("find_teacher", FindTeacher.class);
+        playerCharacterCommandSet.put("learn_from_teacher", LearnFromTeacher.class);
     }
 
 }

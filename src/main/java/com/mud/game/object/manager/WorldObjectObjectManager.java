@@ -3,8 +3,10 @@ package com.mud.game.object.manager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.handler.ConditionHandler;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.typeclass.WorldObjectObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.GameObjectAppearance;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
@@ -68,7 +70,7 @@ public class WorldObjectObjectManager {
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
 
-    public static List<Map<String, Object>> getAvailableCommands(WorldObjectObject obj, PlayerCharacter playerCharacter){
+    public static List<EmbeddedCommand> getAvailableCommands(WorldObjectObject obj, PlayerCharacter playerCharacter){
         /*
         * @ 获取世界物体的可操作命令
         * @ 世界物体的可操作命令本质上是世界物体绑定的事件
@@ -78,7 +80,7 @@ public class WorldObjectObjectManager {
         * @ 判断的依据是event对应的triggerCondition可以生效（PS:配置中，总是能保证多个同名事件只有一个会生效）
         * */
         // 最重要返回的命令列表
-        List<Map<String, Object>> cmds = new ArrayList<>();
+        List<EmbeddedCommand> cmds = new ArrayList<>();
         // 获取物体绑定的事件(仅限于Action事件，也就是点击交互事件)
         Map<String, Set<EventData>>eventDataGroupByActionNameMap = new HashMap<>();
         for(String eventKey : obj.getEvents()) {
@@ -100,14 +102,10 @@ public class WorldObjectObjectManager {
             playerCharacter.setRandomNumber(Math.random()*101);
             for(EventData eventData : events){
                 if(ConditionHandler.matchCondition(eventData.getTriggerCondition(), playerCharacter)){
-                    Map<String, Object> cmd = new HashMap<>();
-                    cmd.put("name", eventData.getActionName());
-                    cmd.put("cmd", "chose_action");
                     Map<String, String> args = new HashMap<>();
                     args.put("event", eventData.getDataKey());
                     args.put("dbref", playerCharacter.getId());
-                    cmd.put("args", args);
-                    cmds.add(cmd);
+                    cmds.add(new EmbeddedCommand(eventData.getActionName(), "chose_action", args));
                 }
             }
         }

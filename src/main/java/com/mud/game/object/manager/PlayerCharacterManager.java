@@ -53,17 +53,18 @@ public class PlayerCharacterManager {
             CharacterModel playerTemplate = DbMapper.characterModelRepository.findCharacterModelByDataKey(playerTemplateKey);
             playerCharacter.setCustomerAttr(Attr2Map.transform(playerTemplate.getAttrs()));
             // 玩家信息的初始化设置
-            playerCharacter.setAfter_arm(0);
-            playerCharacter.setAfter_body(0);
-            playerCharacter.setAfter_bone(0);
-            playerCharacter.setAfter_smart(0);
-            playerCharacter.setAfter_looks(0);
-            playerCharacter.setAfter_lucky(0);
+            playerCharacter.setAfterArm(0);
+            playerCharacter.setAfterBody(0);
+            playerCharacter.setAfterBone(0);
+            playerCharacter.setAfterSmart(0);
+            playerCharacter.setAfterLooks(0);
+            playerCharacter.setAfterLucky(0);
+            playerCharacter.setTeacher("");
             //TODO 加载默认技能信息
-            playerCharacter.setSkills(new ArrayList<>());
+            playerCharacter.setSkills(new HashSet<>());
             playerCharacter.setEquipments(new ArrayList<>());
-            playerCharacter.setEquipped_equipments(new HashMap<>());
-            playerCharacter.setEquipped_skills(new HashMap<>());
+            playerCharacter.setEquippedEquipments(new HashMap<>());
+            playerCharacter.setEquippedSkills(new HashMap<>());
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             // 同时更新player信息
             Player player = MongoMapper.playerRepository.findPlayerById(playerId);
@@ -192,6 +193,8 @@ public class PlayerCharacterManager {
             }
         }
         location_info.put("npcs", npcs);
+        // 可以执行的命令
+        location_info.put("cmds", WorldRoomObjectManager.getAvailableCommands(location, playerCharacter));
         session.sendText(JsonResponse.JsonStringResponse(new LookAroundMessage(location_info)));
         session.sendText(JsonResponse.JsonStringResponse(new CurrentLocationMessage(new RoomInfo(location))));
     }
@@ -371,6 +374,27 @@ public class PlayerCharacterManager {
             return !self.getId().equals(other.getId());
         }
         return true;
+    }
+
+    public static void findTeacher(PlayerCharacter playerCharacter, String targetId, Session session) throws JsonProcessingException {
+        /*
+        * 玩家拜师
+        * 首先玩家必须没有师傅
+        * */
+        WorldNpcObject teacher = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(targetId);
+        if(playerCharacter.getTeacher().trim().equals("")){
+            if(teacher != null && teacher.getLocation().equals(playerCharacter.getLocation())){
+                // 师傅必须存在而且师傅必须和自己在一个房间
+                playerCharacter.setTeacher(teacher.getDataKey());
+                MongoMapper.playerCharacterRepository.save(playerCharacter);
+                PlayerCharacterManager.showStatus(playerCharacter, session);
+                session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_FINDED_TEACHER, teacher.getName(), teacher.getName(), teacher.getName()))));
+            }else{
+                session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.TEACHER_NOT_FOUND, teacher.getName()))));
+            }
+        }else{
+            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_MUST_LEAVE_OLD_TEACHER, teacher.getName()))));
+        }
     }
 
 

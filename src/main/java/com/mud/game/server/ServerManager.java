@@ -1,8 +1,6 @@
 package com.mud.game.server;
 
-import com.mud.game.handler.CommandSetHandler;
-import com.mud.game.handler.ConditionHandler;
-import com.mud.game.handler.SchoolHandler;
+import com.mud.game.handler.*;
 import com.mud.game.object.builder.UniqueWorldObjectBuilder;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.GameSetting;
@@ -25,6 +23,9 @@ public class ServerManager {
         CommandSetHandler.initAccountCommandSet();
         CommandSetHandler.initPlayerCharacterCommandSet();
         SchoolHandler.initSchoolHandler();
+        SkillTypeHandler.initSkillTypeHandler();
+        SkillFunctionHandler.initSkillFunctionSet();
+        RoomCommandHandler.initRoomCommandSet();
     }
 
     public static void stop(){

@@ -1,8 +1,10 @@
 package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.handler.RoomCommandHandler;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.*;
+import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.GamePosition;
 import com.mud.game.structs.ObjectMoveInfo;
 import com.mud.game.structs.SimplePlayerCharacter;
@@ -197,6 +199,17 @@ public class WorldRoomObjectManager {
                 GameEventManager.trigger(playerCharacter, event, session);
             }
         }
+    }
+
+
+    public static List<EmbeddedCommand> getAvailableCommands(WorldRoomObject room, PlayerCharacter playerCharacter){
+        /*房间内可以执行的命令*/
+        List<EmbeddedCommand> cmds = new ArrayList<>();
+        String commandKey = room.getHangUpCommand();
+        if(commandKey != null && RoomCommandHandler.roomCommandSet.containsKey(commandKey)){
+            cmds.add(RoomCommandHandler.roomCommandSet.get(commandKey));
+        }
+        return cmds;
     }
 
 }

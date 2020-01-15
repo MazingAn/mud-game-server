@@ -2,6 +2,7 @@ package com.mud.game.object.typeclass;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
 
+import java.util.Map;
 import java.util.Set;
 
 public class WorldNpcObject extends CommonCharacter {
@@ -17,6 +18,13 @@ public class WorldNpcObject extends CommonCharacter {
     // 称号信息
     public String title;
     public String schoolTitle;
+    // 能否教授技能
+    public boolean teacher;
+    // 是否是通过物品交换的方式教授技能
+    public boolean learnByObject;
+    // 收徒的条件
+    public String teachCondition;
+
 
     public Set<String> getEvents() {
         return events;
@@ -74,4 +82,27 @@ public class WorldNpcObject extends CommonCharacter {
         this.schoolTitle = schoolTitle;
     }
 
+    public boolean isTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(boolean teacher) {
+        this.teacher = teacher;
+    }
+
+    public boolean isLearnByObject() {
+        return learnByObject;
+    }
+
+    public void setLearnByObject(boolean learnByObject) {
+        this.learnByObject = learnByObject;
+    }
+
+    public String getTeachCondition() {
+        return teachCondition;
+    }
+
+    public void setTeachCondition(String teachCondition) {
+        this.teachCondition = teachCondition;
+    }
 }

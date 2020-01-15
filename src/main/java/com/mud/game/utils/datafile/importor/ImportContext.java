@@ -11,12 +11,11 @@ public class ImportContext {
         if ("csv".equals(type)) {
             ImportFromCsv importFromCsv = new ImportFromCsv(stream, tableName, repository);
             this.strategy = importFromCsv;
-        }else if ("xls".equals(type)){
-            // TODO: 增加对excel文件写入的支持策略
-            ;
+        }else if ("xlsx".equals(type)){
+            ImportFromExcel importFromExcel = new ImportFromExcel(stream, tableName, repository);
+            this.strategy = importFromExcel;
         }else if("xxx".equals(type)) {
             // TODO: 其他文件的支持策略
-            ;
         }
     }
 

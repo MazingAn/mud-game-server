@@ -3,6 +3,7 @@ package com.mud.game.object.manager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.CharAllMessage;
+import com.mud.game.messages.LoginSuccessMessage;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
@@ -33,7 +34,6 @@ public class PlayerManager {
             player.setPassword(password);
             player.setPlayerCharacters(new HashSet<>());
             MongoMapper.playerRepository.save(player);
-            session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USER_CREATE_SUCCESS)));
             return player;
         }
     }
@@ -54,7 +54,7 @@ public class PlayerManager {
                 String oldId = GameSessionService.getCallerIdBySessionId(session.id());
                 // 转交session给新的caller
                 GameSessionService.updateCallerId(oldId, playerId, CallerType.ACCOUNT);
-                session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USER_LOGIN_SUCCESS)));
+                session.sendText(JsonResponse.JsonStringResponse(new LoginSuccessMessage(player)));
                 return player;
             }
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.INVALID_PASSWORD_ERROR)));

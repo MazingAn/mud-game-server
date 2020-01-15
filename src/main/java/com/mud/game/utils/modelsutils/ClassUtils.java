@@ -54,15 +54,15 @@ public class ClassUtils {
 
 
     public static List<Object> getSortedValue(Class<?> clazz, Object instance) throws IllegalAccessException {
+        /*
+        *  @ 返回任意一个JAVA类的实例的所有属性值，并按照代序排序（从祖先到自己）
+        *  @ 与上面的函数逻辑一样
+        * */
         Class<?> superClass = clazz.getSuperclass();
-        // orders 是一个用于对每一代所包含的属性的分段，也是最终的排序依据
         List<Integer> orders = new ArrayList<>();
-        // 父类以及父类的父类一直到老祖宗所包含的所有属性，但不包含自己本身的属性
         List<Object> unsortedValues = new ArrayList<>();
-        // order是一个标志，他随着先祖的属性数量增加，但是orders里面只在每一代交替的时候才写入，作为分段
         int order = 0;
         orders.add(order);
-        // 递归获取父类的属性值
         while(superClass != null){
             for(Field field: superClass.getDeclaredFields()){
                 field.setAccessible(true);
@@ -73,23 +73,51 @@ public class ClassUtils {
             superClass = superClass.getSuperclass();
         }
 
-        // 获取自己的属性,自己的属性在排序的时候一定处于最后一部分
-        List<String> lastPartValues = new ArrayList<>();
+        List<Object> lastPartValues = new ArrayList<>();
         for(Field field : clazz.getDeclaredFields()){
-            lastPartValues.add(field.getName());
+            field.setAccessible(true);
+            lastPartValues.add(field.get(instance));
         }
 
-        // 最终我们想要的 从第一代到自己这一代的所有属性的有序（代序）集合
         List<Object> values = new ArrayList<>();
-        // 分段标志数组 orders 把一代代的先祖分开，从后往前追加即为有序
         for(int i = orders.size()-1; i > 0; i--){
             values.addAll(unsortedValues.subList(orders.get(i-1) , orders.get(i)));
         }
-        // 最后再把自己这一带本身的属性追加上去
         values.addAll(lastPartValues);
-
-        System.out.println(values);
-
         return values;
+    }
+
+
+    public static List<Field> getSortedFields(Class<?> clazz){
+        /*
+        *  获得代序排列的属性Field
+        * */
+        Class<?> superClass = clazz.getSuperclass();
+        List<Integer> orders = new ArrayList<>();
+        List<Field> unsortedFields = new ArrayList<>();
+        int order = 0;
+        orders.add(order);
+        while(superClass != null){
+            for(Field field: superClass.getDeclaredFields()){
+                field.setAccessible(true);
+                unsortedFields.add(field);
+                order++;
+            }
+            orders.add(order);
+            superClass = superClass.getSuperclass();
+        }
+
+        List<Field> lastPartFields = new ArrayList<>();
+        for(Field field : clazz.getDeclaredFields()){
+            field.setAccessible(true);
+            lastPartFields.add(field);
+        }
+
+        List<Field> fields = new ArrayList<>();
+        for(int i = orders.size()-1; i > 0; i--){
+            fields.addAll(unsortedFields.subList(orders.get(i-1) , orders.get(i)));
+        }
+        fields.addAll(lastPartFields);
+        return fields;
     }
 }

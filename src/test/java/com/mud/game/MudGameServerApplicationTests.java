@@ -1,9 +1,12 @@
 package com.mud.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.utils.jsonutils.Attr2Map;
+import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.regxutils.InputFieldCheck;
+import net.minidev.json.JSONUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -49,5 +52,11 @@ class MudGameServerApplicationTests {
 
     @Test
     void splitStr() {System.out.println(Arrays.toString("is_male(\"男\");kal(1,2,3,4)".split(";")));}
+
+    @Test
+    void jsonArrayStrToSet() throws JsonProcessingException {
+        String str = "[\"hello\", \"world\"]";
+        System.out.println(JsonStrConvetor.ToSet(str));
+    }
 
 }

@@ -4,12 +4,14 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"skillBook", "skill"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"skill_book", "skill"}))
 public class SkillBookBind {
 
     @Id
     private Long id;
+    @Column(name = "skill_book")
     private String skillBook;
+    @Column(name = "skill")
     private String skill;
 
     public Long getId() {

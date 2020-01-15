@@ -35,8 +35,12 @@ public class GameWorldManager {
          * @ 检查物体是不是应该显示给当前玩家
          * */
         WorldObject worldObject = (WorldObject) object;
-        if (!worldObject.getShowCondition().equals("".trim())) {
-            return ConditionHandler.matchCondition(worldObject.getShowCondition(), playerCharacter);
+        try{
+            if (!worldObject.getShowCondition().equals("".trim())) {
+                return ConditionHandler.matchCondition(worldObject.getShowCondition(), playerCharacter);
+            }
+        }catch(Exception e){
+            return true;
         }
         return true;
     }

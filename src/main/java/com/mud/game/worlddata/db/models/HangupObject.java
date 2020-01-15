@@ -3,7 +3,7 @@ package com.mud.game.worlddata.db.models;
 import javax.persistence.*;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"hangupType", "target"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"hangup_type", "target"}))
 public class HangupObject {
     /*
     游戏挂机时的奖励
@@ -12,7 +12,9 @@ public class HangupObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(name="hangup_type")
     private String hangupType;
+    @Column(name="target")
     private String target;
     private float odds;
     private String description;

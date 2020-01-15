@@ -1,5 +1,6 @@
 package com.mud.game.worlddata.db.mappings;
 
+import com.mud.game.worlddata.db.models.DefaultEquipments;
 import com.mud.game.worlddata.db.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,9 @@ public class DbMapper {
     public static SkillCategoryTypeRepository skillCategoryTypeRepository;
     public static SkillFunctionTypeRepository skillFunctionTypeRepository;
     public static SkillPositionRepository skillPositionRepository;
+    public static DefaultSkillsRepository defaultSkillsRepository;
+    public static DefaultEquipmentsRepository defaultEquipmentsRepository;
+    public static DefaultObjectsRepository defaultObjectsRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -197,6 +201,21 @@ public class DbMapper {
     @Autowired
     public void setSkillPositionRepository(SkillPositionRepository skillPositionRepository) {
         DbMapper.skillPositionRepository = skillPositionRepository;
+    }
+
+    @Autowired
+    public void setDefaultSkillsRepository(DefaultSkillsRepository defaultSkillsRepository) {
+        DbMapper.defaultSkillsRepository = defaultSkillsRepository;
+    }
+
+    @Autowired
+    public void setDefaultEquipmentsRepository(DefaultEquipmentsRepository defaultEquipmentsRepository) {
+        DbMapper.defaultEquipmentsRepository = defaultEquipmentsRepository;
+    }
+
+    @Autowired
+    public void setDefaultObjectsRepository(DefaultObjectsRepository defaultObjectsRepository) {
+        DbMapper.defaultObjectsRepository = defaultObjectsRepository;
     }
 }
 
