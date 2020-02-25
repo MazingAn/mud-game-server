@@ -15,6 +15,7 @@ public class SkillObject {
     private String name;
     private String description;
     private String message;
+    private String basicSkill;
     private int quality;
     private int level;
     private float cd;
@@ -26,13 +27,16 @@ public class SkillObject {
     private int expandMp;
     private Set<String> positions;
     private Set<String> subSKills;
-    private String weaponType;
+    private Set<String> weaponType;
     private String icon;
     private String owner;
     private String categoryType;
     private String functionType;
     private Set<String> equippedPositions;
     private Long cdFinishTime;
+    private int currentPotentialBalance; // 当前级别所充值的潜能
+    private int chargedPotential; // 累计充值的潜能
+
 
     public String getId() {
         return id;
@@ -72,6 +76,14 @@ public class SkillObject {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getBasicSkill() {
+        return basicSkill;
+    }
+
+    public void setBasicSkill(String basicSkill) {
+        this.basicSkill = basicSkill;
     }
 
     public int getQuality() {
@@ -154,11 +166,11 @@ public class SkillObject {
         this.subSKills = subSKills;
     }
 
-    public String getWeaponType() {
+    public Set<String> getWeaponType() {
         return weaponType;
     }
 
-    public void setWeaponType(String weaponType) {
+    public void setWeaponType(Set<String> weaponType) {
         this.weaponType = weaponType;
     }
 
@@ -216,5 +228,21 @@ public class SkillObject {
 
     public void setCdFinishTime(Long cdFinishTime) {
         this.cdFinishTime = cdFinishTime;
+    }
+
+    public int getCurrentPotentialBalance() {
+        return currentPotentialBalance;
+    }
+
+    public void setCurrentPotentialBalance(int currentPotentialBalance) {
+        this.currentPotentialBalance = currentPotentialBalance;
+    }
+
+    public int getChargedPotential() {
+        return chargedPotential;
+    }
+
+    public void setChargedPotential(int chargedPotential) {
+        this.chargedPotential = chargedPotential;
     }
 }

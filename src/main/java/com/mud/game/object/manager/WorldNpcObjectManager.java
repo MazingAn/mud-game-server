@@ -43,18 +43,19 @@ public class WorldNpcObjectManager {
         obj.setLucky(20);
         // 从玩家模版加载初始化信息
         CharacterModel npcModel = DbMapper.characterModelRepository.findCharacterModelByDataKey(template.getModel());
-        obj.setCustomerAttr(Attr2Map.transform(npcModel.getAttrs()));
+        obj.setCustomerAttr(Attr2Map.characterAttrTrans(npcModel.getAttrs()));
         obj.setTitle(template.getTitle());
         obj.setSchoolTitle(template.getSchoolTitle());
         obj.setSchool(template.getSchool());
         // 玩家信息的初始化设置
-        obj.setAfterArm(0);
-        obj.setAfterBody(0);
-        obj.setAfterBone(0);
-        obj.setAfterSmart(0);
-        obj.setAfterLooks(0);
-        obj.setAfterLucky(0);
+        obj.setAfter_arm(0);
+        obj.setAfter_body(0);
+        obj.setAfter_bone(0);
+        obj.setAfter_smart(0);
+        obj.setAfter_looks(0);
+        obj.setAfter_lucky(0);
         obj.setShowCondition(template.getShowCondition());
+        MongoMapper.worldNpcObjectRepository.save(obj);
         // 加载默认技能信息
         bindDefaultSkills(obj);
         // TODO 加载默认装备信息
@@ -65,6 +66,8 @@ public class WorldNpcObjectManager {
         // 把npc放到房间内
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(obj.getLocation());
         WorldRoomObjectManager.updateNpc(room, obj);
+        // 设置NPC的基本属性
+        resetHealth(obj);
         return obj;
     }
 
@@ -86,19 +89,21 @@ public class WorldNpcObjectManager {
         obj.setLucky(20);
         // 从玩家模版加载初始化信息
         CharacterModel npcTemplate = DbMapper.characterModelRepository.findCharacterModelByDataKey(template.getModel());
-        obj.setCustomerAttr(Attr2Map.transform(npcTemplate.getAttrs()));
+        obj.setCustomerAttr(Attr2Map.characterAttrTrans(npcTemplate.getAttrs()));
         obj.setTitle(template.getTitle());
         obj.setSchoolTitle(template.getSchoolTitle());
         obj.setSchool(template.getSchool());
         // 玩家信息的初始化设置
-        obj.setAfterArm(0);
-        obj.setAfterBody(0);
-        obj.setAfterBone(0);
-        obj.setAfterSmart(0);
-        obj.setAfterLooks(0);
-        obj.setAfterLucky(0);
+        obj.setAfter_arm(0);
+        obj.setAfter_body(0);
+        obj.setAfter_bone(0);
+        obj.setAfter_smart(0);
+        obj.setAfter_looks(0);
+        obj.setAfter_lucky(0);
         obj.setShowCondition(template.getShowCondition());
-        //加载默认技能信息，
+        // 删除旧的技能
+        clearSkills(obj);
+        //加载默认技能信息
         bindDefaultSkills(obj);
         // TODO 加载默认装备信息
         // 加载掉落信息
@@ -108,6 +113,15 @@ public class WorldNpcObjectManager {
         // 把npc放到房间内
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(obj.getLocation());
         WorldRoomObjectManager.updateNpc(room, obj);
+        // 设置NPC的基本属性
+        resetHealth(obj);
+    }
+
+    public static void resetHealth(WorldNpcObject obj) {
+        obj.setMax_hp(obj.getLimit_hp());
+        obj.setHp(obj.getMax_hp());
+        obj.setMax_mp(obj.getMax_mp());
+        obj.setMp(obj.getMp());
     }
 
     public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
@@ -178,43 +192,47 @@ public class WorldNpcObjectManager {
         * */
     }
 
+
+    private static void clearSkills(WorldNpcObject npc){
+        // 删除技能实体
+        MongoMapper.skillObjectRepository.removeSkillObjectsByOwner(npc.getId());
+        // 清空玩家技能
+        npc.setSkills(new HashSet<>());
+    }
+
     private static void bindDefaultSkills(WorldNpcObject npc) throws JsonProcessingException {
         /*
         * 为NPC绑定默认技能
         * 查询npc默认技能记录
         * 创建技能，把技能的id增加到npc的
         * */
-        // 首先把以前的技能删除掉
-        for(String oldSkillId : npc.getSkills()){
-            try {
-                MongoMapper.skillObjectRepository.deleteById(oldSkillId);
-            }catch (Exception e){
-                System.out.println("没有成功清除掉旧的技能！");
-            }
-        }
+        //删除所有旧的技能
+        clearSkills(npc);
         // 创建新技能并把新技能的id追加过来
         Set<String> skills = new HashSet<>();
         Iterable<DefaultSkills> defaultSkills = DbMapper.defaultSkillsRepository.findDefaultSkillsByTarget(npc.getDataKey());
         for(DefaultSkills skillRecord : defaultSkills){
-            SkillObject skillObject = SkillObjectManager.create(skillRecord.getSkillKey());
-            skillObject.setOwner(npc.getId());
-            skillObject.setLevel(skillRecord.getLevel());
-            // 设置技能的属性效果
-            SkillObjectManager.calculusEffects(npc, null, skillObject);
-            MongoMapper.skillObjectRepository.save(skillObject);
-            skills.add(skillObject.getId());
+            try{
+                SkillObject skillObject = SkillObjectManager.create(skillRecord.getSkillKey());
+                skillObject.setOwner(npc.getId());
+                skillObject.setLevel(skillRecord.getLevel());
+                // 设置技能的属性效果
+                SkillObjectManager.calculusEffects(npc, null, skillObject);
+                MongoMapper.skillObjectRepository.save(skillObject);
+                skills.add(skillObject.getId());
+                // 如果有子技能就绑定子技能
+                SkillObjectManager.bindSubSkills(skillObject, npc.getId(), skillRecord.getLevel());
+                // 如果默认技能是可装备的 则直接装备
+                if(skillRecord.isEquipped()){
+                    String position = skillRecord.getPosition();
+                    SkillObjectManager.equipTo(skillObject, npc, position, null);
+                }
+            }catch (Exception e){
+                System.out.println("角色 " + npc.getName() + " 在绑定技能 " + skillRecord.getSkillKey() + "的时候出现异常");
+            }
+
         }
         npc.setSkills(skills);
-    }
-
-    private static void useDefaultSkill(WorldNpcObject npc, Session session) throws JsonProcessingException {
-        /*
-        * npc使用默认的被动技能
-        * */
-        for(String skillId : npc.getSkills()) {
-            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
-            SkillObjectManager.equipTo(skillObject, npc, session);
-        }
     }
 
     public static void getCanTeachSkills(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
@@ -228,7 +246,7 @@ public class WorldNpcObjectManager {
         }
 
         // 遍历目标所有技能，然后把技能放到对应的容器里面去
-        if(npc.isTeacher()){
+        if(npc.isTeacher() || npc.isLearnByObject()){
             for(String skillId : npc.getSkills()){
                 SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
                 if(skillObject.isPassive()){

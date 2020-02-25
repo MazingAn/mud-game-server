@@ -7,12 +7,11 @@ public class ExportContext {
         if ("csv".equals(type)) {
             ExportToCsv exportToCsv = new ExportToCsv(data, tableName, outFilePath);
             this.strategy = exportToCsv;
-        }else if ("xls".equals(type)){
+        }else if ("xlsx".equals(type)){
             ExportToExcel exportToExcel = new ExportToExcel(data, tableName, outFilePath);
             this.strategy = exportToExcel;
         }else if("xxx".equals(type)) {
             // TODO: 其他文件导出的支持策略
-            ;
         }
     }
 

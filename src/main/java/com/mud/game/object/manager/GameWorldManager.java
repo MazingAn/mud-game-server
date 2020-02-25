@@ -15,12 +15,18 @@ import java.util.*;
 
 public class GameWorldManager {
     public static void onPlayerCharacterDisconnect(PlayerCharacter playerCharacter) throws JsonProcessingException {
+        /*
+        *  @玩家下线的时候要做的事情
+        *  @ 一、 从玩家所在房间移除玩家
+        * */
+
+        // 从玩家所在的房间移除玩家
         String name = playerCharacter.getName();
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
         Set<String> playersInRoom = room.getPlayers();
         playersInRoom.remove(playerCharacter.getId());
         room.setPlayers(playersInRoom);
-
+        // 给其他玩家广播玩家离开的消息
         Map<String, Object> offlineNotice = new HashMap<>();
         String offlineMessage = String.format(GameWords.PLAYER_OFFLINE, name);
         ObjectMoveInfo moveInfo = new ObjectMoveInfo("players", Arrays.asList(new SimplePlayerCharacter[]{new SimplePlayerCharacter(playerCharacter)}));

@@ -16,7 +16,7 @@ public class CommonObject extends BaseGameObject {
     //是否唯一(背包里面不得多于一组）
     private boolean isUnique;
     //最大堆叠
-    private String max_stack;
+    private int maxStack;
     //能否销毁
     private boolean canDiscard;
     //能否丢弃
@@ -50,12 +50,12 @@ public class CommonObject extends BaseGameObject {
         isUnique = unique;
     }
 
-    public String getMax_stack() {
-        return max_stack;
+    public int getMaxStack() {
+        return maxStack;
     }
 
-    public void setMax_stack(String max_stack) {
-        this.max_stack = max_stack;
+    public void setMaxStack(int maxStack) {
+        this.maxStack = maxStack;
     }
 
     public boolean isCanDiscard() {

@@ -25,6 +25,7 @@ public class ServerManager {
         SchoolHandler.initSchoolHandler();
         SkillTypeHandler.initSkillTypeHandler();
         SkillFunctionHandler.initSkillFunctionSet();
+        SkillPositionHandler.initSkillPositionHandler();
         RoomCommandHandler.initRoomCommandSet();
     }
 

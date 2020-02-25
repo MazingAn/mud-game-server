@@ -1,6 +1,7 @@
 package com.mud.game.object.typeclass;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.structs.PlayerCharacterState;
 import com.mud.game.structs.SimplePlayerCharacter;
 
 import java.util.HashMap;
@@ -45,12 +46,18 @@ public class PlayerCharacter extends CommonCharacter {
     public Map<String, SimplePlayerCharacter> friends;
     // 玩家接受到的好友请求列表
     public Map<String, SimplePlayerCharacter> friendRequests;
+    // 玩家通过物品或付费学习技能的记录
+    public Map<String, Integer> learnByObjectRecord;
+    // 玩家的游戏状态
+    public PlayerCharacterState state;
 
     public PlayerCharacter() {
         this.revealedMap = new HashMap<>();
         this.unlockedExit = new HashSet<>();
         this.friends = new HashMap<>();
         this.friendRequests = new HashMap<>();
+        this.learnByObjectRecord = new HashMap<>();
+        this.state = PlayerCharacterState.STATE_NORMAL;
     }
 
     public String getPlayer() {
@@ -287,5 +294,21 @@ public class PlayerCharacter extends CommonCharacter {
 
     public void setFriendRequests(Map<String, SimplePlayerCharacter> friendRequests) {
         this.friendRequests = friendRequests;
+    }
+
+    public Map<String, Integer> getLearnByObjectRecord() {
+        return learnByObjectRecord;
+    }
+
+    public void setLearnByObjectRecord(Map<String, Integer> learnByObjectRecord) {
+        this.learnByObjectRecord = learnByObjectRecord;
+    }
+
+    public PlayerCharacterState getState() {
+        return state;
+    }
+
+    public void setState(PlayerCharacterState state) {
+        this.state = state;
     }
 }

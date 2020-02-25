@@ -21,6 +21,10 @@ public class EquipmentObject extends CommonObject {
     private Map<String, Float> attrs;
     //镶嵌的宝石
     private List<GemObject> gems;
+    // 装备所有者Id
+    private String owner;
+    // 是否被装备
+    private boolean equipped;
 
     public EquipmentObject() {
     }
@@ -79,5 +83,21 @@ public class EquipmentObject extends CommonObject {
 
     public void setGems(List<GemObject> gems) {
         this.gems = gems;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public boolean isEquipped() {
+        return equipped;
+    }
+
+    public void setEquipped(boolean equipped) {
+        this.equipped = equipped;
     }
 }

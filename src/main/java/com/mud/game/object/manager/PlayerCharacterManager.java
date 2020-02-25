@@ -1,10 +1,14 @@
 package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mongodb.Mongo;
+import com.mud.game.handler.ConditionHandler;
+import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
+import com.mud.game.object.algorithm.CommonAlgorithm;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.structs.*;
@@ -14,11 +18,13 @@ import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.utils.resultutils.UserOptionCode;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.CharacterModel;
+import com.mud.game.worlddata.db.models.Skill;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import com.mud.game.worldrun.db.repository.SkillObjectRepository;
 import org.json.JSONException;
 import org.yeauty.pojo.Session;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class PlayerCharacterManager {
@@ -51,20 +57,28 @@ public class PlayerCharacterManager {
             // 从玩家模版加载初始化信息
             String playerTemplateKey = ServerManager.gameSetting.getDefaultPlayerTemplate();
             CharacterModel playerTemplate = DbMapper.characterModelRepository.findCharacterModelByDataKey(playerTemplateKey);
-            playerCharacter.setCustomerAttr(Attr2Map.transform(playerTemplate.getAttrs()));
+            playerCharacter.setCustomerAttr(Attr2Map.characterAttrTrans(playerTemplate.getAttrs()));
+            playerCharacter.setHp(playerTemplate.getHp());
+            playerCharacter.setMax_hp(playerTemplate.getHp());
+            playerCharacter.setLimit_hp(playerTemplate.getHp());
+            playerCharacter.setMp(playerTemplate.getMp());
+            playerCharacter.setMax_mp(playerTemplate.getMp());
+            playerCharacter.setLimit_mp(playerTemplate.getMp());
             // 玩家信息的初始化设置
-            playerCharacter.setAfterArm(0);
-            playerCharacter.setAfterBody(0);
-            playerCharacter.setAfterBone(0);
-            playerCharacter.setAfterSmart(0);
-            playerCharacter.setAfterLooks(0);
-            playerCharacter.setAfterLucky(0);
+            playerCharacter.setAfter_arm(0);
+            playerCharacter.setAfter_body(0);
+            playerCharacter.setAfter_bone(0);
+            playerCharacter.setAfter_looks(0);
+            playerCharacter.setAfter_lucky(0);
+            playerCharacter.setAfter_smart(0);
             playerCharacter.setTeacher("");
-            //TODO 加载默认技能信息
+            playerCharacter.setTili(1000);
             playerCharacter.setSkills(new HashSet<>());
             playerCharacter.setEquipments(new ArrayList<>());
             playerCharacter.setEquippedEquipments(new HashMap<>());
             playerCharacter.setEquippedSkills(new HashMap<>());
+            // 根据先天属性计算角色的初始属性
+            CommonAlgorithm.resetInbornAttrs(playerCharacter);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             // 同时更新player信息
             Player player = MongoMapper.playerRepository.findPlayerById(playerId);
@@ -75,7 +89,6 @@ public class PlayerCharacterManager {
             return playerCharacter;
         }
     }
-
 
     public static void puppet(String playerCharacterId, Session session) throws JsonProcessingException {
         /*
@@ -106,7 +119,11 @@ public class PlayerCharacterManager {
             onlineMessage.put("msg", String.format(GameWords.PLAYER_ONLINE, playerCharacter.getName()));
             WorldRoomObjectManager.broadcast(location, onlineMessage, playerCharacterId);
             // 发送玩家的属性信息
-             PlayerCharacterManager.showStatus(playerCharacter, session);
+            PlayerCharacterManager.showStatus(playerCharacter, session);
+            // 发送玩家的技能信息
+            PlayerCharacterManager.returnAllSkills(playerCharacter, session);
+            // 发送玩家当前的状态
+            session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
         }catch (Exception e){
             e.printStackTrace();
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage("进入游戏失败，请稍后重试")));
@@ -223,7 +240,6 @@ public class PlayerCharacterManager {
         }
     }
 
-
     public static void moveTo(PlayerCharacter playerCharacter, String roomKey, Session session) throws JsonProcessingException, JSONException {
         /*
         * @ 玩家移动到一个新的房间
@@ -254,7 +270,6 @@ public class PlayerCharacterManager {
         //事件监测
         WorldRoomObjectManager.triggerArriveAction(newRoom, playerCharacter, session);
     }
-
 
     public static void revealMap(PlayerCharacter playerCharacter, WorldRoomObject location, Session session, boolean forceUpdateMap) throws JsonProcessingException {
         /* ****************************************************************************
@@ -326,7 +341,6 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new RevealedMapMessage(allRevealedMapInArea)));
     }
 
-
     public static void showStatus(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
         /*
         * @ 显示玩家的状态，包含玩家所有的属性
@@ -346,7 +360,6 @@ public class PlayerCharacterManager {
         lookMessage.put("look_obj", appearance);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
-
 
     private static List<Map<String, Object>> getAvailableCommands(PlayerCharacter caller, PlayerCharacter target){
         /*
@@ -397,7 +410,6 @@ public class PlayerCharacterManager {
         }
     }
 
-
     public static void requestFriend(PlayerCharacter playerCharacter, String targetId, Session session) throws JsonProcessingException {
         /*
         * @ 玩家通过另一个玩家的ID发出好友申请
@@ -421,7 +433,6 @@ public class PlayerCharacterManager {
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_REQUEST_FRIEND, target.getName()))));
         }
     }
-
 
     public static void acceptFriendRequest(PlayerCharacter playerCharacter, String friendId, Session session) throws JsonProcessingException {
         /*
@@ -458,7 +469,6 @@ public class PlayerCharacterManager {
         friendsSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_BE_APPLIED_FRIEND_REQUEST, playerCharacter.getName()))));
     }
 
-
     public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String targetId, String message, Session selfSession) throws JsonProcessingException {
         /*
         * @发送消息给其他玩家
@@ -471,6 +481,195 @@ public class PlayerCharacterManager {
         }else{
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("对方可能不在线")));
         }
+    }
+
+    public static Runnable learnSkillFromTeacher(PlayerCharacter playerCharacter, String skillKey, String teacherId, Session session) throws JsonProcessingException {
+        /*
+        * @ 玩家从师傅那里学习技能
+        * @ 这个技能本身是一个定时器
+        * @ 第一步： 参数检查： 检查传入的teacherId是否是与玩家的数据一致
+        * @ 第二步： 参数检查： 检查是否有没有这个技能，这个技能能不能教授给徒弟
+        * @ 第三步： 条件判定： 检查玩家是否满足学习这个技能的条件;
+        * @ 第四步： 潜能检查： 检查玩家是不是足够的潜能来学习技能
+        * @ 上述四层检查全都通过，则返回一个runnable放在定时任务里面运行，并在runnable里面继续检查，如果不满足则跳出runnable
+        * */
+        WorldNpcObject teacher = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(teacherId);
+        Skill skillTemplate = DbMapper.skillRepository.findSkillByDataKey(skillKey);
+        if(!teacher.getDataKey().equals(playerCharacter.getTeacher())){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.ERROR_TEACHER, teacher.getName()))));
+            return null;
+        }
+        else if(!GameCharacterManager.characterHasSkill(teacher, skillKey)){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.TEACHER_HAS_NO_SKILL, teacher.getName()))));
+            return null;
+        }
+        else if(!ConditionHandler.matchCondition(skillTemplate.getLearnCondition(), playerCharacter)){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.CAN_NOT_LEARN_SKILL, teacher.getName()))));
+            return null;
+        }
+        else if(playerCharacter.getPotential() < 100){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_ENOUGH_POTENTIAL)));
+            return null;
+        }else{
+            playerCharacter.setState(PlayerCharacterState.STATE_LEARN_SKILL);
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+            session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
+                        PlayerCharacterManager.learnSkill(playerCharacter, skillKey, updatedSession, teacher);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            return runnable;
+        }
+
+    }
+
+    public static Runnable learnSkillByObject(PlayerCharacter playerCharacter, String skillKey, String teacherId, Session session) throws JsonProcessingException {
+        /*
+         * @ 玩家通过物品充值潜能学习技能
+         * @ 这个技能本身是一个定时器
+         * @ 第一步： 检查玩家是在当前NPC处的潜能是否足够
+         * @ 第二步： 检查NP技能信息： 检查是否有没有这个技能，这个技能能不能教授给徒弟
+         * @ 第三步： 条件判定： 检查玩家是否满足学习这个技能的条件;
+         * @ 第四步： 潜能检查： 检查玩家是不是足够的潜能来学习技能（这个潜能包括玩家自身的潜能和充值的潜能）
+         * @ 上述四层检查全都通过，则返回一个runnable放在定时任务里面运行，并在runnable里面继续检查，如果不满足则跳出runnable
+         * */
+        WorldNpcObject teacher = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(teacherId);
+        Skill skillTemplate = DbMapper.skillRepository.findSkillByDataKey(skillKey);
+        // 检查NPC学习余额是否足够
+        if(!playerCharacter.getLearnByObjectRecord().containsKey(teacher.getName()) || (playerCharacter.getLearnByObjectRecord().get(teacher.getName()) <= 0)){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NO_ENOUGH_POTENTIAL_BALANCE, teacher.getName()))));
+            return null;
+        }
+        // 检查NPC是否有这个技能
+        else if(!GameCharacterManager.characterHasSkill(teacher, skillKey)){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.TEACHER_HAS_NO_SKILL, teacher.getName()))));
+            return null;
+        }
+        // 检查玩家能否学习这个技能
+        else if(!ConditionHandler.matchCondition(skillTemplate.getLearnCondition(), playerCharacter)){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.CAN_NOT_LEARN_SKILL, teacher.getName()))));
+            return null;
+        }
+        // 检查玩家自身潜能是否还足够(如果是知识类技能的学习则不检查这一项)
+        else if(playerCharacter.getPotential() <= 0 && !skillTemplate.getCategoryType().equals("SCT_ZHISHI")){
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_ENOUGH_POTENTIAL)));
+            return null;
+        }else{
+            playerCharacter.setState(PlayerCharacterState.STATE_LEARN_SKILL);
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+            session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
+                        // 充值的潜能点是否用完检查，如果已经用完则停止学习
+                        if((playerCharacter.getLearnByObjectRecord().get(teacher.getName()) <= 0)){
+                            updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NO_ENOUGH_POTENTIAL_BALANCE, teacher.getName()))));
+                            PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                        }else{
+                            PlayerCharacterManager.learnSkill(playerCharacter, skillKey, updatedSession, teacher);
+                        }
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            return runnable;
+        }
+    }
+
+    public static SkillObject learnSkill(PlayerCharacter playerCharacter, String skillKey, Session updatedSession, Object learnTarget) throws JsonProcessingException {
+        /*
+        * @ 玩家学习技能的逻辑实现
+        * @ 如果玩家已经有了这个技能，则不需要新建，进行升级操作
+        * @ 如果玩家没有这个技能，则进行新建工作
+        * @ 返回玩家学习的技能
+        * */
+        Skill template = DbMapper.skillRepository.findSkillByDataKey(skillKey);
+        SkillObject skillObject = GameCharacterManager.getCharacterSkillByDataKey(playerCharacter, template.getDataKey());
+        if(skillObject != null){
+            // 给技能充能
+            SkillObjectManager.chargeSkill(skillObject, playerCharacter, updatedSession, learnTarget);
+        }else{
+            // 没有学会技能 新建技能
+            skillObject = SkillObjectManager.create(skillKey);
+            skillObject.setOwner(playerCharacter.getId());
+            skillObject.setLevel(1);
+            SkillObjectManager.calculusEffects(playerCharacter, null, skillObject);
+            MongoMapper.skillObjectRepository.save(skillObject);
+            playerCharacter.getSkills().add(skillObject.getId());
+            // 如果是知识类技能，默认装备并生效
+            if(skillObject.getCategoryType().equals("SCT_ZHISHI")){
+                skillObject.getEquippedPositions().add("zhishi");
+                if(!playerCharacter.getEquippedSkills().containsKey("zhishi")){
+                   playerCharacter.getEquippedSkills().put("zhishi", new HashSet<>());
+                }
+                playerCharacter.getEquippedSkills().get("zhishi").add(skillObject.getId());
+                MongoMapper.skillObjectRepository.save(skillObject);
+            }
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+            updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.LEARNED_SKILL,  skillObject.getName()))));
+        }
+
+        returnAllSkills(playerCharacter, updatedSession);
+        showStatus(playerCharacter, updatedSession);
+        return skillObject;
+    }
+
+    public static void returnAllSkills(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+        /*
+        * @ 获得玩家所有技能
+        * */
+
+        Map<String, Map<String, SimpleSkill>> skills = new HashMap<>();
+        // 玩家技能分类
+        for(String categoryTypeKey : SkillTypeHandler.categoryTypeMapping.keySet()){
+            skills.put(categoryTypeKey, new HashMap<>());
+        }
+        // 挨个加入玩家技能
+        for(String skillId : playerCharacter.getSkills()){
+            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
+            if(skillObject.isPassive()){
+                SimpleSkill skillInfo = new SimpleSkill(skillObject);
+                // 获得技能可以执行的命令
+                skillInfo.setCmds(SkillObjectManager.getAvailableCommands(skillObject, playerCharacter));
+                skills.get(skillObject.getCategoryType()).put(skillObject.getDataKey(), skillInfo);
+            }
+        }
+        session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterSkills(skills)));
+    }
+
+    public static void getSkillsByPosition(PlayerCharacter playerCharacter, String position, Session session) throws JsonProcessingException {
+        /*
+         * @ 获得玩家某一个位置的所有技能的key，分为已经装备的和没有装备的
+         * @ 最终返回给客户端的数据包含两个字符串集合，used 和 can_replace
+         * */
+
+        Map<String, Set<String>> skillsInPosition = new HashMap<>();
+        Set<String> usedSkills = new HashSet<>();
+        Set<String> canReplacedSkills = new HashSet<>();
+        for(String skillId : playerCharacter.getSkills()){
+            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
+            // 只取得当前位置可用的技能
+            if(skillObject.isPassive() && skillObject.getPositions().contains(position)){
+                if(skillObject.getEquippedPositions().contains(position)){
+                    //该技能装备到了这个位置
+                    usedSkills.add(skillObject.getDataKey());
+                }else{
+                    //该技能可以装备到这个位置，但是当前没有装备
+                    canReplacedSkills.add(skillObject.getDataKey());
+                }
+            }
+        }
+        session.sendText(JsonResponse.JsonStringResponse(new PositionSkillsMessage(usedSkills, canReplacedSkills)));
     }
 
 }

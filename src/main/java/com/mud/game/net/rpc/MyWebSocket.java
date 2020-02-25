@@ -24,6 +24,9 @@ public class MyWebSocket {
 
     @OnOpen
     public void onOpen(Session session, HttpHeaders headers, ParameterMap parameterMap) throws Exception {
+        /*
+        *
+        * */
         System.out.println("New Connection!");
         // 第一次打开连接,保存session，并设置类型为匿名者
         String randomId = UUID.randomUUID().toString();
@@ -33,8 +36,12 @@ public class MyWebSocket {
 
     @OnClose
     public void onClose(Session session) throws IOException {
+        /*
+        * @ 在客户端与服务器断开连接的时候调用
+        * */
         System.out.println("one connection closed");
         try{
+            // 在session字典中查找当前session对应的游戏角色，并调用玩家离开游戏时应有的操作
             if(GameSessionService.sessionId2CallerIdMap.containsKey(session.id())){
                 String callerId = GameSessionService.getCallerIdBySessionId(session.id());
                 if(GameSessionService.getCallerTypeByCallerId(callerId).equals(CallerType.CHARACTER)){
@@ -57,7 +64,7 @@ public class MyWebSocket {
     @OnMessage
     public void onMessage(Session session, String message) throws JSONException, JsonProcessingException {
         if (message.length() < 1){
-            ;//心跳包
+            //心跳包
         }else {
             // 根据当前session的id拿到对应的调用者，然后执行相应命令
             String callerId = GameSessionService.getCallerIdBySessionId(session.id());

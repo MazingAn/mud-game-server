@@ -84,6 +84,10 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.defaultEquipmentsRepository);
             case "DefaultObjects":
                 return new Importor(stream, fileName, DbMapper.defaultObjectsRepository);
+            case "NormalObject":
+                return new Importor(stream, fileName, DbMapper.normalObjectRepository);
+            case "NpcLearnObjectList":
+                return new Importor(stream, fileName, DbMapper.npcLearnObjectListRepository);
             default:
                 return null;
         }

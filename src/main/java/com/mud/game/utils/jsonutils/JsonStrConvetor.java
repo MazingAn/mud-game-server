@@ -9,11 +9,20 @@ import java.util.Set;
 public class JsonStrConvetor {
 
     public static Set ToSet(String jsonStr) throws JsonProcessingException {
-        if(jsonStr.trim().equals("")){
-            return new HashSet<>();
+
+        Set<?> result = new HashSet<>();
+        if(jsonStr.trim().equals("") ){
+            return result;
         }
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(jsonStr, Set.class);
+
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+            result =  mapper.readValue(jsonStr, Set.class);
+        }catch (Exception e){
+            System.out.println("Json解析为Set失败， 源字符串为 " + jsonStr);
+        }
+
+        return result;
     }
 
 }

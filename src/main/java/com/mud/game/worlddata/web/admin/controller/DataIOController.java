@@ -59,6 +59,7 @@ public class DataIOController {
                 if (!dest.exists()) dest.mkdirs();
                 file.transferTo(dest);
             } catch (Exception e) {
+                System.out.println(fileName + "在上传的时候发生错误！");
                 e.printStackTrace();
                 return ResponseEntity.ok(-1);
             }

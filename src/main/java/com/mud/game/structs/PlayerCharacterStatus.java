@@ -47,12 +47,12 @@ public class PlayerCharacterStatus {
         status.put("smart", new SimpleStatus("smart", "先天悟性", playerCharacter.getSmart(), ++order));
         status.put("looks", new SimpleStatus("looks", "先天容貌", playerCharacter.getLooks(), ++order));
         status.put("lucky", new SimpleStatus("lucky", "先天福缘", playerCharacter.getLucky(), ++order));
-        status.put("after_arm", new SimpleStatus("after_arm", "后天膂力", playerCharacter.getAfterArm(), ++order));
-        status.put("after_body", new SimpleStatus("after_body", "后天身法", playerCharacter.getAfterBody(), ++order));
-        status.put("after_bone", new SimpleStatus("after_bone", "后天根骨", playerCharacter.getAfterBone(), ++order));
-        status.put("after_smart", new SimpleStatus("after_smart", "后天悟性", playerCharacter.getAfterSmart(), ++order));
-        status.put("after_lucky", new SimpleStatus("after_lucky", "后天福缘", playerCharacter.getAfterLucky(), ++order));
-        status.put("after_looks", new SimpleStatus("after_looks", "后天容貌", playerCharacter.getAfterLooks(), ++order));
+        status.put("after_arm", new SimpleStatus("after_arm", "后天膂力", playerCharacter.getAfter_arm(), ++order));
+        status.put("after_body", new SimpleStatus("after_body", "后天身法", playerCharacter.getAfter_body(), ++order));
+        status.put("after_bone", new SimpleStatus("after_bone", "后天根骨", playerCharacter.getAfter_bone(), ++order));
+        status.put("after_smart", new SimpleStatus("after_smart", "后天悟性", playerCharacter.getAfter_smart(), ++order));
+        status.put("after_lucky", new SimpleStatus("after_lucky", "后天福缘", playerCharacter.getAfter_lucky(), ++order));
+        status.put("after_looks", new SimpleStatus("after_looks", "后天容貌", playerCharacter.getAfter_looks(), ++order));
         status.put("potential", new SimpleStatus("potential", "潜能", playerCharacter.getPotential(), ++order));
         status.put("energy", new SimpleStatus("energy", "精力", playerCharacter.getEnnergy(), ++order));
         status.put("school", new SimpleStatus("school", "门派", getSchoolDisplay(playerCharacter.getSchool()), ++order));

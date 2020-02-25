@@ -35,6 +35,7 @@ public class ImportFromExcel extends ImportStrategy {
             repository.deleteAll();
             repository.saveAll(data);
         }catch (Exception e){
+            System.out.println(tableName);
             e.printStackTrace();
         }
     }

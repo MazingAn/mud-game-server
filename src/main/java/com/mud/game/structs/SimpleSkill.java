@@ -21,7 +21,7 @@ public class SimpleSkill {
     private boolean is_equipped;
     private float action_time;
     private Set<SkillEffect> effects;
-    private String weapon_types;
+    private Set<String> weapons;
     private float cd_remain;
     private List<EmbeddedCommand> cmds;
 
@@ -35,7 +35,7 @@ public class SimpleSkill {
         this.function_type = skillObject.getFunctionType();
         this.action_time = skillObject.getActionTime();
         this.effects = skillObject.getEffects();
-        this.weapon_types = skillObject.getWeaponType();
+        this.weapons = skillObject.getWeaponType();
         this.category_type = skillObject.getCategoryType();
         this.cd_remain = SkillObjectManager.calculusRemainCd(skillObject);
         this.cmds = new ArrayList<>();
@@ -113,12 +113,12 @@ public class SimpleSkill {
         this.effects = effects;
     }
 
-    public String getWeapon_types() {
-        return weapon_types;
+    public Set<String> getWeapons() {
+        return weapons;
     }
 
-    public void setWeapon_types(String weapon_types) {
-        this.weapon_types = weapon_types;
+    public void setWeapons(Set<String> weapons) {
+        this.weapons = weapons;
     }
 
     public String getIcon() {

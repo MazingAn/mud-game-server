@@ -26,8 +26,6 @@ public class CallerDelegate {
     public void executeCommand(String commandKey, JSONObject args) throws JsonProcessingException {
         Session session = GameSessionService.getSessionByCallerId(callerId);
         CallerType callerType = GameSessionService.getCallerTypeByCallerId(callerId);
-        System.out.println(session);
-        System.out.println(callerType);
         switch (callerType){
             case ANONYMOUS:
                 if(CommandSetHandler.unLoginCommandSet.containsKey(commandKey)){

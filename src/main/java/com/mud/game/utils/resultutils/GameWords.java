@@ -6,6 +6,9 @@ public class GameWords {
     public static final String PLAYER_OFFLINE = "{r%s{n离开了游戏";
     public static final String PLAYER_ONLINE = "{r%s{n进入了游戏";
 
+    // 玩家状态
+    public static final String PLAYER_DIED = "{y你已经死了！{n";
+
     // 好友结交过程
     public static final String PLAYER_REPEAT_REQUEST_FRIEND = "{r%s{n已经知道了你的结交之心，还是暂时不要打扰他为好！";  //重复发送好友请求
     public static final String PLAYER_REQUEST_FRIEND = "你拱起双手走了上去，想要和{r%s{n结交一番！"; //发送好友请求成功
@@ -20,7 +23,42 @@ public class GameWords {
     public static  final String PLAYER_MUST_LEAVE_OLD_TEACHER = "{r%s{n对你说:\"阁下既然已经有了师门，又何必来这里打趣本人？\"";
     public static  final String TEACHER_NOT_FOUND = "好像并没有找到{r%s{n这个人，你到底要拜谁为师？";
     public static  final String PLAYER_FINDED_TEACHER = "你走上前去对{r%s{n行了拜师礼，并奉上了{c一盏茶{n？{{ %s满地的对你点了点头：\"从今以后，你就是我{b%s{n的{c徒弟{n了\"";
+    public static final String NPC_NOT_TEACH = "{r%s{n没有什么惊人的才能，也不收徒！" ;
 
     // 学习技能
-    public static final String NPC_NOT_TEACH = "{r%s{n没有什么惊人的才能，也不收徒！" ;
+    public static final String ERROR_TEACHER = "{g%s{n脸疑惑的问到：\"在下好像并不记得有你这么个徒弟，何来请教一说\"";
+    public static final String TEACHER_HAS_NO_SKILL = "{g%s{n有点生气的对你说:\"这门功法为师谁也不传！\"";
+    public static final String CAN_NOT_LEARN_SKILL = "{g%s{n不紧不慢的对你说:\"以你当前的{g功力{n，这门功{r暂时还修习不了{n！\"";
+    public static final String NO_ENOUGH_POTENTIAL = "你的{g潜能{n已经用尽了！";
+    public static final String NO_ENOUGH_POTENTIAL_BALANCE = "你在{g%s{n这里换取的潜能已经耗尽";
+    public static final String SKILL_LEVEL_UP = "你的{g%s{n等级提升到了{g%s{n级。";
+    public static final String LEARNED_SKILL = "你学会了技能{g%s{n。";
+
+    // 挂机
+    public static final String ROOM_CANNOT_MINING = "你无法在当前位置挖矿，请前往矿厂";
+    public static final String NO_MINING_SKILL = "你还没有学会{g挖矿{n, 先找个{y矿工{n请教请教！";
+    public static final String NO_FISHING_SKILL = "你还没有学会{g钓鱼{n, 先找个{y垂钓者{n请教请教！";
+    public static final String NO_COLLECT_SKILL = "你还没有学会{g采药{n, 先找个{y采药人{n请教请教！";
+    public static final String PLAYER_GET_RANDOM_POTENTIAL = "你获得%s经验，%s点潜能";
+    public static final String NO_ENOUGH_TILI = "你的{g体力{n已经透支，无法继续挂机";
+    public static final String START_MINING = "你挥着铁镐开始认真挖矿。";
+    public static final String STOP_MINING = "你擦了擦额头上的汗，收起铁镐停止了挖掘。";
+    public static final String START_COLLECT = "你一头钻进树林，开始认真寻找药材。";
+    public static final String STOP_COLLECT = "你擦了擦额头上的汗，停止了寻找。";
+    public static final String START_FISHING = "你拿起手中鱼竿，挂上鱼饵，洒入水中，开始耐心垂钓。";
+    public static final String STOP_FISHING = "你收起手中的鱼竿，停止了垂钓。";
+    public static final String START_MEDITATE = "你坐下来运气用功，一股内息开始在体内流动。";
+    public static final String STOP_MEDITATE = "你运功完毕，深深吸了口气，站了起来。";
+    public static final String START_CURE = "你坐下来运气用功，催动内力试图修复伤势。";
+    public static final String STOP_CURE = "{y你疗伤完毕，深深吸了口气，脸色看起来好了很多。{n";
+    public static final String STOP_LEARN_SKILL = "{y你深吸一口气，暂时先放弃了对武学的探索。{n";
+    public static final String PLAYER_DO_OTHER_THING = "你正在{g%s{n,没有多余的功夫来{r%s{n";
+    public static final String ALREADY_DOING = "{y你已经在%s了{n";
+    public static final String HANGUP_PLACE_ERROR = "你不能在这里{r%s{n";
+
+    // 装备技能
+    public static final String NOT_EQUIP_SKILL = "你并没有装备这个技能";
+
+    // 装备装备
+    public static final String EQUIPMENT_ALREADY_EQUIPPED = "{c%s{n已经被装备。";
 }

@@ -35,11 +35,12 @@ public class IncrementsAttr extends BasePassiveSkillStatement {
         SkillObject skillObject = getSkillObject();
         int skillLevel = skillObject.getLevel();
         String attrKey = args[0];
-        float value = Float.parseFloat(args[1]);
+        float scale = Float.parseFloat(args[1]);
         String position = args[2];
         Set<SkillEffect> effects = skillObject.getEffects();
         effects.removeIf(skillEffect -> skillEffect.getPosition().equals(position) && skillEffect.getAttrKey().equals(attrKey));
-        effects.add(new SkillEffect(position, attrKey, value * skillLevel));
+        effects.add(new SkillEffect(position, attrKey, (int)(skillLevel / scale)));
+        skillObject.setEffects(effects);
         MongoMapper.skillObjectRepository.save(skillObject);
     }
 }

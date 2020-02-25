@@ -13,6 +13,7 @@ public class Skill {
     private String dataKey;
     private String typeClass;
     private String name;
+    private String basicSkill;
     @Column(length = 2048)
     private String description;
     private String school;
@@ -65,6 +66,14 @@ public class Skill {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBasicSkill() {
+        return basicSkill;
+    }
+
+    public void setBasicSkill(String basicSkill) {
+        this.basicSkill = basicSkill;
     }
 
     public String getDescription() {

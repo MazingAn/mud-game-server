@@ -105,4 +105,5 @@ public class WorldNpcObject extends CommonCharacter {
     public void setTeachCondition(String teachCondition) {
         this.teachCondition = teachCondition;
     }
+
 }

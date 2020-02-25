@@ -81,7 +81,10 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.defaultEquipmentsRepository, outFilePath, tableName, type);
             case "DefaultObjects":
                 return new Exportor(DbMapper.defaultObjectsRepository, outFilePath, tableName, type);
-
+            case "NormalObject":
+                return new Exportor(DbMapper.normalObjectRepository, outFilePath, tableName, type);
+            case "NpcLearnObjectList":
+                return new Exportor(DbMapper.npcLearnObjectListRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

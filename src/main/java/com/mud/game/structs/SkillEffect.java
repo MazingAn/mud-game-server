@@ -1,5 +1,9 @@
 package com.mud.game.structs;
 
+import org.w3c.dom.Attr;
+
+import java.util.Objects;
+
 public class SkillEffect {
     private String position;
     private String attrKey;
