@@ -1,6 +1,6 @@
 package com.mud.game.structs;
 
-public enum PlayerCharacterState {
+public enum CharacterState {
     STATE_NORMAL, //常规状态
     STATE_MEDITATE, //打坐状态
     STATE_CURE, //疗伤状态
@@ -12,4 +12,5 @@ public enum PlayerCharacterState {
     STATE_DRIVING, //驾驶状态
     STATE_VERTIGO, //眩晕状态
     STATE_BUSY, //忙乱状态
+    STATE_COMBAT, //战斗状态
 }

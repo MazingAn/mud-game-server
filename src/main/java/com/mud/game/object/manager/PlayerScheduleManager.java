@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.PlayerCharacterState;
-import com.mud.game.structs.PlayerCharacterStatus;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
@@ -42,7 +41,7 @@ public class PlayerScheduleManager {
         }
         scheduledExecutorServiceMap.remove(callerId);
         PlayerCharacter caller = MongoMapper.playerCharacterRepository.findPlayerCharacterById(callerId);
-        caller.setState(PlayerCharacterState.STATE_NORMAL);
+        caller.setState(CharacterState.STATE_NORMAL);
         MongoMapper.playerCharacterRepository.save(caller);
         Session session = GameSessionService.getSessionByCallerId(callerId);
         if(session != null){

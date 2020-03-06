@@ -136,7 +136,6 @@ public class WorldNpcObjectManager {
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
 
-
     public static List<EmbeddedCommand> getAvailableCommands(WorldNpcObject npc, PlayerCharacter playerCharacter){
         /*
          * @ 获取NPC可执行的命令
@@ -160,9 +159,7 @@ public class WorldNpcObjectManager {
 
         // TODO: 交易命令
         // TODO: 攻击命令
-//        if(npc.isCanAttack()){
-//            cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
-//        }
+        cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
         // TODO: 副本传送命令
         // TODO：地图传送命令
         return cmds;
@@ -191,7 +188,6 @@ public class WorldNpcObjectManager {
         *  为npc绑定默认的装备
         * */
     }
-
 
     private static void clearSkills(WorldNpcObject npc){
         // 删除技能实体

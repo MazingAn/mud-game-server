@@ -3,6 +3,7 @@ package com.mud.game.server;
 import com.mud.game.handler.*;
 import com.mud.game.object.builder.UniqueWorldObjectBuilder;
 import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.EquipmentPosition;
 import com.mud.game.worlddata.db.models.GameSetting;
 
 public class ServerManager {
@@ -26,6 +27,7 @@ public class ServerManager {
         SkillTypeHandler.initSkillTypeHandler();
         SkillFunctionHandler.initSkillFunctionSet();
         SkillPositionHandler.initSkillPositionHandler();
+        EquipmentPositionHandler.initEquipmentPositionHandler();
         RoomCommandHandler.initRoomCommandSet();
     }
 

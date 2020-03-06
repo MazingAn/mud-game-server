@@ -75,6 +75,8 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.skillFunctionTypeRepository, outFilePath, tableName, type);
             case "SkillPosition":
                 return new Exportor(DbMapper.skillPositionRepository, outFilePath, tableName, type);
+            case "EquipmentPosition":
+                return new Exportor(DbMapper.equipmentPositionRepository, outFilePath, tableName, type);
             case "DefaultSkills":
                 return new Exportor(DbMapper.defaultSkillsRepository, outFilePath, tableName, type);
             case "DefaultEquipments":

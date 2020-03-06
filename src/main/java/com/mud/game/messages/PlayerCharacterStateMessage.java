@@ -1,21 +1,27 @@
 package com.mud.game.messages;
 
-import com.mud.game.structs.PlayerCharacterState;
+import com.mud.game.structs.CharacterState;
 
 public class PlayerCharacterStateMessage {
-    private PlayerCharacterState state;
+    /*
+    * 当玩家的状态发生改变后这条信息被发送
+    * state 玩家当前状态
+    * is_normal 玩家当前是不是挂机状态
+    * */
+
+    private CharacterState state;
     private boolean is_normal;
 
-    public PlayerCharacterStateMessage(PlayerCharacterState state) {
+    public PlayerCharacterStateMessage(CharacterState state) {
         this.state = state;
-        this.is_normal = (state == PlayerCharacterState.STATE_NORMAL);
+        this.is_normal = (state == CharacterState.STATE_NORMAL);
     }
 
-    public PlayerCharacterState getState() {
+    public CharacterState getState() {
         return state;
     }
 
-    public void setState(PlayerCharacterState state) {
+    public void setState(CharacterState state) {
         this.state = state;
     }
 

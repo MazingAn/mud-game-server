@@ -1,11 +1,11 @@
 package com.mud.game.worlddata.db.models;
 
-import com.mud.game.worlddata.db.models.supermodel.CommonObject;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 
 import javax.persistence.Entity;
 
 @Entity
-public class DrugAndFood extends CommonObject {
+public class DrugAndFood extends BaseCommonObject {
     /*药品或食物*/
     // 药品作用的属性
     private String useForAttr;

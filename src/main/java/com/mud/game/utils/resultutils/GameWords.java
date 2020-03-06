@@ -61,4 +61,7 @@ public class GameWords {
 
     // 装备装备
     public static final String EQUIPMENT_ALREADY_EQUIPPED = "{c%s{n已经被装备。";
+
+    // 物品获取
+    public static final String CAN_NOT_GET_OBJECT = "你的背包装不下那么多的{g%s{n。";
 }

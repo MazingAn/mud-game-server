@@ -17,7 +17,7 @@ public class DefaultObjects {
     private String target;
     @Column(name = "common_object")
     private String commonObject;
-    private String number;
+    private int number;
 
     public Long getId() {
         return id;
@@ -43,11 +43,11 @@ public class DefaultObjects {
         this.commonObject = commonObject;
     }
 
-    public String getNumber() {
+    public int getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(int number) {
         this.number = number;
     }
 }

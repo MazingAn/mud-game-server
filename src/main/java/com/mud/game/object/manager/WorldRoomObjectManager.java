@@ -39,7 +39,6 @@ public class WorldRoomObjectManager {
         return obj;
     }
 
-
     public static void update(WorldRoomObject obj, WorldRoom template){
         /*
          * @更新WorldRoom
@@ -62,7 +61,6 @@ public class WorldRoomObjectManager {
         bindEvents(obj);
     }
 
-
     public static void updateExit(WorldRoomObject room, WorldExitObject exit){
         /*
         * 为当前房间增加出口
@@ -76,7 +74,6 @@ public class WorldRoomObjectManager {
             System.out.println("出口："+ exit.getName() + "(" + exit.getDataKey() + ")" +"没有找到其对应的房间" + exit.getLocation());
         }
     }
-
 
     public static void updateThings(WorldRoomObject room, WorldObjectObject object) {
         /*
@@ -183,7 +180,6 @@ public class WorldRoomObjectManager {
         }
     }
 
-
     public static void triggerArriveAction(WorldRoomObject room, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException, JSONException {
         /*
         * @如果房间绑定的有事件，触发
@@ -195,7 +191,6 @@ public class WorldRoomObjectManager {
             }
         }
     }
-
 
     public static List<EmbeddedCommand> getAvailableCommands(WorldRoomObject room, PlayerCharacter playerCharacter){
         /*房间内可以执行的命令*/

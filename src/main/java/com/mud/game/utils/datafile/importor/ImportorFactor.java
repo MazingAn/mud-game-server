@@ -78,6 +78,8 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.skillFunctionTypeRepository);
             case "SkillPosition":
                 return new Importor(stream, fileName, DbMapper.skillPositionRepository);
+            case "EquipmentPosition":
+                return new Importor(stream, fileName, DbMapper.equipmentPositionRepository);
             case "DefaultSkills":
                 return new Importor(stream, fileName, DbMapper.defaultSkillsRepository);
             case "DefaultEquipments":

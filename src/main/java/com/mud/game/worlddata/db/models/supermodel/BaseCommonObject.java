@@ -8,7 +8,7 @@ import java.net.URL;
 * 所有普通物品（可以放在背包里面的物体）的entity的超类
 * */
 @MappedSuperclass
-public class CommonObject extends BaseObject {
+public class BaseCommonObject extends BaseObject {
     // 物品分类
     @Column(length = 128)
     private String category;

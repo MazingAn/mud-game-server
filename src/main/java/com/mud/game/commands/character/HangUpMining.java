@@ -3,16 +3,13 @@ package com.mud.game.commands.character;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.MsgMessage;
-import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
-import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.PlayerCharacterState;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
@@ -38,7 +35,7 @@ public class HangUpMining extends BaseCommand {
         if(!GameCharacterManager.characterHasSkill(caller, "skill_zhishi_wakuang")){
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_MINING_SKILL)));
         }else{
-            Runnable runnable = HangUpManager.start(caller, PlayerCharacterState.STATE_MINING, session);
+            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_MINING, session);
             if(runnable != null){
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
                 service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);

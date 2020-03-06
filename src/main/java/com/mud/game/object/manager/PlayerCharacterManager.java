@@ -1,7 +1,6 @@
 package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.Mongo;
 import com.mud.game.handler.ConditionHandler;
 import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.messages.*;
@@ -9,6 +8,8 @@ import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
 import com.mud.game.object.algorithm.CommonAlgorithm;
+import com.mud.game.object.builder.CommonObjectBuilder;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.structs.*;
@@ -18,13 +19,12 @@ import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.utils.resultutils.UserOptionCode;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.CharacterModel;
+import com.mud.game.worlddata.db.models.DefaultObjects;
 import com.mud.game.worlddata.db.models.Skill;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import com.mud.game.worldrun.db.repository.SkillObjectRepository;
 import org.json.JSONException;
 import org.yeauty.pojo.Session;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class PlayerCharacterManager {
@@ -80,6 +80,11 @@ public class PlayerCharacterManager {
             // 根据先天属性计算角色的初始属性
             CommonAlgorithm.resetInbornAttrs(playerCharacter);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
+            // 初始化玩家的背包和仓库
+            initBagPack(playerCharacter);
+            initWareHouse(playerCharacter);
+            // 加载玩家默认物品
+            loadDefaultObjects(playerCharacter);
             // 同时更新player信息
             Player player = MongoMapper.playerRepository.findPlayerById(playerId);
             Set<SimplePlayerCharacter> infos = player.getPlayerCharacters();
@@ -120,8 +125,12 @@ public class PlayerCharacterManager {
             WorldRoomObjectManager.broadcast(location, onlineMessage, playerCharacterId);
             // 发送玩家的属性信息
             PlayerCharacterManager.showStatus(playerCharacter, session);
+            // 发送玩家的装备信息
+            PlayerCharacterManager.returnEquippedEquipments(playerCharacter, session);
             // 发送玩家的技能信息
             PlayerCharacterManager.returnAllSkills(playerCharacter, session);
+            // 发送玩家的背包信息
+            PlayerCharacterManager.returnBagpack(playerCharacter, session);
             // 发送玩家当前的状态
             session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
         }catch (Exception e){
@@ -511,7 +520,7 @@ public class PlayerCharacterManager {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_ENOUGH_POTENTIAL)));
             return null;
         }else{
-            playerCharacter.setState(PlayerCharacterState.STATE_LEARN_SKILL);
+            playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
             Runnable runnable = new Runnable() {
@@ -562,7 +571,7 @@ public class PlayerCharacterManager {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_ENOUGH_POTENTIAL)));
             return null;
         }else{
-            playerCharacter.setState(PlayerCharacterState.STATE_LEARN_SKILL);
+            playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
             Runnable runnable = new Runnable() {
@@ -670,6 +679,80 @@ public class PlayerCharacterManager {
             }
         }
         session.sendText(JsonResponse.JsonStringResponse(new PositionSkillsMessage(usedSkills, canReplacedSkills)));
+    }
+
+    public static void returnBagpack(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+        /*返回玩家的背包信息*/
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
+        Collection<Object> values = bagpackObject.getItems().values();
+        session.sendText(JsonResponse.JsonStringResponse(new BagPackListMessage(new ArrayList<Object>(values))));
+    }
+
+    public static void returnEquippedEquipments(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+        session.sendText(JsonResponse.JsonStringResponse(new EquipmentMessage(playerCharacter)));
+    }
+
+    public static boolean receiveObjectToBagpack(PlayerCharacter playerCharacter, CommonObject commonObject, int number, Session session) throws JsonProcessingException {
+        /*
+        * 接受物品到背包
+        * 把物品放入背包
+        * */
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
+        if(CommonItemContainerManager.addItem(bagpackObject, commonObject, number)){
+            commonObject.setTotalNumber(commonObject.getTotalNumber() + number);
+            MongoMapper.bagpackObjectRepository.save(bagpackObject);
+            CommonObjectBuilder.save(commonObject);
+            if(session!=null){
+                session.sendText(JsonResponse.JsonStringResponse(new GettingObjectMessage(commonObject, number)));
+            }
+            return true;
+        }else{
+            if(session!=null){
+                session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.CAN_NOT_GET_OBJECT, commonObject.getName()))));
+            }
+            return false;
+        }
+    }
+
+    public static void loadDefaultObjects(PlayerCharacter playerCharacter) throws JsonProcessingException {
+        /*
+        * 初始化玩家的默认物品
+        * */
+        Iterable<DefaultObjects> defaultObjects = DbMapper.defaultObjectsRepository.findDefaultObjectsByTarget("player");
+        for(DefaultObjects defaultObject : defaultObjects){
+            int number = defaultObject.getNumber();
+            String objectKey = defaultObject.getCommonObject();
+            CommonObject commonObject = CommonObjectBuilder.buildCommonObject(objectKey);
+            if(commonObject != null){
+                commonObject.setOwner(playerCharacter.getId());
+                // 持久化物品
+                CommonObjectBuilder.save(commonObject);
+                // 玩家背包接受物品
+                receiveObjectToBagpack(playerCharacter, commonObject, number, null);
+            }else{
+                System.out.println("加载默认物品的时候，没有找到 : " + defaultObject.getCommonObject());
+            }
+        }
+    }
+
+    public static void initBagPack(PlayerCharacter playerCharacter){
+        /*
+        * 初始化玩家的背包
+        * */
+        BagpackObject bagpackObject = BagpackObjectManager.create(playerCharacter.getId());
+        MongoMapper.bagpackObjectRepository.save(bagpackObject);
+        playerCharacter.setBagpack(bagpackObject.getId());
+        MongoMapper.playerCharacterRepository.save(playerCharacter);
+    }
+
+    public static void initWareHouse(PlayerCharacter playerCharacter){
+        /*
+        * 初始化玩家的背包
+        * */
+        WareHouseObject wareHouseObject = WareHouseObjectManager.create(playerCharacter.getId());
+        MongoMapper.wareHouseObjectRepository.save(wareHouseObject);
+        playerCharacter.setWareHouse(wareHouseObject.getId());
+        MongoMapper.playerCharacterRepository.save(playerCharacter);
     }
 
 }

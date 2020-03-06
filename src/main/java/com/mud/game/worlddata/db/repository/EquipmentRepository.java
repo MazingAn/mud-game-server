@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface EquipmentRepository extends CrudRepository<Equipment, Long> {
     Equipment findEquipmentByDataKey(String dataKey);
+    boolean existsByDataKey(String dataKey);
 }

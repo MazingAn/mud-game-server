@@ -49,6 +49,7 @@ public class DbMapper {
     public static DefaultObjectsRepository defaultObjectsRepository;
     public static NormalObjectRepository normalObjectRepository;
     public static NpcLearnObjectListRepository npcLearnObjectListRepository;
+    public static EquipmentPositionRepository equipmentPositionRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -228,6 +229,11 @@ public class DbMapper {
     @Autowired
     public void setNpcLearnObjectListRepository(NpcLearnObjectListRepository npcLearnObjectListRepository) {
         DbMapper.npcLearnObjectListRepository = npcLearnObjectListRepository;
+    }
+
+    @Autowired
+    public void setEquipmentPositionRepository(EquipmentPositionRepository equipmentPositionRepository) {
+        DbMapper.equipmentPositionRepository = equipmentPositionRepository;
     }
 }
 

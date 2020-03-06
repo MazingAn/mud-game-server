@@ -15,16 +15,14 @@ public class EquipmentObject extends CommonObject {
     private String weaponType;
     //装备最大开孔数量
     private int maxSlot;
-    //装备的品级
-    private int quality;
     //装备的属性
-    private Map<String, Float> attrs;
+    private Map<String, Map<String, Object>> attrs;
     //镶嵌的宝石
     private List<GemObject> gems;
-    // 装备所有者Id
-    private String owner;
     // 是否被装备
     private boolean equipped;
+    // 被装备到的位置
+    private String equippedPosition;
 
     public EquipmentObject() {
     }
@@ -61,19 +59,11 @@ public class EquipmentObject extends CommonObject {
         this.maxSlot = maxSlot;
     }
 
-    public int getQuality() {
-        return quality;
-    }
-
-    public void setQuality(int quality) {
-        this.quality = quality;
-    }
-
-    public Map<String, Float> getAttrs() {
+    public Map<String, Map<String, Object>> getAttrs() {
         return attrs;
     }
 
-    public void setAttrs(Map<String, Float> attrs) {
+    public void setAttrs(Map<String, Map<String, Object>> attrs) {
         this.attrs = attrs;
     }
 
@@ -85,19 +75,19 @@ public class EquipmentObject extends CommonObject {
         this.gems = gems;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
     public boolean isEquipped() {
         return equipped;
     }
 
     public void setEquipped(boolean equipped) {
         this.equipped = equipped;
+    }
+
+    public String getEquippedPosition() {
+        return equippedPosition;
+    }
+
+    public void setEquippedPosition(String equippedPosition) {
+        this.equippedPosition = equippedPosition;
     }
 }

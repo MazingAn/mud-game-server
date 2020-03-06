@@ -25,6 +25,14 @@ public class CommonObject extends BaseGameObject {
     private String icon;
     //事件
     private Set<String> gameEvents;
+    // 物品等级
+    private int level;
+    // 物品品级
+    private int quality;
+    // 物品归属
+    private String owner;
+    // 物品的总数
+    private int totalNumber;
 
     public String getUnitName() {
         return unitName;
@@ -96,5 +104,37 @@ public class CommonObject extends BaseGameObject {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getQuality() {
+        return quality;
+    }
+
+    public void setQuality(int quality) {
+        this.quality = quality;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public int getTotalNumber() {
+        return totalNumber;
+    }
+
+    public void setTotalNumber(int totalNumber) {
+        this.totalNumber = totalNumber;
     }
 }

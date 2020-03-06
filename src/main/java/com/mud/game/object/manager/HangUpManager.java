@@ -7,17 +7,15 @@ import com.mud.game.messages.ToastMessage;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldRoomObject;
-import com.mud.game.structs.PlayerCharacterState;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
 
-import java.util.Random;
-
 public class HangUpManager {
 
-    public static Runnable start(PlayerCharacter playerCharacter, PlayerCharacterState currentAction, Session session) throws JsonProcessingException {
+    public static Runnable start(PlayerCharacter playerCharacter, CharacterState currentAction, Session session) throws JsonProcessingException {
         /*
         * @ 玩家挖矿/钓鱼/采药三种挂机
         * @ 挖矿有一定概率获得宝石，也会随机获得潜能和经验
@@ -48,7 +46,7 @@ public class HangUpManager {
         }
     }
 
-    private static void playerHangUp(PlayerCharacter playerCharacter, PlayerCharacterState currentAction) {
+    private static void playerHangUp(PlayerCharacter playerCharacter, CharacterState currentAction) {
         try{
             Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
             // TODO:发送随机的句子
@@ -65,13 +63,13 @@ public class HangUpManager {
 
     }
 
-    private static void sendRandomNotify(PlayerCharacterState currentAction, Session session){
+    private static void sendRandomNotify(CharacterState currentAction, Session session){
         /*
         * TODO：随机的句子在数据库中配置，游戏启动的时候统一查询（放置在内存中）
         * */
     }
 
-    private static void getRandomObject(PlayerCharacter playerCharacter, PlayerCharacterState currentAction, Session session){
+    private static void getRandomObject(PlayerCharacter playerCharacter, CharacterState currentAction, Session session){
         /*
         * TODO：
         *   @ 根据当前挂机的行动，随机奖励挂机可以得到的物品
@@ -95,7 +93,7 @@ public class HangUpManager {
         }
     }
 
-    private static boolean commonHangUpCheck(PlayerCharacter playerCharacter, PlayerCharacterState currentAction, Session session) throws JsonProcessingException {
+    private static boolean commonHangUpCheck(PlayerCharacter playerCharacter, CharacterState currentAction, Session session) throws JsonProcessingException {
         /*
          * 通用的挂机前检查， 检查玩家是否能够开始挂机
          * @ 一、 玩家不能是死亡状态
@@ -110,7 +108,7 @@ public class HangUpManager {
         }
 
         // 玩家是不是正在干别的事
-        if(playerCharacter.getState() != PlayerCharacterState.STATE_NORMAL){
+        if(playerCharacter.getState() != CharacterState.STATE_NORMAL){
             if(playerCharacter.getState() != currentAction){
                 // 玩家在干别的事
                 session.sendText(JsonResponse.JsonStringResponse( String.format(GameWords.PLAYER_DO_OTHER_THING,
@@ -140,7 +138,7 @@ public class HangUpManager {
         return true;
     }
 
-    private static boolean playerHasTool(PlayerCharacter playerCharacter, PlayerCharacterState currentAction, Session session) {
+    private static boolean playerHasTool(PlayerCharacter playerCharacter, CharacterState currentAction, Session session) {
         /*
         * 检查玩家是否能装备了挂机所需要的工具
         * */
@@ -163,7 +161,7 @@ public class HangUpManager {
         return addedPotential;
     }
 
-    private static String PlayerCharacterState2DescriptionString(PlayerCharacterState state) {
+    private static String PlayerCharacterState2DescriptionString(CharacterState state) {
         /*
         * 玩家状态转换为描述（中文）字符串
         * */
@@ -193,7 +191,7 @@ public class HangUpManager {
         }
     }
 
-    private static String PlayerCharacterState2CommandString(PlayerCharacterState state) {
+    private static String PlayerCharacterState2CommandString(CharacterState state) {
         /*
          * 玩家状态转换为描述（中文）字符串
          * */

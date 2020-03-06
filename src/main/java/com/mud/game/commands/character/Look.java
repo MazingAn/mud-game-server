@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.manager.*;
 import com.mud.game.object.supertypeclass.BaseGameObject;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.WorldNpcObject;
-import com.mud.game.object.typeclass.WorldObjectCreator;
-import com.mud.game.object.typeclass.WorldObjectObject;
+import com.mud.game.object.typeclass.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +35,9 @@ public class Look extends BaseCommand {
         }else if(MongoMapper.playerCharacterRepository.existsById(targetId)){
             PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
             PlayerCharacterManager.onPlayerLook(target, playerCharacter, session);
+        }else if(MongoMapper.equipmentObjectRepository.existsById(targetId)){
+            EquipmentObject target = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(targetId);
+            EquipmentObjectManager.onPlayerLook(target, playerCharacter, session);
         }
         long end = System.currentTimeMillis();
         System.out.println("查看一个物体，耗费时间："+(end-start)+"ms");

@@ -5,4 +5,5 @@ import com.mud.game.worlddata.db.models.DefaultSkills;
 import org.springframework.data.repository.CrudRepository;
 
 public interface DefaultObjectsRepository extends CrudRepository<DefaultObjects, Long> {
+    Iterable<DefaultObjects> findDefaultObjectsByTarget(String targetKey);
 }

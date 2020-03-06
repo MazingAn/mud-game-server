@@ -6,27 +6,18 @@ import java.util.Map;
 
 public class GemObject extends CommonObject {
 
-    //宝石的品级
-    private int quality;
     //宝石的属性
-    private Map<String, Float> attrs;
+    private Map<String, Map<String, Object>> attrs;
 
     public GemObject() {
     }
 
-    public int getQuality() {
-        return quality;
-    }
 
-    public void setQuality(int quality) {
-        this.quality = quality;
-    }
-
-    public Map<String, Float> getAttrs() {
+    public Map<String, Map<String, Object>> getAttrs() {
         return attrs;
     }
 
-    public void setAttrs(Map<String, Float> attrs) {
+    public void setAttrs(Map<String, Map<String, Object>> attrs) {
         this.attrs = attrs;
     }
 }

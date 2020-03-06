@@ -13,8 +13,8 @@ public class Attr2Map {
         return mapper.readValue(attr, new TypeReference<Map < String, Map < String, Object>>>() {} );
     }
 
-    public static Map<String, Float> equipmentAttrTrans(String attr) throws JsonProcessingException {
+    public static Map<String, Map<String, Object>> equipmentAttrTrans(String attr) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(attr, new TypeReference<Map < String,Float> >() {} );
+        return mapper.readValue(attr, new TypeReference<Map<String, Map<String, Object>>>() {} );
     }
 }

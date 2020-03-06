@@ -7,7 +7,7 @@ import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.PlayerCharacterState;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import org.json.JSONException;
@@ -35,7 +35,7 @@ public class HangUpFishing extends BaseCommand {
         if(!GameCharacterManager.characterHasSkill(caller, "skill_zhishi_diaoyu")){
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_FISHING_SKILL)));
         }else{
-            Runnable runnable = HangUpManager.start(caller, PlayerCharacterState.STATE_FISHING, session);
+            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_FISHING, session);
             if(runnable != null){
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
                 service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);

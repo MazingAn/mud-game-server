@@ -6,6 +6,7 @@ import com.mud.game.commands.character.*;
 import com.mud.game.commands.common.Idle;
 import com.mud.game.commands.unlogin.Connect;
 import com.mud.game.commands.unlogin.Create;
+import com.mud.game.utils.jsonutils.Attr2Map;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +64,9 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("skill_by_position", GetSkillsByPosition.class);
         playerCharacterCommandSet.put("equip_skill", EquipSkill.class);
         playerCharacterCommandSet.put("take_off_skill", TakeOffSkill.class);
+        playerCharacterCommandSet.put("equip_equipment", EquipEquipment.class);
+        playerCharacterCommandSet.put("take_off_equipment", TakeOffEquipment.class);
+        playerCharacterCommandSet.put("attack", Attack.class);
     }
 
 }

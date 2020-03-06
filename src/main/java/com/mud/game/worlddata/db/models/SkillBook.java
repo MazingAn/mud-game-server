@@ -1,12 +1,11 @@
 package com.mud.game.worlddata.db.models;
 
-import com.mud.game.worlddata.db.models.supermodel.BaseObject;
-import com.mud.game.worlddata.db.models.supermodel.CommonObject;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 
 import javax.persistence.*;
 
 @Entity
-public class SkillBook extends CommonObject {
+public class SkillBook extends BaseCommonObject {
     /* 技能书（秘籍）
      * 可以从技能书上学习对应的技能
      */

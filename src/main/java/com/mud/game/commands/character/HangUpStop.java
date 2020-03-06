@@ -3,18 +3,13 @@ package com.mud.game.commands.character;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.MsgMessage;
-import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.PlayerCharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
-
-import java.util.concurrent.ScheduledExecutorService;
 
 public class HangUpStop extends BaseCommand {
     /*

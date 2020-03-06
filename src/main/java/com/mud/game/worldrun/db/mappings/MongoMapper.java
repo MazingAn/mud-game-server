@@ -27,6 +27,9 @@ public class MongoMapper<F, S> {
     public static SkillObjectRepository skillObjectRepository;
     public static GemObjectRepository gemObjectRepository;
     public static EquipmentObjectRepository equipmentObjectRepository;
+    public static BagpackObjectRepository bagpackObjectRepository;
+    public static WareHouseObjectRepository wareHouseObjectRepository;
+    public static NormalObjectObjectRepository normalObjectObjectRepository;
 
     @Autowired
     public void setWorldAreaObjectRepository(WorldAreaObjectRepository worldAreaObjectRepository) {
@@ -81,6 +84,21 @@ public class MongoMapper<F, S> {
     @Autowired
     public void setEquipmentObjectRepository(EquipmentObjectRepository equipmentObjectRepository) {
         MongoMapper.equipmentObjectRepository = equipmentObjectRepository;
+    }
+
+    @Autowired
+    public void setBagpackObjectRepository(BagpackObjectRepository bagpackObjectRepository) {
+        MongoMapper.bagpackObjectRepository = bagpackObjectRepository;
+    }
+
+    @Autowired
+    public void setWareHouseObjectRepository(WareHouseObjectRepository wareHouseObjectRepository) {
+        MongoMapper.wareHouseObjectRepository = wareHouseObjectRepository;
+    }
+
+    @Autowired
+    public void setNormalObjectObjectRepository(NormalObjectObjectRepository normalObjectObjectRepository) {
+        MongoMapper.normalObjectObjectRepository = normalObjectObjectRepository;
     }
 }
 

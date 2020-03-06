@@ -6,7 +6,7 @@ import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.PlayerCharacterState;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
@@ -30,11 +30,11 @@ public class HangUpCure extends BaseCommand {
     public void execute() throws JSONException, JsonProcessingException {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         Session session = getSession();
-        Runnable runnable = HangUpManager.start(caller, PlayerCharacterState.STATE_CURE, session);
+        Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_CURE, session);
         if(runnable != null){
             ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
             service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);
-            caller.setState(PlayerCharacterState.STATE_CURE);
+            caller.setState(CharacterState.STATE_CURE);
             MongoMapper.playerCharacterRepository.save(caller);
             session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(caller.getState())));
         }

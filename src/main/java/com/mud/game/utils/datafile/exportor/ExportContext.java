@@ -10,8 +10,9 @@ public class ExportContext {
         }else if ("xlsx".equals(type)){
             ExportToExcel exportToExcel = new ExportToExcel(data, tableName, outFilePath);
             this.strategy = exportToExcel;
-        }else if("xxx".equals(type)) {
-            // TODO: 其他文件导出的支持策略
+        }else if("xls".equals(type)) {
+            ExportToExcel exportToExcel = new ExportToExcel(data, tableName, outFilePath);
+            this.strategy = exportToExcel;
         }
     }
 

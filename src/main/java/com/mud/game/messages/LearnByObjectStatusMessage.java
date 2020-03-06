@@ -4,6 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LearnByObjectStatusMessage {
+
+    /*
+    * learn_status
+    * 返回玩家通过物品学习的状态（和老版本一样）
+    * 有两种情况：
+    * 第一种 直接能够学习，返回学习的目标，学习的潜能余额，以及能不能学习
+    * 第二种 不能学习，在第一种情况的基础上 追加显示要上交的物品信息
+    * */
+
     private Map<String, Object> learn_status;
 
     public LearnByObjectStatusMessage(String learnTarget, Integer balance) {

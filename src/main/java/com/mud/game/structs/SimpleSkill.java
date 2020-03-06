@@ -5,7 +5,6 @@ import com.mud.game.object.typeclass.SkillObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class SimpleSkill {
@@ -13,7 +12,7 @@ public class SimpleSkill {
     private String icon;
     private String name;
     private String desc;
-    private Set<String> subSkills;
+    private Set<String> sub_skill;
     private boolean passive;
     private int level;
     private String function_type;
@@ -29,7 +28,7 @@ public class SimpleSkill {
         this.dbref = skillObject.getId();
         this.icon = skillObject.getIcon();
         this.name = skillObject.getName();
-        this.subSkills = skillObject.getSubSKills();
+        this.sub_skill = skillObject.getSubSKills();
         this.passive = skillObject.isPassive();
         this.level = skillObject.getLevel();
         this.function_type = skillObject.getFunctionType();
@@ -57,12 +56,12 @@ public class SimpleSkill {
         this.name = name;
     }
 
-    public Set<String> getSubSkills() {
-        return subSkills;
+    public Set<String> getSub_skill() {
+        return sub_skill;
     }
 
-    public void setSubSkills(Set<String> subSkills) {
-        this.subSkills = subSkills;
+    public void setSub_skill(Set<String> sub_skill) {
+        this.sub_skill = sub_skill;
     }
 
     public boolean isPassive() {

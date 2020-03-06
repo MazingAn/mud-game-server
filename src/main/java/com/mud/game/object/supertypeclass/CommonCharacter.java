@@ -3,6 +3,7 @@ package com.mud.game.object.supertypeclass;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.typeclass.WorldExitObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 import org.json.JSONObject;
 
@@ -45,9 +46,15 @@ public class CommonCharacter extends BaseGameObject {
     // 自定义属性
     public Map<String,Map<String, Object>> customerAttr;
 
+    // 角色的游戏状态
+    public CharacterState state;
+    // 角色的目标
+    public String target;
+
 
 
     public CommonCharacter() {
+        this.state = CharacterState.STATE_NORMAL;
     }
 
     public String getGender() {
@@ -265,5 +272,21 @@ public class CommonCharacter extends BaseGameObject {
 
     public void setSchool(String school) {
         this.school = school;
+    }
+
+    public CharacterState getState() {
+        return state;
+    }
+
+    public void setState(CharacterState state) {
+        this.state = state;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
     }
 }

@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface NormalObjectRepository extends CrudRepository<NormalObject, Long> {
     NormalObject findNormalObjectByDataKey(String dataKey);
+    boolean existsByDataKey(String dataKey);
 }

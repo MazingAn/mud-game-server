@@ -124,13 +124,13 @@ public class ExcelUtils {
                     // 对空字段，异常，错误字段的处理
                     if (long.class.equals(field.getType())||Long.class.equals(field.getType())) {
                         System.out.println("对于" + clazz + "第" + rowNum +"行，其" + field.getName() +"为空， 我们默认设置为" + 0);
-                        field.set(instance, 0);
+                        field.set(instance, 0L);
                     } else if (float.class.equals(field.getType()) || Float.class.equals(field.getType())) {
                         System.out.println("对于" + clazz + "第" + rowNum +"行，其" + field.getName() +"为空， 我们默认设置为" + 0);
-                        field.set(instance, 0);
+                        field.set(instance, 0F);
                     } else if (double.class.equals(field.getType()) || Double.class.equals(field.getType())) {
                         System.out.println("对于" + clazz + "第" + rowNum +"行，其" + field.getName() +"为空， 我们默认设置为" + 0);
-                        field.set(instance, 0);
+                        field.set(instance, 0D);
                     } else if (Integer.class.equals(field.getType()) || int.class.equals(field.getType())) {
                         System.out.println("对于" + clazz + "第" + rowNum +"行，其" + field.getName() +"为空， 我们默认设置为" + 0);
                         field.set(instance, 0);

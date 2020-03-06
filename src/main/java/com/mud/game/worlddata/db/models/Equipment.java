@@ -1,11 +1,11 @@
 package com.mud.game.worlddata.db.models;
 
-import com.mud.game.worlddata.db.models.supermodel.CommonObject;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 
 import javax.persistence.Entity;
 
 @Entity
-public class Equipment extends CommonObject {
+public class Equipment extends BaseCommonObject {
     /*装备*/
 
     // 可装备的位置

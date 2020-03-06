@@ -1,12 +1,11 @@
 package com.mud.game.worlddata.db.models;
 
-import com.mud.game.worlddata.db.models.supermodel.BaseObject;
-import com.mud.game.worlddata.db.models.supermodel.CommonObject;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 
 import javax.persistence.*;
 
 @Entity
-public class Gem extends CommonObject {
+public class Gem extends BaseCommonObject {
 
     //宝石的品级
     private int quality;
