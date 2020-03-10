@@ -15,10 +15,18 @@ public class Puppet extends BaseCommand {
     }
 
 
-    /*
-    * @ 把一个玩家角色放入游戏中
-    * @ 参数： 角色的dbref（ID）
-    * */
+    /**
+     * 把一个玩家角色放入游戏中
+     *
+     * 请求示例：
+     * <pre>
+     * {
+     *      "cmd":"puppet",
+     *      "args":"5e6702e8c94709756f1dd1d5"
+     * }
+     * </pre>
+     *
+     * */
     @Override
     public void execute() throws JSONException, JsonProcessingException {
         String playerCharacterId = getArgs().getString("args");

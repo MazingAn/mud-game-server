@@ -20,19 +20,23 @@ import org.yeauty.pojo.Session;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * 玩家通过给npc物品学习技能的先期检查工作.
+ * 玩家学习状态返回给客户端
+ * 请求方式：
+ * <pre>
+ *      {
+ *          "cmd":  "learn_by_object",
+ *          "args": {
+ *              "skill_key" : "skill key",
+ *              "from": "target dbref"
+ *          }
+ *      }
+ * </pre>
+ * */
 public class LearnSkillByObjectCheck extends BaseCommand {
-    /*
-    * @ 玩家通过给npc物品学习技能的先期检查工作
-    * @ 玩家学习状态返回给客户端
-    * @ 请求方式：
-    * {"cmd":
-    *       "learn_by_object",
-    *       "args": {
-    *           "skill_key" : "<skill key>",
-    *            "from": "<target dbref>"
-    *       }
-    *   }
-    * */
+
     public LearnSkillByObjectCheck(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }

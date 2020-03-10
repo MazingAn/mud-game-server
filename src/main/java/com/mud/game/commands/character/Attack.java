@@ -14,6 +14,19 @@ import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
 
+/**
+ * 开始攻击某一个对手（玩家或者NPC）
+ *
+ * 请求示例：
+ * <pre>
+ * {
+ *      "cmd": "attack",
+ *      "args": "攻击对象的ID"
+ * }
+ * </pre>
+ *
+ * */
+
 public class Attack extends BaseCommand {
 
 

@@ -11,18 +11,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ * 玩家取消装备一个技能
+ * Usage:
+ * <pre>
+ *    {
+ *        "cmd": "take_off_skill",
+ *        "args": {
+ *           "dbref": "skill_id", //技能ID
+ *           "position": "position" //要卸掉技能的位置
+ *        }
+ *    }
+ *  </pre>
+ * */
+
 public class TakeOffSkill extends BaseCommand {
-    /*
-    * 玩家取消装备一个技能
-    *Usage:
-    *    {
-    *        "cmd": "take_off_skill",
-    *        "args": {
-    *           "dbref": "<skill_id>",
-    *           "position": "<position>"
-    *        }
-    *    }
-    * */
+
     public TakeOffSkill(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }

@@ -8,6 +8,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ * 连接（登录）命令
+ *
+ * <pre>
+ *     请求示例：
+ *      {"cmd":"connect",
+ *          "args":{
+ *              "playername":"test001",
+ *              "password":"*********"
+ *              }
+ *       }
+ * </pre>
+ * */
 public class Connect extends BaseCommand {
 
 
@@ -17,7 +31,7 @@ public class Connect extends BaseCommand {
 
     @Override
     public void execute() throws JSONException, JsonProcessingException {
-        /*
+        /**
         * 对一个游戏账户执行登陆操作
         * 本质上就是更新玩家的更新callerID为角色ID，然后修改角色的类型为账户类型
         * */

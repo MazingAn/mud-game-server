@@ -17,11 +17,20 @@ import org.yeauty.pojo.Session;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class HangUpFishing extends BaseCommand {
 
-    /*
-    * @ 玩家开始挖矿
-    * */
+/**
+ * 玩家开始钓鱼
+ *
+ * 请求示例：
+ * <pre>
+ *     {
+ *         "cmd": "fishing",
+ *         "args": "" // args 可以为空
+ *     }
+ * </pre>
+ *
+ * */
+public class HangUpFishing extends BaseCommand {
 
     public HangUpFishing(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

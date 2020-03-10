@@ -8,6 +8,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ * 玩家移动到某一个房间（通过出口）
+ * 请求示例:
+ * <pre>
+ *    {
+ *        "cmd": "goto",
+ *        "args": "exit_id" //要通过的出口的ID
+ *    }
+ * </pre>
+ * */
+
 public class GotoRoom extends BaseCommand {
     public GotoRoom(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

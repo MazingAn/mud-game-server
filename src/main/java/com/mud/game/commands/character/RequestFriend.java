@@ -12,6 +12,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ * 请求添加好友
+ *
+ * 请求示例：
+ * <pre>
+ *      {
+ *          "cmd" : "add_friend",
+ *          "args" : "要添加的人的ID"
+ *      }
+ * </pre>
+ *
+ * */
 public class RequestFriend extends BaseCommand {
 
     public RequestFriend(String key, Object caller, JSONObject args, Session session) {

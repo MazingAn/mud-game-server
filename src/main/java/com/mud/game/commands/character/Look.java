@@ -3,12 +3,26 @@ package com.mud.game.commands.character;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.manager.*;
-import com.mud.game.object.supertypeclass.BaseGameObject;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
+
+
+/**
+ * 玩家查看游戏世界中的其他对象
+ * 返回这个对象的描述
+ *
+ * 使用示例：
+ * <pre>
+ *      {
+ *          "cmd" : "look",
+ *          "args" : "target_dbref" //被查看者的ID
+ *      }
+ * </pre>
+ *
+ * */
 
 public class Look extends BaseCommand {
     public Look(String key, Object caller, JSONObject args, Session session) {

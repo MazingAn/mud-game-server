@@ -10,6 +10,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ * 同意其他玩家的好友请求
+ *
+ * 请求示例：
+ * <pre>
+ * {
+ *      "cmd":"？？",
+ *      "args":？？
+ * }
+ * </pre>
+ *
+ * */
+
 public class AcceptFriend extends BaseCommand {
 
     public AcceptFriend(String key, Object caller, JSONObject args, Session session) {

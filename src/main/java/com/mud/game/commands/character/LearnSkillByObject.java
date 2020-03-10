@@ -14,19 +14,23 @@ import org.yeauty.pojo.Session;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ *  玩家通过物品换取潜能之后学习技能
+ * <p> 参数： npc的id  学习的技能的 key
+ * 返回： 玩家进入挂机状态，开始学习技能 </p>
+ * 请求示例：
+ * <pre>
+ *  {
+ *       "cmd":  "learn_skill_by_object",
+ *      "args": {
+ *           "skill_key":"skill_zhishi_wakuang",  //要学习的技能的key
+ *          "from":"5e0b2979b5de8a0a2787d9d1" //教授技能的人的ID
+ *      }
+ *  }
+ * </pre>
+ * */
 public class LearnSkillByObject extends BaseCommand {
-    /*
-    * @ 玩家通过物品换取潜能之后学习技能
-    * @ 参数： npc的id  学习的技能的 key
-    * @ 返回： 玩家进入挂机状态，开始学习技能
-    * {
-    *   "cmd":  "learn_skill_by_object",
-    *   "args": {
-    *       "skill_key":"skill_zhishi_wakuang",
-    *       "from":"5e0b2979b5de8a0a2787d9d1"
-    *   }
-    * }"
-    * */
+
 
     public LearnSkillByObject(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

@@ -9,18 +9,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+
+/**
+ * 创建角色命令
+ *
+ * <pre>
+ *     请求示例：
+ *      {
+ *          cmd": "char_create",
+ *          "args":
+ *          {
+ *              "name":"俞碧应",
+ *              "gender":"男",
+ *              "innate_values":[20,20,20,20]
+ *          }
+ *      }
+ * </pre>
+ * */
+
 public class CharCreate extends BaseCommand {
+
     public CharCreate(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }
 
-
-    /*
-    * @ 命令： char_create
-    * @ 参数： name: 字符串 角色名称
-    * @ 参数： gender： 字符串 性别
-    * @ 参数： innate_values: 整型数组 先天属性，排列顺序为 [arm, bone, body, smart]
-    * */
     @Override
     public void execute() throws JSONException, JsonProcessingException {
         String name = getArgs().getString("name");

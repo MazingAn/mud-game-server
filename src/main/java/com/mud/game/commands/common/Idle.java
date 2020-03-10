@@ -6,10 +6,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ *  心跳包，用于前端监测服务器状态
+ * */
 public class Idle extends BaseCommand {
-    /*
-    * @ 心跳包，用于前端监测服务器状态
-    * */
+
     public Idle(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }

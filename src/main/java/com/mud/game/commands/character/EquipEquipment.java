@@ -10,15 +10,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ * 装备一个装备到指定位置
+ *
+ * 请求示例:
+ * <pre>
+ *   {
+ *      "cmd":"equip_equipment",
+ *      "args": {
+ *          "position": "left_hand",
+ *          "dbref": "#xxxx"
+ *       }
+ *   }
+ * </pre>
+ * */
 public class EquipEquipment extends BaseCommand {
-    /*
-    * 装备一个装备到指定位置
-    * Usage:
-    *   {"cmd":"equip_equipment",
-    *     "args": {"position": "left_hand",
-    *              "dbref": "#xxxx";}
-    *   }
-    * */
+
     public EquipEquipment(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }

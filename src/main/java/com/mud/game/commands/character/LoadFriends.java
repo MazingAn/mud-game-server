@@ -9,6 +9,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ *  加载玩家的好友列表
+ * */
+
 public class LoadFriends extends BaseCommand {
 
     public LoadFriends(String key, Object caller, JSONObject args, Session session) {

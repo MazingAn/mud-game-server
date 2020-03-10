@@ -735,10 +735,11 @@ public class PlayerCharacterManager {
         }
     }
 
+    /**
+     * 初始化玩家的背包
+     * @param playerCharacter  玩家对象
+     * */
     public static void initBagPack(PlayerCharacter playerCharacter){
-        /*
-        * 初始化玩家的背包
-        * */
         BagpackObject bagpackObject = BagpackObjectManager.create(playerCharacter.getId());
         MongoMapper.bagpackObjectRepository.save(bagpackObject);
         playerCharacter.setBagpack(bagpackObject.getId());

@@ -13,6 +13,17 @@ import org.json.JSONObject;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.yeauty.pojo.Session;
 
+
+/**
+ *  玩家在师傅那里学习技能 返回是否可以教授的技能列表
+ * 请求示例：
+ * <pre>
+ *      {
+ *          "cmd":  "learn_from_teacher",
+ *          "args": "5e0b2979b5de8a0a2787d9d1" //教授技能的人的ID
+ *      }
+ * </pre>
+ * */
 public class LearnFromTeacher extends BaseCommand {
 
     public LearnFromTeacher(String key, Object caller, JSONObject args, Session session) {

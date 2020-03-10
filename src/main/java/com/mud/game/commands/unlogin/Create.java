@@ -8,6 +8,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ * 注册账户命令
+ *
+ * <pre>
+ *     请求示例：
+ *      {   "cmd": "create",
+ *           "args": {
+ *              "playername":"test001"
+ *              "password":"********",
+ *              "connect":true
+ *              }
+ * *        }
+ * </pre>
+ * */
 public class Create extends BaseCommand {
 
 

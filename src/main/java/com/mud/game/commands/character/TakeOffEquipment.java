@@ -9,16 +9,22 @@ import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
-
+/**
+ * 卸掉装备，放回背包
+ * Usage:
+ * <pre>
+ *   {
+ *      "cmd":"take_off_equipment",
+ *      "args":
+ *          {
+ *              "position": "left_hand", //要卸掉的装备位置
+ *              "dbref": "#xxxx" //装备的ID
+ *          }
+ *   }
+ * </pre>
+ * */
 public class TakeOffEquipment extends BaseCommand {
-    /*
-    * 卸掉装备，放回背包
-    * Usage:
-    *   {"cmd":"take_off_equipment",
-    *     "args": {"position": "left_hand",
-    *              "dbref": "#xxxx";}
-    *   }
-    * */
+
     public TakeOffEquipment(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }

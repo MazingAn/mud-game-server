@@ -5,6 +5,9 @@ import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.worlddata.db.models.Equipment;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class CommonObjectInfo {
     private String category;
     private String dataKey;
@@ -17,6 +20,7 @@ public class CommonObjectInfo {
     private int quality;
     private int max_stack;
     private boolean equipped;
+    private Set<String> position;
 
     public CommonObjectInfo(){
     }
@@ -32,10 +36,12 @@ public class CommonObjectInfo {
         this.quality = commonObject.getLevel();
         this.dataKey = commonObject.getDataKey();
         this.max_stack = commonObject.getMaxStack();
-        if(commonObject.getClass().equals(EquipmentObject.class)){
+        if(commonObject instanceof EquipmentObject){
+            this.position = ((EquipmentObject)commonObject).getPositions();
             this.equipped = ((EquipmentObject)commonObject).isEquipped();
         }else{
             this.equipped = false;
+            this.position = new HashSet<>();
         }
     }
 

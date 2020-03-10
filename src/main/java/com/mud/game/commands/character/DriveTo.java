@@ -10,14 +10,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ * 玩家通过驾驶坐骑，直接飞往某处
+ *
+ * 请求示例：
+ * {
+ *   "cmd": "goto_room",
+ *   "args": "#897987897" //目标房间的ID
+ * }
+ * */
 public class DriveTo extends BaseCommand {
-    /*
-    * @ 玩家通过驾驶坐骑，直接飞往某处
-    * key = goto_room
-    * { "cmd": "goto_room",
-    *   "args": "#897987897" //目标房间的ID
-    * }
-    * */
+
 
     public DriveTo(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

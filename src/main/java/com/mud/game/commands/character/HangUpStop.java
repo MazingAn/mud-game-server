@@ -11,6 +11,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ * 玩家停止挂机活动
+ *
+ * 请求示例：
+ * <pre>
+ *     {
+ *         "cmd": "stop",
+ *         "args": "" // args 可以为空
+ *     }
+ * </pre>
+ *
+ * */
+
 public class HangUpStop extends BaseCommand {
     /*
     * @ 玩家停止挂机

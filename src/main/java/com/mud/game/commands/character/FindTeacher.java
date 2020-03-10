@@ -8,12 +8,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ *  玩家寻找一个师傅（拜师）
+ *
+ *  使用示例：
+ *  <pre>
+ *      {
+ *          "cmd": find_teacher,
+ *          args : "目标的id（dbref）"
+ *      }
+ *  </pre>
+ * */
+
 public class FindTeacher extends BaseCommand {
-    /*
-     *  玩家选找一个师傅（拜师）
-     *  key = find_teacher
-     *  args = 目标的id（dbref）
-     * */
+
 
     public FindTeacher(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

@@ -16,11 +16,20 @@ import org.yeauty.pojo.Session;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class HangUpCure extends BaseCommand {
 
-    /*
-    * @玩家开始疗伤
-    * */
+/**
+ * 玩家开始疗伤
+ *
+ * 请求示例：
+ * <pre>
+ *     {
+ *         "cmd": "cure",
+ *         "args": "" // args 可以为空
+ *     }
+ * </pre>
+ *
+ * */
+public class HangUpCure extends BaseCommand {
 
     public HangUpCure(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

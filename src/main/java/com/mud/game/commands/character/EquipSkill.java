@@ -12,18 +12,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+/**
+ * 玩家装备一个技能
+ * 请求示例:
+ * <pre>
+ *    {
+ *        "cmd": "equip_skill",
+ *        "args": {
+ *           "dbref": "skill_id",
+ *           "position": "position"
+ *        }
+ *    }
+ * </pre>
+ * */
 public class EquipSkill extends BaseCommand {
-    /*
-    * 玩家装备一个技能
-    *Usage:
-    *    {
-    *        "cmd": "equip_skill",
-    *        "args": {
-    *           "dbref": "<skill_id>",
-    *           "position": "<position>"
-    *        }
-    *    }
-    * */
+
     public EquipSkill(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }

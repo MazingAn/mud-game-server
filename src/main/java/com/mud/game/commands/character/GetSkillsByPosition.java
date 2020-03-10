@@ -8,6 +8,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+
+/**
+ * 获取当前位置的技能信息
+ * 请求示例:
+ * <pre>
+ *    {
+ *        "cmd": "skill_by_position",
+ *        "args": "position" //技能装备位置
+ *    }
+ * </pre>
+ * */
+
 public class GetSkillsByPosition extends BaseCommand {
     /*
     * @ 根据技能装备的位置获取玩家的技能（分为已装备和可替换两组）

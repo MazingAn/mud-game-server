@@ -19,22 +19,25 @@ import org.yeauty.pojo.Session;
 
 import java.util.Map;
 
+/**
+ * 玩家通过物品从NPC处学习技能的充值操作，当玩家提交物品兑换的潜能用完之后，则需要充值
+ * <p>接受玩家充值的信息（物品，和数量）如果充值成功，返回NPC技能列表，否则返回错误信息</p>
+ * 请求方式：
+ * <pre>
+ *      {"cmd":
+ *          "give_learn_object",
+ *          "args":
+ *          {
+ *                 "target_dbref":"5e0b2979b5de8a0a2787d9d1", //从何处学习？npc的ID
+ *                 "object_key":"OBJECT_JINZI",
+ *                 "number":1
+ *          } //提交的充值信息（物品KEY和数量）
+ *      }
+ * </pre>
+ * */
 public class LearnSkillByObjectCharge extends BaseCommand {
 
-    /*
-     * @ 玩家通过物品从NPC处学习技能的充值操作，当玩家提交物品兑换的潜能用完之后，则需要充值
-     * @ 接受玩家充值的信息（物品，和数量）如果充值成功，返回NPC技能列表，否则返回错误信息
-     * @ 请求方式：
-     * {"cmd":
-     *      "give_learn_object",
-     *  "args":
-     *      {
-     *          "target_dbref":"5e0b2979b5de8a0a2787d9d1", //从何处学习？npc的ID
-     *          "object_key":"OBJECT_JINZI",
-     *          "number":1
-     *      } //提交的充值信息（物品KEY和数量）
-     * }
-    * */
+
 
     public LearnSkillByObjectCharge(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);

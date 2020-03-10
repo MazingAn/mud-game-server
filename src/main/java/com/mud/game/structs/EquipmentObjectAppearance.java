@@ -12,7 +12,7 @@ public class EquipmentObjectAppearance {
     /*
     * @ 返回给客户端的装备信息的数据结构
     */
-    private String deref;
+    private String dbref;
     private String name;
     private String weapon_type;
     private String desc;
@@ -29,7 +29,7 @@ public class EquipmentObjectAppearance {
     private boolean can_strength;
 
     public EquipmentObjectAppearance(EquipmentObject equipmentObject) {
-        this.deref = equipmentObject.getId();
+        this.dbref = equipmentObject.getId();
         this.name = equipmentObject.getName();
         this.weapon_type = equipmentObject.getWeaponType();
         this.desc = equipmentObject.getDescription();
@@ -47,12 +47,12 @@ public class EquipmentObjectAppearance {
         this.can_strength = false;
     }
 
-    public String getDeref() {
-        return deref;
+    public String getDbref() {
+        return dbref;
     }
 
-    public void setDeref(String deref) {
-        this.deref = deref;
+    public void setDbref(String dbref) {
+        this.dbref = dbref;
     }
 
     public String getName() {
