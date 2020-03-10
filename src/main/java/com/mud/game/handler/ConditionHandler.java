@@ -12,13 +12,14 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 游戏中的动态判断
+ * 游戏管理员可以在配置中以字符串的形式存储一些函数<br>
+ * */
 public class ConditionHandler {
-    /*
-    * @游戏中的动态判断
-    * @游戏管理员可以在配置中便携一些函数
-    * @这里需要解析这些函数 然后执行
-    * */
 
+
+    /** 游戏内所有的condition集合  key为字符串类型 value为对应的判断执行类的路径 */
     public static Map<String, Class<?>> conditionSet = new HashMap<>();
 
     /**
@@ -30,6 +31,7 @@ public class ConditionHandler {
      *                      要求 攻击等于30且最大气血大于300
      * @param playerCharacter 被校验的玩家
      *
+     * @return boolean 校验总体是否通过
      * */
     public static boolean matchCondition(String conditionStr, PlayerCharacter playerCharacter){
         if(conditionStr.trim().equals("")){
@@ -62,6 +64,8 @@ public class ConditionHandler {
         return result;
     }
 
+
+    /** 初始化condition集合，所有定义好的condition类都在这里被注册并通过这个集合反射到对应的执行主体 */
     public static void initConditionHandler(){
         conditionSet.put("check_attr", CheckAttr.class);
         conditionSet.put("attr_lt", AttrLt.class);

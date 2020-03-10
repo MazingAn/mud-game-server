@@ -5,6 +5,19 @@ import com.mud.game.object.typeclass.PlayerCharacter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *  返回信息类： 玩家同意添加好友返回信息
+ *  <pre>
+ *  返回示例：
+ *  {
+ *      "friend_apply": {
+ *          "dbref" : "好友的id",
+ *          "name" : "好友的名称"
+ *      }
+ *  }
+ *  </pre>
+ *
+ * */
 public class AddFriendRequestMessage {
     public Map<String, Object> friend_apply;
 

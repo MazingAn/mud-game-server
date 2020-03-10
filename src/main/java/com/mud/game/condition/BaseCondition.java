@@ -34,7 +34,7 @@ public abstract class BaseCondition {
      *
      * @param playerCharacter  检测的主体对象（要被检测的玩家）
      * @param key 检测类的健
-     * @param args
+     * @param args 检测函数参数列表（字符串列表）
      *
      * */
     public BaseCondition(String key, PlayerCharacter playerCharacter, String[] args) {

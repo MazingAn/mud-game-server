@@ -6,7 +6,7 @@ import com.mud.game.object.typeclass.PlayerCharacter;
 
 
 /**
- * 玩家属性检测类 检测玩家属性是否大于某一个值
+ * 玩家属性检测类 检测玩家属性是否小于某一个值
  * */
 
 public class AttrLt extends BaseCondition {

@@ -1,11 +1,21 @@
 package com.mud.game.messages;
 
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.CommonObjectInfo;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+
+
+/**
+ *  返回信息类： 背包信息消息
+ *  <pre>
+ *  返回示例：
+ *  {
+ *      "inventory": [
+ *          物品信息 -> {@link com.mud.game.structs.CommonObjectInfo},
+ *          ..............
+ *      ]
+ *  }
+ *  </pre>
+ *
+ * */
 
 public class BagPackListMessage {
 

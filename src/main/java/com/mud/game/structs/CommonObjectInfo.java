@@ -3,7 +3,6 @@ package com.mud.game.structs;
 
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.EquipmentObject;
-import com.mud.game.worlddata.db.models.Equipment;
 
 import java.util.HashSet;
 import java.util.Set;

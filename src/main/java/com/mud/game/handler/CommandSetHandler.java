@@ -11,34 +11,41 @@ import com.mud.game.utils.jsonutils.Attr2Map;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
+/**
+ * 命令集Handler类
+ *
+ * <pre>
 * 通道中的所有命令都有一个对应的caller
 * 在没有登陆的状态下：caller默认为UnLoginCaller
 * 在登陆状态下：caller为Account
 * 在进入游戏的状态下： caller为PlayerCharacter
-* 对与NPC/Monster和Boss来讲：caller永远为NPC/Monster和Boss
+* 对与NPC/Monster和Boss来讲：caller永远为NPC/Monster/Boss
+ * </pre>
 * */
 public class CommandSetHandler {
 
-    //未登录状态下的命令集合
+    /**未登录状态下的可操作命令字典  key为字符串类型  value为对应的处理类的路径*/
     public static Map<String, Class> unLoginCommandSet = new HashMap<>();
-    //登陆后账户的命令集合
+    /**登陆后账户的命令集合 key为字符串类型  value为对应的处理类的路径*/
     public static Map<String, Class> accountCommandSet = new HashMap<>();
-    //玩家的命令集合
+    /**玩家的命令集合  key为字符串类型  value为对应的处理类的路径*/
     public static Map<String, Class> playerCharacterCommandSet = new HashMap<>();
 
+    /** 初始化 未登录玩家的命令集 */
     public static void initUnLoginCommandSet(){
         unLoginCommandSet.put("idle", Idle.class);
         unLoginCommandSet.put("create", Create.class);
         unLoginCommandSet.put("connect", Connect.class);
     }
 
+    /** 初始化 游戏账户身份状态下（登录游戏但未进入游戏世界）的命令集 */
     public static void initAccountCommandSet(){
         accountCommandSet.put("idle", Idle.class);
         accountCommandSet.put("char_create", CharCreate.class);
         accountCommandSet.put("puppet", Puppet.class);
     }
 
+    /** 初始化 游戏内部玩家的命令集 */
     public static void initPlayerCharacterCommandSet() {
         playerCharacterCommandSet.put("idle", Idle.class);
         playerCharacterCommandSet.put("goto", GotoRoom.class);
