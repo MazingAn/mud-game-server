@@ -26,7 +26,7 @@ import java.util.*;
 
 public class SkillObjectManager {
 
-    public static SkillObject create(String skillTemplateKey) throws JsonProcessingException {
+    public static SkillObject create(String skillTemplateKey)  {
         SkillObject skillObject = new SkillObject();
         try {
             Skill template = DbMapper.skillRepository.findSkillByDataKey(skillTemplateKey);
@@ -88,7 +88,7 @@ public class SkillObjectManager {
         skillObject.setSubSKills(subSkillIds);
     }
 
-    public static void equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session) throws JsonProcessingException {
+    public static void equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session)  {
         /*
         * @ 装备技能到角色身上（仅限于被动技能）
         * */
@@ -151,7 +151,7 @@ public class SkillObjectManager {
         }
     }
 
-    public static void takeOff(SkillObject skillObject, CommonCharacter character, String position, Session session) throws JsonProcessingException {
+    public static void takeOff(SkillObject skillObject, CommonCharacter character, String position, Session session)  {
         /*
         * 卸掉技能
         * */
@@ -194,7 +194,7 @@ public class SkillObjectManager {
 
     }
 
-    private static void saveCharacterEquippedSkill(CommonCharacter character, String position, Session session, Map<String, Set<String>> equippedSkills) throws JsonProcessingException {
+    private static void saveCharacterEquippedSkill(CommonCharacter character, String position, Session session, Map<String, Set<String>> equippedSkills)  {
         /*
         * 技能变更之后要保持技能的equippedposition和角色的equippedSkills两个数据结构保持一致
         * 并把这些信息持久化
@@ -393,7 +393,7 @@ public class SkillObjectManager {
         }
     }
 
-    private static void levelUp(SkillObject skillObject, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    private static void levelUp(SkillObject skillObject, PlayerCharacter playerCharacter, Session session)  {
         /*
         * 升级一个技能
         * */

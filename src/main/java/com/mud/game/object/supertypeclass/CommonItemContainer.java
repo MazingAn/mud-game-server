@@ -10,7 +10,7 @@ public class CommonItemContainer {
     private String id;
     private int maxCellNumber;
     private int usedCellNumber;
-    private Map<String, Object> items;
+    private Map<String, CommonObjectInfo> items;
     private String owner;
 
     public String getId() {
@@ -37,11 +37,11 @@ public class CommonItemContainer {
         this.usedCellNumber = usedCellNumber;
     }
 
-    public Map<String, Object> getItems() {
+    public Map<String, CommonObjectInfo> getItems() {
         return items;
     }
 
-    public void setItems(Map<String, Object> items) {
+    public void setItems(Map<String, CommonObjectInfo> items) {
         this.items = items;
     }
 

@@ -27,7 +27,7 @@ public class DriveTo extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         Session session = getSession();

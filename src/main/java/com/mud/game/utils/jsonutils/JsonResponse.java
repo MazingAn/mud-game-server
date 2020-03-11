@@ -1,11 +1,15 @@
 package com.mud.game.utils.jsonutils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonResponse {
-    public static String JsonStringResponse(Object obj) throws JsonProcessingException {
+    public static String JsonStringResponse(Object obj) {
+
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(obj);
+        try{
+            return mapper.writeValueAsString(obj);
+        }catch (Exception JsonProcessingException){
+            return null;
+        }
     }
 }

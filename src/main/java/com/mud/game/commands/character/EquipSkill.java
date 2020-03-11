@@ -32,7 +32,7 @@ public class EquipSkill extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         /*
         * 玩家装备技能到身上
         * */

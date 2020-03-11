@@ -129,7 +129,7 @@ public class WorldRoomObjectManager {
         room.setEvents(events);
     }
 
-    public static  void onPlayerCharacterMove(PlayerCharacter playerCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom) throws JsonProcessingException {
+    public static  void onPlayerCharacterMove(PlayerCharacter playerCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom)  {
         /*
         * @ 管理房间内玩家的移动
         * @ 1。在玩家移动的时候要给其他玩家发送玩家的动态
@@ -152,7 +152,7 @@ public class WorldRoomObjectManager {
 
     }
 
-    public static void broadcast(WorldRoomObject room, Object message, String excludeId) throws JsonProcessingException {
+    public static void broadcast(WorldRoomObject room, Object message, String excludeId)  {
         /*
         * @ 房间内广播，发送信息给房间内的所有玩家
         * */
@@ -180,7 +180,7 @@ public class WorldRoomObjectManager {
         }
     }
 
-    public static void triggerArriveAction(WorldRoomObject room, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException, JSONException {
+    public static void triggerArriveAction(WorldRoomObject room, PlayerCharacter playerCharacter, Session session) {
         /*
         * @如果房间绑定的有事件，触发
         * */

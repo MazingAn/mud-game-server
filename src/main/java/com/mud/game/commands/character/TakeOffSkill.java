@@ -33,7 +33,7 @@ public class TakeOffSkill extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         /*
         * 玩家取消装备技能
         * */

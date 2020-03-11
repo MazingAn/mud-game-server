@@ -44,7 +44,7 @@ class MudGameServerApplicationTests {
     }
 
     @Test
-    void attr2Map() throws JsonProcessingException {
+    void attr2Map()  {
         String jsonAttr = "{\"attack\":{\"name\":\"攻击\",\"value\":20},\"defence\":{\"name\":\"防御\",\"value\":10},\"precise\":{\"name\":\"命中\",\"value\":10},\"dodge\":{\"name\":\"躲闪\",\"value\":0},\"parry\":{\"name\":\"招架\",\"value\":0},\"crit_rate\":{\"name\":\"暴击几率\",\"value\":0.1},\"attack_speed\":{\"name\":\"攻击速度\",\"value\":1},\"final_damage\":{\"name\":\"最终伤害\",\"value\":0},\"ignore_defence\":{\"name\":\"忽略防御\",\"value\":0},\"crit_damage\":{\"name\":\"暴击伤害\",\"value\":1.1},\"crit_scale\":{\"name\":\"暴击倍率\",\"value\":1},\"dagage_reduction\":{\"name\":\"伤害减免\",\"value\":0},\"resist_crit\":{\"name\":\"暴击抵抗\",\"value\":0},\"resist_xuanyuan\":{\"name\":\"眩晕抵抗\",\"value\":0},\"resist_busy\":{\"name\":\"忙乱抵抗\",\"value\":0},\"resist_dingshen\":{\"name\":\"定身抵抗\",\"value\":0},\"resist_daodo\":{\"name\":\"倒地抵抗\",\"value\":0},\"resist_zhongdu\":{\"name\":\"中毒抵抗\",\"value\":0},\"meditate_rate\":{\"name\":\"打坐效率\",\"value\":0},\"learn_rate\":{\"name\":\"学习效率\",\"value\":0},\"practice_rate\":{\"name\":\"练习效率\",\"value\":0},\"mining_rate\":{\"name\":\"挖矿效率\",\"value\":0},\"collect_rate\":{\"name\":\"采药效率\",\"value\":0},\"fishing_rate\":{\"name\":\"钓鱼效率\",\"value\":0}}";
         System.out.println(Attr2Map.characterAttrTrans(jsonAttr));
     }
@@ -75,7 +75,7 @@ class MudGameServerApplicationTests {
     void splitStr() {System.out.println(Arrays.toString("is_male(\"男\");kal(1,2,3,4)".split(";")));}
 
     @Test
-    void jsonArrayStrToSet() throws JsonProcessingException {
+    void jsonArrayStrToSet()  {
         String str = "[\"hello\", \"world\"]";
         System.out.println(JsonStrConvetor.ToSet(str));
     }

@@ -58,7 +58,7 @@ public class WorldObjectObjectManager {
         obj.setEvents(events);
     }
 
-    public static void onPlayerLook(WorldObjectObject obj, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void onPlayerLook(WorldObjectObject obj, PlayerCharacter playerCharacter, Session session)  {
         /*
          * @ 当玩家查看游戏世界内的物体的时候返回物体信息和可执行的命令（操作）
          * */

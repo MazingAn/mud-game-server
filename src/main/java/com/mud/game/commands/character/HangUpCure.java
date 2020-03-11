@@ -36,7 +36,7 @@ public class HangUpCure extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         Session session = getSession();
         Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_CURE, session);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mud.game.handler.EquipmentPositionHandler;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.object.account.Player;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.BagpackObject;
@@ -62,7 +63,7 @@ public class EquipmentObjectManager {
         return equipment;
     }
 
-    public static void equipTo(EquipmentObject equipmentObject, CommonCharacter character, String position, Session session) throws JsonProcessingException {
+    public static void equipTo(EquipmentObject equipmentObject, CommonCharacter character, String position, Session session)  {
         /*装备到角色身上*/
         if(checkBeforeEquip(equipmentObject, position, session)){
             // 移除掉旧的装备
@@ -81,6 +82,10 @@ public class EquipmentObjectManager {
             }
             // TODO：应用装备内的宝石的属性
 
+            // 如果是玩家的话要更新玩家背包状态；从背包移除这件装备
+            if(character instanceof  PlayerCharacter) {
+                PlayerCharacterManager.removeObjectsFromBagpack((PlayerCharacter) character, equipmentObject, 1, session);
+            }
             // 更新装备的状态
             equipmentObject.setEquipped(true);
             equipmentObject.setEquippedPosition(position);
@@ -91,23 +96,29 @@ public class EquipmentObjectManager {
         }
     }
 
-    public static void takeOff(EquipmentObject equipmentObject, CommonCharacter character, String position, Session session) throws JsonProcessingException {
+    public static void takeOff(EquipmentObject equipmentObject, CommonCharacter character, String position, Session session)  {
         /*从角色身上取掉装备*/
-        // Todo： 判断背包里面还能不能装下装备，如果装不下那就卸不掉，只能用手拿着
-
-        // 开始卸掉装备
-        for(String attrKey : equipmentObject.getAttrs().keySet()){
-            Object valueStr = equipmentObject.getAttrs().get(attrKey).get("value");
-            float value =  Float.parseFloat(valueStr.toString());
-            GameCharacterManager.changeStatus(character, attrKey, value * -1);
+        // 判断背包里面还能不能装下装备，如果装不下那就卸不掉，只能用手拿着
+        if(character instanceof PlayerCharacter &&
+                (!PlayerCharacterManager.addObjectsToBagpack((PlayerCharacter) character, equipmentObject, 1, session))){
+            // todo: 无法卸掉装备信息提示
+        }else{
+            // 开始卸掉装备
+            for(String attrKey : equipmentObject.getAttrs().keySet()){
+                Object valueStr = equipmentObject.getAttrs().get(attrKey).get("value");
+                float value =  Float.parseFloat(valueStr.toString());
+                GameCharacterManager.changeStatus(character, attrKey, value * -1);
+            }
+            equipmentObject.setEquipped(false);
+            equipmentObject.setEquippedPosition(null);
+            character.getEquippedEquipments().put(position, null);
+            syncEquipmentAndCharacterStatus(equipmentObject, character, session);
         }
-        equipmentObject.setEquipped(false);
-        equipmentObject.setEquippedPosition(null);
-        character.getEquippedEquipments().put(position, null);
-        syncEquipmentAndCharacterStatus(equipmentObject, character, session);
+
+
     }
 
-    public static void syncEquipmentAndCharacterStatus(EquipmentObject equipmentObject, CommonCharacter character, Session session) throws JsonProcessingException {
+    public static void syncEquipmentAndCharacterStatus(EquipmentObject equipmentObject, CommonCharacter character, Session session)  {
         MongoMapper.equipmentObjectRepository.save(equipmentObject);
         if(character.getClass().equals(PlayerCharacter.class)){
             // 同步背包里装备的状态
@@ -138,7 +149,7 @@ public class EquipmentObjectManager {
         MongoMapper.bagpackObjectRepository.save(bagpackObject);
     }
 
-    public static boolean checkBeforeEquip(EquipmentObject equipmentObject, String position,  Session session) throws JsonProcessingException {
+    public static boolean checkBeforeEquip(EquipmentObject equipmentObject, String position,  Session session)  {
         /*
          *  装备之前检查装备是否可以装备
          * */
@@ -174,7 +185,7 @@ public class EquipmentObjectManager {
         return cmds;
     }
 
-    public static void onPlayerLook(EquipmentObject equipmentObject, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void onPlayerLook(EquipmentObject equipmentObject, PlayerCharacter playerCharacter, Session session)  {
         /*
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */

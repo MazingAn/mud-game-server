@@ -13,7 +13,7 @@ public class CheckAttr extends BaseCondition {
      *
      * @param key             检测类的健
      * @param playerCharacter 检测的主体对象（要被检测的玩家）
-     * @param args
+     * @param args 函数所需参数（"属性名称", 检测值）
      */
     public CheckAttr(String key, PlayerCharacter playerCharacter, String[] args) {
         super(key, playerCharacter, args);

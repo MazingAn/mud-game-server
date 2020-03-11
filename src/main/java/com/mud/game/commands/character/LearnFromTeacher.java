@@ -31,7 +31,7 @@ public class LearnFromTeacher extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         Session session = getSession();
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();

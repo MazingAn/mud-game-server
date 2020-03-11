@@ -62,7 +62,7 @@ public class MyWebSocket {
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) throws JSONException, JsonProcessingException {
+    public void onMessage(Session session, String message) throws JSONException {
         if (message.length() < 1){
             //心跳包
         }else {

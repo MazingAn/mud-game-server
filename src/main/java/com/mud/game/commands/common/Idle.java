@@ -16,7 +16,7 @@ public class Idle extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         Session session = getSession();
         session.sendText("");
     }

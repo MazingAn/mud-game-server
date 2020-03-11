@@ -14,7 +14,7 @@ import com.mud.game.worldrun.db.mappings.MongoMapper;
 import java.util.*;
 
 public class GameWorldManager {
-    public static void onPlayerCharacterDisconnect(PlayerCharacter playerCharacter) throws JsonProcessingException {
+    public static void onPlayerCharacterDisconnect(PlayerCharacter playerCharacter)  {
         /*
         *  @玩家下线的时候要做的事情
         *  @ 一、 从玩家所在房间移除玩家

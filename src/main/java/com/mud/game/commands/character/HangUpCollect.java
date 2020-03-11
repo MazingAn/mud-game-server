@@ -37,7 +37,7 @@ public class HangUpCollect extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         Session session = getSession();
         // 检查玩家有没有挖矿技能

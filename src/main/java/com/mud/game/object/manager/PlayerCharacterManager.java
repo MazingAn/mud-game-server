@@ -33,7 +33,7 @@ public class PlayerCharacterManager {
     * @ 负责角色的创建，销毁，进入游戏，状态返回
     * */
 
-    public static PlayerCharacter create(String name, String gender, int arm, int bone, int body, int smart, Session session) throws JsonProcessingException {
+    public static PlayerCharacter create(String name, String gender, int arm, int bone, int body, int smart, Session session)  {
         /*
          * @ 创建一个玩家角色
          * */
@@ -95,7 +95,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void puppet(String playerCharacterId, Session session) throws JsonProcessingException {
+    public static void puppet(String playerCharacterId, Session session)  {
         /*
         * 把一个玩家角色放入游戏世界
         * */
@@ -139,7 +139,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void clearSession(String playerCharacterId) throws JsonProcessingException {
+    public static void clearSession(String playerCharacterId)  {
         /*
         * @ 玩家角色进入游戏的时候，要清空掉原来的session信息
         * */
@@ -151,7 +151,7 @@ public class PlayerCharacterManager {
         GameSessionService.removeSessionBySessionId(session.id());
     }
 
-    public static void lookAround(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException, JSONException {
+    public static void lookAround(PlayerCharacter playerCharacter, Session session) {
         /* ******************************************************************************
          * 进入某一个地方之后： 返回这个地方的所有信息
          *  @ 玩家查看周围的信息
@@ -225,7 +225,7 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new CurrentLocationMessage(new RoomInfo(location))));
     }
 
-    public static void gotoRoom(PlayerCharacter playerCharacter, String exitId, Session session) throws JsonProcessingException, JSONException {
+    public static void gotoRoom(PlayerCharacter playerCharacter, String exitId, Session session) {
         /*
         * 玩家移动到一个房间，这个过程中不能单纯的把玩家放到这个房间
         * 而是要在程序内部通过出口，检查出口能否通过
@@ -249,7 +249,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void moveTo(PlayerCharacter playerCharacter, String roomKey, Session session) throws JsonProcessingException, JSONException {
+    public static void moveTo(PlayerCharacter playerCharacter, String roomKey, Session session) {
         /*
         * @ 玩家移动到一个新的房间
         * @ 本质上就是更新玩家的位置
@@ -280,7 +280,7 @@ public class PlayerCharacterManager {
         WorldRoomObjectManager.triggerArriveAction(newRoom, playerCharacter, session);
     }
 
-    public static void revealMap(PlayerCharacter playerCharacter, WorldRoomObject location, Session session, boolean forceUpdateMap) throws JsonProcessingException {
+    public static void revealMap(PlayerCharacter playerCharacter, WorldRoomObject location, Session session, boolean forceUpdateMap)  {
         /* ****************************************************************************
         * @ 解锁新的地图
         * 把当前的地图，放入已经解锁的地图Set里面
@@ -315,7 +315,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void pushMap(PlayerCharacter playerCharacter,String areaKey, Session session) throws JsonProcessingException {
+    public static void pushMap(PlayerCharacter playerCharacter,String areaKey, Session session)  {
         /*
         * @ 针对于一个区域，推送玩家在这个区域内解锁的所有地图和出口
         * */
@@ -350,7 +350,7 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new RevealedMapMessage(allRevealedMapInArea)));
     }
 
-    public static void showStatus(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void showStatus(PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 显示玩家的状态，包含玩家所有的属性
         * @ 玩的属性详情见客户点或：PlayerCharacterStatus
@@ -358,7 +358,7 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStatus(playerCharacter)));
     }
 
-    public static void onPlayerLook(PlayerCharacter target, PlayerCharacter caller, Session session) throws JsonProcessingException {
+    public static void onPlayerLook(PlayerCharacter target, PlayerCharacter caller, Session session)  {
         /*
          * @ 当玩家查看游戏世界内的物体生成器的时候返回物体信息和可执行的命令（操作）
          * */
@@ -398,7 +398,7 @@ public class PlayerCharacterManager {
         return true;
     }
 
-    public static void findTeacher(PlayerCharacter playerCharacter, String targetId, Session session) throws JsonProcessingException {
+    public static void findTeacher(PlayerCharacter playerCharacter, String targetId, Session session)  {
         /*
         * 玩家拜师
         * 首先玩家必须没有师傅
@@ -419,7 +419,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void requestFriend(PlayerCharacter playerCharacter, String targetId, Session session) throws JsonProcessingException {
+    public static void requestFriend(PlayerCharacter playerCharacter, String targetId, Session session)  {
         /*
         * @ 玩家通过另一个玩家的ID发出好友申请
         * */
@@ -443,7 +443,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void acceptFriendRequest(PlayerCharacter playerCharacter, String friendId, Session session) throws JsonProcessingException {
+    public static void acceptFriendRequest(PlayerCharacter playerCharacter, String friendId, Session session)  {
         /*
         * @ 同意好友的请求
         * @ 把好友信息从申请列表移动到已通过列表
@@ -478,7 +478,7 @@ public class PlayerCharacterManager {
         friendsSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_BE_APPLIED_FRIEND_REQUEST, playerCharacter.getName()))));
     }
 
-    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String targetId, String message, Session selfSession) throws JsonProcessingException {
+    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String targetId, String message, Session selfSession)  {
         /*
         * @发送消息给其他玩家
         * */
@@ -492,7 +492,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static Runnable learnSkillFromTeacher(PlayerCharacter playerCharacter, String skillKey, String teacherId, Session session) throws JsonProcessingException {
+    public static Runnable learnSkillFromTeacher(PlayerCharacter playerCharacter, String skillKey, String teacherId, Session session)  {
         /*
         * @ 玩家从师傅那里学习技能
         * @ 这个技能本身是一个定时器
@@ -526,12 +526,8 @@ public class PlayerCharacterManager {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
-                        PlayerCharacterManager.learnSkill(playerCharacter, skillKey, updatedSession, teacher);
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
-                    }
+                    Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
+                    PlayerCharacterManager.learnSkill(playerCharacter, skillKey, updatedSession, teacher);
                 }
             };
             return runnable;
@@ -539,7 +535,7 @@ public class PlayerCharacterManager {
 
     }
 
-    public static Runnable learnSkillByObject(PlayerCharacter playerCharacter, String skillKey, String teacherId, Session session) throws JsonProcessingException {
+    public static Runnable learnSkillByObject(PlayerCharacter playerCharacter, String skillKey, String teacherId, Session session)  {
         /*
          * @ 玩家通过物品充值潜能学习技能
          * @ 这个技能本身是一个定时器
@@ -577,17 +573,13 @@ public class PlayerCharacterManager {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
-                        // 充值的潜能点是否用完检查，如果已经用完则停止学习
-                        if((playerCharacter.getLearnByObjectRecord().get(teacher.getName()) <= 0)){
-                            updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NO_ENOUGH_POTENTIAL_BALANCE, teacher.getName()))));
-                            PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
-                        }else{
-                            PlayerCharacterManager.learnSkill(playerCharacter, skillKey, updatedSession, teacher);
-                        }
-                    } catch (JsonProcessingException e) {
-                        e.printStackTrace();
+                    Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
+                    // 充值的潜能点是否用完检查，如果已经用完则停止学习
+                    if((playerCharacter.getLearnByObjectRecord().get(teacher.getName()) <= 0)){
+                        updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NO_ENOUGH_POTENTIAL_BALANCE, teacher.getName()))));
+                        PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                    }else{
+                        PlayerCharacterManager.learnSkill(playerCharacter, skillKey, updatedSession, teacher);
                     }
                 }
             };
@@ -595,7 +587,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static SkillObject learnSkill(PlayerCharacter playerCharacter, String skillKey, Session updatedSession, Object learnTarget) throws JsonProcessingException {
+    public static SkillObject learnSkill(PlayerCharacter playerCharacter, String skillKey, Session updatedSession, Object learnTarget)  {
         /*
         * @ 玩家学习技能的逻辑实现
         * @ 如果玩家已经有了这个技能，则不需要新建，进行升级操作
@@ -633,7 +625,7 @@ public class PlayerCharacterManager {
         return skillObject;
     }
 
-    public static void returnAllSkills(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void returnAllSkills(PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 获得玩家所有技能
         * */
@@ -656,7 +648,7 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterSkills(skills)));
     }
 
-    public static void getSkillsByPosition(PlayerCharacter playerCharacter, String position, Session session) throws JsonProcessingException {
+    public static void getSkillsByPosition(PlayerCharacter playerCharacter, String position, Session session)  {
         /*
          * @ 获得玩家某一个位置的所有技能的key，分为已经装备的和没有装备的
          * @ 最终返回给客户端的数据包含两个字符串集合，used 和 can_replace
@@ -681,18 +673,19 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new PositionSkillsMessage(usedSkills, canReplacedSkills)));
     }
 
-    public static void returnBagpack(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void returnBagpack(PlayerCharacter playerCharacter, Session session)  {
         /*返回玩家的背包信息*/
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
-        Collection<Object> values = bagpackObject.getItems().values();
-        session.sendText(JsonResponse.JsonStringResponse(new BagPackListMessage(new ArrayList<Object>(values))));
+        Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
+        session.sendText(JsonResponse.JsonStringResponse(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values))));
     }
 
-    public static void returnEquippedEquipments(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void returnEquippedEquipments(PlayerCharacter playerCharacter, Session session)  {
         session.sendText(JsonResponse.JsonStringResponse(new EquipmentMessage(playerCharacter)));
     }
 
-    public static boolean receiveObjectToBagpack(PlayerCharacter playerCharacter, CommonObject commonObject, int number, Session session) throws JsonProcessingException {
+    // TODO：重构！ 物品创造好之后要调用放入背包操作
+    public static boolean receiveObjectToBagpack(PlayerCharacter playerCharacter, CommonObject commonObject, int number, Session session)  {
         /*
         * 接受物品到背包
         * 把物品放入背包
@@ -714,7 +707,7 @@ public class PlayerCharacterManager {
         }
     }
 
-    public static void loadDefaultObjects(PlayerCharacter playerCharacter) throws JsonProcessingException {
+    public static void loadDefaultObjects(PlayerCharacter playerCharacter)  {
         /*
         * 初始化玩家的默认物品
         * */
@@ -746,6 +739,10 @@ public class PlayerCharacterManager {
         MongoMapper.playerCharacterRepository.save(playerCharacter);
     }
 
+    /**
+     * 初始化玩家的仓库
+     * @param playerCharacter 玩家对象
+     * */
     public static void initWareHouse(PlayerCharacter playerCharacter){
         /*
         * 初始化玩家的背包
@@ -754,6 +751,58 @@ public class PlayerCharacterManager {
         MongoMapper.wareHouseObjectRepository.save(wareHouseObject);
         playerCharacter.setWareHouse(wareHouseObject.getId());
         MongoMapper.playerCharacterRepository.save(playerCharacter);
+    }
+
+    /**
+     * 从背包移除物品
+     *
+     * @param playerCharacter 玩家对象
+     * @param removedObject 要移除的物品对象
+     * @param number 要移除的数量
+     * @param session  消息传送通道
+     *
+     * @return boolean 最终是否成功移除
+     * */
+    public static boolean removeObjectsFromBagpack(PlayerCharacter playerCharacter, CommonObject removedObject, int number, Session session) {
+        String bagpackId = playerCharacter.getBagpack();
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
+        if(CommonItemContainerManager.removeItem(bagpackObject, removedObject, number)) {
+            MongoMapper.bagpackObjectRepository.save(bagpackObject);
+            Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
+            session.sendText(JsonResponse.JsonStringResponse(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values))));
+            return true;
+        }else {
+            session.sendText(JsonResponse.JsonStringResponse(
+                    new AlertMessage(String.format(GameWords.CAN_NOT_REMOVE_FROM_BAGPACK,
+                    number, removedObject.getUnitName(), removedObject.getName()))));
+            return false;
+        }
+    }
+
+    /**
+     * 往背包添加物品
+     *
+     * @param playerCharacter 玩家对象
+     * @param removedObject 要添加的物品对象
+     * @param number 要添加的数量
+     * @param session  消息传送通道
+     *
+     * @return boolean 最终是否成功放入背包
+     * */
+    public static boolean addObjectsToBagpack(PlayerCharacter playerCharacter, CommonObject removedObject, int number, Session session) {
+        String bagpackId = playerCharacter.getBagpack();
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
+        if(CommonItemContainerManager.addItem(bagpackObject, removedObject, number)) {
+            MongoMapper.bagpackObjectRepository.save(bagpackObject);
+            Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
+            session.sendText(JsonResponse.JsonStringResponse(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values))));
+            return true;
+        }else {
+            session.sendText(JsonResponse.JsonStringResponse(
+                    new AlertMessage(String.format(GameWords.CAN_NOT_REMOVE_FROM_BAGPACK,
+                            number, removedObject.getUnitName(), removedObject.getName()))));
+            return false;
+        }
     }
 
 }

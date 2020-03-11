@@ -35,7 +35,7 @@ public class HangUpStop extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         Session session = getSession();
         PlayerScheduleManager.shutdownExecutorByCallerId(caller.getId());

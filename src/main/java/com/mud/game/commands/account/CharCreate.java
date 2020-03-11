@@ -35,7 +35,7 @@ public class CharCreate extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         String name = getArgs().getString("name");
         String gender = getArgs().getString("gender");
         JSONArray innateValues = getArgs().getJSONArray("innate_values");

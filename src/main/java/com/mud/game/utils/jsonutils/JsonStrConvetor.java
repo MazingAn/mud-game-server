@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class JsonStrConvetor {
 
-    public static Set ToSet(String jsonStr) throws JsonProcessingException {
+    public static Set<?> ToSet(String jsonStr)  {
 
         Set<?> result = new HashSet<>();
         if(jsonStr.trim().equals("") ){

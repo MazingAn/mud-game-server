@@ -133,4 +133,12 @@ public class CommonObjectInfo {
     public void setEquipped(boolean equipped) {
         this.equipped = equipped;
     }
+
+    public Set<String> getPosition() {
+        return position;
+    }
+
+    public void setPosition(Set<String> position) {
+        this.position = position;
+    }
 }

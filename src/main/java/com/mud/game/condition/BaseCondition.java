@@ -55,6 +55,8 @@ public abstract class BaseCondition {
      * @throws NoSuchFieldException 要检测玩家的某一个属性 但反射不到这个属性的时候抛出
      * @throws IllegalAccessException 要检测玩家的某一个属性 但是反射过来并没有对应的访问权限
      *
+     * @return boolean 检测是否通过
+     *
      * <p>
      *     为了解决反射访问权限的问题，在设计Character类的时候所有的属性都被设置为了public级别 <br>
      *         可参见： {@link com.mud.game.object.supertypeclass.CommonCharacter} <br>

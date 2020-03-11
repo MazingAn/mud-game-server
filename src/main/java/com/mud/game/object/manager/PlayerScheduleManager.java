@@ -34,7 +34,7 @@ public class PlayerScheduleManager {
         return scheduledExecutorServiceMap.containsKey(callerId);
     }
 
-    public static void shutdownExecutorByCallerId(String callerId) throws JsonProcessingException {
+    public static void shutdownExecutorByCallerId(String callerId)  {
         ScheduledExecutorService service = scheduledExecutorServiceMap.get(callerId);
         if(service != null){
             service.shutdown();

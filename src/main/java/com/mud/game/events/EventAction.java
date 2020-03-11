@@ -22,7 +22,7 @@ public class EventAction {
      * @param actionRecord 玩家触发移动事件的时候对应的配置记录 参考：{@link ActionMove}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionMove(PlayerCharacter playerCharacter, ActionMove actionRecord, Session session) throws JsonProcessingException, JSONException {
+    public static void actionMove(PlayerCharacter playerCharacter, ActionMove actionRecord, Session session) {
         WorldRoomObject targetRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(actionRecord.getRoomKey());
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(actionRecord.getDescription())));
         // 强制更新客户端地图
@@ -38,7 +38,7 @@ public class EventAction {
      * @param actionRecord 玩家触发攻击事件的时候对应的配置记录 参考：{@link ActionAttack}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionAttack(PlayerCharacter playerCharacter, ActionAttack actionRecord, Session session) throws JsonProcessingException, JSONException {
+    public static void actionAttack(PlayerCharacter playerCharacter, ActionAttack actionRecord, Session session) {
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：攻击")));
     }
 
@@ -48,7 +48,7 @@ public class EventAction {
      * @param actionRecord 玩家触发接受任务事件的时候对应的配置记录 参考：{@link ActionAcceptQuest}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionAcceptQuest(PlayerCharacter playerCharacter, ActionAcceptQuest actionRecord, Session session) throws JsonProcessingException {
+    public static void actionAcceptQuest(PlayerCharacter playerCharacter, ActionAcceptQuest actionRecord, Session session)  {
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：接受任务")));
     }
 
@@ -58,7 +58,7 @@ public class EventAction {
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionLearnSkill}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionLearnSkill(PlayerCharacter playerCharacter, ActionLearnSkill actionRecord, Session session) throws JsonProcessingException {
+    public static void actionLearnSkill(PlayerCharacter playerCharacter, ActionLearnSkill actionRecord, Session session)  {
         /*
          * 触发
          * */
@@ -71,7 +71,7 @@ public class EventAction {
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionCloseEvent}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionCloseEvent(PlayerCharacter playerCharacter, ActionCloseEvent actionRecord, Session session) throws JsonProcessingException {
+    public static void actionCloseEvent(PlayerCharacter playerCharacter, ActionCloseEvent actionRecord, Session session)  {
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：关闭事件")));
     }
 
@@ -81,7 +81,7 @@ public class EventAction {
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionDialogue}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionDialogue(PlayerCharacter playerCharacter, ActionDialogue actionRecord, Session session) throws JsonProcessingException {
+    public static void actionDialogue(PlayerCharacter playerCharacter, ActionDialogue actionRecord, Session session)  {
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：对话")));
     }
 
@@ -91,7 +91,7 @@ public class EventAction {
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionTurnInQuest}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionTurnInQuest(PlayerCharacter playerCharacter, ActionTurnInQuest actionRecord, Session session) throws JsonProcessingException {
+    public static void actionTurnInQuest(PlayerCharacter playerCharacter, ActionTurnInQuest actionRecord, Session session)  {
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：提交任务")));
     }
 
@@ -101,7 +101,7 @@ public class EventAction {
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionChangeStep}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
      * */
-    public static void actionChangeStep(PlayerCharacter playerCharacter, ActionChangeStep actionRecord, Session session) throws JsonProcessingException {
+    public static void actionChangeStep(PlayerCharacter playerCharacter, ActionChangeStep actionRecord, Session session)  {
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：更改step")));
     }
 
@@ -110,8 +110,9 @@ public class EventAction {
      * @param playerCharacter 触发事件的玩家
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionChangeAttr}
      * @param session 玩家对应的session，事件执行过程中与客户端信息交互的通道
+     *
      * */
-    public static void actionChangeAttr(PlayerCharacter playerCharacter, ActionChangeAttr actionRecord, Session session) throws JsonProcessingException {
+    public static void actionChangeAttr(PlayerCharacter playerCharacter, ActionChangeAttr actionRecord, Session session){
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("触发事件：更改Attr")));
     }
 

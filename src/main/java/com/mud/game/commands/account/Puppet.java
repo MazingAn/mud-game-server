@@ -28,7 +28,7 @@ public class Puppet extends BaseCommand {
      *
      * */
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         String playerCharacterId = getArgs().getString("args");
         PlayerCharacterManager.puppet(playerCharacterId, getSession());
     }

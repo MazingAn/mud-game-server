@@ -18,7 +18,7 @@ import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 public class CommonObjectBuilder {
 
-    public static SkillObject buildSkill(String skillKey) throws JsonProcessingException {
+    public static SkillObject buildSkill(String skillKey)  {
         return SkillObjectManager.create(skillKey);
     }
 
@@ -30,11 +30,11 @@ public class CommonObjectBuilder {
         return NormalObjectObjectManager.create(normalObjectTemplateKey);
     }
 
-    public static GemObject buildGemObject(String gemTemplateKey) throws JsonProcessingException {
+    public static GemObject buildGemObject(String gemTemplateKey)  {
         return GemObjectManager.create(gemTemplateKey);
     }
 
-    public static CommonObject buildCommonObject(String templateKey) throws JsonProcessingException {
+    public static CommonObject buildCommonObject(String templateKey)  {
         /*
         * 在创建的时候没有明确的类型，则需要自己判断
         * */

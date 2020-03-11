@@ -1,5 +1,7 @@
 package com.mud.game.messages;
 
+import com.mud.game.structs.CommonObjectInfo;
+
 import java.util.ArrayList;
 
 
@@ -9,27 +11,41 @@ import java.util.ArrayList;
  *  返回示例：
  *  {
  *      "inventory": [
- *          物品信息 -> {@link com.mud.game.structs.CommonObjectInfo},
- *          ..............
+ *          {
+ *              category: "TYPE_OBJECTTYPE_EQUIPMENT",
+ *              dataKey: "dahuandao",
+ *              dbref: "5e6844604cd95e36a09db953",
+ *              desc: "这是一把大环刀，透着寒光，一看就是好东西！",
+ *              equipped: false,
+ *              icon: "",
+ *              max_stack: 1,
+ *              name: "大环刀",
+ *              number: 1,
+ *              position: ["LEFT_HAND","RIGHT_HAND"],
+ *              quality: 0,
+ *              strength_level: 0
+ *          }
  *      ]
  *  }
  *  </pre>
+ *  返回背包数据是一个数组，数组元素为一个 CommonObjectInfo的json序列化字符串。<br>
+ *      关于CommonObjectInfo 参见 : {@link CommonObjectInfo}
  *
  * */
 
 public class BagPackListMessage {
 
-    private ArrayList<Object> inventory;
+    private ArrayList<CommonObjectInfo> inventory;
 
-    public BagPackListMessage(ArrayList<Object> inventory) {
+    public BagPackListMessage(ArrayList<CommonObjectInfo> inventory) {
         this.inventory = inventory;
     }
 
-    public ArrayList<Object> getInventory() {
+    public ArrayList<CommonObjectInfo> getInventory() {
         return inventory;
     }
 
-    public void setInventory(ArrayList<Object> inventory) {
+    public void setInventory(ArrayList<CommonObjectInfo> inventory) {
         this.inventory = inventory;
     }
 }

@@ -67,6 +67,7 @@ public interface CombatInterface {
      * @param  minHp  用来检测角色是否被打败的标准(当角色的血量低于这个值，则玩家判定失败)
      *                战斗的是否可以结束，则是队伍里所有人的血量低于这个值 则战斗可以结束
      * @param sense 战斗场景
+     * @return boolean 战斗是否可以结束
      * */
     default boolean isCombatFinished(CombatSense sense, int minHp){
         return sense.getAliveNumberInTeam(sense.getRedTeam(), minHp) == 0 ||

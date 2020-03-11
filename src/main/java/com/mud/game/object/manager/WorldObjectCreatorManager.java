@@ -70,7 +70,7 @@ public class WorldObjectCreatorManager {
         obj.setEvents(events);
     }
 
-    public static void onPlayerLook(WorldObjectCreator obj, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void onPlayerLook(WorldObjectCreator obj, PlayerCharacter playerCharacter, Session session)  {
         /*
          * @ 当玩家查看游戏世界内的物体生成器的时候返回物体信息和可执行的命令（操作）
          * */
@@ -107,7 +107,7 @@ public class WorldObjectCreatorManager {
         obj.setLootLists(lootLists);
     }
 
-    public static void onPlayerLoot(WorldObjectCreator creator, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void onPlayerLoot(WorldObjectCreator creator, PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 玩家从物品生成器获得物品
         * */

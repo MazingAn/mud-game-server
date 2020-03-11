@@ -122,18 +122,14 @@ public class UniqueWorldObjectBuilder {
             case "WorldNpcObject":
                 Iterable<WorldNpc> npcTemplates = DbMapper.worldNpcRepository.findAll();
                 for(WorldNpc template: npcTemplates) {
-                    try{
-                        WorldNpcObject object = null;
-                        if(MongoMapper.worldNpcObjectRepository.existsByDataKey(template.getDataKey())){
-                            object = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(template.getDataKey());
-                            WorldNpcObjectManager.update(object, template);
-                        }else{
-                            object = WorldNpcObjectManager.build(template);
-                        }
-                        MongoMapper.worldNpcObjectRepository.save(object);
-                    }catch (JsonProcessingException e){
-                        System.out.println("在创建NPC:" + template.getName()+ " : " + template.getDataKey() + "的时候出现了异常，原因是自定义属性无法解析");
+                    WorldNpcObject object = null;
+                    if(MongoMapper.worldNpcObjectRepository.existsByDataKey(template.getDataKey())){
+                        object = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(template.getDataKey());
+                        WorldNpcObjectManager.update(object, template);
+                    }else{
+                        object = WorldNpcObjectManager.build(template);
                     }
+                    MongoMapper.worldNpcObjectRepository.save(object);
                 }
                 break;
         }

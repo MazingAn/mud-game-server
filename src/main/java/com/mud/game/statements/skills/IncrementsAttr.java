@@ -26,7 +26,7 @@ public class IncrementsAttr extends BasePassiveSkillStatement {
     }
 
     @Override
-    public void calculus() throws JSONException, JsonProcessingException {
+    public void calculus() throws JSONException {
         /*
         * 计算技能的效果
         * */

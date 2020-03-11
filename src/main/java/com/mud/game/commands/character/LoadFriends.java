@@ -21,7 +21,7 @@ public class LoadFriends extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();
         Session session = getSession();
         session.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(playerCharacter)));

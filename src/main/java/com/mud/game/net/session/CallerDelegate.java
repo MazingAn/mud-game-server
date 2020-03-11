@@ -23,7 +23,7 @@ public class CallerDelegate {
     }
 
 
-    public void executeCommand(String commandKey, JSONObject args) throws JsonProcessingException {
+    public void executeCommand(String commandKey, JSONObject args)  {
         Session session = GameSessionService.getSessionByCallerId(callerId);
         CallerType callerType = GameSessionService.getCallerTypeByCallerId(callerId);
         switch (callerType){

@@ -61,10 +61,10 @@ public abstract class BaseCommand {
      * 虚函数，所有命令类必须有自己的实现
      * 一般情况下，命令会在这个函数里解析命令参数，并执行具体的游戏逻辑，返回信息到客户端
      *
-     * @throws JsonProcessingException 在返回Json字符串给客户端的时候可能引发的异常
+     * 在返回Json字符串给客户端的时候可能引发的异常
      * @throws JSONException 在解析命令参数是可能引发的json解析异常
      * */
-    public abstract void execute() throws JSONException, JsonProcessingException;
+    public abstract void execute() throws JSONException;
 
     public String getKey() {
         return key;

@@ -36,7 +36,7 @@ public class ChoseAction extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();
         Session session = getSession();
         JSONObject args = getArgs();

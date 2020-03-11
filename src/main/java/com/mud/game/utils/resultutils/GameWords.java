@@ -64,4 +64,8 @@ public class GameWords {
 
     // 物品获取
     public static final String CAN_NOT_GET_OBJECT = "你的背包装不下那么多的{g%s{n。";
+
+    // 背包移除相关
+    public static final String CAN_NOT_REMOVE_FROM_BAGPACK = "无法从背包移除{r%s%s%s{n";
+
 }

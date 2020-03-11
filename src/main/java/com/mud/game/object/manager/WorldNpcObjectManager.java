@@ -23,7 +23,7 @@ import java.util.*;
 
 public class WorldNpcObjectManager {
 
-    public static WorldNpcObject build(WorldNpc template) throws JsonProcessingException {
+    public static WorldNpcObject build(WorldNpc template)  {
         WorldNpcObject obj = new WorldNpcObject();
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());
@@ -71,7 +71,7 @@ public class WorldNpcObjectManager {
         return obj;
     }
 
-    public static void update(WorldNpcObject obj, WorldNpc template) throws JsonProcessingException {
+    public static void update(WorldNpcObject obj, WorldNpc template)  {
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
         obj.setTeacher(template.isTeacher());
@@ -124,7 +124,7 @@ public class WorldNpcObjectManager {
         obj.setMp(obj.getMp());
     }
 
-    public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 当玩家查看NPC的时候返回NPC信息和可用命令
         * */
@@ -196,7 +196,7 @@ public class WorldNpcObjectManager {
         npc.setSkills(new HashSet<>());
     }
 
-    private static void bindDefaultSkills(WorldNpcObject npc) throws JsonProcessingException {
+    private static void bindDefaultSkills(WorldNpcObject npc)  {
         /*
         * 为NPC绑定默认技能
         * 查询npc默认技能记录
@@ -231,7 +231,7 @@ public class WorldNpcObjectManager {
         npc.setSkills(skills);
     }
 
-    public static void getCanTeachSkills(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    public static void getCanTeachSkills(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 获得npc可以教授的技能列表，这个列表提供给玩家以便于学习技能
         * */

@@ -20,7 +20,7 @@ import java.util.Set;
 public class PlayerManager {
     /*玩家管理，负责维护玩家账户在数据库的状态*/
 
-    public static Player create(String username, String password, Session session) throws JsonProcessingException {
+    public static Player create(String username, String password, Session session)  {
         /*
         * @ 创建一个游戏玩家账户
         * */
@@ -38,7 +38,7 @@ public class PlayerManager {
         }
     }
 
-    public static Player login(String username, String password, Session session) throws JsonProcessingException {
+    public static Player login(String username, String password, Session session)  {
         /*
          * 对一个游戏账户执行登陆操作
          * 本质上就是更新玩家的更新callerID为角色ID，然后修改角色的类型为账户类型
@@ -62,7 +62,7 @@ public class PlayerManager {
         }
     }
 
-    public static void showCharacters(Player player, Session session) throws JsonProcessingException {
+    public static void showCharacters(Player player, Session session)  {
         Set<SimplePlayerCharacter> charAll = player.getPlayerCharacters();
         session.sendText(JsonResponse.JsonStringResponse(new CharAllMessage(charAll)));
     }

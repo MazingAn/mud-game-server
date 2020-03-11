@@ -15,7 +15,7 @@ import org.yeauty.pojo.Session;
 
 public class HangUpManager {
 
-    public static Runnable start(PlayerCharacter playerCharacter, CharacterState currentAction, Session session) throws JsonProcessingException {
+    public static Runnable start(PlayerCharacter playerCharacter, CharacterState currentAction, Session session)  {
         /*
         * @ 玩家挖矿/钓鱼/采药三种挂机
         * @ 挖矿有一定概率获得宝石，也会随机获得潜能和经验
@@ -32,11 +32,7 @@ public class HangUpManager {
                 @Override
                 public void run() {
                     if(playerCharacter.getTili() <= 0){ //没有体力则不能继续挂机
-                        try {
-                            playerHasNoTili(playerCharacter, session);
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        }
+                        playerHasNoTili(playerCharacter, session);
                     }else{
                         playerHangUp(playerCharacter, currentAction);
                     }
@@ -78,22 +74,18 @@ public class HangUpManager {
         * */
     }
 
-    private static void playerHasNoTili(PlayerCharacter playerCharacter, Session session) throws JsonProcessingException {
+    private static void playerHasNoTili(PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 当玩家没有体力的时候 停止挂机 并发送提示信息
         * */
         Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
         if (updatedSession != null){
-            try {
-                session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_ENOUGH_TILI)));
-                PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
+            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_ENOUGH_TILI)));
+            PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
         }
     }
 
-    private static boolean commonHangUpCheck(PlayerCharacter playerCharacter, CharacterState currentAction, Session session) throws JsonProcessingException {
+    private static boolean commonHangUpCheck(PlayerCharacter playerCharacter, CharacterState currentAction, Session session)  {
         /*
          * 通用的挂机前检查， 检查玩家是否能够开始挂机
          * @ 一、 玩家不能是死亡状态

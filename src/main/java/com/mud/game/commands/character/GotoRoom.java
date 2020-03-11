@@ -25,7 +25,7 @@ public class GotoRoom extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         JSONObject args = getArgs();
         Session session = getSession();
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();

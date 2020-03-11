@@ -42,7 +42,7 @@ public class CombatSense {
      *
      * @param team 要检测的队伍
      * @param minHp 判断角色是否还能继续参加战斗的界限值  如果血量低于这个值 则不能被算作存活人员
-     *
+     * @return int 被检测队伍的存活（可继续战斗）人数
      * */
     public int getAliveNumberInTeam(ArrayList<CommonCharacter> team, int minHp) {
         int aliveNumber = 0;

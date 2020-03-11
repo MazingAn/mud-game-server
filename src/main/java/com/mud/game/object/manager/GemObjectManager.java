@@ -11,7 +11,7 @@ import com.mud.game.worlddata.db.models.Gem;
 import java.util.ArrayList;
 
 public class GemObjectManager {
-    public static GemObject create(String templateKey) throws JsonProcessingException {
+    public static GemObject create(String templateKey)  {
         GemObject gemObject = new GemObject();
         Gem template = DbMapper.gemRepository.findGemByDataKey(templateKey);
         gemObject.setDataKey(template.getDataKey());

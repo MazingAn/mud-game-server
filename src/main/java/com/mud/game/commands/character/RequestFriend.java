@@ -31,7 +31,7 @@ public class RequestFriend extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         /*
         * 根据对方的id添加好友
         * 运行命令之前，先检测玩家id和对方的id是否已经存在

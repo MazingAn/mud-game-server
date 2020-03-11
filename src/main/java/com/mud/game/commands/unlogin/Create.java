@@ -31,7 +31,7 @@ public class Create extends BaseCommand {
     }
 
     @Override
-    public void execute() throws JSONException, JsonProcessingException {
+    public void execute() throws JSONException {
         String username = this.getArgs().getString("playername");
         String password = this.getArgs().getString("password");
         boolean connect = this.getArgs().getBoolean("connect");

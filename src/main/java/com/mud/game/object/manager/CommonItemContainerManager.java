@@ -28,7 +28,7 @@ public class CommonItemContainerManager {
             // 先填充没有之前没装满的格子
             String cellId = findUnFullCellKeyByDataKey(container, commonObj.getDataKey());
             if(cellId!=null){
-                CommonObjectInfo cellInfo = (CommonObjectInfo) container.getItems().get(cellId);
+                CommonObjectInfo cellInfo = container.getItems().get(cellId);
                 int fillNumber = commonObj.getMaxStack() - cellInfo.getNumber();
                 cellInfo.setNumber(fillNumber);
                 number = number - fillNumber;
@@ -56,14 +56,14 @@ public class CommonItemContainerManager {
         // 如果number <=0 则没有意义
         if(number <= 0) return false;
         // 检查能否移除
-        if(checkCanRemove(container, commonObject, number)){
+        if(!checkCanRemove(container, commonObject, number)){
             return false;
         }
         // 先移除没有装满的cell
         while(number > 0){
             String unFullCellId = findUnFullCellKeyByDataKey(container, commonObject.getDataKey());
             if(unFullCellId != null){
-                CommonObjectInfo unFullCellInfo = (CommonObjectInfo) container.getItems().get(unFullCellId);
+                CommonObjectInfo unFullCellInfo = container.getItems().get(unFullCellId);
                 int unFullNumber = unFullCellInfo.getNumber();
                 if(unFullNumber >= number){
                     // 如果没填充满的格子的数量大于要移除的，直接移除，返回true；搞定！！！
@@ -95,17 +95,25 @@ public class CommonItemContainerManager {
         return true;
     }
 
+    /**
+     * 检查要添加的物品能否被背包放下
+     *
+     * @param container 目标容器（背包或仓库)
+     * @param commonObject 要添加的物品
+     * @param number 数量
+     *
+     * @return boolean 是否能够添加
+     * */
     public static boolean checkCanAdd(CommonItemContainer container, CommonObject commonObject, int number){
-        /*
-        * @ 检查要添加的物品能否被背包放下
-        * */
+        // 首先拿到背包空余的格子
         int freeCellNumber = container.getMaxCellNumber() - container.getUsedCellNumber();
+        // 计算需要的空间
         int neededCellNumber = Integer.MAX_VALUE;
         // 检查这个物品没装满的格子
         String cellId = findUnFullCellKeyByDataKey(container, commonObject.getDataKey());
         if(cellId != null){ //确实有一个格子没有装满；
             // 计算一下这个格子还能装多少；
-            CommonObjectInfo info = (CommonObjectInfo) container.getItems().get(cellId);
+            CommonObjectInfo info =  container.getItems().get(cellId);
             int canFillNumber = commonObject.getMaxStack() - info.getNumber();
             // 修改总数；减去能在这个格子装下的；
             number = number - canFillNumber;
@@ -142,7 +150,7 @@ public class CommonItemContainerManager {
         * 返回没有装满的容器的key
         * */
         for(String key : container.getItems().keySet()){
-            CommonObjectInfo info = (CommonObjectInfo) container.getItems().get(key);
+            CommonObjectInfo info = container.getItems().get(key);
             if(info.getDataKey().startsWith(objectKey)){
                 if(info.getNumber() < info.getMax_stack()){
                     return key;
@@ -157,7 +165,7 @@ public class CommonItemContainerManager {
         * 查找一个装满这种物品的元素
         * */
         for(String key : container.getItems().keySet()){
-            CommonObjectInfo info = (CommonObjectInfo) container.getItems().get(key);
+            CommonObjectInfo info = container.getItems().get(key);
             if(info.getDataKey().startsWith(objectKey)){
                 if(info.getNumber() == info.getMax_stack()){
                     return key;
@@ -173,7 +181,7 @@ public class CommonItemContainerManager {
         * */
         int toalNumber = 0;
         for(String key: container.getItems().keySet()){
-            CommonObjectInfo info = (CommonObjectInfo) container.getItems().get(key);
+            CommonObjectInfo info = container.getItems().get(key);
             if(info.getDataKey().startsWith(commonObjectKey)){
                 toalNumber += info.getNumber();
             }
