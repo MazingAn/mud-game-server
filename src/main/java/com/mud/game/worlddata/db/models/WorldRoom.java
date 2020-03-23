@@ -1,20 +1,38 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
 import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 
 import javax.persistence.*;
 
 @Entity
+@Mark(name = "世界房间")
 public class WorldRoom extends BaseObject {
+
+    @Mark(name="和平区域")
     private boolean peaceful;
+
+    @Mark(name="所属区域")
     private String location;
+
+    @Mark(name="位置坐标")
     private String position;
+
     @Column(columnDefinition = "int default 1")
+    @Mark(name = "房间等级")
     private int level;
+
+    @Mark(name = "交互命令")
     private String hangUpCommand;
+
     @Column(columnDefinition = "bool default false")
+    @Mark(name = "需要更新")
     private boolean needUpdate;
+
+    @Mark(name = "图标")
     private String icon;
+
+    @Mark(name = "背景")
     private String background;
 
 

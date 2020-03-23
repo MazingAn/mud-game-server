@@ -1,26 +1,61 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 @Entity
+@Mark(name="游戏设置")
 public class GameSetting {
 
+    /** id编号 唯一标识 只读 */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
+
+    /** 游戏名称 */
+    @Mark(name = "欢迎信息")
     private String gameName;
+
+    /** 欢迎屏幕信息 */
+    @Mark(name = "连接信息")
     private String connectionScreen;
+
+    /** 全局CD */
+    @Mark(name = "全局CD")
     private float globalCD;
+
+    /** 自动释放技能CD */
+    @Mark(name = "自动释放技能CD")
     private float AutoCastSkillCD;
+
+    /** 最大宝石等级 */
+    @Mark(name = "最大宝石等级")
     private byte maxGemLevel;
+
+    /** 最大装备等级 */
+    @Mark(name = "最大装备等级")
     private byte maxEquipmentLevel;
+
+    /** 默认房间 */
     @Column(nullable = true)
+    @Mark(name = "默认房间")
     private String defaultHome;
+
+    /**起始房间*/
     @Column(nullable = true)
+    @Mark(name = "起始房间")
     private String startLocation;
+
+    /**默认玩家房间*/
     @Column(nullable = true)
+    @Mark(name = "默认玩家房间")
     private String defaultPlayerHome;
+
+    /**默认玩家模板*/
     @Column(nullable = true)
+    @Mark(name = "默认玩家模板")
     private String defaultPlayerTemplate;
 
     public Long getId() {

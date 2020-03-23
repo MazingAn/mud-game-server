@@ -8,9 +8,9 @@ import java.util.Set;
 
 public class JsonStrConvetor {
 
-    public static Set<?> ToSet(String jsonStr)  {
+    public static Set<String> ToSet(String jsonStr)  {
 
-        Set<?> result = new HashSet<>();
+        Set<String> result = new HashSet<>();
         if(jsonStr.trim().equals("") ){
             return result;
         }

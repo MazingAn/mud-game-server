@@ -1,5 +1,7 @@
 package com.mud.game.worlddata.db.models.supermodel;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 /*
@@ -9,13 +11,22 @@ import javax.persistence.*;
 public class BaseObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
+
     @Column(unique = true)
+    @Mark(name="标识")
     private String dataKey;
+
+    @Mark(name="类型类")
     private String typeClass;
+
     @Column(length = 64)
+    @Mark(name="名称")
     private String name;
+
     @Column(length = 2048)
+    @Mark(name="描述")
     private String description;
 
     public Long getId() {

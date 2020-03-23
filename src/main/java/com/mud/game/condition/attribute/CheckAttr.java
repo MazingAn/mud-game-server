@@ -3,7 +3,6 @@ package com.mud.game.condition.attribute;
 import com.mud.game.condition.BaseCondition;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import javafx.scene.effect.Bloom;
 
 public class CheckAttr extends BaseCondition {
     /**

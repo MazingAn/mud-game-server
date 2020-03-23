@@ -1,45 +1,78 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
 import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 
 import javax.persistence.*;
 
 @Entity
+@Mark(name="世界NPC")
 public class WorldNpc extends BaseObject {
-    /*世界npc； 包含Monster， Npc*/
+    /**世界npc； 包含Monster， Npc*/
     //所处位置（房间）
+    @Mark(name="所在房间")
     private String location;
+
     //模型类型 Monster, Npc
+    @Mark(name="模版")
     private String model;
+
     //能否攻击
+    @Mark(name="能否攻击")
     private boolean canAttack;
+
     // 性别 （男，女，公公， 动物）
+    @Mark(name="性别")
     private String gender;
+
     // 等级
     @Column(columnDefinition = "int default 1")
+    @Mark(name="等级")
     private int level;
+
     // 所属门派
+    @Mark(name="门派")
     private String school;
+
     //是否能够教学(是否能够在这里拜师）
+    @Mark(name="是否收徒")
     private boolean isTeacher;
+
     //NPC的称号
+    @Mark(name="称号")
     private String title;
+
     //NPC的门派称号
+    @Mark(name="门派称号")
     private String schoolTitle;
+
     //NPC是否能够通过物品交换换取技能
+    @Mark(name="通过物品学习")
     private boolean canLearnByObject;
+
     //Npc收徒条件
+    @Mark(name="收徒条件")
     @Column(length = 512)
     private String teachCondition;
+
     // 杀死NPC得到的经验
+    @Mark(name="提供经验")
     private int giveExp;
+
     // 杀死NPC得到的善恶值
+    @Mark(name="提供善恶值")
     private int giveEvil;
+
     // NPc的重生时间
+    @Mark(name="复活时间")
     private int rebornTime;
+
     //NPC出现的条件
+    @Mark(name="显示条件")
     private String showCondition;
+
     //NPC的图标资源
+    @Mark(name="图标")
     private String icon;
 
 
