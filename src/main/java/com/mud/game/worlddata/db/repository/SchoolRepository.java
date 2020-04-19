@@ -4,5 +4,5 @@ import com.mud.game.worlddata.db.models.School;
 import org.springframework.data.repository.CrudRepository;
 
 public interface SchoolRepository extends CrudRepository<School, Long> {
-    public School findSchoolByDataKey(String dataKey);
+    School findSchoolByDataKey(String dataKey);
 }

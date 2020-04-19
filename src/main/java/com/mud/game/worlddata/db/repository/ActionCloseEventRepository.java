@@ -5,6 +5,6 @@ import com.mud.game.worlddata.db.models.ActionCloseEvent;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ActionCloseEventRepository extends CrudRepository<ActionCloseEvent, Long> {
-    public ActionCloseEvent findActionCloseEventById(Long id);
-    public ActionCloseEvent findActionCloseEventByEventKey(String dataKey);
+    ActionCloseEvent findActionCloseEventById(Long id);
+    ActionCloseEvent findActionCloseEventByEventKey(String dataKey);
 }

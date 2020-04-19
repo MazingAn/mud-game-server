@@ -5,6 +5,6 @@ import com.mud.game.worlddata.db.models.ActionAttack;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ActionAcceptQuestRepository extends CrudRepository<ActionAcceptQuest, Long> {
-    public ActionAcceptQuest findActionAcceptQuestById(Long id);
-    public ActionAcceptQuest findActionAcceptQuestByEventKey(String dataKey);
+    ActionAcceptQuest findActionAcceptQuestById(Long id);
+    ActionAcceptQuest findActionAcceptQuestByEventKey(String dataKey);
 }

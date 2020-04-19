@@ -6,7 +6,6 @@ import com.mud.game.commands.character.*;
 import com.mud.game.commands.common.Idle;
 import com.mud.game.commands.unlogin.Connect;
 import com.mud.game.commands.unlogin.Create;
-import com.mud.game.utils.jsonutils.Attr2Map;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +29,9 @@ public class CommandSetHandler {
     public static Map<String, Class> accountCommandSet = new HashMap<>();
     /**玩家的命令集合  key为字符串类型  value为对应的处理类的路径*/
     public static Map<String, Class> playerCharacterCommandSet = new HashMap<>();
+    /**玩家的死亡之后可执行命令集合  key为字符串类型  value为对应的处理类的路径*/
+    public static Map<String, Class> playerCharacterDieCommandSet = new HashMap<>();
+
 
     /** 初始化 未登录玩家的命令集 */
     public static void initUnLoginCommandSet(){
@@ -74,6 +76,19 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("equip_equipment", EquipEquipment.class);
         playerCharacterCommandSet.put("take_off_equipment", TakeOffEquipment.class);
         playerCharacterCommandSet.put("attack", Attack.class);
+
+    }
+
+    /** 初始化 游戏内部玩家的命令集 */
+    public static void initPlayerCharacterDieCommandSet() {
+        playerCharacterDieCommandSet.put("idle", Idle.class);
+        playerCharacterDieCommandSet.put("friends", LoadFriends.class);
+        playerCharacterDieCommandSet.put("add_friend", RequestFriend.class);
+        playerCharacterDieCommandSet.put("accept_friend", AcceptFriend.class);
+        playerCharacterDieCommandSet.put("friend_chat", FriendChat.class);
+        playerCharacterDieCommandSet.put("find_teacher", FindTeacher.class);
+        playerCharacterDieCommandSet.put("reborn_here", RebornHere.class);
+        playerCharacterDieCommandSet.put("reborn_home", RebornHome.class);
     }
 
 }

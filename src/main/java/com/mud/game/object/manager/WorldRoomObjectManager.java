@@ -1,19 +1,17 @@
 package com.mud.game.object.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.handler.RoomCommandHandler;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.GamePosition;
 import com.mud.game.structs.ObjectMoveInfo;
-import com.mud.game.structs.SimplePlayerCharacter;
+import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.json.JSONException;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
@@ -129,29 +127,44 @@ public class WorldRoomObjectManager {
         room.setEvents(events);
     }
 
+    /**
+     * 管理房间内玩家的移动<br>
+     * 在玩家移动的时候要给其他玩家发送玩家的动态<br>
+     * 玩家移动之后要更新房间内保存的玩家列表并增量更新到客户端<br>
+     * @param playerCharacter 移动的玩家
+     * @param oldRoom 离开的房间
+     * @param newRoom 进入的房间
+     * */
     public static  void onPlayerCharacterMove(PlayerCharacter playerCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom)  {
-        /*
-        * @ 管理房间内玩家的移动
-        * @ 1。在玩家移动的时候要给其他玩家发送玩家的动态
-        * @ 2。玩家移动之后要更新房间内保存的玩家列表并增量更新到客户端
-        * */
+
         if(!oldRoom.getId().equals(newRoom.getId())){
+            // 进入离开文字信息
             String playerLeftMessage = String.format(GameWords.PLAYER_LEFT_ROOM, playerCharacter.getName(), oldRoom.getName(), newRoom.getName());
             String playerJoinMessage = String.format(GameWords.PLAYER_JOIN_ROOM, playerCharacter.getName(), oldRoom.getName(), newRoom.getName());
-            SimplePlayerCharacter simplePlayerCharacter = new SimplePlayerCharacter(playerCharacter);
-            ObjectMoveInfo playerMoveInfo = new ObjectMoveInfo("players", Arrays.asList(new SimplePlayerCharacter[]{simplePlayerCharacter}));
+            // 玩家自身信息
+            SimpleCharacter simpleCharacter = new SimpleCharacter(playerCharacter);
+            ObjectMoveInfo playerMoveInfo = new ObjectMoveInfo("players", Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
+
+            // 离开信息组合
             Map<String, Object> oldRoomMessage = new HashMap<String, Object>();
             oldRoomMessage.put("msg", playerLeftMessage);
             oldRoomMessage.put("obj_moved_out", playerMoveInfo.getInfo());
+
+            // 进入信息组合
             Map<String, Object> newRoomMessage = new HashMap<String, Object>();
             newRoomMessage.put("msg", playerJoinMessage);
             newRoomMessage.put("obj_moved_in", playerMoveInfo.getInfo());
+
+            // 推送信息
             WorldRoomObjectManager.broadcast(oldRoom, oldRoomMessage, playerCharacter.getId());
             WorldRoomObjectManager.broadcast(newRoom, newRoomMessage, playerCharacter.getId());
         }
 
     }
 
+    /**
+     * 房间内广播
+     * */
     public static void broadcast(WorldRoomObject room, Object message, String excludeId)  {
         /*
         * @ 房间内广播，发送信息给房间内的所有玩家

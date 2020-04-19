@@ -21,7 +21,7 @@ public class EntityInfoController {
             Class clazz = Class.forName("com.mud.game.worlddata.db.models." + tableName);
             return EntityInfoLoader.load(clazz);
         }catch (ClassNotFoundException e){
-            return null;
+            return new EntityInfo();
         }
     }
 

@@ -52,7 +52,7 @@ public class HangUpManager {
             // 增加随机的经验和潜能
             int addedValue = addRandomPotential(playerCharacter);
             updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.PLAYER_GET_RANDOM_POTENTIAL, addedValue, addedValue))));
-            PlayerCharacterManager.showStatus(playerCharacter, updatedSession);
+            PlayerCharacterManager.showStatus(playerCharacter);
         }catch (Exception e){
             System.out.println("在玩家挂机的时候发生错误，挂机人：" + playerCharacter.getName() + ";  挂机操作：" + currentAction);
         }

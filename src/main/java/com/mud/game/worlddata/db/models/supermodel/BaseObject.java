@@ -3,6 +3,10 @@ package com.mud.game.worlddata.db.models.supermodel;
 import com.mud.game.utils.modelsutils.Mark;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /*
 * 所有游戏中存在的物体的Entity的超类
@@ -16,6 +20,8 @@ public class BaseObject {
 
     @Column(unique = true)
     @Mark(name="标识")
+    @NotBlank(message = "数据标识不能为空")
+    @Size(min=2, max=64, message = "标识长度必须在2到64之间")
     private String dataKey;
 
     @Mark(name="类型类")
@@ -23,10 +29,13 @@ public class BaseObject {
 
     @Column(length = 64)
     @Mark(name="名称")
+    @NotBlank(message = "必须指定一个名称")
+    @Size(min = 1, max = 64, message = "名称必须在1到64之间")
     private String name;
 
     @Column(length = 2048)
     @Mark(name="描述")
+    @Size(max = 2048, message = "最大长度不得超过2048")
     private String description;
 
     public Long getId() {

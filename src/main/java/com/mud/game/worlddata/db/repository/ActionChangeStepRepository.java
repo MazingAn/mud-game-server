@@ -5,6 +5,6 @@ import com.mud.game.worlddata.db.models.ActionLearnSkill;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ActionChangeStepRepository extends CrudRepository<ActionChangeStep, Long> {
-    public ActionChangeStep findActionChangeStepById(Long id);
-    public ActionChangeStep findActionChangeStepsByEventKey(String dataKey);
+    ActionChangeStep findActionChangeStepById(Long id);
+    ActionChangeStep findActionChangeStepsByEventKey(String dataKey);
 }

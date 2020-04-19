@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.List;
-import java.util.Optional;
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 
 /**
@@ -18,25 +18,20 @@ import java.util.Optional;
  * 提供GameSetting的增删改查
  * */
 @RestController
-@RequestMapping("/game_setting")
+@RequestMapping("/GameSetting")
 public class GameSettingController {
     /**
      * 增加gameSetting
      *
      * @param newGameSetting 表单提交的GameSetting
+     * @return GameSetting
      * */
     @PostMapping("/add")
-    public GameSetting addGameSetting(@RequestBody GameSetting newGameSetting) {
+    public GameSetting addGameSetting(@Valid  @RequestBody GameSetting newGameSetting) {
         return DbMapper.gameSettingRepository.save(newGameSetting);
     }
 
-    /**
-     * 查询GameSetting
-     *
-     * @param page 请求页码
-     * @param size 每页展示的数量
-     * @return 分页信息和页面内容
-     * */
+
     @GetMapping("")
     public Page<GameSetting> query(@RequestParam(defaultValue="0") int page,
                                    @RequestParam(defaultValue="20") int size,
@@ -51,10 +46,10 @@ public class GameSettingController {
      *
      * @param updatedGameSetting 更新的游戏设置
      * @param id  要更新的行的id
-     * @return 更新后信息内容
+     * @return GameSetting 更新后信息内容
      */
     @PutMapping("/{id}")
-    public GameSetting editGameSetting(@RequestBody GameSetting updatedGameSetting, @PathVariable Long id) {
+    public GameSetting editGameSetting(@Valid @RequestBody GameSetting updatedGameSetting, @PathVariable Long id) {
         updatedGameSetting.setId(id);
         return DbMapper.gameSettingRepository.save(updatedGameSetting);
     }
@@ -63,11 +58,11 @@ public class GameSettingController {
      * 删除游戏设置
      *
      * @param id 要删除的行的ID
-     * @return 删除的信息内容
      * */
     @DeleteMapping("/{id}")
-    public GameSetting deleteGameSetting(@PathVariable Long id){
-        return DbMapper.gameSettingRepository.deleteGameSettingById(id);
+    @Transactional
+    public void deleteGameSetting(@PathVariable Long id){
+        DbMapper.gameSettingRepository.deleteById(id);
     }
 
 }

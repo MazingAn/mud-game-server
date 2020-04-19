@@ -1,7 +1,10 @@
 package com.mud.game.object.supertypeclass;
 
+import com.mud.game.net.session.GameSessionService;
 import com.mud.game.structs.Message;
+import com.mud.game.utils.jsonutils.JsonResponse;
 import org.springframework.data.annotation.Id;
+import org.yeauty.pojo.Session;
 
 import java.util.List;
 
@@ -55,7 +58,11 @@ public class BaseGameObject {
         return description;
     }
 
-    public void msg(Message message) {
-
+    public void msg(Object messageObject){
+        Session session = GameSessionService.getSessionByCallerId(this.id);
+        if(session != null){
+            session.sendText(JsonResponse.JsonStringResponse(messageObject));
+        }
     }
+
 }

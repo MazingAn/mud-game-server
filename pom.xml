@@ -62,6 +62,11 @@
             <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
 
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/javax.interceptor/javax.interceptor-api &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>javax.interceptor</groupId>-->
+<!--            <artifactId>javax.interceptor-api</artifactId>-->
+<!--        </dependency>-->
 
         <!-- excel工具库-->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->

@@ -6,6 +6,7 @@ public class FieldInfo {
     public boolean nullable;
     public int maxLength;
     public int minLength;
+    public String message;
     public Class type;
 
     public FieldInfo() {

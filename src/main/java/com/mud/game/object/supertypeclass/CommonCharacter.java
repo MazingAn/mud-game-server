@@ -3,6 +3,7 @@ package com.mud.game.object.supertypeclass;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.typeclass.WorldExitObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.structs.CharacterBuffer;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 import org.json.JSONObject;
@@ -50,6 +51,12 @@ public class CommonCharacter extends BaseGameObject {
     public CharacterState state;
     // 角色的目标
     public String target;
+
+    // 角色默认攻击技能
+    public String defaultSkill;
+
+    // 角色的buffer信息
+    public Set<CharacterBuffer> buffers;
 
 
 
@@ -289,4 +296,21 @@ public class CommonCharacter extends BaseGameObject {
     public void setTarget(String target) {
         this.target = target;
     }
+
+    public Set<CharacterBuffer> getBuffers() {
+        return buffers;
+    }
+
+    public void setBuffers(Set<CharacterBuffer> buffers) {
+        this.buffers = buffers;
+    }
+
+    public String getDefaultSkill() {
+        return defaultSkill;
+    }
+
+    public void setDefaultSkill(String defaultSkill) {
+        this.defaultSkill = defaultSkill;
+    }
+
 }

@@ -1,8 +1,7 @@
 package com.mud.game.object.typeclass;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.structs.CharacterState;
-import com.mud.game.structs.SimplePlayerCharacter;
+import com.mud.game.structs.SimpleCharacter;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,9 +42,9 @@ public class PlayerCharacter extends CommonCharacter {
     public int goodAndEvil;
     public boolean doubleEquip;
     // 玩家的好友列表
-    public Map<String, SimplePlayerCharacter> friends;
+    public Map<String, SimpleCharacter> friends;
     // 玩家接受到的好友请求列表
-    public Map<String, SimplePlayerCharacter> friendRequests;
+    public Map<String, SimpleCharacter> friendRequests;
     // 玩家通过物品或付费学习技能的记录
     public Map<String, Integer> learnByObjectRecord;
     // 玩家的背包
@@ -282,19 +281,19 @@ public class PlayerCharacter extends CommonCharacter {
         return doubleEquip;
     }
 
-    public Map<String, SimplePlayerCharacter> getFriends() {
+    public Map<String, SimpleCharacter> getFriends() {
         return friends;
     }
 
-    public void setFriends(Map<String, SimplePlayerCharacter> friends) {
+    public void setFriends(Map<String, SimpleCharacter> friends) {
         this.friends = friends;
     }
 
-    public Map<String, SimplePlayerCharacter> getFriendRequests() {
+    public Map<String, SimpleCharacter> getFriendRequests() {
         return friendRequests;
     }
 
-    public void setFriendRequests(Map<String, SimplePlayerCharacter> friendRequests) {
+    public void setFriendRequests(Map<String, SimpleCharacter> friendRequests) {
         this.friendRequests = friendRequests;
     }
 

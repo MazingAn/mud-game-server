@@ -84,7 +84,7 @@ public class EquipmentObjectManager {
 
             // 如果是玩家的话要更新玩家背包状态；从背包移除这件装备
             if(character instanceof  PlayerCharacter) {
-                PlayerCharacterManager.removeObjectsFromBagpack((PlayerCharacter) character, equipmentObject, 1, session);
+                PlayerCharacterManager.removeObjectsFromBagpack((PlayerCharacter) character, equipmentObject, 1);
             }
             // 更新装备的状态
             equipmentObject.setEquipped(true);
@@ -100,7 +100,7 @@ public class EquipmentObjectManager {
         /*从角色身上取掉装备*/
         // 判断背包里面还能不能装下装备，如果装不下那就卸不掉，只能用手拿着
         if(character instanceof PlayerCharacter &&
-                (!PlayerCharacterManager.addObjectsToBagpack((PlayerCharacter) character, equipmentObject, 1, session))){
+                (!PlayerCharacterManager.addObjectsToBagpack((PlayerCharacter) character, equipmentObject, 1))){
             // todo: 无法卸掉装备信息提示
         }else{
             // 开始卸掉装备
@@ -126,7 +126,7 @@ public class EquipmentObjectManager {
             // 保存玩家信息
             MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
             // 返回客户端最新的背包信息和状态信息
-            PlayerCharacterManager.showStatus((PlayerCharacter) character, session);
+            PlayerCharacterManager.showStatus((PlayerCharacter) character);
             PlayerCharacterManager.returnBagpack((PlayerCharacter) character, session);
             PlayerCharacterManager.returnEquippedEquipments((PlayerCharacter) character, session);
         }else{

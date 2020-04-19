@@ -1,29 +1,45 @@
 package com.mud.game.object.manager;
 
-import com.mud.game.object.algorithm.CommonAlgorithm;
+import com.mongodb.Mongo;
+import com.mud.game.algorithm.CommonAlgorithm;
+import com.mud.game.messages.*;
+import com.mud.game.net.session.CallerType;
+import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.server.ServerManager;
+import com.mud.game.structs.ObjectMoveInfo;
+import com.mud.game.structs.SimpleCharacter;
+import com.mud.game.utils.resultutils.GameWords;
+import com.mud.game.worlddata.db.models.WorldNpc;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
-import java.util.Map;
+import java.util.*;
 
+
+/** 游戏角色管理类
+ * 游戏中对角色通用处理都放在这里
+ * 在战斗，技能使用，装备使用这些环节，游戏中的NPC和玩家没有任何区别
+ * */
 public class GameCharacterManager {
-    /*
-    * 游戏中对角色通用处理都放在这里
-    * 在战斗，技能使用，装备使用这些环节，游戏中的NPC和玩家没有任何区别
-    * */
 
+    /** 玩家类的反射工具，通过反射把玩家类的属性找到并开放出去
+     *  <p>
+     *  获取所有的所有成员属性，包括父类，然后在这些属性中查找对应的属性Filed数据更新进行操作
+     *  为了配合这里能够获取到父类的属性，玩家类中所有的成员属性都被设置为了public
+     *  感觉有点怪怪的,对性能有一定影响，暂时还没找到更好的解决方案:(
+     *  聪明的旅行者（接盘侠）你有好办法没？ :)
+     *  </p>
+     * @param character CommonCharacter 要查找的角色
+     * @param attrName String 属性的名称（英文标识）
+     * @return Object 玩家的属性对象，Object类型，调用者自行根据游戏逻辑和属性定义转换
+     */
     public static Object findAttributeByName(CommonCharacter character, String attrName) throws NoSuchFieldException, IllegalAccessException {
-        /*
-         * @ 玩家类的反射工具，通过反射把玩家类的属性找到并开放出去
-         *  获取所有的所有成员属性，包括父类，然后在这些属性中查找对应的属性Filed数据更新进行操作
-         *  为了配合这里能够获取到父类的属性，玩家类中所有的成员属性都被设置为了public
-         *  感觉有点怪怪的,对性能有一定影响，暂时还没找到更好的解决方案:(
-         *  聪明的旅行者（接盘侠）你有好办法没？ :)
-         */
+
         Field[] fields = character.getClass().getFields();
         // 用了一万年的遍历查找，
         // 如果要优化的化，可以在服务器启动的时候找到所有的角色属性，建一个静态Map吧
@@ -42,6 +58,11 @@ public class GameCharacterManager {
         return null;
     }
 
+    /** 直接设置角色的某个属性
+     * @param character CommonCharacter 角色
+     * @param attrKey String 属性名称
+     * @param value Object 属性值
+     * */
     public static void setAttributeByName(CommonCharacter character, String attrKey, Object value) {
         /*
          * @ 这个方法主要用来直接设置角色的属性
@@ -96,6 +117,11 @@ public class GameCharacterManager {
         }
     }
 
+    /** 修改角色的某个属性
+     * @param character CommonCharacter 角色
+     * @param attrKey String 属性名称
+     * @param value Object 属性值
+     * */
     public static void changeStatus(CommonCharacter character, String attrKey, Object value) {
         /*
         * @ 这个方法主要用来增加或减少角色的属性
@@ -151,22 +177,28 @@ public class GameCharacterManager {
                 // 如果自定义属性中也没有找到，那这这不步操作肯定是运维人员配置的有问题，这部操作就GG了，测试期间先打印一下
                 System.out.println("没有找到对应的属性：" + attrKey);
             }
+            // 持久化
+            GameCharacterManager.saveCharacter(character);
         }catch (IllegalArgumentException e){
             e.printStackTrace();
             System.out.println("无法转换类型");
         }
-        // 持久化更改
-        if(character.getClass().equals(PlayerCharacter.class)){
-            MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
-        }else{
-            MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
+
+        // 检测角色死亡
+        if(character.getHp() <= 0){
+            GameCharacterManager.die(character);
         }
+
     }
 
+    /**
+     * 当角色的后天属性发生变动的时候进行联动更新
+     * @param character CommonCharacter 角色
+     * @param attrKey String 属性名称
+     * @param changedValue Object 属性值
+     * */
     public static void checkOnAfterAttrChange(CommonCharacter character, String attrKey, Object changedValue){
-        /*
-        * 当玩家的后天属性发生变动的时候进行联动更新
-        * */
+
         String strValue = changedValue.toString();
         if(strValue.contains(".")) strValue = strValue.split("\\.")[0];
         int intValue = Integer.parseInt(strValue);
@@ -187,6 +219,11 @@ public class GameCharacterManager {
         }
     }
 
+    /** 检查角色是否拥有某一个技能
+     * @param character  Character 角色
+     * @param skillKey String 技能key
+     * @return boolean 有：true 没有：false
+     * */
     public static boolean characterHasSkill(CommonCharacter character, String skillKey){
         /*
         * @ 检查角色是否拥有某个技能
@@ -200,10 +237,12 @@ public class GameCharacterManager {
         return false;
     }
 
+    /**
+     * 根据技能的key获得角色的技能对象
+     * @param character CommonCharacter 角色
+     * @param skillKey String 技能的标识
+     * */
     public static SkillObject getCharacterSkillByDataKey(CommonCharacter character, String skillKey){
-        /*
-        * 根据技能的key获得角色的技能对象
-        * */
         for(String skillId : character.getSkills()){
             SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
             if(skillObject != null && skillObject.getDataKey().equals(skillKey)){
@@ -211,6 +250,115 @@ public class GameCharacterManager {
             }
         }
         return null;
+    }
+
+    /**
+     * 根据ID查找角色实例
+     * */
+    public static CommonCharacter getCharacterObject(String characterId){
+        if(MongoMapper.playerCharacterRepository.existsById(characterId))
+            return MongoMapper.playerCharacterRepository.findPlayerCharacterById(characterId);
+        else
+            return MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(characterId);
+    }
+
+    /** 获得默认技能
+     * @param character  CommonCharacter 角色
+     * */
+    public static SkillObject getDefaultSkill(CommonCharacter character){
+        if(character.getDefaultSkill() == null){
+            // 如果橘角色没有默认技能 则根据默认技能的key查找这个技能 并创建
+            String defaultSkillKey = ServerManager.gameSetting.getDefaultSkill();
+            SkillObject defaultSkill = SkillObjectManager.create(defaultSkillKey);
+            defaultSkill.setOwner(character.getId());
+            character.setDefaultSkill(defaultSkill.getId());
+            MongoMapper.skillObjectRepository.save(defaultSkill);
+            saveCharacter(character);
+            return defaultSkill;
+        }else{
+            // 如果有默认技能，则查询技能实例
+            return MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(character.getDefaultSkill(), character.getId());
+        }
+    }
+
+    /** 执行技能
+     * @param character CommonCharacter 技能的释放者
+     * @param target CommonCharacter 技能作用对象
+     * @param skillObject SkillObject 技能实例
+     * */
+    public static void castSkill(CommonCharacter character, CommonCharacter target, SkillObject skillObject){
+        SkillObjectManager.castSkill(skillObject, character, target);
+    }
+
+    /** 持久化角色信息（保存到数据库）
+     * @param character  CommonCharacter
+     * */
+    public static void saveCharacter(CommonCharacter character){
+        if(character instanceof PlayerCharacter)
+            MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
+        else if(character instanceof WorldNpcObject)
+            MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
+    }
+
+    /**角色死亡触发
+     * @param character
+     * 角色死亡之后更新信息到客户端
+     * 延时触发复活
+     * */
+    public static void die(CommonCharacter character){
+        character.setHp(0);
+        character.setName(character.getName() + "的尸体");
+        GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
+        saveCharacter(character);
+        characterMoveOut(character);
+        characterMoveIn(character);
+        if(character instanceof WorldNpcObject){
+            Timer timer = new Timer();
+            float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+            timer.schedule(reborn(character), (int)rebornTime * 1000);
+        }else{
+            GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
+            character.msg(new RebornCommandsMessage((PlayerCharacter) character));
+        }
+    }
+
+    /** 角色复活
+     * @param character 角色实例
+     * @return TimerTask 延时任务实例
+     * */
+    public static TimerTask reborn(CommonCharacter character){
+        return new TimerTask() {
+            @Override
+            public void run() {
+                character.setHp(character.getMax_hp());
+                character.setName(character.getName().replaceAll("的尸体",""));
+                characterMoveOut(character);
+                characterMoveIn(character);
+                GameCharacterManager.saveCharacter(character);
+            }
+        };
+    }
+
+    /**角色信息从当前房间列表移除
+     * @param character 角色实例
+     * */
+    public static void characterMoveOut(CommonCharacter character){
+        SimpleCharacter simpleCharacter = new SimpleCharacter(character);
+        String type = character instanceof WorldNpcObject? "npcs" : "players";
+        ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
+        WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+        WorldRoomObjectManager.broadcast(room, new ObjectMoveOutMessage(moveInfo), character.getId());
+    }
+
+    /**角色信息追加到当前房间列表
+     * @param character 角色实例
+     * */
+    public static void characterMoveIn(CommonCharacter character){
+        SimpleCharacter simpleCharacter = new SimpleCharacter(character);
+        String type = character instanceof WorldNpcObject? "npcs" : "players";
+        ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
+        WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+        WorldRoomObjectManager.broadcast(room, new ObjectMoveInMessage(moveInfo), character.getId());
     }
 
 

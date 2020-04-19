@@ -7,13 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 
 /**
  * 游戏区域Controller
  * 提供WorldExit的增删改查
  * */
 @RestController
-@RequestMapping("/world_exit")
+@RequestMapping("/WorldExit")
 public class WorldExitController {
     /**
      * 增加WorldExit
@@ -23,7 +26,7 @@ public class WorldExitController {
      * @return 保存后的WorldExit信息
      * */
     @PostMapping("/add")
-    public WorldExit addWorldExit(@RequestBody WorldExit newWorldExit) {
+    public WorldExit addWorldExit(@Valid  @RequestBody WorldExit newWorldExit) {
         return DbMapper.worldExitRepository.save(newWorldExit);
     }
 
@@ -50,7 +53,7 @@ public class WorldExitController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public WorldExit editWorldExit(@RequestBody WorldExit updatedWorldExit, @PathVariable Long id) {
+    public WorldExit editWorldExit(@Valid @RequestBody WorldExit updatedWorldExit, @PathVariable Long id) {
         updatedWorldExit.setId(id);
         return DbMapper.worldExitRepository.save(updatedWorldExit);
     }
@@ -62,8 +65,9 @@ public class WorldExitController {
      * @return 删除的信息内容
      * */
     @DeleteMapping("/{id}")
-    public WorldExit deleteWorldExit(@PathVariable Long id){
-        return DbMapper.worldExitRepository.deleteWorldExitById(id);
+    @Transactional
+    public void deleteWorldExit(@PathVariable Long id){
+        DbMapper.worldExitRepository.deleteById(id);
     }
 
 }

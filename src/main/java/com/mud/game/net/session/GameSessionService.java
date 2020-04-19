@@ -40,7 +40,6 @@ public class GameSessionService {
         return sessionId2CallerIdMap.get(sessionId);
     }
 
-
     public static void removeSessionByCallerId(String callerId) {
         /*
         * 通过调用者ID删除Session
@@ -82,6 +81,10 @@ public class GameSessionService {
         }
     }
 
-
+    public static void updateCallerType(String callerId, CallerType newType){
+        if(callerId2CallerTypeMap.containsKey(callerId)){
+            callerId2CallerTypeMap.put(callerId, newType);
+        }
+    }
 
 }

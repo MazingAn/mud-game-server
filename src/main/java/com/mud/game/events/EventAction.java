@@ -26,7 +26,7 @@ public class EventAction {
         WorldRoomObject targetRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(actionRecord.getRoomKey());
         session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(actionRecord.getDescription())));
         // 强制更新客户端地图
-        PlayerCharacterManager.revealMap(playerCharacter, targetRoom , session, true);
+        PlayerCharacterManager.revealMap(playerCharacter, targetRoom , true);
         // 一定玩家到新的地图
         PlayerCharacterManager.moveTo(playerCharacter, actionRecord.getRoomKey(), session);
     }

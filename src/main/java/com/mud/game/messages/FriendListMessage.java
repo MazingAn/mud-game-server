@@ -1,7 +1,7 @@
 package com.mud.game.messages;
 
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.SimplePlayerCharacter;
+import com.mud.game.structs.SimpleCharacter;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 public class FriendListMessage {
-    public Map<String, Set<SimplePlayerCharacter>> friends;
+    public Map<String, Set<SimpleCharacter>> friends;
 
     public FriendListMessage(PlayerCharacter playerCharacter) {
         this.friends = new HashMap<>();
-        Set<SimplePlayerCharacter> apply = new HashSet<>();
-        Set<SimplePlayerCharacter> passed = new HashSet<>();
+        Set<SimpleCharacter> apply = new HashSet<>();
+        Set<SimpleCharacter> passed = new HashSet<>();
         for(String key:playerCharacter.getFriends().keySet()){
             passed.add(playerCharacter.getFriends().get(key));
         }
@@ -26,11 +26,11 @@ public class FriendListMessage {
     }
 
 
-    public Map<String, Set<SimplePlayerCharacter>> getFriends() {
+    public Map<String, Set<SimpleCharacter>> getFriends() {
         return friends;
     }
 
-    public void setFriends(Map<String, Set<SimplePlayerCharacter>> friends) {
+    public void setFriends(Map<String, Set<SimpleCharacter>> friends) {
         this.friends = friends;
     }
 }

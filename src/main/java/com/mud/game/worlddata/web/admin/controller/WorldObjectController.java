@@ -7,13 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 
 /**
  * 游戏区域Controller
  * 提供WorldObject的增删改查
  * */
 @RestController
-@RequestMapping("/world_object")
+@RequestMapping("/WorldObject")
 public class WorldObjectController {
     /**
      * 增加WorldObject
@@ -23,7 +26,7 @@ public class WorldObjectController {
      * @return 保存后的WorldObject信息
      * */
     @PostMapping("/add")
-    public WorldObject addWorldObject(@RequestBody WorldObject newWorldObject) {
+    public WorldObject addWorldObject(@Valid @RequestBody WorldObject newWorldObject) {
         return DbMapper.worldObjectRepository.save(newWorldObject);
     }
 
@@ -50,7 +53,7 @@ public class WorldObjectController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public WorldObject editWorldObject(@RequestBody WorldObject updatedWorldObject, @PathVariable Long id) {
+    public WorldObject editWorldObject(@Valid  @RequestBody WorldObject updatedWorldObject, @PathVariable Long id) {
         updatedWorldObject.setId(id);
         return DbMapper.worldObjectRepository.save(updatedWorldObject);
     }
@@ -62,8 +65,9 @@ public class WorldObjectController {
      * @return 删除的信息内容
      * */
     @DeleteMapping("/{id}")
-    public WorldObject deleteWorldObject(@PathVariable Long id){
-        return DbMapper.worldObjectRepository.deleteWorldObjectById(id);
+    @Transactional
+    public void deleteWorldObject(@PathVariable Long id){
+        DbMapper.worldObjectRepository.deleteById(id);
     }
 
 }

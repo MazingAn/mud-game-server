@@ -47,6 +47,7 @@ public class WorldNpcObjectManager {
         obj.setTitle(template.getTitle());
         obj.setSchoolTitle(template.getSchoolTitle());
         obj.setSchool(template.getSchool());
+        obj.setRebornTime(template.getRebornTime());
         // 玩家信息的初始化设置
         obj.setAfter_arm(0);
         obj.setAfter_body(0);
@@ -77,6 +78,7 @@ public class WorldNpcObjectManager {
         obj.setTeacher(template.isTeacher());
         obj.setLearnByObject(template.isCanLearnByObject());
         obj.setTeachCondition(template.getTeachCondition());
+        obj.setRebornTime(template.getRebornTime());
         // 初始化npc信息
         // 根据注册的信息设置角色信息
         obj.setName(template.getName());
@@ -118,9 +120,11 @@ public class WorldNpcObjectManager {
     }
 
     public static void resetHealth(WorldNpcObject obj) {
+        if(obj.getLimit_hp() == 0) obj.setLimit_hp(200);
+        if(obj.getLimit_mp() == 0) obj.setLimit_mp(200);
         obj.setMax_hp(obj.getLimit_hp());
         obj.setHp(obj.getMax_hp());
-        obj.setMax_mp(obj.getMax_mp());
+        obj.setMax_mp(obj.getLimit_mp());
         obj.setMp(obj.getMp());
     }
 
@@ -142,6 +146,7 @@ public class WorldNpcObjectManager {
          * @ NPC对应的命令还是比较多的，不同身份的NPC对不同玩家会有不通的可执行命令
          * */
         List<EmbeddedCommand> cmds = new ArrayList<>();
+        if(npc.getHp() <= 0)    return cmds;
         // 拜师命令
         if(npc.isTeacher() && !(playerCharacter.getTeacher().equals(npc.getDataKey()))){
            cmds.add(new EmbeddedCommand("拜师", "find_teacher", npc.getId()));
@@ -224,6 +229,7 @@ public class WorldNpcObjectManager {
                     SkillObjectManager.equipTo(skillObject, npc, position, null);
                 }
             }catch (Exception e){
+                e.printStackTrace();
                 System.out.println("角色 " + npc.getName() + " 在绑定技能 " + skillRecord.getSkillKey() + "的时候出现异常");
             }
 

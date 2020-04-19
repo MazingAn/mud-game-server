@@ -1,13 +1,10 @@
 package com.mud.game.object.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.mongodb.Mongo;
 import com.mud.game.handler.SkillFunctionHandler;
 import com.mud.game.handler.SkillPositionHandler;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
-import com.mud.game.object.algorithm.CommonAlgorithm;
+import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillObject;
@@ -62,7 +59,7 @@ public class SkillObjectManager {
         /*
         * 计算技能的效果
         * */
-        SkillFunctionHandler.calculusEffect(caller, target, skillObject);
+        SkillFunctionHandler.useSkill(caller, target, skillObject);
     }
 
     public static void bindSubSkills(SkillObject skillObject, String ownerId, int level) {
@@ -114,9 +111,13 @@ public class SkillObjectManager {
                 for (String skillId : equippedSkills.get(position)) {
                     // 这里必须手动卸掉技能，不能使用take_off方法，因为使用take_off会造成CurrentModification的异常
                     SkillObject oldSkill = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
-                    undoSkill(oldSkill, character, position);
-                    oldSkill.getEquippedPositions().remove(position);
-                    MongoMapper.skillObjectRepository.save(oldSkill);
+                    if(oldSkill != null){
+                        undoSkill(oldSkill, character, position);
+                        oldSkill.getEquippedPositions().remove(position);
+                        MongoMapper.skillObjectRepository.save(oldSkill);
+                    }else{
+                        character.getEquippedSkills().put(position, new HashSet<>());
+                    }
                 }
             }
 
@@ -205,50 +206,58 @@ public class SkillObjectManager {
             MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
         }else{
             MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
-            PlayerCharacterManager.returnAllSkills((PlayerCharacter) character, session);
-            PlayerCharacterManager.showStatus((PlayerCharacter) character, session);
+            PlayerCharacterManager.returnAllSkills((PlayerCharacter) character);
+            PlayerCharacterManager.showStatus((PlayerCharacter) character);
             PlayerCharacterManager.getSkillsByPosition((PlayerCharacter) character, position, session);
         }
     }
 
     public static void castSkill(SkillObject skillObject, CommonCharacter character, String position){
-        for(SkillEffect effect : skillObject.getEffects()){
-            if(effect.getPosition().equals(position)){
-                GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
+        //对于被动技能，直接应用
+        if(skillObject.isPassive()){
+            for(SkillEffect effect : skillObject.getEffects()){
+                if(effect.getPosition().equals(position)){
+                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
+                }
             }
         }
     }
 
+    public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target){
+        if(!skillObject.isPassive())
+            SkillFunctionHandler.useSkill(caller, target, skillObject);
+    }
+
     public static void undoSkill(SkillObject skillObject, CommonCharacter character, String position) {
         for(SkillEffect effect : skillObject.getEffects()){
-            if(effect.getPosition().equals(position)){
-                if(effect.getValue().getClass().equals(Double.class) || effect.getValue().getClass().equals(double.class)){
-                    // 修改double类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), (double)effect.getValue() * -1);
-                }else if(effect.getValue().getClass().equals(float.class) || effect.getValue().getClass().equals(Float.class)){
-                    // 修改float类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), (float)effect.getValue() * -1);
-                }else if(effect.getValue().getClass().equals(Integer.class) || effect.getValue().getClass().equals(int.class)){
-                    // 修改int类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), (int)effect.getValue() * -1);
-                }else if(effect.getValue().getClass().equals(Long.class) || effect.getValue().getClass().equals(long.class)){
-                    // 修改long类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long)effect.getValue() * -1);
-                }else if(effect.getValue().getClass().equals(Short.class) || effect.getValue().getClass().equals(short.class)){
-                    // 修改long类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long)effect.getValue() * -1);
-                }else if(effect.getValue().getClass().equals(Byte.class) || effect.getValue().getClass().equals(byte.class)){
-                    // 修改long类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long)effect.getValue() * -1);
-                }else if(effect.getValue().getClass().equals(Boolean.class) || effect.getValue().getClass().equals(boolean.class)){
-                    // 修改double类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), !(boolean)effect.getValue() );
-                }else if(effect.getValue().getClass().equals(String.class)){
-                    // 修改字符串类型数字
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue() );
+                if(effect.getPosition().equals(position)){
+                    if(effect.getValue().getClass().equals(Double.class) || effect.getValue().getClass().equals(double.class)){
+                        // 修改double类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), (double)effect.getValue() * -1);
+                    }else if(effect.getValue().getClass().equals(float.class) || effect.getValue().getClass().equals(Float.class)){
+                        // 修改float类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), (float)effect.getValue() * -1);
+                    }else if(effect.getValue().getClass().equals(Integer.class) || effect.getValue().getClass().equals(int.class)){
+                        // 修改int类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), (int)effect.getValue() * -1);
+                    }else if(effect.getValue().getClass().equals(Long.class) || effect.getValue().getClass().equals(long.class)){
+                        // 修改long类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long)effect.getValue() * -1);
+                    }else if(effect.getValue().getClass().equals(Short.class) || effect.getValue().getClass().equals(short.class)){
+                        // 修改long类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long)effect.getValue() * -1);
+                    }else if(effect.getValue().getClass().equals(Byte.class) || effect.getValue().getClass().equals(byte.class)){
+                        // 修改long类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long)effect.getValue() * -1);
+                    }else if(effect.getValue().getClass().equals(Boolean.class) || effect.getValue().getClass().equals(boolean.class)){
+                        // 修改double类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), !(boolean)effect.getValue() );
+                    }else if(effect.getValue().getClass().equals(String.class)){
+                        // 修改字符串类型数字
+                        GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue() );
+                    }
                 }
             }
-        }
     }
 
     public static SkillObject findBasicSkill(SkillObject skillObject, CommonCharacter character, String position) {
@@ -287,9 +296,9 @@ public class SkillObjectManager {
         /*
         * @ 计算技能的Cd时间
         * */
-        if(skillObject.getCdFinishTime() == null)  return 0;
+        if(skillObject.getCdFinishTime() == null)  return 3;
         float cdRemain = (System.currentTimeMillis() - skillObject.getCdFinishTime()) / 1000F;
-        return  cdRemain < 0 ? 0 : cdRemain;
+        return  cdRemain < 0 ? 3 : cdRemain;
     }
 
     public static List<EmbeddedCommand> getAvailableCommands(SkillObject skillObject, PlayerCharacter caller){
@@ -418,4 +427,7 @@ public class SkillObjectManager {
         session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP,  skillObject.getName(), skillObject.getLevel()))));
     }
 
+    public static String getCastMessage(CommonCharacter target) {
+        return "测试信息";
+    }
 }

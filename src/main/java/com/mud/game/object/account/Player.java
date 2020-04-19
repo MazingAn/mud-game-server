@@ -1,6 +1,6 @@
 package com.mud.game.object.account;
 
-import com.mud.game.structs.SimplePlayerCharacter;
+import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.passwordutils.ShaPassword;
 
 import javax.persistence.Id;
@@ -19,7 +19,7 @@ public class Player {
     private boolean ban;
     // 封禁结束的时间戳
     private Float banEndTime;
-    private Set<SimplePlayerCharacter> playerCharacters;
+    private Set<SimpleCharacter> playerCharacters;
 
     public Player() {
     }
@@ -80,11 +80,11 @@ public class Player {
         this.banEndTime = banEndTime;
     }
 
-    public Set<SimplePlayerCharacter> getPlayerCharacters() {
+    public Set<SimpleCharacter> getPlayerCharacters() {
         return playerCharacters;
     }
 
-    public void setPlayerCharacters(Set<SimplePlayerCharacter> playerCharacters) {
+    public void setPlayerCharacters(Set<SimpleCharacter> playerCharacters) {
         this.playerCharacters = playerCharacters;
     }
 }

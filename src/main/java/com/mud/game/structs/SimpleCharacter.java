@@ -3,16 +3,16 @@ package com.mud.game.structs;
 import com.mud.game.handler.SchoolHandler;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 
-public class SimplePlayerCharacter {
+public class SimpleCharacter {
     private String dbref;
     private String name;
     private String gender;
     private float age;
     private String school;
 
-    public SimplePlayerCharacter(){}
+    public SimpleCharacter(){}
 
-    public SimplePlayerCharacter(CommonCharacter character) {
+    public SimpleCharacter(CommonCharacter character) {
         this.dbref = character.getId();
         this.name = character.getName();
         this.gender = character.getGender();

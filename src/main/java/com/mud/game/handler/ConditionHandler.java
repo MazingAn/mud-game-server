@@ -53,12 +53,12 @@ public class ConditionHandler {
                         break;
                     }
                 }catch ( Exception e){
-                    e.printStackTrace();
+                    System.out.println(String.format("条件判定执行失败：%s, %s", key, conditionStr) );
                     return false;
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(String.format("条件判定执行失败：%s", conditionStr) );
             result = false;
         }
         return result;

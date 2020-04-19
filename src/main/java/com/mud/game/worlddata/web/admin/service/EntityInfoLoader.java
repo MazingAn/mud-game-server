@@ -7,6 +7,9 @@ import org.hibernate.mapping.Collection;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.lang.reflect.Field;
 import static com.mud.game.utils.modelsutils.ClassUtils.getSortedFields;
 
@@ -34,14 +37,20 @@ public class EntityInfoLoader {
             fieldInfo.name = field.getName();
             fieldInfo.verboseName = verboseName;
             fieldInfo.type = field.getType();
-            if(field.getAnnotation(Column.class) != null){
-                fieldInfo.nullable = field.getAnnotation(Column.class).nullable();
-                fieldInfo.maxLength = field.getAnnotation(Column.class).length();
+            if(field.getAnnotation(Size.class) != null){
+                fieldInfo.maxLength = field.getAnnotation(Size.class).max();
+                fieldInfo.minLength = field.getAnnotation(Size.class).min();
+                fieldInfo.message = field.getAnnotation(Size.class).message();
+            }
+            if(field.getAnnotation(NotNull.class) != null){
+                fieldInfo.nullable = false;
+            }
+            if(field.getAnnotation(NotBlank.class) != null){
+                fieldInfo.nullable = false;
+                fieldInfo.message += ";" + field.getAnnotation(NotBlank.class).message();
             }
             info.fieldsInfo.add(fieldInfo);
         }
         return info;
     }
-
-
 }

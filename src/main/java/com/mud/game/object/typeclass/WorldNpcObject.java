@@ -24,6 +24,8 @@ public class WorldNpcObject extends CommonCharacter {
     public boolean learnByObject;
     // 收徒的条件
     public String teachCondition;
+    // 角色复活时间
+    public int rebornTime;
 
 
     public Set<String> getEvents() {
@@ -106,4 +108,11 @@ public class WorldNpcObject extends CommonCharacter {
         this.teachCondition = teachCondition;
     }
 
+    public int getRebornTime() {
+        return rebornTime;
+    }
+
+    public void setRebornTime(int rebornTime) {
+        this.rebornTime = rebornTime;
+    }
 }

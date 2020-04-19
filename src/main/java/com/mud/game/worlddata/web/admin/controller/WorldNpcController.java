@@ -7,13 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 
 /**
  * 游戏区域Controller
  * 提供WorldNpc的增删改查
  * */
 @RestController
-@RequestMapping("/world_npc")
+@RequestMapping("/WorldNpc")
 public class WorldNpcController {
     /**
      * 增加WorldNpc
@@ -23,7 +26,7 @@ public class WorldNpcController {
      * @return 保存后的WorldNpc信息
      * */
     @PostMapping("/add")
-    public WorldNpc addWorldNpc(@RequestBody WorldNpc newWorldNpc) {
+    public WorldNpc addWorldNpc(@Valid @RequestBody WorldNpc newWorldNpc) {
         return DbMapper.worldNpcRepository.save(newWorldNpc);
     }
 
@@ -50,7 +53,7 @@ public class WorldNpcController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public WorldNpc editWorldNpc(@RequestBody WorldNpc updatedWorldNpc, @PathVariable Long id) {
+    public WorldNpc editWorldNpc(@Valid @RequestBody WorldNpc updatedWorldNpc, @PathVariable Long id) {
         updatedWorldNpc.setId(id);
         return DbMapper.worldNpcRepository.save(updatedWorldNpc);
     }
@@ -62,8 +65,9 @@ public class WorldNpcController {
      * @return 删除的信息内容
      * */
     @DeleteMapping("/{id}")
-    public WorldNpc deleteWorldNpc(@PathVariable Long id){
-        return DbMapper.worldNpcRepository.deleteWorldNpcById(id);
+    @Transactional
+    public void deleteWorldNpc(@PathVariable Long id){
+         DbMapper.worldNpcRepository.deleteById(id);
     }
 
 }

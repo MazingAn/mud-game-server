@@ -8,7 +8,8 @@ public class JsonResponse {
         ObjectMapper mapper = new ObjectMapper();
         try{
             return mapper.writeValueAsString(obj);
-        }catch (Exception JsonProcessingException){
+        }catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }

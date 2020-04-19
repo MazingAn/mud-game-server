@@ -132,13 +132,13 @@ public class CommonItemContainerManager {
         return number <= toalNumber;
     }
 
-    public static boolean hasObjectByDataKey(CommonItemContainer container, String objectKey){
+    public static boolean hasObjectByDataKey(CommonItemContainer container, String objectKey, int number){
         /*
         * 检查容器里面是否有某件物品
         * */
         for(Object obj: container.getItems().values()){
             CommonObjectInfo info =(CommonObjectInfo) obj;
-            if(info.getDataKey().equals(objectKey)){
+            if(info.getDataKey().equals(objectKey) && info.getNumber() >= number){
                 return true;
             }
         }

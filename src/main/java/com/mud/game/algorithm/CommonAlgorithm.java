@@ -1,14 +1,9 @@
-package com.mud.game.object.algorithm;
+package com.mud.game.algorithm;
 
-import com.mud.game.object.account.Player;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillObject;
-import com.mud.game.object.typeclass.WorldNpcObject;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
-
-import java.util.Map;
 
 public class CommonAlgorithm {
     /*

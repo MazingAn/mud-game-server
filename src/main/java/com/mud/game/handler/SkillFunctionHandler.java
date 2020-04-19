@@ -3,6 +3,7 @@ package com.mud.game.handler;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.skills.IncrementsAttr;
+import com.mud.game.statements.skills.NormalHit;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -26,14 +27,14 @@ public class SkillFunctionHandler {
     private static Map<String, Class> passiveSkillFunctionSet = new HashMap<>();
 
     /**
-     * 计算技能效果
+     * 使用效果
      *
      * @param caller 技能的释放者
      * @param target 技能作用的目标
      * @param skillObject 技能对象
      *
      * */
-    public static void calculusEffect(CommonCharacter caller, CommonCharacter target, SkillObject skillObject){
+    public static void useSkill(CommonCharacter caller, CommonCharacter target, SkillObject skillObject){
         String functionStr = skillObject.getSkillFunction();
         if(functionStr == null || functionStr.trim().equals("")){
             return;
@@ -80,6 +81,7 @@ public class SkillFunctionHandler {
      * */
     private static void initActionSkillFunctionSet(){
         // 所有主动技能的实现映射
+        actionSkillFunctionSet.put("hit", NormalHit.class);
     }
 
 }

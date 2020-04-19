@@ -5,14 +5,21 @@ import com.mongodb.Mongo;
 import com.mud.game.messages.JoinCombatMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.net.session.GameSessionService;
+import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.collections.ArrayListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
+import com.mud.game.worlddata.db.models.GameSetting;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.mud.game.server.ServerManager.gameSetting;
 
 
 /**
@@ -34,10 +41,7 @@ public class FighterManager {
 
         try{
             character.setState(CharacterState.STATE_COMBAT);
-            Session session = GameSessionService.getSessionByCallerId(character.getId());
-            if(session!=null){
-                session.sendText(JsonResponse.JsonStringResponse(new JoinCombatMessage()));
-            }
+            character.msg(new JoinCombatMessage());
         }catch (Exception e){
             System.out.println("加入战斗失败");
         }
@@ -62,45 +66,28 @@ public class FighterManager {
      *
      * @param character 要进行自动攻击的角色
      * */
-    public static void startAutoCombat(CommonCharacter character) {
-        // 绝对对自己的对手开始自动攻击
+    public static void startAutoCombat(CommonCharacter character, CombatSense sense, int finnishLimitHp) {
 
-        try{
-            while (true) {
-
-                if (character.getTarget() != null) {
-
-                    CommonCharacter target = null;
-
-                    if(MongoMapper.worldNpcObjectRepository.existsById(character.getTarget())){
-                        target = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(character.getTarget());
-                    }else{
-                        target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getTarget());
+        // 设置对手，开始普通攻击
+        String characterId = character.getId();
+        ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(characterId);
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(!sense.isCombatFinished(finnishLimitHp)){
+                    CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
+                    CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
+                    GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
+                    if(sense.isCombatFinished(finnishLimitHp)){
+                        sense.onCombatFinish();
                     }
-
-                    if(target!=null){
-                        Session selfSession = GameSessionService.getSessionByCallerId(character.getId());
-                        if (selfSession != null) {
-                            selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(
-                                    "你攻击了" + target.getName())));
-                        }
-
-                        Session targetSession = GameSessionService.getSessionByCallerId(character.getId());
-                        if (targetSession != null) {
-                            targetSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(
-                                    character.getName() + "攻击了你！")));
-                        }
-
-                    }
-
+                }else{
+                    sense.onCombatFinish();
                 }
             }
-        }catch (Exception e){
-            System.out.println("攻击失败");
-        }
-
-
-
+        };
+        service.scheduleAtFixedRate(runnable, 0, (int)gameSetting.getGlobalCD() * 1000, TimeUnit.MILLISECONDS);
     }
+
 
 }

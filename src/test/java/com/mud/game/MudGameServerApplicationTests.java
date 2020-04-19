@@ -8,14 +8,16 @@ import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.regxutils.InputFieldCheck;
+import com.mud.game.worlddata.db.models.GameSetting;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.io.File;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.*;
 
 class MudGameServerApplicationTests {
 
@@ -109,6 +111,49 @@ class MudGameServerApplicationTests {
             Assertions.assertTrue((int)ArrayListUtils.randomChoice(list) >= 0);
         }
     }
+
+    /**
+     * 魔力宝贝Java后端工程师笔试
+     *
+     * 0x001 游戏技能函数的实现
+     *
+     * 现在需要编写一个技能函数，函数定义如下
+     * hit(caller, target, scale)
+     *
+     * hit为函数名称
+     * caller 为攻击方
+     * target 为受攻击方
+     * scale 为攻击倍数
+     *
+     * 游戏角色有如下属性：
+     * attack 攻击
+     * defence 防御
+     * hp 气血
+     * mp 魔法值
+     *
+     * 你可以通过GameCharacterManager.changeStatus函数来修改上述属性
+     * changeStatus静态方法参数如下
+     *
+     * changeStatus(Character char <玩家对象>, String attrName<玩家属性名称>, float value<玩家属性变画值>）
+     * 使用示例：
+     * 较少玩家 10点hp： GameCharacterManager.changeStatus(charA, "hp", -10);
+     *
+     * 请根据上述信息，实现hit()函数
+     * caller为攻击方
+     * target为受攻击方
+     * 伤害等于  caller.attack * 攻击 - target.defence
+     * */
+
+//    void hit(Character caller, Character target, float scale){
+//        //TODO: 计算伤害
+//        //TODO：应用伤害
+//    }
+
+    /**
+     * 为了方便开发 我们对技能函数进行了抽象
+     * 抽象类如下：
+     *
+     * */
 
 
 }

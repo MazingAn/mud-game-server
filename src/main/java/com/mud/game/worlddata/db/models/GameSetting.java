@@ -58,6 +58,16 @@ public class GameSetting {
     @Mark(name = "默认玩家模板")
     private String defaultPlayerTemplate;
 
+    /**默认玩家技能*/
+    @Column(nullable = false)
+    @Mark(name = "默认攻击技能")
+    private String defaultSkill;
+
+    /**默认复活道具*/
+    @Column(nullable = false)
+    @Mark(name = "默认复活道具")
+    private String defaultRebornObject;
+
     public Long getId() {
         return id;
     }
@@ -144,5 +154,21 @@ public class GameSetting {
 
     public void setDefaultPlayerTemplate(String defaultPlayerTemplate) {
         this.defaultPlayerTemplate = defaultPlayerTemplate;
+    }
+
+    public String getDefaultSkill() {
+        return defaultSkill;
+    }
+
+    public void setDefaultSkill(String defaultSkill) {
+        this.defaultSkill = defaultSkill;
+    }
+
+    public String getDefaultRebornObject() {
+        return defaultRebornObject;
+    }
+
+    public void setDefaultRebornObject(String defaultRebornObject) {
+        this.defaultRebornObject = defaultRebornObject;
     }
 }

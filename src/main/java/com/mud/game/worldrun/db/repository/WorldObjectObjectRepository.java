@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface WorldObjectObjectRepository extends MongoRepository<WorldObjectObject, String> {
-    public boolean existsByDataKey(String dataKey);
-    public WorldObjectObject findWorldObjectObjectById(String id);
-    public WorldObjectObject findWorldObjectObjectByDataKey(String dataKey);
+    boolean existsByDataKey(String dataKey);
+    WorldObjectObject findWorldObjectObjectById(String id);
+    WorldObjectObject findWorldObjectObjectByDataKey(String dataKey);
 }

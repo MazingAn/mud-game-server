@@ -1,5 +1,6 @@
 package com.mud.game.worlddata.web.admin.controller;
 
+import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.WorldArea;
 import com.mud.game.worlddata.db.models.WorldArea;
@@ -7,8 +8,12 @@ import org.aspectj.weaver.World;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 
 /**
@@ -16,7 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * 提供WorldArea的增删改查
  * */
 @RestController
-@RequestMapping("/world_area")
+@RequestMapping("/WorldArea")
 public class WorldAreaController {
     /**
      * 增加WorldArea
@@ -24,7 +29,7 @@ public class WorldAreaController {
      * @param newWorldArea 表单提交的WorldArea
      * */
     @PostMapping("/add")
-    public WorldArea addWorldArea(@RequestBody WorldArea newWorldArea) {
+    public WorldArea addWorldArea(@Valid @RequestBody WorldArea newWorldArea) {
         return DbMapper.worldAreaRepository.save(newWorldArea);
     }
 
@@ -51,7 +56,7 @@ public class WorldAreaController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public WorldArea editWorldArea(@RequestBody WorldArea updatedWorldArea, @PathVariable Long id) {
+    public WorldArea editWorldArea(@Valid @RequestBody WorldArea updatedWorldArea, @PathVariable Long id) {
         updatedWorldArea.setId(id);
         return DbMapper.worldAreaRepository.save(updatedWorldArea);
     }
@@ -63,8 +68,9 @@ public class WorldAreaController {
      * @return 删除的信息内容
      * */
     @DeleteMapping("/{id}")
-    public WorldArea deleteWorldArea(@PathVariable Long id){
-        return DbMapper.worldAreaRepository.deleteWorldAreaById(id);
+    @Transactional
+    public void deleteWorldArea(@PathVariable Long id){
+        DbMapper.worldAreaRepository.deleteById(id);
     }
 
 }

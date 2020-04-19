@@ -7,13 +7,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 
 /**
  * 游戏区域Controller
  * 提供WorldRoom的增删改查
  * */
 @RestController
-@RequestMapping("/world_room")
+@RequestMapping("/WorldRoom")
 public class WorldRoomController {
     /**
      * 增加WorldRoom
@@ -23,7 +26,7 @@ public class WorldRoomController {
      * @return 保存后的WorldRoom信息
      * */
     @PostMapping("/add")
-    public WorldRoom addWorldRoom(@RequestBody WorldRoom newWorldRoom) {
+    public WorldRoom addWorldRoom(@Valid  @RequestBody WorldRoom newWorldRoom) {
         return DbMapper.worldRoomRepository.save(newWorldRoom);
     }
 
@@ -62,8 +65,9 @@ public class WorldRoomController {
      * @return 删除的信息内容
      * */
     @DeleteMapping("/{id}")
-    public WorldRoom deleteWorldRoom(@PathVariable Long id){
-        return DbMapper.worldRoomRepository.deleteWorldRoomById(id);
+    @Transactional
+    public void deleteWorldRoom(@Valid @PathVariable Long id){
+        DbMapper.worldRoomRepository.deleteById(id);
     }
 
 }

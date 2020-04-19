@@ -1,6 +1,12 @@
 package com.mud.game.combat;
 
+import com.mud.game.messages.CombatInfoMessage;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.structs.CharacterCombatStatus;
+import com.mud.game.structs.CombatInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 接口 {@code CombatInterface} 战斗接口
@@ -49,48 +55,31 @@ public interface CombatInterface {
      *
      * */
     default void startCombat(CombatSense sense){
+        // 获取战斗信息
+        List<CharacterCombatStatus> characters  = new ArrayList<>();
+        for(CommonCharacter character : sense.getRedTeam()){
+            characters.add(new CharacterCombatStatus(character));
+        }
+        for(CommonCharacter character : sense.getBlueTeam()){
+            characters.add(new CharacterCombatStatus(character));
+        }
+        //  发送战斗信息
+        sense.msgContents(new CombatInfoMessage(new CombatInfo(characters, "", 0)));
+
         // 给红队随机设置蓝队的对手
         for(CommonCharacter character : sense.getRedTeam()){
             FighterManager.setRandomTarget(character, sense.getBlueTeam());
-            FighterManager.startAutoCombat(character);
+            FighterManager.startAutoCombat(character, sense, 0);
         }
         // 给蓝队随机设置红队的对手
         for(CommonCharacter character : sense.getBlueTeam()){
             FighterManager.setRandomTarget(character, sense.getRedTeam());
-            FighterManager.startAutoCombat(character);
+            FighterManager.startAutoCombat(character, sense, 0);
         }
     }
 
 
-    /**
-     * 检查战斗场景的状态，判断战斗是否结束
-     * @param  minHp  用来检测角色是否被打败的标准(当角色的血量低于这个值，则玩家判定失败)
-     *                战斗的是否可以结束，则是队伍里所有人的血量低于这个值 则战斗可以结束
-     * @param sense 战斗场景
-     * @return boolean 战斗是否可以结束
-     * */
-    default boolean isCombatFinished(CombatSense sense, int minHp){
-        return sense.getAliveNumberInTeam(sense.getRedTeam(), minHp) == 0 ||
-                sense.getAliveNumberInTeam(sense.getBlueTeam(), minHp) == 0;
-    }
 
 
-    /**
-     *  战斗结束的时候所做的处理
-     * @param sense 战斗中的战斗场景 参见 {@link CombatSense}
-     * */
-    default void onCombatFinish(CombatSense sense){
-
-        // 奖励成功的队伍
-
-    }
-
-    /**
-     * 赢得队伍获取战利品
-     * @param sense 战斗中的战斗场景 参见 {@link CombatSense}
-     * */
-    default void lootSpoils(CombatSense sense) {
-
-    }
 
 }
