@@ -831,7 +831,7 @@ public class PlayerCharacterManager {
      * @return boolean 是否成功
      * */
     public static boolean discardObject(PlayerCharacter playerCharacter, String objectKey, int number){
-        if(hasObject(playerCharacter, objectKey, 1)) {
+        if(hasObject(playerCharacter, objectKey, number)) {
             NormalObjectObject normalObjectObject =
                     MongoMapper.normalObjectObjectRepository.
                             findNormalObjectObjectByDataKeyAndOwner(objectKey, playerCharacter.getId());
@@ -862,6 +862,7 @@ public class PlayerCharacterManager {
         String rebornObjectKey = ServerManager.gameSetting.getDefaultRebornObject();
         if(discardObject(playerCharacter, rebornObjectKey, 1)){
             reborn(playerCharacter);
+            moveTo(playerCharacter, getHome(playerCharacter).getDataKey(), GameSessionService.getSessionByCallerId(playerCharacter.getId()));// 强制更新客户端地图
             showStatus(playerCharacter);
         }else{
             playerCharacter.msg(new ToastMessage("你没有让自己原地复活的灵丹妙药！"));

@@ -3,7 +3,9 @@ package com.mud.game.condition.general;
 import com.mud.game.condition.BaseCondition;
 import com.mud.game.object.typeclass.PlayerCharacter;
 
-
+/**
+ * 随机概率
+ * */
 public class CheckNumber extends BaseCondition {
     public CheckNumber(String key, PlayerCharacter playerCharacter, String[] args) {
         super(key, playerCharacter, args);

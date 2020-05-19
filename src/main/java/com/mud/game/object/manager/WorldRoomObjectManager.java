@@ -18,10 +18,12 @@ import java.util.*;
 
 public class WorldRoomObjectManager {
 
+    /**
+     * 新建WorldRoom
+     * 从模板数据库读取房间配置
+     * 写入房间配置到房间对象中
+     * */
     public static WorldRoomObject build(WorldRoom template){
-        /*
-         * @ 新建WrodlRoom
-         * */
         WorldRoomObject obj = new WorldRoomObject();
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());
@@ -37,10 +39,12 @@ public class WorldRoomObjectManager {
         return obj;
     }
 
+    /**
+     * 更新WorldRoom
+     * 重新从模板数据库读取模板数据并重新设置
+     * 把房间内的所有自物体都清除
+     * */
     public static void update(WorldRoomObject obj, WorldRoom template){
-        /*
-         * @更新WorldRoom
-         */
         obj.setDescription(template.getDescription());
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());

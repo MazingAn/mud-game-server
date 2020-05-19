@@ -67,7 +67,6 @@ public abstract class BaseCondition {
      * */
     public abstract boolean match() throws NoSuchFieldException, IllegalAccessException;
 
-
     public PlayerCharacter getPlayerCharacter() {
         return playerCharacter;
     }

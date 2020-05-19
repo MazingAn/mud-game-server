@@ -128,7 +128,6 @@ public class GameCharacterManager {
         * @ 角色的属性分为默认属性，这部分属性可以直接通过get set方法获取和设置
         * @ 还有一部分属性是自定义属性， 这部分属性是在数据库里面自己定义的，需要修改CustomertAttr
         * */
-
         // 检查是不是角色的默认属性,使用反射检查玩家是否有这个属性，如果没有会抛出NoSuchFieldException，那么则可能在自定义属性中
         try{
             Field field = character.getClass().getField(attrKey);
@@ -153,10 +152,8 @@ public class GameCharacterManager {
             }else{
                 field.set(character, value);
             }
-
             // 检查时都有后天属性发生变动，这个时候应该追加其影响的其他属性
             checkOnAfterAttrChange(character, attrKey, value);
-
         }catch (NoSuchFieldException | IllegalAccessException e){
             // 既然抛出了上述异常，那么这个属性可能在自定义属性中
             Map<String, Map<String, Object>> cattr =  character.getCustomerAttr();

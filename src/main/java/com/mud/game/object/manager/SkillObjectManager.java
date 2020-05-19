@@ -9,6 +9,7 @@ import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.SkillEffect;
 import com.mud.game.utils.jsonutils.JsonResponse;
@@ -85,27 +86,37 @@ public class SkillObjectManager {
         skillObject.setSubSKills(subSkillIds);
     }
 
+    /**
+     * 装备技能到角色身上
+     * @param skillObject 要装备的技能
+     * @param character 装备技能的角色
+     * @param position 技能装备的位置
+     * @param session 通信通道
+     *
+     * */
     public static void equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session)  {
         /*
         * @ 装备技能到角色身上（仅限于被动技能）
         * */
         String ownerId = skillObject.getOwner();
-        // 检查是否拥有这个技能
         if(!ownerId.equals(character.getId())){
-            if(session!=null) session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("你没有这个技能！")));
+            // 检查是否拥有这个技能
+            character.msg(new MsgMessage("你没有这个技能！"));
         }
-        // 检查是否已将装备了这个技能
+        else if(!character.getState().equals(CharacterState.STATE_NORMAL)){
+            character.msg(new ToastMessage("你正在学习，无法装备技能"));
+        }
         else if(skillObject.getEquippedPositions().contains(position)){
+            // 检查是否已将装备了这个技能
             if(session!=null) session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("你已经装备了这个技能！")));
         }else if(!checkWeaponWhenEquipSkill(skillObject, character, position, session)){
             // 检查装备的位置和技能要求的武器是否匹配
-            if(session!=null) session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("你已经装备了这个技能！")));
+            if(session!=null) session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("当前武器无法匹配此武学！")));
         }else{// 装备技能
             // 获得角色的以装备技能列表
             Map<String, Set<String>> equippedSkills = character.getEquippedSkills();
             // 如果不存在则初始化一个
             if(equippedSkills == null) equippedSkills = new HashMap<>();
-
             // 获得玩家当前位置已经装备的技能并全部卸掉
             if(equippedSkills.containsKey(position)) {
                 for (String skillId : equippedSkills.get(position)) {
@@ -115,8 +126,6 @@ public class SkillObjectManager {
                         undoSkill(oldSkill, character, position);
                         oldSkill.getEquippedPositions().remove(position);
                         MongoMapper.skillObjectRepository.save(oldSkill);
-                    }else{
-                        character.getEquippedSkills().put(position, new HashSet<>());
                     }
                 }
             }
@@ -147,27 +156,32 @@ public class SkillObjectManager {
             MongoMapper.skillObjectRepository.save(skillObject);
             // 执行技能
             castSkill(skillObject, character, position);
-
             saveCharacterEquippedSkill(character, position, session, equippedSkills);
         }
     }
 
+    /**
+     * 卸掉技能
+     * @param skillObject 要卸掉的技能对象
+     * @param character 要卸掉技能的角色
+     * @param position 要卸掉技能的位置
+     * @param session 通信通道
+     * */
     public static void takeOff(SkillObject skillObject, CommonCharacter character, String position, Session session)  {
-        /*
-        * 卸掉技能
-        * */
         Set<String> skillEquippedPositions =  skillObject.getEquippedPositions();
         // 先判断这个技能是否被装备了
         if(!skillEquippedPositions.contains(position)){
             // 并没有装备，则提示无法卸掉
             if(session!=null) session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NOT_EQUIP_SKILL)));
+        }else if(!character.getState().equals(CharacterState.STATE_NORMAL)){
+            character.msg(new ToastMessage("你正在学习，无法卸掉技能"));
         }else{
             // 获得角色的技能装备列表
             Map<String, Set<String>> equippedSkills = character.getEquippedSkills();
             // 获取技能的装备信息
             if(equippedSkills != null && equippedSkills.containsKey(position)){
                 if(equippedSkills.get(position).contains(skillObject.getId())){
-                    // 如果这个技能是基本技能，则先卸掉所有技能
+                    // 如果这个技能是基本技能，则先卸掉所有该位置的技能
                     if(skillObject.getCategoryType().equals("SCT_JIBEN")){
                         for(String skillId :equippedSkills.get(position)){
                             SkillObject willTakeOffSkillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);

@@ -10,14 +10,13 @@ import org.json.JSONException;
 import org.yeauty.pojo.Session;
 
 public class GameEventManager {
-    /*
+    /**
     * 游戏事件的选择和执行管理
     * */
     public static void trigger(PlayerCharacter playerCharacter, EventData eventData, Session session) {
         /*
         * 根据事件的类型 执行对应事件
         * */
-
         switch (eventData.getAction()){
             case EventActionType.ACTION_ATTACK:
                 ActionAttack attackData = DbMapper.actionAttackRepository.findActionAttackByEventKey(eventData.getDataKey());

@@ -44,7 +44,7 @@ public class HangUpCollect extends BaseCommand {
         if(!GameCharacterManager.characterHasSkill(caller, "skill_zhishi_caiyao")){
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_COLLECT_SKILL)));
         }else{
-            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_COLLECT, session);
+            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_COLLECT);
             if(runnable != null){
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
                 service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);

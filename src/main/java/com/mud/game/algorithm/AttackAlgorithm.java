@@ -31,7 +31,7 @@ public class AttackAlgorithm {
      * */
     public static int computeHarm(CommonCharacter a, CommonCharacter b){
         int aAttack = Integer.parseInt(a.getCustomerAttr().get("attack").get("value").toString());
-        int bDefence = Integer.parseInt(a.getCustomerAttr().get("defence").get("value").toString());
+        int bDefence = Integer.parseInt(b.getCustomerAttr().get("defence").get("value").toString());
         if(aAttack - bDefence <= 0) return 1;
         return aAttack - bDefence;
     }

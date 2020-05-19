@@ -5,6 +5,9 @@ import com.mud.game.condition.attribute.AttrGt;
 import com.mud.game.condition.attribute.AttrLt;
 import com.mud.game.condition.attribute.CheckAttr;
 import com.mud.game.condition.general.CheckNumber;
+import com.mud.game.condition.general.HasObject;
+import com.mud.game.condition.general.IsNpcDied;
+import com.mud.game.condition.general.NoObject;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.PlayerCharacter;
 
@@ -44,7 +47,7 @@ public class ConditionHandler {
                 String[] sourceSplited = source.split("\\(");
                 String key = sourceSplited[0];
                 String[] args = sourceSplited[1].replaceAll("\\)", "").split(",");
-                Class clazz = ConditionHandler.conditionSet.get(key);
+                Class clazz = conditionSet.get(key);
                 try {
                     Constructor<BaseCondition> c = clazz.getConstructor(String.class, PlayerCharacter.class, String[].class);
                     BaseCondition condition = c.newInstance(key, playerCharacter, args);
@@ -71,6 +74,9 @@ public class ConditionHandler {
         conditionSet.put("attr_lt", AttrLt.class);
         conditionSet.put("attr_gt", AttrGt.class);
         conditionSet.put("check_number", CheckNumber.class);
+        conditionSet.put("has_object", HasObject.class);
+        conditionSet.put("no_object", NoObject.class);
+        conditionSet.put("is_npc_died", IsNpcDied.class);
     }
 
 }

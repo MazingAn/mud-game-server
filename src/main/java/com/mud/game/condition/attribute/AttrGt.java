@@ -2,7 +2,6 @@ package com.mud.game.condition.attribute;
 
 import com.mud.game.condition.BaseCondition;
 import com.mud.game.object.manager.GameCharacterManager;
-import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 
 
