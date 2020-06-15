@@ -1,5 +1,6 @@
 package com.mud.game.object.typeclass;
 
+import com.mud.game.combat.CombatSense;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.structs.SimpleCharacter;
 
@@ -51,6 +52,10 @@ public class PlayerCharacter extends CommonCharacter {
     public String bagpack;
     // 玩家的仓库
     public String wareHouse;
+    // 玩家的任务
+    public Set<String> currentQuests;
+    // 完成的任务
+    public Set<String> finishedQuests;
 
     public PlayerCharacter() {
         super();
@@ -319,5 +324,27 @@ public class PlayerCharacter extends CommonCharacter {
 
     public void setWareHouse(String wareHouse) {
         this.wareHouse = wareHouse;
+    }
+
+    public Set<String> getCurrentQuests() {
+        if(currentQuests == null) {
+            currentQuests = new HashSet<>();
+        }
+        return currentQuests;
+    }
+
+    public void setCurrentQuests(Set<String> currentQuests) {
+        this.currentQuests = currentQuests;
+    }
+
+    public Set<String> getFinishedQuests() {
+        if(finishedQuests == null){
+            finishedQuests = new HashSet<>();
+        }
+        return finishedQuests;
+    }
+
+    public void setFinishedQuests(Set<String> finishedQuests) {
+        this.finishedQuests = finishedQuests;
     }
 }

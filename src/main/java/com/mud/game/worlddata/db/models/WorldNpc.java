@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class WorldNpc extends BaseObject {
     /**世界npc； 包含Monster， Npc*/
     //所处位置（房间）
-    @Mark(name="所在房间")
+    @Mark(name="所在房间", link = "worldRoom")
     private String location;
 
     //模型类型 Monster, Npc

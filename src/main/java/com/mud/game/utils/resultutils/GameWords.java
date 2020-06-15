@@ -8,6 +8,7 @@ public class GameWords {
 
     // 玩家状态
     public static final String PLAYER_DIED = "{y你已经死了！{n";
+    public static final String PLAYER_CURE = "你增加了{g%s{n点气血，{g%s{n点最大气血";
 
     // 好友结交过程
     public static final String PLAYER_REPEAT_REQUEST_FRIEND = "{r%s{n已经知道了你的结交之心，还是暂时不要打扰他为好！";  //重复发送好友请求
@@ -58,6 +59,8 @@ public class GameWords {
 
     // 装备技能
     public static final String NOT_EQUIP_SKILL = "你并没有装备这个技能";
+    // 学习技能条件
+    public static final String NEED_SKILL_LEVEL_GT = "需要技能%s等级达到%s级";
 
     // 装备装备
     public static final String EQUIPMENT_ALREADY_EQUIPPED = "{c%s{n已经被装备。";
@@ -68,4 +71,10 @@ public class GameWords {
     // 背包移除相关
     public static final String CAN_NOT_REMOVE_FROM_BAGPACK = "无法从背包移除{r%s%s%s{n";
 
+    // 玩家更改高度
+    public static final String ROOM_STEP_CHANGED = "你突然感觉眼前一花，再睁开眼睛，眼前的一切都变了样子。";
+
+
+    // 无法创建任务
+    public static final String CANNOT_CREATE_QUEST = "{r无法创建任务{n";
 }

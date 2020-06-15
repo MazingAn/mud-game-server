@@ -45,6 +45,11 @@ public class WorldRoomController {
         return pageResult;
     }
 
+    @GetMapping("/{area}")
+    public Iterable<WorldRoom> queryWorldRoomByArea(@PathVariable String area){
+        return DbMapper.worldRoomRepository.findWorldRoomsByLocation(area);
+    }
+
     /**
      * 修改游戏设置
      *

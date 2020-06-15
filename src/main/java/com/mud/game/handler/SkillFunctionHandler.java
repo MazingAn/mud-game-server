@@ -2,7 +2,9 @@ package com.mud.game.handler;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.statements.buffers.AddBuffer;
 import com.mud.game.statements.skills.IncrementsAttr;
+import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
 import com.mud.game.statements.skills.NormalHit;
 
 import java.lang.reflect.Constructor;
@@ -22,9 +24,9 @@ import java.util.Map;
 public class SkillFunctionHandler {
 
     /**主动技能函数集合 key为函数名称 value为对应的技能函数类 */
-    private static Map<String, Class> actionSkillFunctionSet = new HashMap<>();
+    private static final Map<String, Class> actionSkillFunctionSet = new HashMap<>();
     /**被动技能函数集合 key为函数名称 value为对应的技能函数类 */
-    private static Map<String, Class> passiveSkillFunctionSet = new HashMap<>();
+    private static final Map<String, Class> passiveSkillFunctionSet = new HashMap<>();
 
     /**
      * 使用效果
@@ -53,6 +55,7 @@ public class SkillFunctionHandler {
                 c.newInstance(caller, target, skillObject, key, args);
             }catch (Exception e){
                 System.out.println(String.format("玩家在执行命令%s的时候触发了异常", key));
+                e.printStackTrace();
             }
         }
     }
@@ -80,8 +83,12 @@ public class SkillFunctionHandler {
      *     如果你新建了主动技能函数类，请务必记得在这里注册
      * */
     private static void initActionSkillFunctionSet(){
-        // 所有主动技能的实现映射
+        //基本攻击技能
         actionSkillFunctionSet.put("hit", NormalHit.class);
+        // 追加buffer
+        actionSkillFunctionSet.put("add_buffer", AddBuffer.class);
+        // 华山技能 剑掌✋五连环
+        actionSkillFunctionSet.put("jianzhangwulianhuan", JianzhangWuLianHuan.class);
     }
 
 }

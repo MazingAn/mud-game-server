@@ -1,30 +1,58 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 /*
 * @ 角色模板
 * */
 @Entity
+@Mark(name = "角色模板")
 public class CharacterModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
+
+    @Mark(name="标识")
     private String  dataKey;
+
+    @Mark(name="名称")
     private String name;
+
+    @Mark(name="等级")
     private int level;
+
+    @Mark(name="气血上线")
     // 进入游戏之后的最气血和内力
     private int limit_hp;
+
+    @Mark(name="最大气血")
     private int max_hp;
+
+    @Mark(name="当前血量")
     private int hp;
+
+    @Mark(name="内力上限")
     private int limit_mp;
+
+    @Mark(name="最大内力")
     private int max_mp;
+
+    @Mark(name="内力值")
     private int mp;
+
+    @Mark(name="技能等级")
     // 默认技能等级
     private int skillLevel;
+
+    @Mark(name="最大经验")
     private int max_exp;
+
     //角色自定义属性
     @Column(length = 4096)
+    @Mark(name = "属性")
     private String attrs;
 
     public Long getId() {

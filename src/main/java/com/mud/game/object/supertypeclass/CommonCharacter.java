@@ -1,14 +1,7 @@
 package com.mud.game.object.supertypeclass;
 
-import com.mud.game.commands.BaseCommand;
-import com.mud.game.object.typeclass.WorldExitObject;
-import com.mud.game.object.typeclass.WorldRoomObject;
-import com.mud.game.structs.CharacterBuffer;
 import com.mud.game.structs.CharacterState;
-import com.mud.game.worlddata.db.models.supermodel.BaseObject;
-import org.json.JSONObject;
 
-import javax.persistence.Id;
 import java.util.*;
 
 public class CommonCharacter extends BaseGameObject {
@@ -45,7 +38,7 @@ public class CommonCharacter extends BaseGameObject {
     // 角色的技能位置
     public Set<String> skillPositions;
     // 自定义属性
-    public Map<String,Map<String, Object>> customerAttr;
+    public Map<String, Map<String, Object>> customerAttr;
 
     // 角色的游戏状态
     public CharacterState state;
@@ -56,8 +49,13 @@ public class CommonCharacter extends BaseGameObject {
     public String defaultSkill;
 
     // 角色的buffer信息
-    public Set<CharacterBuffer> buffers;
+    public Map<String, Set<String>> buffers;
 
+    // 角色在房间内的高度
+    public int roomStep;
+
+    // 自动攻击是否暂停
+    public boolean autoCombatPause;
 
 
     public CommonCharacter() {
@@ -297,11 +295,20 @@ public class CommonCharacter extends BaseGameObject {
         this.target = target;
     }
 
-    public Set<CharacterBuffer> getBuffers() {
+    public boolean isAutoCombatPause() {
+        return autoCombatPause;
+    }
+
+    public void setAutoCombatPause(boolean autoCombatPause) {
+        this.autoCombatPause = autoCombatPause;
+    }
+
+    public Map<String, Set<String>> getBuffers() {
+        if(buffers == null) return new HashMap<>();
         return buffers;
     }
 
-    public void setBuffers(Set<CharacterBuffer> buffers) {
+    public void setBuffers(Map<String, Set<String>> buffers) {
         this.buffers = buffers;
     }
 
@@ -313,4 +320,11 @@ public class CommonCharacter extends BaseGameObject {
         this.defaultSkill = defaultSkill;
     }
 
+    public int getRoomStep() {
+        return roomStep;
+    }
+
+    public void setRoomStep(int roomStep) {
+        this.roomStep = roomStep;
+    }
 }

@@ -1,11 +1,9 @@
 package com.mud.game.object.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.handler.ConditionHandler;
-import com.mud.game.messages.MsgMessage;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.WorldObjectCreator;
-import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.object.builder.CommonObjectBuilder;
+import com.mud.game.object.supertypeclass.CommonObject;
+import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.GameObjectAppearance;
 import com.mud.game.utils.jsonutils.JsonResponse;
@@ -82,7 +80,6 @@ public class WorldObjectCreatorManager {
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
 
-
     private static List<EmbeddedCommand> getAvailableCommands(WorldObjectCreator obj, PlayerCharacter playerCharacter){
         /*
          * @ 获取物体生成器的可操作命令
@@ -93,7 +90,6 @@ public class WorldObjectCreatorManager {
         cmds.add(new EmbeddedCommand(obj.getActionName(), "loot", obj.getId()));
         return cmds;
     }
-
 
     private static void bindLootList(WorldObjectCreator obj){
         /*
@@ -107,7 +103,7 @@ public class WorldObjectCreatorManager {
         obj.setLootLists(lootLists);
     }
 
-    public static void onPlayerLoot(WorldObjectCreator creator, PlayerCharacter playerCharacter, Session session)  {
+    public static void onPlayerLoot(WorldObjectCreator creator, PlayerCharacter playerCharacter)  {
         /*
         * @ 玩家从物品生成器获得物品
         * */
@@ -115,10 +111,29 @@ public class WorldObjectCreatorManager {
         for(LootList lootList : lootLists) {
             // 玩家开始获取物品
             if (ConditionHandler.matchCondition(lootList.getLootCondition(), playerCharacter)){
-                //TODO: 玩家接受生成的物品
-                session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("这特么的还没实现！但是现在假设你已经获得了东西。")));
+                // 检查是否有任务依赖
+                if(lootList.getDependQuest() == null || lootList.getDependQuest().equals("")){
+                    Random random = new Random();
+                    if(random.nextFloat() < lootList.getOdds()){
+                        CommonObject object = createObject(lootList.getObject());
+                        if(object != null){
+                            PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, object, lootList.getNumber());
+                        }
+                    }
+                }
+                else if(GameQuestManager.isQuestInProgress(playerCharacter,lootList.getDependQuest())){
+                    // 如果有任务依赖 则任务必须在进行中才能获取物品
+                    CommonObject object = createObject(lootList.getObject());
+                    if(object != null){
+                        PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, object, lootList.getNumber());
+                    }
+                }
             }
         }
+    }
+
+    public static CommonObject createObject(String objectKey){
+        return CommonObjectBuilder.buildCommonObject(objectKey);
     }
 
 }

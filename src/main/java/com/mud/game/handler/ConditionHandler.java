@@ -4,10 +4,8 @@ import com.mud.game.condition.BaseCondition;
 import com.mud.game.condition.attribute.AttrGt;
 import com.mud.game.condition.attribute.AttrLt;
 import com.mud.game.condition.attribute.CheckAttr;
-import com.mud.game.condition.general.CheckNumber;
-import com.mud.game.condition.general.HasObject;
-import com.mud.game.condition.general.IsNpcDied;
-import com.mud.game.condition.general.NoObject;
+import com.mud.game.condition.attribute.UnCheckAttr;
+import com.mud.game.condition.general.*;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.PlayerCharacter;
 
@@ -46,7 +44,7 @@ public class ConditionHandler {
             for(String source : conditionSources){
                 String[] sourceSplited = source.split("\\(");
                 String key = sourceSplited[0];
-                String[] args = sourceSplited[1].replaceAll("\\)", "").split(",");
+                String[] args = sourceSplited[1].replaceAll("\\)", "").replaceAll("\"", "").split(",");
                 Class clazz = conditionSet.get(key);
                 try {
                     Constructor<BaseCondition> c = clazz.getConstructor(String.class, PlayerCharacter.class, String[].class);
@@ -77,6 +75,9 @@ public class ConditionHandler {
         conditionSet.put("has_object", HasObject.class);
         conditionSet.put("no_object", NoObject.class);
         conditionSet.put("is_npc_died", IsNpcDied.class);
+        conditionSet.put("uncheck_attr", UnCheckAttr.class);
+        conditionSet.put("never_unlock", NeverUnlock.class);
+        conditionSet.put("check_room_step", CheckRoomStep.class);
     }
 
 }

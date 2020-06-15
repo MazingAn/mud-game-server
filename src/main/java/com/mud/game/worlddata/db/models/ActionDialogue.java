@@ -1,5 +1,7 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,10 +11,15 @@ import javax.persistence.Id;
 public class ActionDialogue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
+    @Mark(name="事件", link = "event")
     private String eventKey;
+    @Mark(name="对话", link = "dialogue")
     private Long dialogueId;
+    @Mark(name="对应的NPC", link = "npc")
     private String npc;
+    @Mark(name="概率")
     private float odds;
 
     public ActionDialogue() {

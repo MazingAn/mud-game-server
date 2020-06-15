@@ -2,6 +2,7 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.WorldNpc;
+import com.mud.game.worlddata.db.models.WorldRoom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,11 @@ public class WorldNpcController {
         Pageable paging = PageRequest.of(page, size);
         Page<WorldNpc> pageResult = DbMapper.worldNpcRepository.findAll(paging);
         return pageResult;
+    }
+
+    @GetMapping("/{room}")
+    public Iterable<WorldNpc> queryWorldRoomByArea(@PathVariable String room){
+        return DbMapper.worldNpcRepository.findWorldNpcsByLocation(room);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.mud.game.worldrun.db.mappings;
 
+import com.mud.game.object.typeclass.GameChatChannel;
 import com.mud.game.object.typeclass.GemObject;
 import com.mud.game.object.typeclass.WorldObjectCreator;
 import com.mud.game.object.typeclass.WorldObjectObject;
@@ -30,6 +31,9 @@ public class MongoMapper<F, S> {
     public static BagpackObjectRepository bagpackObjectRepository;
     public static WareHouseObjectRepository wareHouseObjectRepository;
     public static NormalObjectObjectRepository normalObjectObjectRepository;
+    public static QuestObjectRepository questObjectRepository;
+    public static GameChatChannelRepository gameChatChannelRepository;
+    public static SkillBookObjectRepository skillBookObjectRepository;
 
     @Autowired
     public void setWorldAreaObjectRepository(WorldAreaObjectRepository worldAreaObjectRepository) {
@@ -99,6 +103,21 @@ public class MongoMapper<F, S> {
     @Autowired
     public void setNormalObjectObjectRepository(NormalObjectObjectRepository normalObjectObjectRepository) {
         MongoMapper.normalObjectObjectRepository = normalObjectObjectRepository;
+    }
+
+    @Autowired
+    public void setQuestObjectRepository(QuestObjectRepository questObjectRepository) {
+        MongoMapper.questObjectRepository = questObjectRepository;
+    }
+
+    @Autowired
+    public void setGameChatChannelRepository(GameChatChannelRepository gameChatChannelRepository) {
+        MongoMapper.gameChatChannelRepository = gameChatChannelRepository;
+    }
+
+    @Autowired
+    public void setSkillBookObjectRepository(SkillBookObjectRepository skillBookObjectRepository) {
+        MongoMapper.skillBookObjectRepository = skillBookObjectRepository;
     }
 }
 

@@ -12,7 +12,7 @@ public class WorldRoom extends BaseObject {
     @Mark(name="和平区域")
     private boolean peaceful;
 
-    @Mark(name="所属区域")
+    @Mark(name="所属区域", link="area")
     private String location;
 
     @Mark(name="位置坐标")

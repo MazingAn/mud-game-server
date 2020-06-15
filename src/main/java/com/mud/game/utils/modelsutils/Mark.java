@@ -9,4 +9,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)@Inherited
 public @interface Mark {
     String name() default "";
+    String link() default "";
+    boolean multi() default false;
 }

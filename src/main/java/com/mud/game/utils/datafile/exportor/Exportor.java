@@ -6,10 +6,10 @@ import java.io.InputStream;
 
 public class Exportor {
 
-    private String tableName;
-    private String type;
-    private String outFilePath;
-    private CrudRepository repository;
+    private final String tableName;
+    private final String type;
+    private final String outFilePath;
+    private final CrudRepository repository;
 
     public Exportor(CrudRepository repository, String outFilePath, String tableName, String type) {
         this.outFilePath = outFilePath;

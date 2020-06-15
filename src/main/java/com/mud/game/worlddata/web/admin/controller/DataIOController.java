@@ -31,12 +31,14 @@ import java.util.Objects;
 @RequestMapping("file")
 public class DataIOController {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${file.upload.url}")
     private String uploadPath;
     @Value("${file.download.url}")
     private String outputPath;
+    @Value("${file.icon.url}")
+    private String iconPath;
 
 
     /*
@@ -100,6 +102,7 @@ public class DataIOController {
             // 生成所有文件
             Exportor exportor = ExportorFatory.createExportor(outputPath+'/'+type, tableName, type);
             if(exportor == null) {
+                System.out.println("在下载所有数据库文件的时候出现了例外情况：" + tableName +"没有找到对应的表");
                 logger.warn("在下载所有数据库文件的时候出现了例外情况：" + tableName +"没有找到对应的表");
                 continue;
             }
@@ -110,6 +113,26 @@ public class DataIOController {
         ZipUtils.compress(outputPath+'/'+type, zipPath );
         //下载zip文件
         HttpDownload.download(zipPath, response);
+    }
+
+    @RequestMapping("/icon/upload")
+    public String iconUpload(@RequestParam("file") MultipartFile file,
+                             @RequestParam("tableName") String tableName,
+                             @RequestParam("dataKey") String dataKey) throws JSONException {
+            JSONObject object = new JSONObject();
+            String fileName = file.getOriginalFilename();
+            String filePath = iconPath + '/' + fileName;
+            try {
+                //保存一份文件到服务器备份
+                File dest = new File(filePath);
+                if (!dest.exists()) dest.mkdirs();
+                file.transferTo(dest);
+                return fileName;
+            } catch (Exception e) {
+                System.out.println(fileName + "在上传的时候发生错误！");
+                e.printStackTrace();
+                return "error";
+            }
     }
 
     @RequestMapping("/apply")

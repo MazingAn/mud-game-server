@@ -1,20 +1,30 @@
 package com.mud.game.worlddata.db.models;
 
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 @Entity
 public class EventData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
     @Column(unique = true)
+    @Mark(name="标识")
     private String dataKey;
+    @Mark(name="触发对象")
     private String triggerObject;
+    @Mark(name="触发类型")
     private String triggerType;
+    @Mark(name="触发动作")
     private String action;
+    @Mark(name="动作名称")
     private String actionName;
+    @Mark(name="概率")
     private String odds;
+    @Mark(name="描述")
     @Column(length = 4096)
     private String triggerCondition;
 

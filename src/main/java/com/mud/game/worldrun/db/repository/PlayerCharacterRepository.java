@@ -6,4 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface PlayerCharacterRepository extends MongoRepository<PlayerCharacter, String>{
     boolean existsByName(String name);
     PlayerCharacter findPlayerCharacterById(String id);
+    Iterable<PlayerCharacter> findPlayerCharactersBySchool(String school);
 }

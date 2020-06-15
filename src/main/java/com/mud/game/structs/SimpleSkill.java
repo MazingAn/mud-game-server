@@ -38,6 +38,7 @@ public class SimpleSkill {
         this.category_type = skillObject.getCategoryType();
         this.cd_remain = SkillObjectManager.calculusRemainCd(skillObject);
         this.cmds = new ArrayList<>();
+        this.is_equipped = skillObject.getEquippedPositions().size() > 0;
     }
 
     public String getDbref() {

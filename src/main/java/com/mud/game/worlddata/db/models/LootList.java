@@ -1,6 +1,8 @@
 package com.mud.game.worlddata.db.models;
 
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,12 +13,19 @@ public class LootList {
     * */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
+    @Mark(name="物品生成器", link = "worldObjectCreator")
     private String provider;
+    @Mark(name="生成物品", link = "allObjects")
     private String object;
+    @Mark(name="数量")
     private int number;
+    @Mark(name="概率")
     private float odds;
+    @Mark(name="依赖任务", link = "quest")
     private String dependQuest;
+    @Mark(name="拾取条件")
     private String lootCondition;
 
     public Long getId() {

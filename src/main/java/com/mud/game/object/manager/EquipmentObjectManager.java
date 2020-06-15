@@ -127,8 +127,8 @@ public class EquipmentObjectManager {
             MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
             // 返回客户端最新的背包信息和状态信息
             PlayerCharacterManager.showStatus((PlayerCharacter) character);
-            PlayerCharacterManager.returnBagpack((PlayerCharacter) character, session);
-            PlayerCharacterManager.returnEquippedEquipments((PlayerCharacter) character, session);
+            PlayerCharacterManager.showBagpack((PlayerCharacter) character);
+            PlayerCharacterManager.returnEquippedEquipments((PlayerCharacter) character);
         }else{
             MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
         }

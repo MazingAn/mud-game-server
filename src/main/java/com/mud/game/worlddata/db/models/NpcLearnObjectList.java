@@ -1,5 +1,7 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,13 +11,17 @@ public class NpcLearnObjectList {
      * */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
     // npc的key
+    @Mark(name="npc", link="npc")
     @Column(unique = true)
     private String npcKey;
     // 需要的物品
+    @Mark(name="需要的物品", link="object")
     private String neededObject;
     // 没提交一个object 可以兑换的能量
+    @Mark(name="物品潜能兑换概率")
     private int perPotential;
 
     public Long getId() {

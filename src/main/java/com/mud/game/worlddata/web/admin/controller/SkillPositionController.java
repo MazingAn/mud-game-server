@@ -30,6 +30,11 @@ public class SkillPositionController {
         return DbMapper.skillPositionRepository.save(newSkillPosition);
     }
 
+    @GetMapping("all")
+    public Iterable<SkillPosition> all(){
+        return DbMapper.skillPositionRepository.findAll();
+    }
+
     /**
      * 查询SkillPosition
      *

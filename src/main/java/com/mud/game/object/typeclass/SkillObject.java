@@ -3,10 +3,7 @@ package com.mud.game.object.typeclass;
 import com.mud.game.structs.SkillEffect;
 
 import javax.persistence.Id;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SkillObject {
     @Id
@@ -36,7 +33,6 @@ public class SkillObject {
     private Long cdFinishTime;
     private int currentPotentialBalance; // 当前级别所充值的潜能
     private int chargedPotential; // 累计充值的潜能
-
 
     public String getId() {
         return id;
@@ -159,6 +155,7 @@ public class SkillObject {
     }
 
     public Set<String> getSubSKills() {
+        if(subSKills == null) return new HashSet<String>();
         return subSKills;
     }
 

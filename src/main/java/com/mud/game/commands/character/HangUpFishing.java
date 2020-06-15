@@ -41,7 +41,7 @@ public class HangUpFishing extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         Session session = getSession();
         // 检查玩家有没有挖矿技能
-        if(!GameCharacterManager.characterHasSkill(caller, "skill_zhishi_diaoyu")){
+        if(!GameCharacterManager.hasSkill(caller, "skill_zhishi_diaoyu")){
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_FISHING_SKILL)));
         }else{
             Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_FISHING);

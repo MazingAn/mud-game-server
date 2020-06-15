@@ -7,4 +7,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface WorldNpcRepository extends PagingAndSortingRepository<WorldNpc, Long> {
     WorldNpc findWorldNpcByDataKey(String dataKey);
     WorldNpc deleteWorldNpcById(Long id);
+    Iterable<WorldNpc> findWorldNpcsByLocation(String location);
 }

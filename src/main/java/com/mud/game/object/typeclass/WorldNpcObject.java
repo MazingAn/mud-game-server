@@ -2,6 +2,7 @@ package com.mud.game.object.typeclass;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,6 +27,10 @@ public class WorldNpcObject extends CommonCharacter {
     public String teachCondition;
     // 角色复活时间
     public int rebornTime;
+    // 角色是否能够被攻击
+    public boolean canAttack;
+    // npc的商店
+    public Set<String> shops;
 
 
     public Set<String> getEvents() {
@@ -114,5 +119,24 @@ public class WorldNpcObject extends CommonCharacter {
 
     public void setRebornTime(int rebornTime) {
         this.rebornTime = rebornTime;
+    }
+
+    public boolean isCanAttack() {
+        return canAttack;
+    }
+
+    public void setCanAttack(boolean canAttack) {
+        this.canAttack = canAttack;
+    }
+
+    public Set<String> getShops() {
+        if(shops == null){
+            shops = new HashSet<>();
+        }
+        return shops;
+    }
+
+    public void setShops(Set<String> shops) {
+        this.shops = shops;
     }
 }

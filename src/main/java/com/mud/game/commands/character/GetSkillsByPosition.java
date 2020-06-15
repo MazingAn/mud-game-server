@@ -33,8 +33,7 @@ public class GetSkillsByPosition extends BaseCommand {
     @Override
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
-        Session session = getSession();
         String position = getArgs().getString("args");
-        PlayerCharacterManager.getSkillsByPosition(caller, position, session);
+        PlayerCharacterManager.getSkillsByPosition(caller, position);
     }
 }

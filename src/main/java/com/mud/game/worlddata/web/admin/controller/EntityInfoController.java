@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * */
 
 @RestController
-@RequestMapping("entity_info")
+    @RequestMapping("entity_info")
 public class EntityInfoController {
 
     @GetMapping("/{tableName}")

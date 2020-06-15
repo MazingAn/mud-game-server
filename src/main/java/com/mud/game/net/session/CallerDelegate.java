@@ -19,7 +19,7 @@ import java.lang.reflect.Constructor;
  * */
 public class CallerDelegate {
 
-    private String callerId;
+    private final String callerId;
 
     public CallerDelegate(String callerId){
         this.callerId = callerId;

@@ -6,4 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface WorldRoomRepository extends PagingAndSortingRepository<WorldRoom, Long> {
     WorldRoom deleteWorldRoomById(Long id);
+    Iterable<WorldRoom> findWorldRoomsByLocation(String area);
 }

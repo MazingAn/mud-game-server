@@ -24,13 +24,11 @@ public class BaseObject {
     @Size(min=2, max=64, message = "标识长度必须在2到64之间")
     private String dataKey;
 
-    @Mark(name="类型类")
+    @Mark(name="类型类", link = "worldObjectTypeClass")
     private String typeClass;
 
-    @Column(length = 64)
     @Mark(name="名称")
-    @NotBlank(message = "必须指定一个名称")
-    @Size(min = 1, max = 64, message = "名称必须在1到64之间")
+    @Column(length = 64)
     private String name;
 
     @Column(length = 2048)

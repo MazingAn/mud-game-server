@@ -14,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -46,6 +47,14 @@ public class WorldAreaController {
         Pageable paging = PageRequest.of(page, size);
         Page<WorldArea> pageResult = DbMapper.worldAreaRepository.findAll(paging);
         return pageResult;
+    }
+
+    /**
+     * 获取所有worldArea
+     * */
+    @GetMapping("/all")
+    public Iterable<WorldArea> all(){
+        return DbMapper.worldAreaRepository.findAll();
     }
 
     /**

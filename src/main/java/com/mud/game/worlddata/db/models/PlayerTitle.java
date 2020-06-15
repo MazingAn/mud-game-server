@@ -1,5 +1,7 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 
@@ -10,11 +12,16 @@ public class PlayerTitle {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private int id;
+    @Mark(name="标识")
     @Column(unique = true)
     private String dataKey;
+    @Mark(name="名称")
     private String name;
+    @Mark(name="描述")
     private String description;
+    @Mark(name="效果")
     @Column(length = 512)
     private String effect;
 

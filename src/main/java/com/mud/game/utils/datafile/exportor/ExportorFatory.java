@@ -3,12 +3,14 @@ package com.mud.game.utils.datafile.exportor;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import org.springframework.data.repository.CrudRepository;
 
+
+/**
+ * 数据仓库的映射，因为自动注入的问题，无法通过反射操作对应的数据仓库
+ * 所以在这里手动判断
+ * 下面的name在导出的时候就设置与对应的模型类名称相同
+ */
+
 public class ExportorFatory {
-    /*
-     * 数据仓库的映射，因为自动注入的问题，无法通过反射操作对应的数据仓库
-     * 所以在这里手动判断
-     * 下面的name在导出的时候就设置与对应的模型类名称相同
-     */
 
     public static Exportor createExportor(String outFilePath, String tableName, String type) {
 
@@ -65,8 +67,6 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.actionTurnInQuestRepository, outFilePath, tableName, type);
             case "LootList":
                 return new Exportor(DbMapper.lootListRepository, outFilePath, tableName, type);
-            case "DrugAndFood":
-                return new Exportor(DbMapper.drugAndFoodRepository, outFilePath, tableName, type);
             case "Skill":
                 return new Exportor(DbMapper.skillRepository, outFilePath, tableName, type);
             case "SkillCategoryType":
@@ -87,6 +87,28 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.normalObjectRepository, outFilePath, tableName, type);
             case "NpcLearnObjectList":
                 return new Exportor(DbMapper.npcLearnObjectListRepository, outFilePath, tableName, type);
+            case "Dialogue":
+                return new Exportor(DbMapper.dialogueRepository, outFilePath, tableName, type);
+            case "DialogueSentence":
+                return new Exportor(DbMapper.dialogueSentenceRepository, outFilePath, tableName, type);
+            case "NpcDialogue":
+                return new Exportor(DbMapper.npcDialogueRepository, outFilePath, tableName, type);
+            case "Quest":
+                return new Exportor(DbMapper.questRepository, outFilePath, tableName, type);
+            case "QuestDependency":
+                return new Exportor(DbMapper.questDependencyRepository, outFilePath, tableName, type);
+            case "QuestDialogueDependency":
+                return new Exportor(DbMapper.questDialogueDependencyRepository, outFilePath, tableName, type);
+            case "QuestRewardList":
+                return new Exportor(DbMapper.questRewardListRepository, outFilePath, tableName, type);
+            case "QuestObjective":
+                return new Exportor(DbMapper.questObjectiveRepository, outFilePath, tableName, type);
+            case "Shop":
+                return new Exportor(DbMapper.shopRepository, outFilePath, tableName, type);
+            case "NpcShop":
+                return new Exportor(DbMapper.npcShopRepository, outFilePath, tableName, type);
+            case "ShopGoods":
+                return new Exportor(DbMapper.shopGoodsRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

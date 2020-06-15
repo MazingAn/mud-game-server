@@ -2,6 +2,7 @@ package com.mud.game.structs;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
 
+import java.util.Map;
 import java.util.Set;
 
 public class CombatStatus {
@@ -11,7 +12,7 @@ public class CombatStatus {
     private int max_mp;
     private int mp;
     private int limit_mp;
-    private Set<CharacterBuffer> buffers;
+    private Map<String, Map<String, Object>> buffers;
 
     public CombatStatus() {
     }
@@ -23,7 +24,7 @@ public class CombatStatus {
         this.max_mp = character.getMax_mp();
         this.mp = character.getMp();
         this.limit_mp = character.getLimit_mp();
-        this.buffers = character.getBuffers();
+        this.buffers = new BufferInfo(character).getBuffers();
     }
 
     public int getMax_hp() {
@@ -74,11 +75,11 @@ public class CombatStatus {
         this.limit_mp = limit_mp;
     }
 
-    public Set<CharacterBuffer> getBuffers() {
+    public Map<String, Map<String, Object>> getBuffers() {
         return buffers;
     }
 
-    public void setBuffers(Set<CharacterBuffer> buffers) {
+    public void setBuffers(Map<String, Map<String, Object>> buffers) {
         this.buffers = buffers;
     }
 }

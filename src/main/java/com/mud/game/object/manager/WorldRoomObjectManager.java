@@ -197,14 +197,14 @@ public class WorldRoomObjectManager {
         }
     }
 
-    public static void triggerArriveAction(WorldRoomObject room, PlayerCharacter playerCharacter, Session session) {
+    public static void triggerArriveAction(WorldRoomObject room, PlayerCharacter playerCharacter) {
         /*
         * @如果房间绑定的有事件，触发
         * */
         if(!room.getEvents().isEmpty()){
             for(String eventKey: room.getEvents()){
                 EventData event = DbMapper.eventDataRepository.findEventDataByDataKey(eventKey);
-                GameEventManager.trigger(playerCharacter, event, session);
+                GameEventManager.trigger(playerCharacter, event);
             }
         }
     }

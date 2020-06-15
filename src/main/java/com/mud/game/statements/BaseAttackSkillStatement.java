@@ -1,8 +1,12 @@
 package com.mud.game.statements;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.combat.FighterManager;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.server.ServerManager;
+import com.mud.game.worlddata.db.models.GameSetting;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * */
 public abstract class BaseAttackSkillStatement {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private CommonCharacter caller;
     private CommonCharacter target;
@@ -45,6 +49,25 @@ public abstract class BaseAttackSkillStatement {
      * 攻击函数
      * */
     public abstract void attack() throws JSONException, JsonProcessingException;
+
+
+    /**
+     * 技能释放之前执行的操作
+     * */
+    public void beforeAttack(){
+        if(!skillObject.getDataKey().equals(ServerManager.gameSetting.getDefaultSkill())){
+            caller.autoCombatPause = true;
+            GameCharacterManager.saveCharacter(caller);
+        }
+    }
+
+    /**
+     * 技能释放之后执行的操作
+     * */
+    public void afterAttack(){
+        caller.autoCombatPause = false;
+        GameCharacterManager.saveCharacter(caller);
+    }
 
     /** Getter Setter 方法 */
     public CommonCharacter getCaller() {

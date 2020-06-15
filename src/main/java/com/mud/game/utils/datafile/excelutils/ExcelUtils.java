@@ -83,7 +83,9 @@ public class ExcelUtils {
             for(int colNum = 0; colNum <= row.getLastCellNum()-1; colNum++){
                 Cell cell = row.getCell(colNum);
                 Field field = fields.get(colNum);
-                if(cell.getCellType() == CellType.NUMERIC){
+                if(cell == null){
+                    field.set(instance, null);
+                }else if(cell.getCellType() == CellType.NUMERIC){
                     // 如果这是一个数字类型的字段;  作如下操作和类型转换
                     double value = cell.getNumericCellValue();
                     if (long.class.equals(field.getType())||Long.class.equals(field.getType())) {

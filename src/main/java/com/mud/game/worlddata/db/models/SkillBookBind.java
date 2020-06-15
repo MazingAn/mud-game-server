@@ -1,5 +1,7 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -8,9 +10,13 @@ import java.io.Serializable;
 public class SkillBookBind {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name="编号")
     private Long id;
+    @Mark(name="技能书", link = "skillBook")
     @Column(name = "skill_book")
     private String skillBook;
+    @Mark(name="技能", link="skill")
     @Column(name = "skill")
     private String skill;
 

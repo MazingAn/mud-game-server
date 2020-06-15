@@ -1,7 +1,23 @@
 package com.mud.game.algorithm;
 
+import com.mud.game.combat.CombatSense;
+import com.mud.game.combat.FighterManager;
+import com.mud.game.handler.CombatHandler;
+import com.mud.game.messages.SkillCastMessage;
+import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.utils.modelsutils.Mark;
+import com.mud.game.worlddata.db.models.CharacterModel;
+import io.netty.util.concurrent.SingleThreadEventExecutor;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.mud.game.server.ServerManager.gameSetting;
 
 /**战斗时刻的计算*/
 public class AttackAlgorithm {
@@ -64,6 +80,41 @@ public class AttackAlgorithm {
             }
         }
         return harmInfo;
+    }
+
+    /** 连击 */
+    public static void lianji(CommonCharacter a, CommonCharacter b, SkillObject skillObject, int number){
+        String[] castMessages = skillObject.getMessage().split(";");
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        CombatSense sense = CombatHandler.getCombatSense(a.getId());
+        Runnable runnable = new Runnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                if(i < number && a.getHp() > 0 && b.getHp() > 0){
+                    //计算伤害
+                    HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(a, b);
+                    //应用伤害
+                    GameCharacterManager.changeStatus(b, "hp", harmInfo.finalHarm * -1);
+                    GameCharacterManager.saveCharacter(b);
+                    //构建战斗输出
+                    if(i < castMessages.length){
+                        SkillCastInfo skillCastInfo  = new SkillCastInfo(a, b, skillObject, castMessages[i]);
+                        sense.msgContents(new SkillCastMessage(skillCastInfo));
+                    }else{
+                        SkillCastInfo skillCastInfo  = new SkillCastInfo(a, b, skillObject, castMessages[0]);
+                        sense.msgContents(new SkillCastMessage(skillCastInfo));
+                    }
+                    i++;
+                }else{
+                    service.shutdown();
+                    a.autoCombatPause = false;
+                    GameCharacterManager.saveCharacter(a);
+                }
+            }
+        };
+        service.scheduleAtFixedRate(runnable, 0, (int)gameSetting.getGlobalCD() * 500,
+                TimeUnit.MILLISECONDS);
     }
 
 }

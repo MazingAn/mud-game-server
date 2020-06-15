@@ -1,5 +1,6 @@
 package com.mud.game.utils.datafile.importor;
 
+import com.mud.game.utils.datafile.exportor.Exportor;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 
 import java.io.InputStream;
@@ -68,8 +69,6 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.actionTurnInQuestRepository);
             case "LootList":
                 return new Importor(stream, fileName, DbMapper.lootListRepository);
-            case "DrugAndFood":
-                return new Importor(stream, fileName, DbMapper.drugAndFoodRepository);
             case "Skill":
                 return new Importor(stream, fileName, DbMapper.skillRepository);
             case "SkillCategoryType":
@@ -90,6 +89,29 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.normalObjectRepository);
             case "NpcLearnObjectList":
                 return new Importor(stream, fileName, DbMapper.npcLearnObjectListRepository);
+            case "Dialogue":
+                return new Importor(stream, fileName, DbMapper.dialogueRepository);
+            case "DialogueSentence":
+                return new Importor(stream, fileName, DbMapper.dialogueSentenceRepository);
+            case "NpcDialogue":
+                return new Importor(stream, fileName, DbMapper.npcDialogueRepository);
+            case "Quest":
+                return new Importor(stream, fileName, DbMapper.questRepository);
+            case "QuestDependency":
+                return new Importor(stream, fileName, DbMapper.questDependencyRepository);
+            case "QuestDialogueDependency":
+                return new Importor(stream, fileName, DbMapper.questDialogueDependencyRepository);
+            case "QuestRewardList":
+                return new Importor(stream, fileName, DbMapper.questRewardListRepository);
+            case "QuestObjective":
+                return new Importor(stream, fileName, DbMapper.questObjectiveRepository);
+            case "Shop":
+                return new Importor(stream, fileName, DbMapper.shopRepository);
+            case "NpcShop":
+                return new Importor(stream, fileName, DbMapper.npcShopRepository);
+            case "ShopGoods":
+                return new Importor(stream, fileName, DbMapper.shopGoodsRepository);
+
             default:
                 return null;
         }

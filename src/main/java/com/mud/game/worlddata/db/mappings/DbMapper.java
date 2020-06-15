@@ -39,7 +39,6 @@ public class DbMapper {
     public static ActionTurnInQuestRepository actionTurnInQuestRepository;
     public static ActionMoveRepository actionMoveRepository;
     public static LootListRepository lootListRepository;
-    public static DrugAndFoodRepository drugAndFoodRepository;
     public static SkillRepository skillRepository;
     public static SkillCategoryTypeRepository skillCategoryTypeRepository;
     public static SkillFunctionTypeRepository skillFunctionTypeRepository;
@@ -50,6 +49,17 @@ public class DbMapper {
     public static NormalObjectRepository normalObjectRepository;
     public static NpcLearnObjectListRepository npcLearnObjectListRepository;
     public static EquipmentPositionRepository equipmentPositionRepository;
+    public static DialogueRepository dialogueRepository;
+    public static DialogueSentenceRepository dialogueSentenceRepository;
+    public static NpcDialogueRepository npcDialogueRepository;
+    public static QuestRepository questRepository;
+    public static QuestDependencyRepository questDependencyRepository;
+    public static QuestDialogueDependencyRepository questDialogueDependencyRepository;
+    public static QuestRewardListRepository questRewardListRepository;
+    public static QuestObjectiveRepository questObjectiveRepository;
+    public static NpcShopRepository npcShopRepository;
+    public static ShopRepository shopRepository;
+    public static ShopGoodsRepository shopGoodsRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -182,11 +192,6 @@ public class DbMapper {
     }
 
     @Autowired
-    public void setDrugAndFoodRepository(DrugAndFoodRepository drugAndFoodRepository) {
-        DbMapper.drugAndFoodRepository = drugAndFoodRepository;
-    }
-
-    @Autowired
     public void setSkillRepository(SkillRepository skillRepository) {
         DbMapper.skillRepository = skillRepository;
     }
@@ -234,6 +239,61 @@ public class DbMapper {
     @Autowired
     public void setEquipmentPositionRepository(EquipmentPositionRepository equipmentPositionRepository) {
         DbMapper.equipmentPositionRepository = equipmentPositionRepository;
+    }
+
+    @Autowired
+    public void setDialogueRepository(DialogueRepository dialogueRepository) {
+        DbMapper.dialogueRepository = dialogueRepository;
+    }
+
+    @Autowired
+    public void setDialogueSentenceRepository(DialogueSentenceRepository dialogueSentenceRepository) {
+        DbMapper.dialogueSentenceRepository = dialogueSentenceRepository;
+    }
+
+    @Autowired
+    public void setNpcDialogueRepository(NpcDialogueRepository npcDialogueRepository) {
+        DbMapper.npcDialogueRepository = npcDialogueRepository;
+    }
+
+    @Autowired
+    public void setQuestRepository(QuestRepository questRepository) {
+        DbMapper.questRepository = questRepository;
+    }
+
+    @Autowired
+    public void setQuestDependencyRepository(QuestDependencyRepository questDependencyRepository) {
+        DbMapper.questDependencyRepository = questDependencyRepository;
+    }
+
+    @Autowired
+    public void setQuestDialogueDependencyRepository(QuestDialogueDependencyRepository questDialogueDependencyRepository) {
+        DbMapper.questDialogueDependencyRepository = questDialogueDependencyRepository;
+    }
+
+    @Autowired
+    public void setQuestRewardListRepository(QuestRewardListRepository questRewardListRepository) {
+        DbMapper.questRewardListRepository = questRewardListRepository;
+    }
+
+    @Autowired
+    public void setQuestObjectiveRepository(QuestObjectiveRepository questObjectiveRepository) {
+        DbMapper.questObjectiveRepository = questObjectiveRepository;
+    }
+
+    @Autowired
+    public void setNpcShopRepository(NpcShopRepository npcShopRepository) {
+        DbMapper.npcShopRepository = npcShopRepository;
+    }
+
+    @Autowired
+    public void setShopRepository(ShopRepository shopRepository) {
+        DbMapper.shopRepository = shopRepository;
+    }
+
+    @Autowired
+    public void setShopGoodsRepository(ShopGoodsRepository shopGoodsRepository) {
+        DbMapper.shopGoodsRepository = shopGoodsRepository;
     }
 }
 

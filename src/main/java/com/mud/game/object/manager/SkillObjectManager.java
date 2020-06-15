@@ -1,5 +1,6 @@
 package com.mud.game.object.manager;
 
+import com.mongodb.Mongo;
 import com.mud.game.handler.SkillFunctionHandler;
 import com.mud.game.handler.SkillPositionHandler;
 import com.mud.game.messages.MsgMessage;
@@ -7,6 +8,7 @@ import com.mud.game.messages.ToastMessage;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.SkillBookObject;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.structs.CharacterState;
@@ -22,6 +24,12 @@ import org.yeauty.pojo.Session;
 
 import java.util.*;
 
+/**
+ * 技能对象管理类
+ *
+ * 可以优化的空间： session可以不用做为函数的必须参数，使用character.msg()代替session.sendText()
+ *
+ * */
 public class SkillObjectManager {
 
     public static SkillObject create(String skillTemplateKey)  {
@@ -63,11 +71,14 @@ public class SkillObjectManager {
         SkillFunctionHandler.useSkill(caller, target, skillObject);
     }
 
+    /**
+     * 绑定技能的子技能
+     * */
     public static void bindSubSkills(SkillObject skillObject, String ownerId, int level) {
-        /*
-        * 设置技能的子技能
-        * */
+
+        CommonCharacter character = GameCharacterManager.getCharacterObject(ownerId);
         Set<String> subSkillIds = new HashSet<>();
+        // 绑定子技能
         try{
             Skill template = DbMapper.skillRepository.findSkillByDataKey(skillObject.getDataKey());
             if(template.getSubSkills() != null && !template.getSubSkills().trim().equals("")){
@@ -76,14 +87,15 @@ public class SkillObjectManager {
                     SkillObject subSkillObject = create(skillKey);
                     subSkillObject.setOwner(ownerId);
                     subSkillObject.setLevel(level);
-                    subSkillIds.add(subSkillObject.getId());
                     MongoMapper.skillObjectRepository.save(subSkillObject);
+                    subSkillIds.add(subSkillObject.getId());
                 }
+                skillObject.setSubSKills(subSkillIds);
+                MongoMapper.skillObjectRepository.save(skillObject);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        skillObject.setSubSKills(subSkillIds);
     }
 
     /**
@@ -154,6 +166,12 @@ public class SkillObjectManager {
             // 持久化技能信息
             skillObject.getEquippedPositions().add(position);
             MongoMapper.skillObjectRepository.save(skillObject);
+            // 同步子技能状态
+            for(String subSkillId : skillObject.getSubSKills()){
+                SkillObject subSkillObject = MongoMapper.skillObjectRepository.findSkillObjectById(subSkillId);
+                subSkillObject.getEquippedPositions().add(position);
+                MongoMapper.skillObjectRepository.save(subSkillObject);
+            }
             // 执行技能
             castSkill(skillObject, character, position);
             saveCharacterEquippedSkill(character, position, session, equippedSkills);
@@ -198,6 +216,12 @@ public class SkillObjectManager {
                         // 持久化技能信息
                         skillObject.getEquippedPositions().remove(position);
                         MongoMapper.skillObjectRepository.save(skillObject);
+                        // 同步子技能状态
+                        for(String subSkillId : skillObject.getSubSKills()){
+                            SkillObject subSkillObject = MongoMapper.skillObjectRepository.findSkillObjectById(subSkillId);
+                            subSkillObject.getEquippedPositions().remove(position);
+                            MongoMapper.skillObjectRepository.save(subSkillObject);
+                        }
                         // 从玩家技能装备列表删除这个技能
                         equippedSkills.get(position).remove(skillObject.getId());
                     }
@@ -222,12 +246,17 @@ public class SkillObjectManager {
             MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
             PlayerCharacterManager.returnAllSkills((PlayerCharacter) character);
             PlayerCharacterManager.showStatus((PlayerCharacter) character);
-            PlayerCharacterManager.getSkillsByPosition((PlayerCharacter) character, position, session);
+            PlayerCharacterManager.getSkillsByPosition((PlayerCharacter) character, position);
         }
     }
 
+    /**
+     * 执行技能，限定被动技能
+     * @param skillObject 要应用的技能
+     * @param character 要使用技能的角色
+     * @param position 被动技能应用的位置
+     * */
     public static void castSkill(SkillObject skillObject, CommonCharacter character, String position){
-        //对于被动技能，直接应用
         if(skillObject.isPassive()){
             for(SkillEffect effect : skillObject.getEffects()){
                 if(effect.getPosition().equals(position)){
@@ -237,6 +266,12 @@ public class SkillObjectManager {
         }
     }
 
+    /**
+     * 执行技能，限定主动技能
+     * @param skillObject 要执行的技能
+     * @param  caller 技能的释放者
+     * @param target 技能作用的对象
+     * */
     public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target){
         if(!skillObject.isPassive())
             SkillFunctionHandler.useSkill(caller, target, skillObject);
@@ -360,10 +395,11 @@ public class SkillObjectManager {
         return cmds;
     }
 
+    /**
+     * 给技能充能，如果当前级别充满了则升级
+     * */
     public static void chargeSkill(SkillObject skillObject, PlayerCharacter playerCharacter, Session session, Object learnTarget) {
-        /*
-        * 给技能充能，如果当前级别充满了则升级
-        * */
+
         try{
             // 计算玩家本次充值的潜能数量
             int chargeNumber = CommonAlgorithm.calculateSkillChargeNumber(playerCharacter);
@@ -371,8 +407,21 @@ public class SkillObjectManager {
             // 计算技能当前等级升级所需要的潜能数量
             int skillLevelUpNeedNumber = CommonAlgorithm.calculateSkillLevelUpNumber(skillObject);
 
-            // 扣除玩家的潜能(知识类技能免除这一步)
-            if(!skillObject.getCategoryType().equals("SCT_ZHISHI")){
+            // 是否需要消耗潜能
+            boolean needPotential = true;
+
+            // 如果是使用技能书学习则获得技能书，则却决于技能书
+            if(learnTarget instanceof SkillBookObject){
+               needPotential = ((SkillBookObject)learnTarget).isUse_potential();
+            }
+
+            // 如果是知识类技能 则不需要潜能
+            if(skillObject.getCategoryType().equals("SCT_ZHISHI")){
+                needPotential = false;
+            }
+
+            // 扣除玩家的潜能，如果需要的话
+            if(needPotential){
                 if(playerCharacter.getPotential() < chargeNumber){//如果不够就全扣，归零
                     chargeNumber = playerCharacter.getPotential();
                     playerCharacter.setPotential(0);
@@ -383,7 +432,7 @@ public class SkillObjectManager {
             }
 
             // 如果是通过NPC学习，判断NPC是师傅传授还是通过物品教授
-            if(learnTarget.getClass().equals(WorldNpcObject.class)){
+            if(learnTarget instanceof WorldNpcObject){
                 WorldNpcObject npc = (WorldNpcObject) learnTarget;
                 if(npc.isLearnByObject()){
                     // 学习的对象是通过物品充值才能习得，扣除充值的潜能
@@ -422,6 +471,15 @@ public class SkillObjectManager {
         * */
         // 升级技能
         skillObject.setLevel(skillObject.getLevel() + 1);
+        // 同步子技能
+        for(String subSkillObjectId: skillObject.getSubSKills()){
+            try{
+                SkillObject subSkillObject = MongoMapper.skillObjectRepository.findSkillObjectById(subSkillObjectId);
+                subSkillObject.setLevel(skillObject.getLevel());
+            }catch (Exception e){
+                System.out.println("没有找到对应的子技能");
+            }
+        }
         // 如果技能已经装备 在重新计算技能属性之前，取消技能的效果
         if(skillObject.getEquippedPositions().size() > 0){
             Set<String> positions = skillObject.getEquippedPositions();
@@ -429,6 +487,7 @@ public class SkillObjectManager {
                 SkillObjectManager.undoSkill(skillObject, playerCharacter, position);
             }
         }
+        // 重新计算技能效果
         SkillObjectManager.calculusEffects(playerCharacter, null, skillObject);
         // 如果技能已经装备 在重新计算技能属性之之后，应用技能的效果
         if(skillObject.getEquippedPositions().size() > 0){
@@ -441,7 +500,10 @@ public class SkillObjectManager {
         session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP,  skillObject.getName(), skillObject.getLevel()))));
     }
 
-    public static String getCastMessage(CommonCharacter target) {
-        return "测试信息";
+    public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject) {
+        return skillObject.getMessage()
+                .replaceAll("\\{c", caller.getName())
+                .replaceAll("\\{t", target.getName());
     }
+
 }

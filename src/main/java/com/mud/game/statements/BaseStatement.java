@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseStatement {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     private CommonCharacter caller;

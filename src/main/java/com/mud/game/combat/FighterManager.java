@@ -2,6 +2,7 @@ package com.mud.game.combat;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.Mongo;
+import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.JoinCombatMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.net.session.GameSessionService;
@@ -42,6 +43,7 @@ public class FighterManager {
         try{
             character.setState(CharacterState.STATE_COMBAT);
             character.msg(new JoinCombatMessage());
+            GameCharacterManager.showCombatCommands(character);
         }catch (Exception e){
             System.out.println("加入战斗失败");
         }
@@ -66,20 +68,22 @@ public class FighterManager {
      *
      * @param character 要进行自动攻击的角色
      * */
-    public static void startAutoCombat(CommonCharacter character, CombatSense sense, int finnishLimitHp) {
-
+    public static void startAutoCombat(CommonCharacter character) {
         // 设置对手，开始普通攻击
         String characterId = character.getId();
+        CombatSense sense = CombatHandler.getCombatSense(characterId);
         ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(characterId);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if(!sense.isCombatFinished(finnishLimitHp)){
-                    CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
-                    CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
-                    GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
-                    if(sense.isCombatFinished(finnishLimitHp)){
-                        sense.onCombatFinish();
+                if(!sense.isCombatFinished()){
+                    if(!character.autoCombatPause) {
+                        CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
+                        CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
+                        GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
+                        if (sense.isCombatFinished()) {
+                            sense.onCombatFinish();
+                        }
                     }
                 }else{
                     sense.onCombatFinish();
@@ -88,6 +92,13 @@ public class FighterManager {
         };
         service.scheduleAtFixedRate(runnable, 0, (int)gameSetting.getGlobalCD() * 1000, TimeUnit.MILLISECONDS);
     }
+
+    public static void stopAutoCombat(CommonCharacter character){
+        ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(character.getId());
+        service.shutdown();
+    }
+
+
 
 
 }

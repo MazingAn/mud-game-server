@@ -1,15 +1,9 @@
 package com.mud.game.object.builder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mud.game.object.manager.EquipmentObjectManager;
-import com.mud.game.object.manager.GemObjectManager;
-import com.mud.game.object.manager.NormalObjectObjectManager;
-import com.mud.game.object.manager.SkillObjectManager;
+import com.mud.game.object.manager.*;
 import com.mud.game.object.supertypeclass.CommonObject;
-import com.mud.game.object.typeclass.EquipmentObject;
-import com.mud.game.object.typeclass.GemObject;
-import com.mud.game.object.typeclass.NormalObjectObject;
-import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.object.typeclass.*;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.Gem;
 import com.mud.game.worlddata.db.models.NormalObject;
@@ -34,6 +28,10 @@ public class CommonObjectBuilder {
         return GemObjectManager.create(gemTemplateKey);
     }
 
+    public static SkillBookObject buildSkillBookObject(String skillBookKey){
+        return SkillBookObjectManager.create(skillBookKey);
+    }
+
     public static CommonObject buildCommonObject(String templateKey)  {
         /*
         * 在创建的时候没有明确的类型，则需要自己判断
@@ -44,6 +42,8 @@ public class CommonObjectBuilder {
             return buildNormalObject(templateKey);
         }else if(DbMapper.equipmentRepository.existsByDataKey(templateKey)){
             return buildEquipment(templateKey);
+        }else if(DbMapper.skillBookRepository.existsByDataKey(templateKey)){
+            return buildSkillBookObject(templateKey);
         }else{
             return null;
         }
@@ -57,6 +57,8 @@ public class CommonObjectBuilder {
             MongoMapper.normalObjectObjectRepository.save((NormalObjectObject) commonObject);
         }else if(DbMapper.equipmentRepository.existsByDataKey(commonObject.getDataKey())){
             MongoMapper.equipmentObjectRepository.save((EquipmentObject)commonObject);
+        }else if(DbMapper.skillBookRepository.existsByDataKey(commonObject.getDataKey())){
+            MongoMapper.skillBookObjectRepository.save((SkillBookObject) commonObject);
         }
     }
 

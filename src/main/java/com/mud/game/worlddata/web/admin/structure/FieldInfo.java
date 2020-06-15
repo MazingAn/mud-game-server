@@ -8,6 +8,8 @@ public class FieldInfo {
     public int minLength;
     public String message;
     public Class type;
+    public String link;
+    public boolean multi;
 
     public FieldInfo() {
         this.nullable = true;

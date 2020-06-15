@@ -9,6 +9,7 @@ import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.regxutils.InputFieldCheck;
 import com.mud.game.worlddata.db.models.GameSetting;
+import com.mud.game.worlddata.db.models.WorldNpc;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -111,6 +112,7 @@ class MudGameServerApplicationTests {
             Assertions.assertTrue((int)ArrayListUtils.randomChoice(list) >= 0);
         }
     }
+
 
     /**
      * 魔力宝贝Java后端工程师笔试

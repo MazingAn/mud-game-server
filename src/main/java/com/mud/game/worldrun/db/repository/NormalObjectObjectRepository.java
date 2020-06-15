@@ -6,5 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface NormalObjectObjectRepository extends MongoRepository<NormalObjectObject, String> {
     NormalObjectObject findNormalObjectObjectByDataKey(String dataKey);
+    NormalObjectObject findNormalObjectObjectById(String id);
     NormalObjectObject findNormalObjectObjectByDataKeyAndOwner(String dataKey, String ownerId);
 }

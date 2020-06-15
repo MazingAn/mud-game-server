@@ -25,7 +25,7 @@ import java.util.Map;
  * */
 public abstract class BaseCommand {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /** 命令对应的key： 客户端的请求总是以这个key作为cmd参数的值，由此才能反射到对应的命令类并执行 */
     private String key;

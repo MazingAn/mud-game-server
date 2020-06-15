@@ -50,6 +50,18 @@ public class HangUpManager {
             if(currentAction.equals(CharacterState.STATE_CURE)){//处理玩家疗伤
                 GameCharacterManager.changeStatus(playerCharacter, "max_hp", 20);
                 GameCharacterManager.changeStatus(playerCharacter, "hp", 20);
+                playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_CURE, 20,20)));
+                if(playerCharacter.getMax_hp() >= playerCharacter.getLimit_hp()){
+                    playerCharacter.setMax_hp(playerCharacter.getLimit_hp());
+                }
+                if(playerCharacter.getHp() >= playerCharacter.getMax_hp()){
+                    playerCharacter.setHp(playerCharacter.getMax_hp());
+                }
+                GameCharacterManager.saveCharacter(playerCharacter);
+                if(playerCharacter.getHp() == playerCharacter.getMax_hp() &&
+                        playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()){
+                    PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                }
             }else if(currentAction.equals(CharacterState.STATE_MEDITATE)){//处理玩家打坐
 
             }else{//其他类型挂机逻辑
@@ -65,7 +77,6 @@ public class HangUpManager {
         }catch (Exception e){
             System.out.println("在玩家挂机的时候发生错误，挂机人：" + playerCharacter.getName() + ";  挂机操作：" + currentAction);
         }
-
     }
 
     /**

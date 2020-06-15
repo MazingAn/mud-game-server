@@ -36,6 +36,6 @@ public class Loot extends BaseCommand {
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();
         String creatorId = args.getString("args");
         WorldObjectCreator creator = MongoMapper.worldObjectCreatorRepository.findWorldObjectCreatorById(creatorId);
-        WorldObjectCreatorManager.onPlayerLoot(creator, playerCharacter, session);
+        WorldObjectCreatorManager.onPlayerLoot(creator, playerCharacter);
     }
 }

@@ -12,10 +12,10 @@ public class ImportFromCsv extends ImportStrategy {
     * 文件导入数据库策略的csv实现
     * */
 
-    private InputStream inputStream;
-    private String tableName;
-    private CrudRepository repository;
-    private String modelPackagePath;
+    private final InputStream inputStream;
+    private final String tableName;
+    private final CrudRepository repository;
+    private final String modelPackagePath;
 
     ImportFromCsv(InputStream inputStream, String tableName, CrudRepository repository) {
         this.inputStream = inputStream;

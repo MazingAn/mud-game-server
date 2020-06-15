@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.handler.CombatHandler;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.models.NormalObject;
@@ -50,7 +52,11 @@ public class Attack extends BaseCommand {
         ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
         redTeam.add(caller);
         blueTeam.add(targetObject);
-        CombatSense combatSense = new CombatSense(redTeam, blueTeam);
+
+        CombatSense combatSense = new CombatSense(redTeam, blueTeam, 0);
+        CombatHandler.addCombatSense(targetObject.getId(), combatSense);
+        CombatHandler.addCombatSense(caller.getId(), combatSense);
+
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);
         normalCombat.startCombat(combatSense);

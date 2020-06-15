@@ -138,7 +138,7 @@ public class CommonItemContainerManager {
         * */
         for(Object obj: container.getItems().values()){
             CommonObjectInfo info =(CommonObjectInfo) obj;
-            if(info.getDataKey().equals(objectKey) && info.getNumber() >= number){
+            if(info.getDataKey().trim().equals(objectKey.trim()) && info.getNumber() >= number){
                 return true;
             }
         }

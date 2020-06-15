@@ -40,32 +40,32 @@ public class GameSetting {
 
     /** 默认房间 */
     @Column(nullable = true)
-    @Mark(name = "默认房间")
+    @Mark(name = "默认房间", link = "worldRoom")
     private String defaultHome;
 
     /**起始房间*/
     @Column(nullable = true)
-    @Mark(name = "起始房间")
+    @Mark(name = "起始房间", link = "worldRoom")
     private String startLocation;
 
     /**默认玩家房间*/
     @Column(nullable = true)
-    @Mark(name = "默认玩家房间")
+    @Mark(name = "默认玩家房间", link = "worldRoom")
     private String defaultPlayerHome;
 
     /**默认玩家模板*/
     @Column(nullable = true)
-    @Mark(name = "默认玩家模板")
+    @Mark(name = "默认玩家模板", link = "characterModel")
     private String defaultPlayerTemplate;
 
     /**默认玩家技能*/
     @Column(nullable = false)
-    @Mark(name = "默认攻击技能")
+    @Mark(name = "默认攻击技能", link = "skill")
     private String defaultSkill;
 
     /**默认复活道具*/
     @Column(nullable = false)
-    @Mark(name = "默认复活道具")
+    @Mark(name = "默认复活道具", link = "allObjects")
     private String defaultRebornObject;
 
     public Long getId() {

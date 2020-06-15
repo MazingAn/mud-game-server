@@ -35,6 +35,9 @@ public class CombatSense {
     /** 获胜方颜色 */
     private String winner;
 
+    /** 战斗结束的血量条件 */
+    private int minHp;
+
     /**
      * 构造函数
      *
@@ -42,9 +45,12 @@ public class CombatSense {
      * @param blueTeam 战斗一方的队伍（一个有角色对象组成的数组）
      *
      * */
-    public CombatSense(ArrayList<CommonCharacter> redTeam, ArrayList<CommonCharacter> blueTeam) {
+    public CombatSense(ArrayList<CommonCharacter> redTeam,
+                       ArrayList<CommonCharacter> blueTeam,
+                       int minHp) {
         this.redTeam = redTeam;
         this.blueTeam = blueTeam;
+        this.minHp = minHp;
     }
 
     /**
@@ -77,11 +83,9 @@ public class CombatSense {
 
     /**
      * 检查战斗场景的状态，判断战斗是否结束
-     * @param  minHp  用来检测角色是否被打败的标准(当角色的血量低于这个值，则玩家判定失败)
-     *                战斗的是否可以结束，则是队伍里所有人的血量低于这个值 则战斗可以结束
      * @return boolean 战斗是否可以结束
      * */
-    public boolean isCombatFinished(int minHp){
+    public boolean isCombatFinished(){
         if(getAliveNumberInTeam(redTeam, minHp) != 0){
             winner = "blue";
             return true;
@@ -164,5 +168,13 @@ public class CombatSense {
 
     public void setWinner(String winner) {
         this.winner = winner;
+    }
+
+    public int getMinHp() {
+        return minHp;
+    }
+
+    public void setMinHp(int minHp) {
+        this.minHp = minHp;
     }
 }

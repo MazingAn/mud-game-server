@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseCondition {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /** 执行判断的玩家， 条件检测最终影响玩家的游戏进程 */
     private PlayerCharacter playerCharacter;

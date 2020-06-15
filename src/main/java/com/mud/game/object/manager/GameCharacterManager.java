@@ -1,6 +1,5 @@
 package com.mud.game.object.manager;
 
-import com.mongodb.Mongo;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
@@ -11,10 +10,10 @@ import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.server.ServerManager;
-import com.mud.game.structs.ObjectMoveInfo;
-import com.mud.game.structs.SimpleCharacter;
+import com.mud.game.statements.buffers.BufferManager;
+import com.mud.game.statements.buffers.CharacterBuffer;
+import com.mud.game.structs.*;
 import com.mud.game.utils.resultutils.GameWords;
-import com.mud.game.worlddata.db.models.WorldNpc;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
@@ -221,13 +220,43 @@ public class GameCharacterManager {
      * @param skillKey String 技能key
      * @return boolean 有：true 没有：false
      * */
-    public static boolean characterHasSkill(CommonCharacter character, String skillKey){
+    public static boolean hasSkill(CommonCharacter character, String skillKey){
         /*
         * @ 检查角色是否拥有某个技能
         * */
         for(String skillId : character.getSkills()){
             SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
             if(skillObject != null && skillObject.getDataKey().equals(skillKey)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean skillLevelGt(CommonCharacter character, String skillKey, int compareLevel){
+        for(String skillId : character.getSkills()){
+            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
+            if(skillObject != null && skillObject.getDataKey().equals(skillKey)){
+                if(skillObject.getLevel() >= compareLevel){
+                    return true;
+                }else{
+                    character.msg(new MsgMessage(String.format(GameWords.NEED_SKILL_LEVEL_GT,
+                            skillObject.getName(), compareLevel)));
+                }
+            }
+        }
+        return false;
+    }
+
+    /** 检查角色是否装备某一个技能
+     * @param character  被检查的角色
+     * @param skillKey 技能的key
+     * */
+    public static boolean hasEquippedSkill(CommonCharacter character, String skillKey){
+        for(String skillId : character.getSkills()){
+            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
+            if(skillObject != null && skillObject.getDataKey().equals(skillKey) &&
+                    skillObject.getEquippedPositions().size() > 0){
                 return true;
             }
         }
@@ -358,5 +387,52 @@ public class GameCharacterManager {
         WorldRoomObjectManager.broadcast(room, new ObjectMoveInMessage(moveInfo), character.getId());
     }
 
+    /**
+     * 为角色追加一个buff
+     * */
+    public static void addBuffer(String bufferName, float duration, int addedCount, int maxAdd,
+                                 boolean goodBuffer, String attrKey, float changedValue,
+                                 CommonCharacter target, SkillObject skillObject){
+        Map<String, Set<String>> characterBuffers = target.getBuffers();
+        // 如果玩家已经有了这个buffer
+        if(characterBuffers.containsKey(bufferName)){
+            Set<String> usedBuffers = characterBuffers.get(bufferName);
+            // 如果buffer可以叠加 则直接叠加
+            if (usedBuffers.size() < maxAdd || usedBuffers.isEmpty()){
+                CharacterBuffer buffer= BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject);
+                BufferManager.startBufferTimer(buffer.bufferId);
+            }
+        }
+        // 如果玩家没有这个buffer
+        else{
+            CharacterBuffer buffer= BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject);
+            BufferManager.startBufferTimer(buffer.bufferId);
+        }
+        showBuffers(target);
+    }
+
+
+    /**
+     * 像客户端推送buffer信息
+     * @param character 游戏角色
+     * */
+    public static void showBuffers(CommonCharacter character){
+        character.msg(new BuffersMessage(character));
+    }
+
+    /**
+     * 显示玩家战斗期间可以使用的技能
+     * @param character 要作用的角色
+     * */
+    public static void showCombatCommands(CommonCharacter character){
+        List<CombatCommand> commands = new ArrayList<>();
+        for(String skillObjectId : character.getSkills()){
+            SkillObject skillObject  = MongoMapper.skillObjectRepository.findSkillObjectById(skillObjectId);
+            if(!skillObject.isPassive() && skillObject.getEquippedPositions().size() > 0){
+                commands.add(new CombatCommand(skillObject.getName(), skillObject.getDataKey(), skillObject.getIcon()));
+            }
+        }
+        character.msg(new CombatCommandsMessage(commands));
+    }
 
 }

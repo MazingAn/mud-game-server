@@ -3,6 +3,8 @@ package com.mud.game.statements.skills;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.algorithm.AttackAlgorithm;
 import com.mud.game.algorithm.HarmInfo;
+import com.mud.game.combat.CombatSense;
+import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.object.manager.GameCharacterManager;
@@ -36,8 +38,9 @@ public class NormalHit extends BaseAttackSkillStatement {
         //应用伤害
         GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1);
         //构建战斗输出
-        SkillCastInfo skillCastInfo  = new SkillCastInfo(caller, target, skillObject, "小贱人 我要杀了你");
-        caller.msg(new SkillCastMessage(skillCastInfo));
+        SkillCastInfo skillCastInfo  = new SkillCastInfo(caller, target, skillObject, skillObject.getMessage());
+        CombatSense sense = CombatHandler.getCombatSense(caller.getId());
+        sense.msgContents(new SkillCastMessage(skillCastInfo));
         //更新同步数据
         GameCharacterManager.saveCharacter(target);
     }

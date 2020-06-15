@@ -30,6 +30,11 @@ public class SkillFunctionTypeController {
         return DbMapper.skillFunctionTypeRepository.save(newSkillFunctionType);
     }
 
+    @GetMapping("all")
+    public Iterable<SkillFunctionType> all(){
+        return DbMapper.skillFunctionTypeRepository.findAll();
+    }
+
     /**
      * 查询SkillFunctionType
      *

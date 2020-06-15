@@ -11,7 +11,7 @@ import java.util.Map;
 
 public abstract class BasePassiveSkillStatement {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     private CommonCharacter caller;

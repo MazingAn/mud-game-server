@@ -35,14 +35,14 @@ public class ServerManager {
         }
 
         System.out.println("初始化指令系统...");
-        // 初始化游戏的Handler
-        // 命令集合
+        // 初始化游戏的Handler...
+        // 初始化命令集合...
         ConditionHandler.initConditionHandler();
         CommandSetHandler.initUnLoginCommandSet();
         CommandSetHandler.initAccountCommandSet();
         CommandSetHandler.initPlayerCharacterCommandSet();
         CommandSetHandler.initPlayerCharacterDieCommandSet();
-        // 缓存信息
+        // 初始化缓存信息...
         System.out.println("初始化缓存信息...");
         SchoolHandler.initSchoolHandler();
         SkillTypeHandler.initSkillTypeHandler();
@@ -50,6 +50,14 @@ public class ServerManager {
         SkillPositionHandler.initSkillPositionHandler();
         EquipmentPositionHandler.initEquipmentPositionHandler();
         RoomCommandHandler.initRoomCommandSet();
+        QuestObjectiveTypeHandler.initObjectiveTypeMapper();
+        UnitHandler.initUnits();
+        StatusHandler.initAttrMapping();
+        // 创建默认频道...
+        System.out.println("创建默认频道...");
+        ChannelHandler.initChannels();
+
+        System.out.println("服务器启动完成！");
     }
 
     public static void stop(){

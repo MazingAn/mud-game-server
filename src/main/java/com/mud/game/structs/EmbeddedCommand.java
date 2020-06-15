@@ -3,12 +3,11 @@ package com.mud.game.structs;
 import java.util.HashMap;
 import java.util.Map;
 
+/***
+ * 嵌入式的命令
+ * 玩家可以通过这个结构，在前端通过点击按钮的形式执行命令
+ * */
 public class EmbeddedCommand {
-
-    /*
-    * 嵌入式的命令
-    * 玩家可以通过这个结构，在前端通过点击按钮的形式执行命令
-    * */
 
     private String name;
     private String cmd;

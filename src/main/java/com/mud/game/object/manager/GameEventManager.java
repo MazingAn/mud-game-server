@@ -13,46 +13,46 @@ public class GameEventManager {
     /**
     * 游戏事件的选择和执行管理
     * */
-    public static void trigger(PlayerCharacter playerCharacter, EventData eventData, Session session) {
+    public static void trigger(PlayerCharacter playerCharacter, EventData eventData) {
         /*
         * 根据事件的类型 执行对应事件
         * */
         switch (eventData.getAction()){
             case EventActionType.ACTION_ATTACK:
                 ActionAttack attackData = DbMapper.actionAttackRepository.findActionAttackByEventKey(eventData.getDataKey());
-                EventAction.actionAttack(playerCharacter, attackData, session);
+                EventAction.actionAttack(playerCharacter, attackData);
                 break;
             case EventActionType.ACTION_ACCEPT_QUEST:
                 ActionAcceptQuest acceptQuest = DbMapper.actionAcceptQuestRepository.findActionAcceptQuestByEventKey(eventData.getDataKey());
-                EventAction.actionAcceptQuest(playerCharacter, acceptQuest, session);
+                EventAction.actionAcceptQuest(playerCharacter, acceptQuest);
                 break;
             case EventActionType.ACTION_CHANGE_ATTR:
                 ActionChangeAttr changeAttr = DbMapper.actionChangeAttrRepository.findActionChangeAttrByEventKey(eventData.getDataKey());
-                EventAction.actionChangeAttr(playerCharacter, changeAttr, session);
+                EventAction.actionChangeAttr(playerCharacter, changeAttr);
                 break;
             case EventActionType.ACTION_CHANGE_STEP:
                 ActionChangeStep changeStep = DbMapper.actionChangeStepRepository.findActionChangeStepsByEventKey(eventData.getDataKey());
-                EventAction.actionChangeStep(playerCharacter, changeStep, session);
+                EventAction.actionChangeStep(playerCharacter, changeStep);
                 break;
             case EventActionType.ACTION_CLOSE:
                 ActionCloseEvent closeEvent = DbMapper.actionCloseEventRepository.findActionCloseEventByEventKey(eventData.getDataKey());
-                EventAction.actionCloseEvent(playerCharacter, closeEvent, session);
+                EventAction.actionCloseEvent(playerCharacter, closeEvent);
                 break;
             case EventActionType.ACTION_DIALOGUE:
                 ActionDialogue actionDialogue = DbMapper.actionDialogueRepository.findActionDialogueByEventKey(eventData.getDataKey());
-                EventAction.actionDialogue(playerCharacter, actionDialogue, session);
+                EventAction.actionDialogue(playerCharacter, actionDialogue);
                 break;
             case EventActionType.ACTION_LEARN_SKILL:
                 ActionLearnSkill learnSkill = DbMapper.actionLearnSkillRepository.findActionLearnSkillByEventKey(eventData.getDataKey());
-                EventAction.actionLearnSkill(playerCharacter, learnSkill, session);
+                EventAction.actionLearnSkill(playerCharacter, learnSkill);
                 break;
             case EventActionType.ACTION_MOVE:
                 ActionMove move = DbMapper.actionMoveRepository.findActionMoveByEventKey(eventData.getDataKey());
-                EventAction.actionMove(playerCharacter, move, session);
+                EventAction.actionMove(playerCharacter, move);
                 break;
             case EventActionType.ACTION_TURN_IN_QUEST:
                 ActionTurnInQuest turnInQuest = DbMapper.actionTurnInQuestRepository.findActionTurnInQuestByEventKey(eventData.getDataKey());
-                EventAction.actionTurnInQuest(playerCharacter, turnInQuest, session);
+                EventAction.actionTurnInQuest(playerCharacter, turnInQuest);
                 break;
             default:
                 break;

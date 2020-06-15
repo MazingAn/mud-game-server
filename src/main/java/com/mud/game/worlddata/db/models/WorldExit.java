@@ -15,11 +15,11 @@ public class WorldExit extends BaseObject {
     private String verb;
 
     //出口的原地址
-    @Mark(name = "出发地")
+    @Mark(name = "出发地", link = "worldRoom")
     private String location;
 
     //出口的目的地
-    @Mark(name = "目的地")
+    @Mark(name = "目的地", link = "worldRoom")
     private String destination;
 
     //是否是双向出口

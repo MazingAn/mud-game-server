@@ -69,12 +69,12 @@ public interface CombatInterface {
         // 给红队随机设置蓝队的对手
         for(CommonCharacter character : sense.getRedTeam()){
             FighterManager.setRandomTarget(character, sense.getBlueTeam());
-            FighterManager.startAutoCombat(character, sense, 0);
+            FighterManager.startAutoCombat(character);
         }
         // 给蓝队随机设置红队的对手
         for(CommonCharacter character : sense.getBlueTeam()){
             FighterManager.setRandomTarget(character, sense.getRedTeam());
-            FighterManager.startAutoCombat(character, sense, 0);
+            FighterManager.startAutoCombat(character);
         }
     }
 

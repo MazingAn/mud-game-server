@@ -33,10 +33,14 @@ public class EntityInfoLoader {
         // 便利所有字段并获取字段信息
         for(Field field : getSortedFields(clazz)){
             String verboseName = field.getAnnotation(Mark.class).name();
+            String link = field.getAnnotation(Mark.class).link();
+            boolean multi = field.getAnnotation(Mark.class).multi();
             FieldInfo fieldInfo = new FieldInfo();
             fieldInfo.name = field.getName();
             fieldInfo.verboseName = verboseName;
             fieldInfo.type = field.getType();
+            fieldInfo.link = link;
+            fieldInfo.multi = multi;
             if(field.getAnnotation(Size.class) != null){
                 fieldInfo.maxLength = field.getAnnotation(Size.class).max();
                 fieldInfo.minLength = field.getAnnotation(Size.class).min();

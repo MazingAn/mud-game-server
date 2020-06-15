@@ -76,10 +76,17 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("equip_equipment", EquipEquipment.class);
         playerCharacterCommandSet.put("take_off_equipment", TakeOffEquipment.class);
         playerCharacterCommandSet.put("attack", Attack.class);
-
+        playerCharacterCommandSet.put("castskill", CastSkill.class);
+        playerCharacterCommandSet.put("talk", Talk.class);
+        playerCharacterCommandSet.put("dialogue", CmdDialogue.class);
+        playerCharacterCommandSet.put("quests", CmdQuests.class);
+        playerCharacterCommandSet.put("say", CmdSay.class);
+        playerCharacterCommandSet.put("shopping", CmdShopping.class);
+        playerCharacterCommandSet.put("sys_shopping", CmdSysShopping.class);
+        playerCharacterCommandSet.put("buy", CmdBuy.class);
     }
 
-    /** 初始化 游戏内部玩家的命令集 */
+    /** 初始化 游戏内部玩家的命令集 玩家死亡的时候可以执行的命令 */
     public static void initPlayerCharacterDieCommandSet() {
         playerCharacterDieCommandSet.put("idle", Idle.class);
         playerCharacterDieCommandSet.put("friends", LoadFriends.class);
@@ -89,6 +96,8 @@ public class CommandSetHandler {
         playerCharacterDieCommandSet.put("find_teacher", FindTeacher.class);
         playerCharacterDieCommandSet.put("reborn_here", RebornHere.class);
         playerCharacterDieCommandSet.put("reborn_home", RebornHome.class);
+        playerCharacterCommandSet.put("quests", CmdQuests.class);
+        playerCharacterCommandSet.put("say", CmdSay.class);
     }
 
 }

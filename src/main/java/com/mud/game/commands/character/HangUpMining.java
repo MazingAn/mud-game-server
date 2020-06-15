@@ -41,7 +41,7 @@ public class HangUpMining extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         Session session = getSession();
         // 检查玩家有没有挖矿技能
-        if(!GameCharacterManager.characterHasSkill(caller, "skill_zhishi_wakuang")){
+        if(!GameCharacterManager.hasSkill(caller, "skill_zhishi_wakuang")){
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_MINING_SKILL)));
         }else{
             Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_MINING);

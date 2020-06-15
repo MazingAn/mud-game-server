@@ -5,9 +5,9 @@ import java.io.InputStream;
 
 public class Importor {
 
-    private InputStream stream;
-    private String fileName;
-    private CrudRepository repository;
+    private final InputStream stream;
+    private final String fileName;
+    private final CrudRepository repository;
 
     public Importor(InputStream stream, String fileName, CrudRepository repository) {
         this.stream = stream;

@@ -23,7 +23,7 @@ public class SkillCastInfo {
         this.caller = caller.getName();
         this.target = target.getName();
         this.skill = skillObject.getDataKey();
-        this.cast = SkillObjectManager.getCastMessage(target);
+        this.cast = SkillObjectManager.getCastMessage(caller, target, skillObject);
         this.status = new HashMap<>();
         status.put(caller.getId(), new CombatStatus(caller));
         status.put(target.getId(), new CombatStatus(target));

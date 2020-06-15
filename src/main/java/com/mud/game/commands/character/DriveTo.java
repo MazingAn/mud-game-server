@@ -33,6 +33,6 @@ public class DriveTo extends BaseCommand {
         Session session = getSession();
         String roomId = args.getString("args");
         WorldRoomObject roomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectById(roomId);
-        PlayerCharacterManager.moveTo(caller, roomObject.getDataKey(), session);
+        PlayerCharacterManager.moveTo(caller, roomObject.getDataKey());
     }
 }

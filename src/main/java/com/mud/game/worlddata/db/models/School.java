@@ -1,8 +1,11 @@
 package com.mud.game.worlddata.db.models;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import javax.persistence.*;
 
 @Entity
+@Mark(name = "门派")
 public class School {
     /*
     游戏中的门派
@@ -10,19 +13,24 @@ public class School {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @Mark(name="编号")
+    private Long id;
     @Column(unique = true)
+    @Mark(name="标识")
     private String dataKey;
+    @Mark(name="名称")
     private String name;
+    @Mark(name="描述")
     private String description;
+    @Mark(name="加入条件")
     @Column(length = 512)
     private String joinCondition;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

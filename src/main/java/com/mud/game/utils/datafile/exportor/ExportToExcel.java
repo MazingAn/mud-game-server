@@ -8,9 +8,9 @@ public class ExportToExcel extends ExportStrategy {
     * 数据库导出文件策略的csv实现
     * */
 
-    private Iterable<?> data;
-    private String tableName;
-    private String outFilePath;
+    private final Iterable<?> data;
+    private final String tableName;
+    private final String outFilePath;
 
 
     public ExportToExcel(Iterable<?> data, String tableName, String outFilePath) {

@@ -10,7 +10,7 @@ import java.net.URL;
 @Mark(name="世界物体")
 public class WorldObject extends BaseObject {
 
-    @Mark(name="所处位置")
+    @Mark(name="所处位置", link = "worldRoom")
     private String location;
 
     //物品生成器，获取物品的时候的按钮名称
