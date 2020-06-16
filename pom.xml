@@ -62,11 +62,17 @@
             <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
 
-<!--        &lt;!&ndash; https://mvnrepository.com/artifact/javax.interceptor/javax.interceptor-api &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>javax.interceptor</groupId>-->
-<!--            <artifactId>javax.interceptor-api</artifactId>-->
-<!--        </dependency>-->
+        <!-- swwager2 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
 
         <!-- excel工具库-->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->

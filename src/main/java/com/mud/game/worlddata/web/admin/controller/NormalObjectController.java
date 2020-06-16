@@ -2,6 +2,7 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NormalObject;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
  * */
 @RestController
 @RequestMapping("/NormalObject")
+@Api(tags = "普通物品管理接口")
 public class NormalObjectController {
     /**
      * 增加NormalObject

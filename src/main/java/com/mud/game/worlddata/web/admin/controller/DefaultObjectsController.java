@@ -2,6 +2,10 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DefaultObjects;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +21,7 @@ import javax.validation.Valid;
  * */
 @RestController
 @RequestMapping("/DefaultObjects")
+@Api(tags = "默认物品维护接口")
 public class DefaultObjectsController {
     /**
      * 增加DefaultObjects
@@ -26,6 +31,7 @@ public class DefaultObjectsController {
      * @return 保存后的DefaultObjects信息
      * */
     @PostMapping("/add")
+    @ApiOperation("增加默认物品")
     public DefaultObjects addDefaultObjects(@Valid  @RequestBody DefaultObjects newDefaultObjects) {
         return DbMapper.defaultObjectsRepository.save(newDefaultObjects);
     }
@@ -38,6 +44,7 @@ public class DefaultObjectsController {
      * @return 分页信息和页面内容
      * */
     @GetMapping("")
+    @ApiOperation("分页获取默认物品列表")
     public Page<DefaultObjects> query(@RequestParam(defaultValue="0") int page,
                                    @RequestParam(defaultValue="20") int size){
         Pageable paging = PageRequest.of(page, size);
@@ -46,13 +53,15 @@ public class DefaultObjectsController {
     }
 
     /**
-     * 修改游戏设置
+     * 修改
      *
      * @param updatedDefaultObjects 更新的游戏设置
      * @param id  要更新的行的id
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
+    @ApiOperation("编辑默认物品记录")
+    @ApiImplicitParam(name="id", value="记录id")
     public DefaultObjects editDefaultObjects(@RequestBody DefaultObjects updatedDefaultObjects, @PathVariable Long id) {
         updatedDefaultObjects.setId(id);
         return DbMapper.defaultObjectsRepository.save(updatedDefaultObjects);
@@ -66,6 +75,8 @@ public class DefaultObjectsController {
      * */
     @DeleteMapping("/{id}")
     @Transactional
+    @ApiOperation("删除默认物品记录")
+    @ApiImplicitParam(name="id", value="记录id")
     public void deleteDefaultObjects(@Valid @PathVariable Long id){
         DbMapper.defaultObjectsRepository.deleteById(id);
     }

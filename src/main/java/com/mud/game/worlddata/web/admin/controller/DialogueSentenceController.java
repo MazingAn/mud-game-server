@@ -2,6 +2,9 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DialogueSentence;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import javax.validation.Valid;
  * */
 @RestController
 @RequestMapping("/DialogueSentence")
+@Api(tags = "对话管理接口")
 public class DialogueSentenceController {
     /**
      * 增加DialogueSentence
@@ -26,6 +30,7 @@ public class DialogueSentenceController {
      * @return 保存后的DialogueSentence信息
      * */
     @PostMapping("/add")
+    @ApiOperation("增加句子")
     public DialogueSentence addDialogueSentence(@Valid  @RequestBody DialogueSentence newDialogueSentence) {
         return DbMapper.dialogueSentenceRepository.save(newDialogueSentence);
     }
@@ -38,6 +43,7 @@ public class DialogueSentenceController {
      * @return 分页信息和页面内容
      * */
     @GetMapping("")
+    @ApiOperation("分页查看句子")
     public Page<DialogueSentence> query(@RequestParam(defaultValue="0") int page,
                                    @RequestParam(defaultValue="20") int size){
         Pageable paging = PageRequest.of(page, size);
@@ -53,6 +59,8 @@ public class DialogueSentenceController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
+    @ApiOperation("编辑句子")
+    @ApiImplicitParam(name = "id", value = "句子id")
     public DialogueSentence editDialogueSentence(@RequestBody DialogueSentence updatedDialogueSentence, @PathVariable Long id) {
         updatedDialogueSentence.setId(id);
         return DbMapper.dialogueSentenceRepository.save(updatedDialogueSentence);
@@ -66,6 +74,8 @@ public class DialogueSentenceController {
      * */
     @DeleteMapping("/{id}")
     @Transactional
+    @ApiOperation("删除句子")
+    @ApiImplicitParam(name = "id", value = "句子id")
     public void deleteDialogueSentence(@Valid @PathVariable Long id){
         DbMapper.dialogueSentenceRepository.deleteById(id);
     }

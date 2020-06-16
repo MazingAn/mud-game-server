@@ -4,6 +4,7 @@ import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.WorldArea;
 import com.mud.game.worlddata.db.models.WorldArea;
+import io.swagger.annotations.Api;
 import org.aspectj.weaver.World;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import java.util.List;
  * */
 @RestController
 @RequestMapping("/WorldArea")
+@Api(tags = "世界区域管理接口")
 public class WorldAreaController {
     /**
      * 增加WorldArea

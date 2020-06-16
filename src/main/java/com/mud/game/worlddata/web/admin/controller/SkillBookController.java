@@ -2,6 +2,7 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.SkillBook;
+import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
  * */
 @RestController
 @RequestMapping("/SkillBook")
+@Api(tags = "技能书管理接口")
 public class SkillBookController {
     /**
      * 增加SkillBook

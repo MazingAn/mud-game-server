@@ -2,6 +2,8 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DefaultSkills;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import javax.validation.Valid;
  * */
 @RestController
 @RequestMapping("/DefaultSkills")
+@Api(tags = "默认技能维护接口")
 public class DefaultSkillsController {
     /**
      * 增加DefaultSkills
@@ -26,6 +29,7 @@ public class DefaultSkillsController {
      * @return 保存后的DefaultSkills信息
      * */
     @PostMapping("/add")
+    @ApiOperation("增加默认技能")
     public DefaultSkills addDefaultSkills(@Valid  @RequestBody DefaultSkills newDefaultSkills) {
         return DbMapper.defaultSkillsRepository.save(newDefaultSkills);
     }
@@ -38,6 +42,7 @@ public class DefaultSkillsController {
      * @return 分页信息和页面内容
      * */
     @GetMapping("")
+    @ApiOperation("分页查询默认技能记录")
     public Page<DefaultSkills> query(@RequestParam(defaultValue="0") int page,
                                    @RequestParam(defaultValue="20") int size){
         Pageable paging = PageRequest.of(page, size);
@@ -53,6 +58,7 @@ public class DefaultSkillsController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
+    @ApiOperation("修改记录")
     public DefaultSkills editDefaultSkills(@RequestBody DefaultSkills updatedDefaultSkills, @PathVariable Long id) {
         updatedDefaultSkills.setId(id);
         return DbMapper.defaultSkillsRepository.save(updatedDefaultSkills);
@@ -66,6 +72,7 @@ public class DefaultSkillsController {
      * */
     @DeleteMapping("/{id}")
     @Transactional
+    @ApiOperation("删除默认技能")
     public void deleteDefaultSkills(@Valid @PathVariable Long id){
         DbMapper.defaultSkillsRepository.deleteById(id);
     }
