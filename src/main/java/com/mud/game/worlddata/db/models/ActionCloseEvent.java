@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Mark(name = "关闭事件")
 public class ActionCloseEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

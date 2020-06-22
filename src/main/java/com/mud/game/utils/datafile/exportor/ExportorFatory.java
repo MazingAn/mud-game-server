@@ -109,6 +109,10 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.npcShopRepository, outFilePath, tableName, type);
             case "ShopGoods":
                 return new Exportor(DbMapper.shopGoodsRepository, outFilePath, tableName, type);
+            case "ObjectType":
+                return new Exportor(DbMapper.objectTypeRepository, outFilePath, tableName, type);
+            case "HangupType":
+                return new Exportor(DbMapper.hangupTypeRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

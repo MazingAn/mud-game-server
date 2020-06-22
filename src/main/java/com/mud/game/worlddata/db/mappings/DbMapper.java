@@ -60,6 +60,8 @@ public class DbMapper {
     public static NpcShopRepository npcShopRepository;
     public static ShopRepository shopRepository;
     public static ShopGoodsRepository shopGoodsRepository;
+    public static ObjectTypeRepository objectTypeRepository;
+    public static HangupTypeRepository hangupTypeRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -294,6 +296,16 @@ public class DbMapper {
     @Autowired
     public void setShopGoodsRepository(ShopGoodsRepository shopGoodsRepository) {
         DbMapper.shopGoodsRepository = shopGoodsRepository;
+    }
+
+    @Autowired
+    public void setObjectTypeRepository(ObjectTypeRepository objectTypeRepository) {
+        DbMapper.objectTypeRepository = objectTypeRepository;
+    }
+
+    @Autowired
+    public void setHangupTypeRepository(HangupTypeRepository hangupTypeRepository) {
+        DbMapper.hangupTypeRepository = hangupTypeRepository;
     }
 }
 

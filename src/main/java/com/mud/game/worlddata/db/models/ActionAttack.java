@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Mark(name = "攻击事件")
 public class ActionAttack {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

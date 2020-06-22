@@ -32,6 +32,11 @@ public class EquipmentController {
         return DbMapper.equipmentRepository.save(newEquipment);
     }
 
+    @GetMapping("/all")
+    public Iterable<Equipment> all(){
+        return DbMapper.equipmentRepository.findAll();
+    }
+
     /**
      * 查询Equipment
      *

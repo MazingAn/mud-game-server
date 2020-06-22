@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Mark(name = "学习技能事件")
 public class ActionLearnSkill {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -6,6 +6,7 @@ import com.mud.game.utils.modelsutils.Mark;
 import javax.persistence.*;
 
 @Entity
+@Mark(name = "事件绑定")
 public class EventData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

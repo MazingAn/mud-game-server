@@ -111,6 +111,10 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.npcShopRepository);
             case "ShopGoods":
                 return new Importor(stream, fileName, DbMapper.shopGoodsRepository);
+            case "ObjectType":
+                return new Importor(stream, fileName, DbMapper.objectTypeRepository);
+            case "HangupType":
+                return new Importor(stream, fileName, DbMapper.hangupTypeRepository);
 
             default:
                 return null;

@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Mark(name = "修改高度事件")
 public class ActionChangeStep {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

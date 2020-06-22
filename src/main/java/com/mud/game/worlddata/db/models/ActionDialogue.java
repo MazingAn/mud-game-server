@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@Mark(name = "出发对话事件")
 public class ActionDialogue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

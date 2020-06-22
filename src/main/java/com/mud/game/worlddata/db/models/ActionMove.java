@@ -5,6 +5,7 @@ import com.mud.game.utils.modelsutils.Mark;
 import javax.persistence.*;
 
 @Entity
+@Mark(name = "移动事件")
 public class ActionMove {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

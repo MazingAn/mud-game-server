@@ -11,20 +11,20 @@ import javax.persistence.Id;
 /**
  * 接受任务事件
  * */
-@Mark(name = "接受任务事件")
-public class ActionAcceptQuest {
+@Mark(name = "挂机类型")
+public class HangupType {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Mark(name="编号")
     private Long id;
 
-    @Mark(name="事件", link="event")
-    private String eventKey;
+    @Mark(name="标识", link="event")
+    private String dataKey;
 
-    @Mark(name="任务", link="quest")
-    private String questKey;
+    @Mark(name="名称", link="quest")
+    private String name;
 
-    public ActionAcceptQuest() {
+    public HangupType() {
     }
 
     public Long getId() {
@@ -35,19 +35,19 @@ public class ActionAcceptQuest {
         this.id = id;
     }
 
-    public String getEventKey() {
-        return eventKey;
+    public String getDataKey() {
+        return dataKey;
     }
 
-    public void setEventKey(String eventKey) {
-        this.eventKey = eventKey;
+    public void setDataKey(String dataKey) {
+        this.dataKey = dataKey;
     }
 
-    public String getQuestKey() {
-        return questKey;
+    public String getName() {
+        return name;
     }
 
-    public void setQuestKey(String questKey) {
-        this.questKey = questKey;
+    public void setName(String name) {
+        this.name = name;
     }
 }
