@@ -84,6 +84,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("shopping", CmdShopping.class);
         playerCharacterCommandSet.put("sys_shopping", CmdSysShopping.class);
         playerCharacterCommandSet.put("buy", CmdBuy.class);
+        playerCharacterCommandSet.put("trans", CmdTrans.class);
     }
 
     /** 初始化 游戏内部玩家的命令集 玩家死亡的时候可以执行的命令 */

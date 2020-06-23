@@ -38,6 +38,9 @@ public class WorldNpc extends BaseObject {
     @Mark(name="是否收徒")
     private boolean isTeacher;
 
+    @Mark(name = "是否是传送NPC")
+    private boolean transfer;
+
     //NPC的称号
     @Mark(name="称号")
     private String title;
@@ -204,4 +207,11 @@ public class WorldNpc extends BaseObject {
         this.icon = icon;
     }
 
+    public boolean isTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(boolean transfer) {
+        this.transfer = transfer;
+    }
 }

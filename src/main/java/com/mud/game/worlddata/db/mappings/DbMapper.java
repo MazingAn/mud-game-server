@@ -62,6 +62,7 @@ public class DbMapper {
     public static ObjectTypeRepository objectTypeRepository;
     public static HangupTypeRepository hangupTypeRepository;
     public static WeaponTypeRepository weaponTypeRepository;
+    public static TransListRepository transListRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -309,8 +310,13 @@ public class DbMapper {
     }
 
     @Autowired
-    public void setWeaponRepository(WeaponTypeRepository weaponTypeRepository) {
+    public void setWeaponTypeRepository(WeaponTypeRepository weaponTypeRepository) {
         DbMapper.weaponTypeRepository = weaponTypeRepository;
+    }
+
+    @Autowired
+    public void setTransListRepository(TransListRepository transListRepository) {
+        DbMapper.transListRepository = transListRepository;
     }
 }
 

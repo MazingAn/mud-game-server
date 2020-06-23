@@ -6,4 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface WorldAreaRepository extends PagingAndSortingRepository<WorldArea, Long> {
     WorldArea deleteWorldAreaById(Long id);
+    WorldArea findWorldAreaByDataKey(String dataKey);
 }

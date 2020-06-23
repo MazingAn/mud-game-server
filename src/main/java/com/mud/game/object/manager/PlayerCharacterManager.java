@@ -184,7 +184,8 @@ public class PlayerCharacterManager {
     public static void lookAround(PlayerCharacter playerCharacter) {
         WorldRoomObject location = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
         // 查看周围信息之前，先看一眼，先解锁一下地图
-        revealMap(playerCharacter, location, false);
+        boolean needForceUpdateMap = playerCharacter.getRevealedMap().containsKey(location.getLocation());
+        revealMap(playerCharacter, location, needForceUpdateMap);
         // 拼接返回信息 数据太多，如果直接把mongodb的文档返回过去倒是很省事，但是流量很贵，我们要为老板考虑！:)
         // 所以只能这样自己根据前端需求 手动拼装JSON数据格式 这个工作一点都不好玩 :(
         Map<String, Object> location_info = new HashMap<String, Object>();
@@ -1078,6 +1079,24 @@ public class PlayerCharacterManager {
         }else {
             playerCharacter.msg(new AlertMessage(String.format(GameWords.CAN_NOT_REMOVE_FROM_BAGPACK,
                     number, removedObject.getUnitName(), removedObject.getName())));
+            return false;
+        }
+    }
+
+    /**
+     * 从背包移除物品
+     *
+     * @param playerCharacter 玩家对象
+     * @param removedObjectKey 要移除的物品的key
+     * @param number 要移除的数量
+     *
+     * @return boolean 最终是否成功移除
+     * */
+    public static boolean removeObjectsFromBagpack(PlayerCharacter playerCharacter, String removedObjectKey, int number) {
+        if(hasObject(playerCharacter, removedObjectKey, number)){
+            CommonObject removeObject = MongoMapper.normalObjectObjectRepository.findNormalObjectObjectByDataKeyAndOwner(removedObjectKey, playerCharacter.getId());
+            return removeObjectsFromBagpack(playerCharacter, removeObject, number);
+        }else{
             return false;
         }
     }

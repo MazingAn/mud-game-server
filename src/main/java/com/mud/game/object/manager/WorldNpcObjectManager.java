@@ -51,6 +51,7 @@ public class WorldNpcObjectManager {
         obj.setSchool(template.getSchool());
         obj.setRebornTime(template.getRebornTime());
         obj.setCanAttack(template.isCanAttack());
+        obj.setTransfer(template.isTransfer());
         // 玩家信息的初始化设置
         obj.setAfter_arm(0);
         obj.setAfter_body(0);
@@ -62,7 +63,6 @@ public class WorldNpcObjectManager {
         MongoMapper.worldNpcObjectRepository.save(obj);
         // 加载默认技能信息
         bindDefaultSkills(obj);
-        // TODO 加载默认装备信息
         // 加载掉落信息
         bindLootList(obj);
         // 加载绑定的事件
@@ -102,6 +102,8 @@ public class WorldNpcObjectManager {
         obj.setTitle(template.getTitle());
         obj.setSchoolTitle(template.getSchoolTitle());
         obj.setSchool(template.getSchool());
+        obj.setCanAttack(template.isCanAttack());
+        obj.setTransfer(template.isTransfer());
         // 玩家信息的初始化设置
         obj.setAfter_arm(0);
         obj.setAfter_body(0);
@@ -178,7 +180,6 @@ public class WorldNpcObjectManager {
         if(!npc.getDialogues().isEmpty()){
             cmds.add(new EmbeddedCommand("交谈", "talk", npc.getId()));
         }
-
         // 交易命令
         if(!npc.getShops().isEmpty()){
             for(String shopKey : npc.getShops()){
@@ -186,12 +187,26 @@ public class WorldNpcObjectManager {
                 cmds.add(new EmbeddedCommand(shop.getName(), "shopping", shop.getDataKey()));
             }
         }
-        // TODO: 攻击命令
         if(npc.canAttack){
             cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
         }
         // TODO: 副本传送命令
-        // TODO：地图传送命令
+
+        // 地图传送命令
+        if(npc.transfer){
+            for(TransList record : DbMapper.transListRepository.findTransListByNpc(npc.getDataKey())){
+                WorldRoom room = DbMapper.worldRoomRepository.findWorldRoomByDataKey(record.getRoom());
+                if(room != null){
+
+                    Map<String, String> args = new HashMap<>();
+                    args.put("npc", npc.getDataKey());
+                    args.put("room", room.getDataKey());
+                    WorldArea area = DbMapper.worldAreaRepository.findWorldAreaByDataKey(room.getLocation());
+                    String displayTargetName = (area != null) ? area.getName() : room.getName();
+                    cmds.add(new EmbeddedCommand(displayTargetName, "trans", args));
+                }
+            }
+        }
         return cmds;
     }
 

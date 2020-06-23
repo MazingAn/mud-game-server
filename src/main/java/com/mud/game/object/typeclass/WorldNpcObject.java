@@ -31,6 +31,8 @@ public class WorldNpcObject extends CommonCharacter {
     public boolean canAttack;
     // npc的商店
     public Set<String> shops;
+    // 是否可以传送玩家
+    public boolean transfer;
 
 
     public Set<String> getEvents() {
@@ -138,5 +140,13 @@ public class WorldNpcObject extends CommonCharacter {
 
     public void setShops(Set<String> shops) {
         this.shops = shops;
+    }
+
+    public boolean isTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(boolean transfer) {
+        this.transfer = transfer;
     }
 }

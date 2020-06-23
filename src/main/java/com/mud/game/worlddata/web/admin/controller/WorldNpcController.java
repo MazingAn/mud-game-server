@@ -49,8 +49,13 @@ public class WorldNpcController {
     }
 
     @GetMapping("/{room}")
-    public Iterable<WorldNpc> queryWorldRoomByArea(@PathVariable String room){
+    public Iterable<WorldNpc> queryWorldNpcByRoom(@PathVariable String room){
         return DbMapper.worldNpcRepository.findWorldNpcsByLocation(room);
+    }
+
+    @GetMapping("/transfer")
+    public Iterable<WorldNpc> queryWorldNpcByTransfer(){
+        return DbMapper.worldNpcRepository.findWorldNpcsByTransfer(true);
     }
 
     /**

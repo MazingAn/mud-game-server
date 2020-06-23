@@ -8,4 +8,5 @@ public interface WorldNpcRepository extends PagingAndSortingRepository<WorldNpc,
     WorldNpc findWorldNpcByDataKey(String dataKey);
     WorldNpc deleteWorldNpcById(Long id);
     Iterable<WorldNpc> findWorldNpcsByLocation(String location);
+    Iterable<WorldNpc> findWorldNpcsByTransfer(boolean isTransfer);
 }
