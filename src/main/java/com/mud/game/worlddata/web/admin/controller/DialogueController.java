@@ -36,6 +36,15 @@ public class DialogueController {
     }
 
     /**
+     * 获取所有对话
+     * */
+    @GetMapping("/all")
+    @ApiOperation("获取所有对话")
+    public Iterable<Dialogue> all(){
+        return DbMapper.dialogueRepository.findAll();
+    }
+
+    /**
      * 查询Dialogue
      *
      * @param page 请求页码

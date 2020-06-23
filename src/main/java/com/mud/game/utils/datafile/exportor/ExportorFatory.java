@@ -113,6 +113,8 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.objectTypeRepository, outFilePath, tableName, type);
             case "HangupType":
                 return new Exportor(DbMapper.hangupTypeRepository, outFilePath, tableName, type);
+            case "WeaponType":
+                return new Exportor(DbMapper.weaponTypeRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

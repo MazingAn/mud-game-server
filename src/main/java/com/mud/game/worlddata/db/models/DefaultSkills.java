@@ -27,7 +27,7 @@ public class DefaultSkills {
     @Mark(name="是否教授")
     private boolean teachIt; //徒弟是否可以学习
 
-    @Mark(name="装备位置")
+    @Mark(name="装备位置", link = "skillPosition")
     private String position; // 如果技能是可以装备的 那么装备到那个位置
 
     @Column(name = "level")

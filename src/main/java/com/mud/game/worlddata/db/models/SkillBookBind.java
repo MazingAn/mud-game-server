@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"skill_book", "skill"}))
+@Mark(name = "技能书绑定")
 public class SkillBookBind {
 
     @Id

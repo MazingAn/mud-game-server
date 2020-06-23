@@ -1,6 +1,5 @@
 package com.mud.game.worlddata.db.mappings;
 
-import com.mud.game.worlddata.db.models.DefaultEquipments;
 import com.mud.game.worlddata.db.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -62,6 +61,7 @@ public class DbMapper {
     public static ShopGoodsRepository shopGoodsRepository;
     public static ObjectTypeRepository objectTypeRepository;
     public static HangupTypeRepository hangupTypeRepository;
+    public static WeaponTypeRepository weaponTypeRepository;
 
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
@@ -306,6 +306,11 @@ public class DbMapper {
     @Autowired
     public void setHangupTypeRepository(HangupTypeRepository hangupTypeRepository) {
         DbMapper.hangupTypeRepository = hangupTypeRepository;
+    }
+
+    @Autowired
+    public void setWeaponRepository(WeaponTypeRepository weaponTypeRepository) {
+        DbMapper.weaponTypeRepository = weaponTypeRepository;
     }
 }
 

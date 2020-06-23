@@ -1,5 +1,10 @@
 package com.mud.game.events;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <pre>
  * "EVENT_TRIGGER_ARRIVE" : "到达该房间之后触发",
@@ -11,11 +16,11 @@ package com.mud.game.events;
  * </pre>
  * */
 public class EventTriggerType {
-
     public static final String EVENT_TRIGGER_ARRIVE = "EVENT_TRIGGER_ARRIVE";
     public static final String EVENT_TRIGGER_KILL = "EVENT_TRIGGER_KILL";
     public static final String EVENT_TRIGGER_DIE = "EVENT_TRIGGER_DIE";
     public static final String EVENT_TRIGGER_TRAVERSE = "EVENT_TRIGGER_TRAVERSE";
     public static final String EVENT_TRIGGER_ACTION = "EVENT_TRIGGER_ACTION";
     public static final String EVENT_TRIGGER_SENTENCE = "EVENT_TRIGGER_SENTENCE";
+
 }

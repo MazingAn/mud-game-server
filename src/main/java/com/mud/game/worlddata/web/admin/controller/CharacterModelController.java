@@ -33,6 +33,12 @@ public class CharacterModelController {
         return DbMapper.characterModelRepository.save(newCharacterModel);
     }
 
+    @GetMapping("/all")
+    @ApiOperation("获取所有角色模板")
+    public Iterable<CharacterModel> all(){
+        return DbMapper.characterModelRepository.findAll();
+    }
+
     /**
      * 查询CharacterModel
      *

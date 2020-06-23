@@ -15,11 +15,11 @@ public class EventData {
     @Column(unique = true)
     @Mark(name="标识")
     private String dataKey;
-    @Mark(name="触发对象")
-    private String triggerObject;
-    @Mark(name="触发类型")
+    @Mark(name="触发类型", link = "eventTriggerType")
     private String triggerType;
-    @Mark(name="触发动作")
+    @Mark(name="触发对象", link = "eventTriggerObject")
+    private String triggerObject;
+    @Mark(name="触发动作", link = "eventActionType")
     private String action;
     @Mark(name="动作名称")
     private String actionName;

@@ -23,7 +23,7 @@ public class QuestObjective {
     @Mark(name="目标类型", link="objectiveType")
     private String objectiveType;
 
-    @Mark(name="目标", link = "objectiveType_sub")
+    @Mark(name="目标", link = "objectiveTypeObject")
     private String object;
 
     @Mark(name="数量")

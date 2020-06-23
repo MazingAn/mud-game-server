@@ -3,6 +3,7 @@ package com.mud.game.worlddata.web.admin.controller;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.WorldObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,12 @@ public class WorldObjectController {
     @PostMapping("/add")
     public WorldObject addWorldObject(@Valid @RequestBody WorldObject newWorldObject) {
         return DbMapper.worldObjectRepository.save(newWorldObject);
+    }
+
+    @GetMapping("/worldObjectCreator")
+    @ApiOperation("获取所有物品生成器")
+    public Iterable<WorldObject> allWorldObjectCreator(){
+        return DbMapper.worldObjectRepository.findWorldObjectsByTypeClass("WORLD_OBJECT_CREATOR");
     }
 
     /**

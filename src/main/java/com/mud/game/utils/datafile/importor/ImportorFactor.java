@@ -115,6 +115,8 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.objectTypeRepository);
             case "HangupType":
                 return new Importor(stream, fileName, DbMapper.hangupTypeRepository);
+            case "WeaponType":
+                return new Importor(stream, fileName, DbMapper.weaponTypeRepository);
 
             default:
                 return null;

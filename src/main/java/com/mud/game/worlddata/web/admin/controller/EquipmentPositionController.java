@@ -1,8 +1,10 @@
 package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.Dialogue;
 import com.mud.game.worlddata.db.models.EquipmentPosition;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,15 @@ public class EquipmentPositionController {
     @PostMapping("/add")
     public EquipmentPosition addEquipmentPosition(@Valid  @RequestBody EquipmentPosition newEquipmentPosition) {
         return DbMapper.equipmentPositionRepository.save(newEquipmentPosition);
+    }
+
+    /**
+     * 获取所有装备位置
+     * */
+    @GetMapping("/all")
+    @ApiOperation("获取所有装备位置")
+    public Iterable<EquipmentPosition> all(){
+        return DbMapper.equipmentPositionRepository.findAll();
     }
 
     /**

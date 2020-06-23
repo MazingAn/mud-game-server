@@ -1,9 +1,13 @@
 package com.mud.game.worlddata.web.admin.controller;
 
+import com.mud.game.events.EventTriggerType;
+import com.mud.game.handler.EventActionTypeHandler;
+import com.mud.game.handler.EventTriggerTypeHandler;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.EventData;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.formula.functions.Even;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.sql.ClientInfoStatus;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -48,6 +57,56 @@ public class EventDataController {
         Pageable paging = PageRequest.of(page, size);
         Page<EventData> pageResult = DbMapper.eventDataRepository.findAll(paging);
         return pageResult;
+    }
+
+    /**
+     * 查询所有 EventData
+     * */
+    @GetMapping("/all")
+    @ApiOperation("获取所有事件")
+    public Iterable<EventData> all(){
+        return DbMapper.eventDataRepository.findAll();
+    }
+
+    /**
+     * 根据触发类型查询 eventData
+     * */
+    @GetMapping("/{triggerType}")
+    @ApiOperation("根据出发类型查询事件")
+    public Iterable<?> findByTriggerType(@PathVariable String triggerType){
+        switch (triggerType){
+            case EventTriggerType.EVENT_TRIGGER_ACTION:
+                return DbMapper.worldObjectRepository.findAll();
+            case EventTriggerType.EVENT_TRIGGER_ARRIVE:
+                return DbMapper.worldRoomRepository.findAll();
+            case EventTriggerType.EVENT_TRIGGER_DIE:
+            case EventTriggerType.EVENT_TRIGGER_KILL:
+                return DbMapper.worldNpcRepository.findAll();
+            case EventTriggerType.EVENT_TRIGGER_SENTENCE:
+                return DbMapper.dialogueSentenceRepository.findAll();
+            case EventTriggerType.EVENT_TRIGGER_TRAVERSE:
+                return DbMapper.worldExitRepository.findAll();
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * 查询所有事件触发类型
+     * */
+    @GetMapping("/triggerType/all")
+    @ApiOperation("获得所有事件触发类型")
+    public List<Map<String, String>> allTriggerType(){
+        return EventTriggerTypeHandler.eventTriggerTypes;
+    }
+
+    /**
+     * 查询所有事件动作
+     * */
+    @GetMapping("/actionType/all")
+    @ApiOperation("获得所有事件出发类型")
+    public List<Map<String, String>> allActionType(){
+        return EventActionTypeHandler.eventActionTypes;
     }
 
     /**

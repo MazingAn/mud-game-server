@@ -1,6 +1,7 @@
 package com.mud.game.server;
 
 import com.mongodb.Mongo;
+import com.mud.game.events.EventActionType;
 import com.mud.game.handler.*;
 import com.mud.game.object.builder.UniqueWorldObjectBuilder;
 import com.mud.game.object.manager.GameCharacterManager;
@@ -53,6 +54,8 @@ public class ServerManager {
         QuestObjectiveTypeHandler.initObjectiveTypeMapper();
         UnitHandler.initUnits();
         StatusHandler.initAttrMapping();
+        EventTriggerTypeHandler.initEventTriggerType();
+        EventActionTypeHandler.initEventActionType();
         // 创建默认频道...
         System.out.println("创建默认频道...");
         ChannelHandler.initChannels();

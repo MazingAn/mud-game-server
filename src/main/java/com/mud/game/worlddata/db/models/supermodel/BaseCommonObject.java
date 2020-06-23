@@ -12,7 +12,7 @@ import java.net.URL;
 @MappedSuperclass
 public class BaseCommonObject extends BaseObject {
     // 物品分类
-    @Mark(name="归类", link = "objectType")
+    @Mark(name="归类", link = "normalObjectType")
     @Column(length = 128)
     private String category;
     // 物品的度量单位

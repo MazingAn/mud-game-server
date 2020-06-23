@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -45,6 +48,14 @@ public class NormalObjectController {
         Pageable paging = PageRequest.of(page, size);
         Page<NormalObject> pageResult = DbMapper.normalObjectRepository.findAll(paging);
         return pageResult;
+    }
+
+    /**
+     * 获取所有货币类型
+     * */
+    @GetMapping("/moneyType")
+    public Iterable<NormalObject> allMoneyType(){
+       return DbMapper.normalObjectRepository.findNormalObjectsByCategory("TYPE_OBJECTTYPE_HUOBI");
     }
 
     /**

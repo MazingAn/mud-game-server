@@ -51,7 +51,7 @@ public class SkillController {
 
     @GetMapping("/uniqueSkill")
     public Iterable<Skill> allUniqueSkills(){
-        return DbMapper.skillRepository.findSkillsByPassiveAndCategoryType(true, "SCT_JUEZHAO");
+        return DbMapper.skillRepository.findSkillsByPassiveAndCategoryType(false, "SCT_JUEZHAO");
     }
 
     /**
