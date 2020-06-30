@@ -56,6 +56,7 @@ public class ServerManager {
         StatusHandler.initAttrMapping();
         EventTriggerTypeHandler.initEventTriggerType();
         EventActionTypeHandler.initEventActionType();
+        SkillActionHandler.initSkillActionList();
         // 创建默认频道...
         System.out.println("创建默认频道...");
         ChannelHandler.initChannels();

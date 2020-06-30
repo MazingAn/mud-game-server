@@ -8,7 +8,16 @@ public class GameWords {
 
     // 玩家状态
     public static final String PLAYER_DIED = "{y你已经死了！{n";
-    public static final String PLAYER_CURE = "你增加了{g%s{n点气血，{g%s{n点最大气血";
+    public static final String PLAYER_RECOVER_HP = "你回复了{g%s{n点最气血";
+    public static final String PLAYER_RECOVER_MAX_HP = "你回复了{g%s{n点最大气血";
+    public static final String NEED_NOT_CURE = "你的{g气血充盈{n，不需要{r疗伤{n！";
+    public static final String PLAYER_CURE_END = "{g你已经恢复到最佳状态！{n";
+
+    public static final String PLAYER_RECOVER_MP = "你回复了{g%s{n点最气血";
+    public static final String PLAYER_RECOVER_MAX_MP = "你回复了{g%s{n点最大气血";
+    public static final String NEED_NOT_MEDITATE = "你的{g内力充沛{n，不需要{r打坐{n！";
+    public static final String PLAYER_MEDITATE_END = "{g你已经恢复到最佳状态！{n";
+
 
     // 好友结交过程
     public static final String PLAYER_REPEAT_REQUEST_FRIEND = "{r%s{n已经知道了你的结交之心，还是暂时不要打扰他为好！";  //重复发送好友请求
@@ -52,6 +61,7 @@ public class GameWords {
     public static final String STOP_MEDITATE = "你运功完毕，深深吸了口气，站了起来。";
     public static final String START_CURE = "你坐下来运气用功，催动内力试图修复伤势。";
     public static final String STOP_CURE = "{y你疗伤完毕，深深吸了口气，脸色看起来好了很多。{n";
+    public static final String START_LEARN_SKILL = "你静下心来，开始了对武学的探索。";
     public static final String STOP_LEARN_SKILL = "{y你深吸一口气，暂时先放弃了对武学的探索。{n";
     public static final String PLAYER_DO_OTHER_THING = "你正在{g%s{n,没有多余的功夫来{r%s{n";
     public static final String ALREADY_DOING = "{y你已经在%s了{n";
@@ -69,11 +79,10 @@ public class GameWords {
     public static final String CAN_NOT_GET_OBJECT = "你的背包装不下那么多的{g%s{n。";
 
     // 背包移除相关
-    public static final String CAN_NOT_REMOVE_FROM_BAGPACK = "无法从背包移除{r%s%s%s{n";
+    public static final String CAN_NOT_REMOVE_FROM_BAGPACK = "无法从背包移除{r%s %s%s{n";
 
     // 玩家更改高度
     public static final String ROOM_STEP_CHANGED = "你突然感觉眼前一花，再睁开眼睛，眼前的一切都变了样子。";
-
 
     // 无法创建任务
     public static final String CANNOT_CREATE_QUEST = "{r无法创建任务{n";

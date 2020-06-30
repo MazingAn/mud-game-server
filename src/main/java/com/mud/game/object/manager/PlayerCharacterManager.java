@@ -1,5 +1,6 @@
 package com.mud.game.object.manager;
 
+import com.mud.game.condition.general.HasObject;
 import com.mud.game.handler.ConditionHandler;
 import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.handler.UnitHandler;
@@ -9,6 +10,7 @@ import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.builder.CommonObjectBuilder;
+import com.mud.game.object.builder.UniqueWorldObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
@@ -23,6 +25,7 @@ import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
 
+import javax.naming.spi.ObjectFactoryBuilder;
 import java.util.*;
 
 public class PlayerCharacterManager {
@@ -183,8 +186,8 @@ public class PlayerCharacterManager {
      ******************************************************************************/
     public static void lookAround(PlayerCharacter playerCharacter) {
         WorldRoomObject location = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
-        // 查看周围信息之前，先看一眼，先解锁一下地图
-        boolean needForceUpdateMap = playerCharacter.getRevealedMap().containsKey(location.getLocation());
+        // 查看周围信息之前，先解锁一下地图,如果当前区域已经解锁，则不用强制更新地图 如果是第一次进入某个区域则需要强制更新地图
+        boolean needForceUpdateMap = !playerCharacter.getRevealedMap().containsKey(location.getLocation());
         revealMap(playerCharacter, location, needForceUpdateMap);
         // 拼接返回信息 数据太多，如果直接把mongodb的文档返回过去倒是很省事，但是流量很贵，我们要为老板考虑！:)
         // 所以只能这样自己根据前端需求 手动拼装JSON数据格式 这个工作一点都不好玩 :(
@@ -290,6 +293,9 @@ public class PlayerCharacterManager {
         WorldRoomObjectManager.removeOfflinePlayer(newRoom);
         //移动
         playerCharacter.setLocation(newRoom.getDataKey());
+        if(oldRoom!=null && !newRoom.getLocation().equals(oldRoom.getLocation())){
+            revealMap(playerCharacter, newRoom, true);
+        }
         lookAround(playerCharacter);
         //变更房间内部的玩家信息
         if(oldRoom!=null){
@@ -737,6 +743,46 @@ public class PlayerCharacterManager {
     }
 
     /**
+     * 玩家触发学习技能事件
+     * @param playerCharacter 玩家角色
+     * @param skillKey 技能Key
+     * @param record 学习技能事件的记录数据
+     * */
+    public static Runnable learnSkillByEvent(PlayerCharacter playerCharacter, String skillKey, ActionLearnSkill record)  {
+        /*
+         * @ 玩家通过事件学习技能
+         * @ 这是一个定时器
+         * @ 不需要检查潜能 直接执行学习即可
+         * @ 需要检查技能等级 一旦技能等级大于等于maxLevel则退出
+         * */
+        Skill skillTemplate = DbMapper.skillRepository.findSkillByDataKey(skillKey);
+        SkillObject skillObject = GameCharacterManager.findSkillBySKillKey(playerCharacter, skillKey);
+        if (skillObject != null && skillObject.getLevel() >= record.getMaxLevel()){
+            playerCharacter.msg(new MsgMessage("这里面所记录的武学对你来说{g太粗浅{n了。"));
+            return null;
+        }else{
+            playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+            playerCharacter.msg(new PlayerCharacterStateMessage(playerCharacter.getState()));
+            Runnable runnable = new Runnable() {
+                SkillObject updatedSkillObject = skillObject;
+                @Override
+                public void run() {
+                    Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
+                    if (updatedSkillObject != null && updatedSkillObject.getLevel() >= record.getMaxLevel()){
+                        playerCharacter.msg(new MsgMessage("你{c钻研{n了很久，发现这里面记录的武学已经{r没有研究的价值{n了。"));
+                        PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                    }else{
+                        updatedSkillObject = learnSkill(playerCharacter, skillKey, updatedSession, record);
+                    }
+                }
+            };
+            return runnable;
+        }
+    }
+
+
+    /**
      * 玩家通过物品交换学习技能
      * @param skillKey  要学习的技能的key
      * @param playerCharacter 要学修技能的角色
@@ -929,7 +975,10 @@ public class PlayerCharacterManager {
         * 接受物品到背包
         * 把物品放入背包
         * */
-        CommonObjectBuilder.save(commonObject);
+        if(commonObject == null){
+            playerCharacter.msg(new MsgMessage("无法获取此物品!"));
+            return false;
+        }
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
         if(CommonItemContainerManager.addItem(bagpackObject, commonObject, number)){
             commonObject.setTotalNumber(commonObject.getTotalNumber() + number);
@@ -943,6 +992,31 @@ public class PlayerCharacterManager {
             playerCharacter.msg(new MsgMessage(String.format(GameWords.CAN_NOT_GET_OBJECT, commonObject.getName())));
             return false;
         }
+    }
+
+    /**
+     * 接受一件物品放入背包
+     * @param playerCharacter  玩家
+     * @param commonObjectKey 物品  可以是 NormalObjectObject、EquipmentObject、GemObject
+     * @param number  数量
+     * @return 放入是否成功
+     * */
+    public static boolean receiveObjectToBagpack(PlayerCharacter playerCharacter, String commonObjectKey, int number)  {
+        /*
+         * 接受物品到背包
+         * 把物品放入背包
+         * */
+        CommonObject commonObject = null;
+        // 如果已经有了这个物品，则直接添加即可
+        if(hasObject(playerCharacter, commonObjectKey, 0)){
+            commonObject = CommonObjectBuilder.findObjectByDataKeyAndOwner(commonObjectKey, playerCharacter.getId());
+            if(commonObject != null && commonObject instanceof EquipmentObject){
+                commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
+            }
+        }else{
+            commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
+        }
+        return receiveObjectToBagpack(playerCharacter, commonObject, number);
     }
 
     /**
@@ -1001,7 +1075,7 @@ public class PlayerCharacterManager {
             return discardObject(playerCharacter, unit, price);
         }else{
             if(unit.equals("OBJECT_YINLIANG")&&discardObject(playerCharacter, "OBJECT_JINZI", 1)){
-                    CommonObject object = WorldObjectCreatorManager.createObject("OBJECT_YINLIANG");
+                    CommonObject object = CommonObjectBuilder.buildCommonObject("OBJECT_YINLIANG");
                     return receiveObjectToBagpack(playerCharacter, object, 100 - price);
             }else{
                 return false;

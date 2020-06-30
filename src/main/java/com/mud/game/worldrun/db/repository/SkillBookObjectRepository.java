@@ -5,4 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface SkillBookObjectRepository extends MongoRepository<SkillBookObject, String> {
     SkillBookObject findSkillBookObjectById(String id);
+    SkillBookObject findSkillBookObjectByDataKeyAndOwner(String objectKey, String ownerId);
 }

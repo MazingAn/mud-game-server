@@ -1,23 +1,13 @@
 package com.mud.game;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mud.game.condition.attribute.AttrGt;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.utils.collections.ArrayListUtils;
+import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.regxutils.InputFieldCheck;
-import com.mud.game.worlddata.db.models.GameSetting;
-import com.mud.game.worlddata.db.models.WorldNpc;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.*;
 
 class MudGameServerApplicationTests {
@@ -107,12 +97,18 @@ class MudGameServerApplicationTests {
         list.add(1);
         list.add(2);
         for(int i = 0; i< 100; i ++){
-            System.out.println(ArrayListUtils.randomChoice(list));
-            Assertions.assertTrue((int)ArrayListUtils.randomChoice(list) < 3);
-            Assertions.assertTrue((int)ArrayListUtils.randomChoice(list) >= 0);
+            System.out.println(ListUtils.randomChoice(list));
+            Assertions.assertTrue((int) ListUtils.randomChoice(list) < 3);
+            Assertions.assertTrue((int) ListUtils.randomChoice(list) >= 0);
         }
     }
 
+    @Test
+    void randomTest(){
+        for(int i = 0; i < 100; i++){
+            System.out.println(Math.random()*101);
+        }
+    }
 
     /**
      * 魔力宝贝Java后端工程师笔试

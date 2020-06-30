@@ -1,23 +1,23 @@
 package com.mud.game.object.manager;
 
-import com.mongodb.Mongo;
+import com.mud.game.algorithm.HarmInfo;
+import com.mud.game.handler.SkillActionHandler;
 import com.mud.game.handler.SkillFunctionHandler;
 import com.mud.game.handler.SkillPositionHandler;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.SkillBookObject;
-import com.mud.game.object.typeclass.SkillObject;
-import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.SkillEffect;
+import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.ActionLearnSkill;
 import com.mud.game.worlddata.db.models.Skill;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
@@ -420,6 +420,11 @@ public class SkillObjectManager {
                 needPotential = false;
             }
 
+            // 如果是通过事件学习 则不需要潜能
+            if(learnTarget instanceof ActionLearnSkill){
+                needPotential = false;
+            }
+
             // 扣除玩家的潜能，如果需要的话
             if(needPotential){
                 if(playerCharacter.getPotential() < chargeNumber){//如果不够就全扣，归零
@@ -500,10 +505,82 @@ public class SkillObjectManager {
         session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP,  skillObject.getName(), skillObject.getLevel()))));
     }
 
-    public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject) {
-        return skillObject.getMessage()
-                .replaceAll("\\{c", caller.getName())
-                .replaceAll("\\{t", target.getName());
+    public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, HarmInfo harmInfo) {
+        // 生成战斗信息
+        String message = "";
+        EquipmentObject weapon = GameCharacterManager.getOneEquippedWeapon(caller);
+        if(!skillObject.getMessage().trim().equals("") ){
+            message = skillObject.getMessage()
+                    .replaceAll("\\%c", caller.getName())
+                    .replaceAll("\\%t", target.getName());
+            if(weapon != null){
+                message = message.replaceAll("\\%w", weapon.getName());
+            }else {
+                message = message.replaceAll("\\%w", "兵器");
+            }
+        }else{
+            message = generateRandomAttackInfo(caller, target);
+        }
+        // 生成战斗反馈
+        if(!harmInfo.precise){
+            String preciseTemplateStr = ListUtils.randomChoice(SkillActionHandler.actionPreciseList);
+            message += String.format(preciseTemplateStr, target.getName(), caller.getName());
+        }else{
+            String damageTemplateStr = ListUtils.randomChoice(SkillActionHandler.actionDamageList);
+            message += String.format(damageTemplateStr, target.getName(), (int)harmInfo.finalHarm);
+            // 增加状态信息
+            message += generateStatusInfo(target);
+        }
+        return message;
+    }
+
+    private static String generateStatusInfo(CommonCharacter character){
+        float statusRate = (float)character.getHp() / (float)character.getMax_hp();
+        if(statusRate > 0.9){
+            return String.format("<br>{g(%s看起来充满活力，一点也不累。){n", character.getName());
+        }else if(statusRate > 0.8){
+            return String.format("<br>{g(%s似乎有些疲惫，但是仍然十分有活力。){n", character.getName());
+        }else if(statusRate > 0.6){
+            return String.format("<br>{c(%s看起来可能有些累了。){n", character.getName());
+        }else if(statusRate > 0.4){
+            return String.format("<br>{y(%s动作似乎开始有点不太灵光，但是仍然有条不紊。){n", character.getName());
+        }else if(statusRate > 0.3){
+            return String.format("<br>{y(%s气喘嘘嘘，看起来状况并不太好。){n", character.getName());
+        }else if(statusRate > 0.2){
+            return String.format("<br>{r(%s似乎十分疲惫，看来需要好好休息了。){n", character.getName());
+        }else if(statusRate > 0.1){
+            return String.format("<br>{r(%s已经一副头重脚轻的模样，正在勉力支撑著不倒下去。){n", character.getName());
+        }else{
+            return String.format("<br>{r(%s看起来已经力不从心了。){n", character.getName());
+        }
+    }
+
+    private static String generateRandomAttackInfo(CommonCharacter caller, CommonCharacter target){
+        EquipmentObject weapon = GameCharacterManager.getOneEquippedWeapon(caller);
+        String callerName = caller.getName();
+        String targetName = target.getName();
+        String weaponName = "";
+        String actionName = "";
+        String weaponType = "";
+        if(weapon != null){
+            weaponType = weapon.getWeaponType();
+            weaponName = weapon.getName();
+            switch(weaponType) {
+                // 刀的描述
+                case "WEAPON_TYPE_DAO":
+                    actionName = ListUtils.randomChoice(SkillActionHandler.actionDaoList);
+                case "WEAPON_TYPE_JIAN":
+                    actionName = ListUtils.randomChoice(SkillActionHandler.actionJianList);
+                case "WEAPON_TYPE_QIMEN":
+                    actionName = ListUtils.randomChoice(SkillActionHandler.actionQimenList);
+                case "WEAPON_TYPE_ANQI":
+                    actionName = ListUtils.randomChoice(SkillActionHandler.actionAnqiList);
+            }
+            return String.format("{g%s{n使出一招{c%s{n,手中{y%s{n直攻向{g%s{n", callerName, actionName, weaponName, targetName);
+        }else{
+            actionName = ListUtils.randomChoice(SkillActionHandler.actionQuanjiaoList);
+            return String.format("{g%s{n使出一招{c%s{n,直攻向{g%s{n", callerName, actionName, targetName);
+        }
     }
 
 }

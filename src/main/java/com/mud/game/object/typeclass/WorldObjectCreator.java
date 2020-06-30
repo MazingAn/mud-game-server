@@ -11,6 +11,7 @@ public class WorldObjectCreator extends WorldObjectObject {
     private boolean lootOnce;
     private float refreshTime;
     private Set<LootList> lootLists;
+    private boolean coolDown;
 
     public String getActionName() {
         return actionName;
@@ -50,5 +51,13 @@ public class WorldObjectCreator extends WorldObjectObject {
 
     public void setLootLists(Set<LootList> lootLists) {
         this.lootLists = lootLists;
+    }
+
+    public boolean isCoolDown() {
+        return coolDown;
+    }
+
+    public void setCoolDown(boolean coolDown) {
+        this.coolDown = coolDown;
     }
 }

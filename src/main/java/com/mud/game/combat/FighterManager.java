@@ -1,20 +1,12 @@
 package com.mud.game.combat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.Mongo;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.JoinCombatMessage;
-import com.mud.game.messages.MsgMessage;
-import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.structs.CharacterState;
-import com.mud.game.utils.collections.ArrayListUtils;
-import com.mud.game.utils.jsonutils.JsonResponse;
-import com.mud.game.worlddata.db.models.GameSetting;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.yeauty.pojo.Session;
+import com.mud.game.utils.collections.ListUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,8 +21,7 @@ import static com.mud.game.server.ServerManager.gameSetting;
  * */
 
 public class FighterManager {
-
-
+    
     /**
      * 把一个玩家放入战斗状态
      * 更改角色的 {@code state}属性为 {@code CharacterState.STATE_COMBAT}  玩家属性参见 {@link CommonCharacter} <br>
@@ -59,7 +50,7 @@ public class FighterManager {
      * */
     public static void setRandomTarget(CommonCharacter character, ArrayList<CommonCharacter> targets) {
         // 为角色随机设置对手
-        CommonCharacter target = ArrayListUtils.randomChoice(targets);
+        CommonCharacter target = ListUtils.randomChoice(targets);
         character.setTarget(target.getId());
     }
 
@@ -90,15 +81,13 @@ public class FighterManager {
                 }
             }
         };
-        service.scheduleAtFixedRate(runnable, 0, (int)gameSetting.getGlobalCD() * 1000, TimeUnit.MILLISECONDS);
+        int delay = (sense.getBlueTeam().contains(character)) ? 0 : (int)(gameSetting.getGlobalCD() * 1000 / 2) ;
+        service.scheduleAtFixedRate(runnable, delay, (int)(gameSetting.getGlobalCD() * 1000), TimeUnit.MILLISECONDS);
     }
 
     public static void stopAutoCombat(CommonCharacter character){
         ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(character.getId());
         service.shutdown();
     }
-
-
-
 
 }

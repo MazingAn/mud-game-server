@@ -98,7 +98,9 @@ public class ExcelUtils {
                         field.set(instance, (int)value);
                     } else if (Byte.class.equals(field.getType()) || byte.class.equals(field.getType())) {
                         field.set(instance, (byte)value);
-                    } else{
+                    } else if (String.class.equals(field.getType())){
+                        field.set(instance, String.valueOf(value));
+                    }else{
                         field.set(instance, value);
                     }
                 }else if(cell.getCellType() == CellType.BOOLEAN){

@@ -19,15 +19,15 @@ public class SkillCastInfo {
     public SkillCastInfo() {
     }
 
-    public SkillCastInfo(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, String result) {
+    public SkillCastInfo(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, String cast) {
         this.caller = caller.getName();
         this.target = target.getName();
         this.skill = skillObject.getDataKey();
-        this.cast = SkillObjectManager.getCastMessage(caller, target, skillObject);
+        this.cast = cast;
         this.status = new HashMap<>();
         status.put(caller.getId(), new CombatStatus(caller));
         status.put(target.getId(), new CombatStatus(target));
-        this.result = result;
+        this.result = "";
     }
 
     public String getCaller() {

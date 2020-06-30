@@ -6,6 +6,7 @@ import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.structs.SkillCastInfo;

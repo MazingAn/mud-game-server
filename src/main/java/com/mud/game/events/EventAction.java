@@ -1,8 +1,11 @@
 package com.mud.game.events;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.handler.StatusHandler;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
+import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.utils.jsonutils.JsonResponse;
@@ -10,8 +13,10 @@ import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.json.JSONException;
-import org.yeauty.pojo.Session;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * 事件的触发类， 内部定义了所有游戏中的事件和触发机制
@@ -56,10 +61,13 @@ public class EventAction {
      * @param actionRecord 玩家触发事件的时候对应的配置记录 参考：{@link ActionLearnSkill}
      * */
     public static void actionLearnSkill(PlayerCharacter playerCharacter, ActionLearnSkill actionRecord)  {
-        /*
-         * 触发
-         * */
-        playerCharacter.msg(new MsgMessage("触发事件：学习技能"));
+        String skillKey = actionRecord.getSkillKey();
+        int maxLevel = actionRecord.getMaxLevel();
+        Runnable runnable = PlayerCharacterManager.learnSkillByEvent(playerCharacter, skillKey, actionRecord);
+        if(runnable != null) {
+            ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(playerCharacter.getId());
+            service.scheduleAtFixedRate(runnable, 0, 2, TimeUnit.SECONDS);
+        }
     }
 
     /**
@@ -98,6 +106,7 @@ public class EventAction {
      * */
     public static void actionChangeStep(PlayerCharacter playerCharacter, ActionChangeStep actionRecord)  {
         playerCharacter.setRoomStep(actionRecord.getStep());
+        GameCharacterManager.saveCharacter(playerCharacter);
         playerCharacter.msg(new MsgMessage(GameWords.ROOM_STEP_CHANGED));
         PlayerCharacterManager.lookAround(playerCharacter);
     }
@@ -109,7 +118,17 @@ public class EventAction {
      *
      * */
     public static void actionChangeAttr(PlayerCharacter playerCharacter, ActionChangeAttr actionRecord){
-        playerCharacter.msg(new MsgMessage("触发事件：更改Attr"));
+        String attrName = actionRecord.getAttrName();
+        String changeValue = actionRecord.getChangedValue();
+        GameCharacterManager.changeStatus(playerCharacter, attrName, changeValue);
+        GameCharacterManager.saveCharacter(playerCharacter);
+        PlayerCharacterManager.showStatus(playerCharacter);
+        String descVerb =  (Double.parseDouble(changeValue) < 0) ? "减少了" : "增加了";
+        playerCharacter.msg(new MsgMessage(actionRecord.getDescription()));
+        playerCharacter.msg(new MsgMessage(
+                "你的"+ StatusHandler.attrMapping.get(attrName) +  descVerb +
+                        Math.abs((int)(Double.parseDouble(changeValue))) + "点")
+        );
     }
 
     /**

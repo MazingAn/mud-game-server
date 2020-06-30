@@ -25,7 +25,9 @@ public class EquipmentPositionHandler {
         }
     }
 
-    /** 外部方法  初始化装备位置表 这个方法总会在服务器启动的时候被调用  参见 {@link com.mud.game.server.ServerManager} {@code start} */
+    /** 外部方法  初始化装备位置表 这个方法总会在服务器启动的时候被调用
+     * 参见 {@link com.mud.game.server.ServerManager}
+     * {@code start} */
     public static void initEquipmentPositionHandler(){
         initEquipmentPositionNameMapping();
     }

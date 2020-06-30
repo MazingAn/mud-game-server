@@ -58,6 +58,12 @@ public class WorldObjectObjectManager {
         obj.setEvents(events);
     }
 
+    /**
+     * 当玩家查看本物体的时候的回调
+     * @param obj 查看的对象
+     * @param  playerCharacter 玩家
+     * @param session 玩家通信隧道
+     * */
     public static void onPlayerLook(WorldObjectObject obj, PlayerCharacter playerCharacter, Session session)  {
         /*
          * @ 当玩家查看游戏世界内的物体的时候返回物体信息和可执行的命令（操作）
@@ -81,7 +87,10 @@ public class WorldObjectObjectManager {
         * */
         // 最重要返回的命令列表
         List<EmbeddedCommand> cmds = new ArrayList<>();
+
         // 获取物体绑定的事件(仅限于Action事件，也就是点击交互事件)
+
+        // 对事件分组，按照actionName分组，同一组中只能显示一个事件命令
         Map<String, Set<EventData>>eventDataGroupByActionNameMap = new HashMap<>();
         for(String eventKey : obj.getEvents()) {
             //根据事件的名字对事件进行分组
@@ -100,6 +109,7 @@ public class WorldObjectObjectManager {
         for(String actionName: eventDataGroupByActionNameMap.keySet()){
             Set<EventData> events = eventDataGroupByActionNameMap.get(actionName);
             playerCharacter.setRandomNumber(Math.random()*101);
+            GameCharacterManager.saveCharacter(playerCharacter);
             for(EventData eventData : events){
                 if(ConditionHandler.matchCondition(eventData.getTriggerCondition(), playerCharacter)){
                     Map<String, String> args = new HashMap<>();
@@ -111,7 +121,5 @@ public class WorldObjectObjectManager {
         }
         return cmds;
     }
-
-
 
 }

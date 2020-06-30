@@ -1,19 +1,18 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.algorithm.CommonAlgorithm;
+import com.mud.game.handler.EquipmentPositionHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.SkillObject;
-import com.mud.game.object.typeclass.WorldNpcObject;
-import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.statements.buffers.BufferManager;
 import com.mud.game.statements.buffers.CharacterBuffer;
 import com.mud.game.structs.*;
 import com.mud.game.utils.resultutils.GameWords;
+import com.mud.game.worlddata.db.models.Equipment;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
@@ -224,28 +223,28 @@ public class GameCharacterManager {
         /*
         * @ 检查角色是否拥有某个技能
         * */
-        for(String skillId : character.getSkills()){
-            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
-            if(skillObject != null && skillObject.getDataKey().equals(skillKey)){
-                return true;
-            }
-        }
-        return false;
+        return findSkillBySKillKey(character, skillKey) != null;
     }
 
     public static boolean skillLevelGt(CommonCharacter character, String skillKey, int compareLevel){
+        boolean result = false;
+        SkillObject skillObject = findSkillBySKillKey(character, skillKey);
+        if(skillObject != null && skillObject.getLevel() >= compareLevel) {
+            return true;
+        }else{
+            character.msg(new MsgMessage(String.format(GameWords.NEED_SKILL_LEVEL_GT, skillObject.getName(), compareLevel)));
+            return false;
+        }
+    }
+
+    public static SkillObject findSkillBySKillKey(CommonCharacter character, String skillKey){
         for(String skillId : character.getSkills()){
             SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
             if(skillObject != null && skillObject.getDataKey().equals(skillKey)){
-                if(skillObject.getLevel() >= compareLevel){
-                    return true;
-                }else{
-                    character.msg(new MsgMessage(String.format(GameWords.NEED_SKILL_LEVEL_GT,
-                            skillObject.getName(), compareLevel)));
-                }
+                return skillObject;
             }
         }
-        return false;
+        return null;
     }
 
     /** 检查角色是否装备某一个技能
@@ -433,6 +432,24 @@ public class GameCharacterManager {
             }
         }
         character.msg(new CombatCommandsMessage(commands));
+    }
+
+    /** 获取角色一件已经装备的武器 */
+    public static EquipmentObject getOneEquippedWeapon(CommonCharacter character){
+        if(character.getEquippedEquipments() == null){
+            return null;
+        }
+        String leftHandWeaponId = character.getEquippedEquipments().get("left_hand");
+        String rightHandWeaponId = character.getEquippedEquipments().get("right_hand");
+        if(leftHandWeaponId != null && !"".equals(leftHandWeaponId.trim())){
+            return MongoMapper.equipmentObjectRepository.findEquipmentObjectById(leftHandWeaponId);
+        }
+
+        if(rightHandWeaponId != null && !"".equals(rightHandWeaponId.trim())){
+            return MongoMapper.equipmentObjectRepository.findEquipmentObjectById(rightHandWeaponId);
+        }
+
+        return null;
     }
 
 }

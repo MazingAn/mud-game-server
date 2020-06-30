@@ -8,6 +8,6 @@ public class HarmInfo {
     public HarmInfo() {
         this.precise = false;
         this.critical = false;
-        this.finalHarm = 0;
+        this.finalHarm = 1;
     }
 }

@@ -5,4 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface GemObjectRepository extends MongoRepository<GemObject, String> {
     GemObject findGemObjectById(String id);
+    GemObject findGemObjectByDataKeyAndOwner(String objectKey, String ownerId);
 }

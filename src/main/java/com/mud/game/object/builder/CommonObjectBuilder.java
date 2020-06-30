@@ -62,4 +62,19 @@ public class CommonObjectBuilder {
         }
     }
 
+    public static CommonObject findObjectByDataKeyAndOwner(String objectKey, String ownerId){
+        /*在持久化物品的时候没有明确的类型，使用这个方法保存*/
+        if(DbMapper.gemRepository.existsByDataKey(objectKey)){
+            return MongoMapper.gemObjectRepository.findGemObjectByDataKeyAndOwner(objectKey, ownerId);
+        }else if(DbMapper.normalObjectRepository.existsByDataKey(objectKey)){
+            return MongoMapper.normalObjectObjectRepository.findNormalObjectObjectByDataKeyAndOwner(objectKey, ownerId);
+        }else if(DbMapper.equipmentRepository.existsByDataKey(objectKey)){
+            return MongoMapper.equipmentObjectRepository.findEquipmentObjectByDataKeyAndOwner(objectKey, ownerId);
+        }else if(DbMapper.skillBookRepository.existsByDataKey(objectKey)){
+            return MongoMapper.skillBookObjectRepository.findSkillBookObjectByDataKeyAndOwner(objectKey, ownerId);
+        }else{
+            return null;
+        }
+    }
+
 }

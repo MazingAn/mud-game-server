@@ -63,9 +63,16 @@ public class EquipmentObjectManager {
         return equipment;
     }
 
+    /**
+     * 装备 装备到角色身上
+     * @param equipmentObject 装备
+     * @param character 角色
+     * @param position 要装备的位置
+     * @param session 通信通道
+     * */
     public static void equipTo(EquipmentObject equipmentObject, CommonCharacter character, String position, Session session)  {
         /*装备到角色身上*/
-        if(checkBeforeEquip(equipmentObject, position, session)){
+        if(checkBeforeEquip(equipmentObject, character, position, session)){
             // 移除掉旧的装备
             Map<String, String> playerEquippedEquipments = character.getEquippedEquipments();
             if(playerEquippedEquipments.containsKey(position)){
@@ -81,7 +88,6 @@ public class EquipmentObjectManager {
                 GameCharacterManager.changeStatus(character, attrKey, value);
             }
             // TODO：应用装备内的宝石的属性
-
             // 如果是玩家的话要更新玩家背包状态；从背包移除这件装备
             if(character instanceof  PlayerCharacter) {
                 PlayerCharacterManager.removeObjectsFromBagpack((PlayerCharacter) character, equipmentObject, 1);
@@ -96,6 +102,12 @@ public class EquipmentObjectManager {
         }
     }
 
+    /** 脱掉装备
+     * @param equipmentObject 装备
+     * @param character 角色
+     * @param position 要装备的位置
+     * @param session 通信通道
+     * */
     public static void takeOff(EquipmentObject equipmentObject, CommonCharacter character, String position, Session session)  {
         /*从角色身上取掉装备*/
         // 判断背包里面还能不能装下装备，如果装不下那就卸不掉，只能用手拿着
@@ -118,6 +130,9 @@ public class EquipmentObjectManager {
 
     }
 
+    /**
+     * 同步装备和角色状态
+     * */
     public static void syncEquipmentAndCharacterStatus(EquipmentObject equipmentObject, CommonCharacter character, Session session)  {
         MongoMapper.equipmentObjectRepository.save(equipmentObject);
         if(character.getClass().equals(PlayerCharacter.class)){
@@ -134,7 +149,8 @@ public class EquipmentObjectManager {
         }
     }
 
-    public static void syncEquipmentAndBagpackStatus(EquipmentObject equipmentObject, PlayerCharacter character){
+    /** 同步装备和背包状态 */
+    private static void syncEquipmentAndBagpackStatus(EquipmentObject equipmentObject, PlayerCharacter character){
         /*
         * 同步背包里装备的状态
         * 每当装备的状态发生改变的时候，需要手动更新一下背包里面对应的装备的状态，这是一处设计缺陷
@@ -149,10 +165,15 @@ public class EquipmentObjectManager {
         MongoMapper.bagpackObjectRepository.save(bagpackObject);
     }
 
-    public static boolean checkBeforeEquip(EquipmentObject equipmentObject, String position,  Session session)  {
+    /** 装备前检查 */
+    public static boolean checkBeforeEquip(EquipmentObject equipmentObject, CommonCharacter character, String position,  Session session)  {
         /*
          *  装备之前检查装备是否可以装备
          * */
+        // 检查装备是不是当前玩家的
+        if(!equipmentObject.getOwner().equals(character.getId())){
+            return false;
+        }
         // 检查是否已经被使用（一个装备只能被装备一次）
         if(equipmentObject.isEquipped()){
             if(session!=null) session.sendText(JsonResponse.JsonStringResponse(String.format(equipmentObject.getName(), new MsgMessage(GameWords.EQUIPMENT_ALREADY_EQUIPPED))));
@@ -162,29 +183,31 @@ public class EquipmentObjectManager {
         return true;
     }
 
+    /**装备可用命令*/
     public static List<EmbeddedCommand> getAvailableCommands(EquipmentObject equipmentObject, PlayerCharacter playerCharacter) {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
-
-        if(equipmentObject.isEquipped()){ // 已经装备显示卸掉命令
-            String position = equipmentObject.getEquippedPosition();
-            Map<String, Object> args = new HashMap<>();
-            args.put("dbref", equipmentObject.getId());
-            args.put("position", position);
-            cmds.add(new EmbeddedCommand("卸掉", "take_off_equipment", args));
-        }else{ // 如果装备没有被装备，则显示装备命令
-            for(String position : equipmentObject.getPositions()){
+        if(equipmentObject.getOwner().equals(playerCharacter.getId())){
+            if(equipmentObject.isEquipped()){ // 已经装备显示卸掉命令
+                String position = equipmentObject.getEquippedPosition();
                 Map<String, Object> args = new HashMap<>();
                 args.put("dbref", equipmentObject.getId());
                 args.put("position", position);
-                cmds.add(new EmbeddedCommand("装备到"+ EquipmentPositionHandler.equipmentPositionNameMapping.get(position),
-                        "equip_equipment", args));
+                cmds.add(new EmbeddedCommand("卸掉", "take_off_equipment", args));
+            }else{ // 如果装备没有被装备，则显示装备命令
+                for(String position : equipmentObject.getPositions()){
+                    Map<String, Object> args = new HashMap<>();
+                    args.put("dbref", equipmentObject.getId());
+                    args.put("position", position);
+                    cmds.add(new EmbeddedCommand("装备到"+ EquipmentPositionHandler.equipmentPositionNameMapping.get(position),
+                            "equip_equipment", args));
+                }
             }
         }
-
         return cmds;
     }
 
+    /**玩家查看装备时候的回调*/
     public static void onPlayerLook(EquipmentObject equipmentObject, PlayerCharacter playerCharacter, Session session)  {
         /*
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）

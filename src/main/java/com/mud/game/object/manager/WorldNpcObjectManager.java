@@ -141,6 +141,12 @@ public class WorldNpcObjectManager {
         obj.setMp(obj.getMp());
     }
 
+    /**
+     * 玩家查看本实例时候的回调
+     * @param npc 玩家查看的NPC
+     * @param playerCharacter 玩家
+     * @param session 玩家通信隧道
+     * */
     public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session)  {
         /*
         * @ 当玩家查看NPC的时候返回NPC信息和可用命令
@@ -197,7 +203,6 @@ public class WorldNpcObjectManager {
             for(TransList record : DbMapper.transListRepository.findTransListByNpc(npc.getDataKey())){
                 WorldRoom room = DbMapper.worldRoomRepository.findWorldRoomByDataKey(record.getRoom());
                 if(room != null){
-
                     Map<String, String> args = new HashMap<>();
                     args.put("npc", npc.getDataKey());
                     args.put("room", room.getDataKey());

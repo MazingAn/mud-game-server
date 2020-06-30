@@ -6,6 +6,7 @@ import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.SkillCastMessage;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
@@ -38,7 +39,8 @@ public class NormalHit extends BaseAttackSkillStatement {
         //应用伤害
         GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1);
         //构建战斗输出
-        SkillCastInfo skillCastInfo  = new SkillCastInfo(caller, target, skillObject, skillObject.getMessage());
+        String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
+        SkillCastInfo skillCastInfo  = new SkillCastInfo(caller, target, skillObject, combatCastStr);
         CombatSense sense = CombatHandler.getCombatSense(caller.getId());
         sense.msgContents(new SkillCastMessage(skillCastInfo));
         //更新同步数据

@@ -28,7 +28,7 @@ public class HangUpManager {
         }else{
             playerCharacter.setState(currentAction);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
-            playerCharacter.msg(new PlayerCharacterStateMessage(playerCharacter.getState()));
+            sendStartMessage(playerCharacter);
             Runnable runnable = new Runnable() {
                 // run方法将周期性运行
                 @Override
@@ -43,39 +43,112 @@ public class HangUpManager {
     }
 
     /**
+     *  发送挂机开始时候的消息
+     * @param playerCharacter 玩家角色
+     * */
+    public static void sendStartMessage(PlayerCharacter playerCharacter){
+        switch (playerCharacter.getState()){
+            case STATE_MINING:
+                playerCharacter.msg(new MsgMessage(GameWords.START_MINING));
+                break;
+            case STATE_COLLECT:
+                playerCharacter.msg(new MsgMessage(GameWords.START_COLLECT));
+                break;
+            case STATE_CURE:
+                playerCharacter.msg(new MsgMessage(GameWords.START_CURE));
+                break;
+            case STATE_FISHING:
+                playerCharacter.msg(new MsgMessage(GameWords.START_FISHING));
+                break;
+            case STATE_MEDITATE:
+                playerCharacter.msg(new MsgMessage(GameWords.START_MEDITATE));
+                break;
+            case STATE_LEARN_SKILL:
+                playerCharacter.msg(new MsgMessage(GameWords.START_LEARN_SKILL));
+                break;
+            default:
+                break;
+        }
+        playerCharacter.msg(new PlayerCharacterStateMessage(playerCharacter.getState()));
+    }
+
+    /**
      * 玩家挂机的具体操作
      * */
     private static void playerHangUp(PlayerCharacter playerCharacter, CharacterState currentAction) {
         try{
             if(currentAction.equals(CharacterState.STATE_CURE)){//处理玩家疗伤
-                GameCharacterManager.changeStatus(playerCharacter, "max_hp", 20);
-                GameCharacterManager.changeStatus(playerCharacter, "hp", 20);
-                playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_CURE, 20,20)));
-                if(playerCharacter.getMax_hp() >= playerCharacter.getLimit_hp()){
-                    playerCharacter.setMax_hp(playerCharacter.getLimit_hp());
-                }
-                if(playerCharacter.getHp() >= playerCharacter.getMax_hp()){
-                    playerCharacter.setHp(playerCharacter.getMax_hp());
-                }
-                GameCharacterManager.saveCharacter(playerCharacter);
-                if(playerCharacter.getHp() == playerCharacter.getMax_hp() &&
-                        playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()){
-                    PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
-                }
-            }else if(currentAction.equals(CharacterState.STATE_MEDITATE)){//处理玩家打坐
-
+                onPlayerCure(playerCharacter);
+            }else if(currentAction.equals(CharacterState.STATE_MEDITATE)){
+                onPlayerMeditate(playerCharacter);
             }else{//其他类型挂机逻辑
                 // TODO:发送随机的句子
                 sendRandomNotify(playerCharacter, currentAction);
-                // TODO:获得随机的物品
                 getRandomObject(playerCharacter, currentAction);
-                // 增加随机的经验和潜能
                 int addedValue = addRandomPotential(playerCharacter);
                 playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_GET_RANDOM_POTENTIAL, addedValue, addedValue)));
             }
             PlayerCharacterManager.showStatus(playerCharacter);
         }catch (Exception e){
             System.out.println("在玩家挂机的时候发生错误，挂机人：" + playerCharacter.getName() + ";  挂机操作：" + currentAction);
+        }
+    }
+
+    /**
+     * 玩家疗伤时候的处理
+     * @param playerCharacter 玩家
+     * */
+    private static void onPlayerCure(PlayerCharacter playerCharacter){
+        int recoveredHp = (int) (playerCharacter.getMax_hp() * 0.1);
+        int recoveredMaxHp = (int) (playerCharacter.getLimit_hp() * 0.1);
+        if(recoveredHp > 0){
+            GameCharacterManager.changeStatus(playerCharacter, "hp", recoveredHp);
+            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_HP, recoveredHp)));
+        }
+        if(recoveredMaxHp > 0){
+            GameCharacterManager.changeStatus(playerCharacter, "max_hp", recoveredMaxHp);
+            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MAX_HP,recoveredMaxHp )));
+        }
+        if(playerCharacter.getMax_hp() >= playerCharacter.getLimit_hp()){
+            playerCharacter.setMax_hp(playerCharacter.getLimit_hp());
+        }
+        if(playerCharacter.getHp() >= playerCharacter.getMax_hp()){
+            playerCharacter.setHp(playerCharacter.getMax_hp());
+        }
+        GameCharacterManager.saveCharacter(playerCharacter);
+        if(playerCharacter.getHp() == playerCharacter.getMax_hp() &&
+                playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()){
+            PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+            playerCharacter.msg(new MsgMessage(GameWords.PLAYER_CURE_END));
+        }
+    }
+
+    /**
+     * 玩家打坐时候的处理
+     * @param playerCharacter 玩家
+     * */
+    private static void onPlayerMeditate(PlayerCharacter playerCharacter){
+        int recoveredMp = (int) (playerCharacter.getMax_mp() * 0.1);
+        int recoveredMaxMp = (int) (playerCharacter.getLimit_mp() * 0.1);
+        if(recoveredMp > 0){
+            GameCharacterManager.changeStatus(playerCharacter, "mp", recoveredMp);
+            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MP, recoveredMp)));
+        }
+        if(recoveredMaxMp > 0){
+            GameCharacterManager.changeStatus(playerCharacter, "max_hp", recoveredMaxMp);
+            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MAX_MP,recoveredMaxMp )));
+        }
+        if(playerCharacter.getMax_mp() >= playerCharacter.getLimit_mp()){
+            playerCharacter.setMax_mp(playerCharacter.getLimit_mp());
+        }
+        if(playerCharacter.getMp() >= playerCharacter.getMax_mp()){
+            playerCharacter.setMp(playerCharacter.getMax_mp());
+        }
+        GameCharacterManager.saveCharacter(playerCharacter);
+        if(playerCharacter.getMp() == playerCharacter.getMax_mp() &&
+                playerCharacter.getMax_mp() == playerCharacter.getLimit_mp()){
+            PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+            playerCharacter.msg(new MsgMessage(GameWords.PLAYER_MEDITATE_END));
         }
     }
 
@@ -134,6 +207,24 @@ public class HangUpManager {
             return false;
         }
 
+        // 玩家是否能进入疗伤状态
+        if(CharacterState.STATE_CURE.equals(currentAction)){
+            if(playerCharacter.getHp() == playerCharacter.getMax_hp() &&
+                    playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()){
+                playerCharacter.msg(new MsgMessage(GameWords.NEED_NOT_CURE));
+                return false;
+            }
+        }
+
+        // 玩家能够进入打坐状态
+        if(CharacterState.STATE_MEDITATE.equals(currentAction)){
+            if(playerCharacter.getMp() == playerCharacter.getMax_mp() &&
+                    playerCharacter.getMax_mp() == playerCharacter.getLimit_mp()){
+                playerCharacter.msg(new MsgMessage(GameWords.NEED_NOT_MEDITATE));
+                return false;
+            }
+        }
+
         // 玩家是不是正在干别的事
         if(playerCharacter.getState() != CharacterState.STATE_NORMAL){
             if(playerCharacter.getState() != currentAction){
@@ -168,13 +259,14 @@ public class HangUpManager {
     }
 
     /**
-     * 检查玩家是否能装备了挂机所需要的工具
+     * 检查玩家是否能进入挂机状态
      * @param playerCharacter 挂机主体
      * @param currentAction 当前的动作
      * @return boolean 能否挂机
      * */
     private static boolean playerHasTool(PlayerCharacter playerCharacter, CharacterState currentAction) {
         // TODO：玩家装备检查
+
         return true;
     }
 

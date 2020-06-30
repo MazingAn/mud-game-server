@@ -1,26 +1,18 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.handler.ConditionHandler;
-import com.mud.game.handler.EquipmentPositionHandler;
 import com.mud.game.messages.ToastMessage;
-import com.mud.game.object.typeclass.EquipmentObject;
-import com.mud.game.object.typeclass.GemObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillBookObject;
 import com.mud.game.structs.EmbeddedCommand;
-import com.mud.game.structs.EquipmentObjectAppearance;
 import com.mud.game.structs.SkillBookObjectAppearance;
-import com.mud.game.utils.collections.ArrayListUtils;
-import com.mud.game.utils.jsonutils.Attr2Map;
+import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
-import com.mud.game.worlddata.db.models.Gem;
-import com.mud.game.worlddata.db.models.Skill;
 import com.mud.game.worlddata.db.models.SkillBook;
 import com.mud.game.worlddata.db.models.SkillBookBind;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.IteratorUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
@@ -57,7 +49,7 @@ public class SkillBookObjectManager {
         }else{
             Iterable<SkillBookBind> binds = DbMapper.skillBookBindRepository.findSkillBookBindsBySkillBook(skillBookObject.getDataKey());
             if(binds.iterator().hasNext()){
-                String randomSkill = ArrayListUtils.randomChoice(new ArrayList<>(IterableUtils.toList(binds))).getSkill();
+                String randomSkill = ListUtils.randomChoice(new ArrayList<>(IterableUtils.toList(binds))).getSkill();
                 skillBookObject.setCurrentSkill(randomSkill);
                 MongoMapper.skillBookObjectRepository.save(skillBookObject);
                 return randomSkill;

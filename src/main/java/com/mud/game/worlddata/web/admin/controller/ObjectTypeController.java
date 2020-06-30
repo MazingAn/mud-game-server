@@ -1,16 +1,9 @@
 package com.mud.game.worlddata.web.admin.controller;
 
-import com.mud.game.object.supertypeclass.CommonObject;
-import com.mud.game.utils.collections.ArrayListUtils;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.ObjectType;
-import com.mud.game.worlddata.db.models.ObjectType;
-import com.mud.game.worlddata.db.repository.ObjectTypeRepository;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.compress.utils.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
