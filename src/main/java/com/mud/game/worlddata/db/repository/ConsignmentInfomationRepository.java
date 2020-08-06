@@ -6,7 +6,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 public interface ConsignmentInfomationRepository extends SpecificationRepository<ConsignmentInformation, Long> {
     ConsignmentInformation findConsignmentInformationById(Long id);
+
     Page<ConsignmentInformation> findAll(Specification<ConsignmentInformation> spec, Pageable pageable);
+    List<ConsignmentInformation> findByPalyerId(String id);
 }
