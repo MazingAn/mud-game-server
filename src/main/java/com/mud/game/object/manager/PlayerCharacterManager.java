@@ -1070,7 +1070,7 @@ public class PlayerCharacterManager {
             MongoMapper.bagpackObjectRepository.save(bagpackObject);
             commonObject.setOwner(playerCharacter.getId());
             CommonObjectBuilder.save(commonObject);
-            playerCharacter.msg(new GettingObjectMessage(commonObject, number));
+            playerCharacter.msg(new AlertMessage(new GettingObjectMessage(commonObject, number).getMsg()));
             showBagpack(playerCharacter);
             afterPlayerReceiveObject(playerCharacter, commonObject, number);
             return true;
@@ -1098,12 +1098,18 @@ public class PlayerCharacterManager {
         if (hasObject(playerCharacter, commonObjectKey, 0)) {
             commonObject = CommonObjectBuilder.findObjectByDataKeyAndOwner(commonObjectKey, playerCharacter.getId());
             if (commonObject instanceof EquipmentObject) {
-                commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
+                EquipmentObject equipmentObject = (EquipmentObject) CommonObjectBuilder.buildCommonObject(commonObjectKey);
+                return receiveObjectToBagpack(playerCharacter, equipmentObject, number);
             } else if (commonObject instanceof SkillBookObject) {
-                commonObject = CommonObjectBuilder.buildSkillBookObject(commonObjectKey);
+                SkillBookObject skillBookObject = (SkillBookObject) CommonObjectBuilder.buildSkillBookObject(commonObjectKey);
+                return receiveObjectToBagpack(playerCharacter, skillBookObject, number);
             }
         } else {
             commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
+            if(commonObject != null){
+                CommonObjectBuilder.save(commonObject);
+                return receiveObjectToBagpack(playerCharacter, commonObject, number);
+            }
         }
         return receiveObjectToBagpack(playerCharacter, commonObject, number);
     }
@@ -1180,21 +1186,21 @@ public class PlayerCharacterManager {
      *
      * @param playerCharacter 玩家
      * @param unit            货币单位
-     * @param number           价格
+     * @param number          价格
      */
     public static boolean addMoney(PlayerCharacter playerCharacter, String unit, int number) {
         // 钱不够，若果是银子不够，但还有金子
         if (unit.equals("OBJECT_YINLIANG")) {
             // 银子
-            String bagpackId =  playerCharacter.getBagpack();
+            String bagpackId = playerCharacter.getBagpack();
             BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
             int currentNumber = CommonItemContainerManager.getNumberByDataKey(bagpackObject, unit);
             int yinNumber = (currentNumber + number) % 100;
             int jinNumber = (currentNumber + number) / 100;
             boolean result = false;
-            if(yinNumber != 0)
+            if (yinNumber != 0)
                 result = receiveObjectToBagpack(playerCharacter, "OBJECT_YINLIANG", yinNumber);
-            if(jinNumber != 0)
+            if (jinNumber != 0)
                 result = receiveObjectToBagpack(playerCharacter, "OBJECT_JINZI", jinNumber);
             return result;
         } else {

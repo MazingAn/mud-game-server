@@ -17,14 +17,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeauty.pojo.Session;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 购买寄售商品
  * <p>
  * {cmd:"buyout"
  * args:{
- * auction_id :"8644",
+ * auction_id :"8644",  寄售数据主键
  * number:1
  * }
  * }
@@ -81,9 +84,10 @@ public class SellBuyObject extends BaseCommand {
         // 物品信息
         CommonObject commonObject = CommonObjectBuilder.findObjectById(consignmentInformation.getObjectId());
         if (PlayerCharacterManager.castMoney(caller, consignmentInformation.getMoneyType(), number * price)) {
-            //接受一件物品放入背包,减去相应金钱
+            //接收一件物品放入背包,减去相应金钱
             PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, number);
         } else {
+            getSession().sendText(JsonResponse.JsonStringResponse(new AlertMessage("你的钱不够!")));
             logger.error("你的钱不够！");
             return;
         }
@@ -105,7 +109,7 @@ public class SellBuyObject extends BaseCommand {
         //刷新背包
         PlayerCharacterManager.showBagpack(playerCharacter);
         //返回页面消息
-        getSession().sendText(JsonResponse.JsonStringResponse(new AlertMessage("你获得了{g" + consignmentInformation.getObjectName() + "{n!")));
+       // getSession().sendText(JsonResponse.JsonStringResponse(new AlertMessage("你获得了{g" + consignmentInformation.getObjectName() + "{n!")));
         //给客户端返回新的寄售列表
         List<ConsignmentInformationsMsg> consignmentInformationsMsgList = new ArrayList<>();
         Iterable<ConsignmentInformation> informations = DbMapper.consignmentInfomationRepository.findAll();
