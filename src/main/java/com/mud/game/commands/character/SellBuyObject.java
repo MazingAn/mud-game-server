@@ -48,15 +48,6 @@ public class SellBuyObject extends BaseCommand {
         super(key, caller, args, session);
     }
 
-    public static void main(String[] args) throws JSONException {
-        PlayerCharacter playerCharacter = new PlayerCharacter();
-        playerCharacter.setId("1");
-        JSONObject object = new JSONObject();
-        object.put("auction_id", 8644);
-        object.put("number", 1);
-        new SellBuyObject(null, playerCharacter, object, null);
-    }
-
     @Override
     public void execute() throws JSONException {
         //获取用户以及参数
