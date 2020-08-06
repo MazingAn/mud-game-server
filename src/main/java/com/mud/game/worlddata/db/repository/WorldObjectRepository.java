@@ -1,10 +1,9 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.WorldObject;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface WorldObjectRepository extends PagingAndSortingRepository<WorldObject, Long> {
+public interface WorldObjectRepository extends SpecificationRepository<WorldObject, Long> {
     Iterable<WorldObject> findWorldObjectsByTypeClass(String typeClass);
     WorldObject deleteWorldObjectById(Long id);
 }

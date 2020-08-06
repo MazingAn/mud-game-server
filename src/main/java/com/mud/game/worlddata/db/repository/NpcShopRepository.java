@@ -1,8 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.NpcShop;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface NpcShopRepository extends PagingAndSortingRepository<NpcShop, Long> {
+public interface NpcShopRepository extends SpecificationRepository<NpcShop, Long> {
     Iterable<NpcShop> findNpcShopsByNpc(String npcKey);
 }

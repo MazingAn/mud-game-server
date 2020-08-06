@@ -1,10 +1,9 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.School;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface SchoolRepository extends PagingAndSortingRepository<School, Long> {
+public interface SchoolRepository extends SpecificationRepository<School, Long> {
     School findSchoolByDataKey(String dataKey);
     boolean existsByDataKey(String dataKey);
 }

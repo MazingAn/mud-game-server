@@ -77,9 +77,4 @@ public interface CombatInterface {
             FighterManager.startAutoCombat(character);
         }
     }
-
-
-
-
-
 }

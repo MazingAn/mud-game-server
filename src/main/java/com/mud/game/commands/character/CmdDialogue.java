@@ -29,6 +29,7 @@ public class CmdDialogue extends BaseCommand {
         JSONObject args = getArgs();
         String npcKey = args.getString("npc");
         String dialogue = args.getString("dialogue");
+        char a= npcKey.charAt(1);
         int sentenceOrder = args.getInt("sentence");
         WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcKey);
         caller.msg(new DialogueListMessage(caller, npc, dialogue, sentenceOrder));

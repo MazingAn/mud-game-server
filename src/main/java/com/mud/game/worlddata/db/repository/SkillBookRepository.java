@@ -1,10 +1,9 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.SkillBook;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface SkillBookRepository extends PagingAndSortingRepository<SkillBook, Long> {
+public interface SkillBookRepository extends SpecificationRepository<SkillBook, Long> {
     SkillBook findSkillBookByDataKey(String dataKey);
     boolean existsByDataKey(String dataKey);
 }

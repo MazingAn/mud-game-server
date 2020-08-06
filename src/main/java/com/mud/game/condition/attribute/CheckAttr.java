@@ -1,6 +1,9 @@
 package com.mud.game.condition.attribute;
 
 import com.mud.game.condition.BaseCondition;
+import com.mud.game.handler.StatusHandler;
+import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 
@@ -45,31 +48,36 @@ public class CheckAttr extends BaseCondition {
         PlayerCharacter playerCharacter = getPlayerCharacter();
         String attrKey =  args[0].replaceAll("\"","");
         //  获取attrkey对应的值 根据这个值的类型来解析参数，然后比对
-
         Object originValue =  GameCharacterManager.findAttributeByName(playerCharacter, attrKey);
+        boolean result = false;
 
         if(originValue == null){
-            return false;
+            result = false;
         }
 
         if(originValue instanceof Integer){
             int value = Integer.parseInt(args[1]);
-            return (int)originValue == value;
+            result = (int)originValue == value;
         }
-
-        if(originValue instanceof Float){
+        else if(originValue instanceof Float){
             originValue = (int)originValue * 1F;
             float value = Float.parseFloat(args[1]);
-            return (float) originValue == value;
+            result =  (float) originValue == value;
         }
 
         if(originValue instanceof Boolean){
-            return Boolean.parseBoolean(args[1]) == (boolean)originValue;
+            result = Boolean.parseBoolean(args[1]) == (boolean)originValue;
         }
         if(originValue instanceof String){
-            return originValue.equals(args[1]);
+            result = originValue.equals(args[1]);
         }
 
-        return false;
+        if(!result){
+            playerCharacter.msg(new MsgMessage(String.format("需要{g%s{n为{g%s{n", StatusHandler.attrMapping.get(attrKey),
+                    args[1])));
+            playerCharacter.msg(new ToastMessage(String.format("需要{g%s{n为{g%s{n", StatusHandler.attrMapping.get(attrKey),
+                    args[1])));
+        }
+        return  result;
     }
 }

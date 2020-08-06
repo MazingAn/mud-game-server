@@ -18,6 +18,8 @@ public class GameWords {
     public static final String NEED_NOT_MEDITATE = "你的{g内力充沛{n，不需要{r打坐{n！";
     public static final String PLAYER_MEDITATE_END = "{g你已经恢复到最佳状态！{n";
 
+    // 没有权限使用物品
+    public static final String NO_PREMISSION_USE = "你无法使用%s,因为他的归属不是你！";
 
     // 好友结交过程
     public static final String PLAYER_REPEAT_REQUEST_FRIEND = "{r%s{n已经知道了你的结交之心，还是暂时不要打扰他为好！";  //重复发送好友请求

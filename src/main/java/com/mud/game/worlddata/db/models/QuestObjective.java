@@ -7,30 +7,40 @@ import javax.persistence.*;
 
 /**
  * 任务需求表
- * */
+ */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"quest", "object"}))
-@Mark(name="任务目标")
+@Mark(name = "任务目标")
 public class QuestObjective {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
 
-    @Mark(name="任务", link = "quest")
+    @Mark(name = "任务", link = "quest")
     private String quest;
 
-    @Mark(name="目标类型", link="objectiveType")
+    @Mark(name = "目标类型", link = "objectiveType")
     private String objectiveType;
 
-    @Mark(name="目标", link = "objectiveTypeObject")
+    @Mark(name = "目标", link = "objectiveTypeObject")
     private String object;
 
-    @Mark(name="数量")
+    @Mark(name = "描述名称")
+    private String name;
+    @Mark(name = "数量")
     private int number;
 
-    @Mark(name="描述")
+    @Mark(name = "描述")
     private String description;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -46,6 +56,7 @@ public class QuestObjective {
 
     public void setQuest(String quest) {
         this.quest = quest;
+        this.name = quest;
     }
 
     public String getObjectiveType() {

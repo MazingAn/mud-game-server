@@ -27,8 +27,18 @@ public class QuestDialogueDependency {
     @Mark(name="类型", link="questStatus")
     private String type;
 
+    @Mark(name = "描述名称")
+    private String name;
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setId(Long id) {
@@ -49,6 +59,7 @@ public class QuestDialogueDependency {
 
     public void setDependency(String dependency) {
         this.dependency = dependency;
+        this.name=dependency;
     }
 
     public String getType() {

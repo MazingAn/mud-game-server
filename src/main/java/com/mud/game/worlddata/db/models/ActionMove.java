@@ -11,6 +11,8 @@ public class ActionMove {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Mark(name="编号")
     private Long id;
+    @Mark(name = "描述名称")
+    private String name;
     @Mark(name="事件", link = "event")
     @Column(unique = true)
     private String eventKey;
@@ -20,6 +22,14 @@ public class ActionMove {
     private float odds;
     @Mark(name="描述")
     private String description;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public ActionMove() {
     }

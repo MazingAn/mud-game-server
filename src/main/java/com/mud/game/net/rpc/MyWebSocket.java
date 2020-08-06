@@ -30,6 +30,7 @@ public class MyWebSocket {
         System.out.println("New Connection!");
         // 第一次打开连接,保存session，并设置类型为匿名者
         String randomId = UUID.randomUUID().toString();
+        //保存调用者id和session的互相映射
         GameSessionService.addSession(randomId,session);
         GameSessionService.addCallerType(randomId, CallerType.ANONYMOUS);
     }
@@ -82,6 +83,7 @@ public class MyWebSocket {
             }
             //创建代理，让代理去执行命令
             CallerDelegate callerDelegate = new CallerDelegate(callerId);
+            //执行方法
             callerDelegate.executeCommand(commandKey, args);
         }
     }

@@ -1,9 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.WorldExit;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface WorldExitRepository extends PagingAndSortingRepository<WorldExit, Long> {
+public interface WorldExitRepository extends SpecificationRepository<WorldExit, Long> {
     WorldExit deleteWorldExitById(Long id);
 }

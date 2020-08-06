@@ -28,8 +28,18 @@ public class LootList {
     @Mark(name="拾取条件")
     private String lootCondition;
 
+    @Mark(name = "描述名称")
+    private String name;
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setId(Long id) {

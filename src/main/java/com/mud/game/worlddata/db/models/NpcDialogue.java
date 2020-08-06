@@ -6,21 +6,31 @@ import javax.persistence.*;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"npc", "dialogue"}))
-@Mark(name="npc的对话")
+@Mark(name = "npc的对话")
 public class NpcDialogue {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
 
-    @Mark(name="npc", link="npc")
+    @Mark(name = "npc", link = "npc")
     private String npc;
 
-    @Mark(name="对话", link="dialogue")
+    @Mark(name = "对话", link = "dialogue")
     private String dialogue;
 
-    @Mark(name="默认对话", link="dialogue")
+    @Mark(name = "描述名称")
+    private String name;
+    @Mark(name = "默认对话", link = "dialogue")
     private boolean defaultDialogue;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;

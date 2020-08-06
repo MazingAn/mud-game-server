@@ -1,11 +1,12 @@
 package com.mud.game.worlddata.db.repository;
 
+import com.mud.game.worlddata.db.models.ActionAcceptQuest;
 import com.mud.game.worlddata.db.models.ActionChangeStep;
-import com.mud.game.worlddata.db.models.ActionLearnSkill;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-public interface ActionChangeStepRepository extends PagingAndSortingRepository<ActionChangeStep, Long> {
+public interface ActionChangeStepRepository extends SpecificationRepository<ActionChangeStep, Long> {
     ActionChangeStep findActionChangeStepById(Long id);
     ActionChangeStep findActionChangeStepsByEventKey(String dataKey);
 }

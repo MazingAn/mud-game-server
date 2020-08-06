@@ -1,9 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.CharacterModel;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface CharacterModelRepository extends PagingAndSortingRepository<CharacterModel, Long> {
+public interface CharacterModelRepository extends SpecificationRepository<CharacterModel, Long> {
     CharacterModel findCharacterModelByDataKey(String dataKey);
 }

@@ -18,7 +18,7 @@ public class PlayerCharacterAppearance{
     private int max_mp;
     private int limit_mp;
     private boolean is_player;
-    private List<Map<String, Object>> cmds;
+    private List<EmbeddedCommand> cmds;
 
 
     public PlayerCharacterAppearance(PlayerCharacter playerCharacter) {
@@ -95,17 +95,16 @@ public class PlayerCharacterAppearance{
         this.is_player = is_player;
     }
 
-    public List<Map<String, Object>> getCmds() {
+    public List<EmbeddedCommand> getCmds() {
         return cmds;
     }
 
-    public void setCmds(List<Map<String, Object>> cmds) {
+    public void setCmds(List<EmbeddedCommand> cmds) {
         this.cmds = cmds;
     }
 
     public String getDesc() {
-        // TODO: 生成玩家的描述信息
-        return "这个比的信息还没生成好";
+        return desc;
     }
 
     public void setDesc(String desc) {

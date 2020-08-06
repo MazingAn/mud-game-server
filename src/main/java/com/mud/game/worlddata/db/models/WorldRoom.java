@@ -9,19 +9,20 @@ import javax.persistence.*;
 @Mark(name = "世界房间")
 public class WorldRoom extends BaseObject {
 
-    @Mark(name="和平区域")
+    @Mark(name = "和平区域")
     private boolean peaceful;
 
-    @Mark(name="所属区域", link="area")
+    @Mark(name = "所属区域", link = "area")
     private String location;
 
-    @Mark(name="位置坐标")
+    @Mark(name = "位置坐标")
     private String position;
 
     @Column(columnDefinition = "int default 1")
     @Mark(name = "房间等级")
     private int level;
-
+    @Mark(name = "描述名称")
+    private String name;
     @Mark(name = "交互命令")
     private String hangUpCommand;
 
@@ -35,6 +36,15 @@ public class WorldRoom extends BaseObject {
     @Mark(name = "背景")
     private String background;
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public boolean isPeaceful() {
         return peaceful;

@@ -24,12 +24,22 @@ public class SkillBook extends BaseCommonObject {
     //技能书品级
     @Mark(name="品级")
     private int  quality;
-
+    @Mark(name = "描述名称")
+    private String name;
     //使用条件
     @Mark(name="使用条件")
     @Column(length = 1024)
     private String useCondition;
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getMax_level() {
         return max_level;

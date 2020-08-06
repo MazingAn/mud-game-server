@@ -43,6 +43,10 @@ public class SkillBookObjectManager {
         return skillBookObject;
     }
 
+    /**
+     * 获取技能书支持学习的一个技能
+     * @param skillBookObject skillBookObject
+     * */
     public static String getCurrentSkill(SkillBookObject skillBookObject){
         if(skillBookObject.getCurrentSkill() != null){
             return skillBookObject.getCurrentSkill();
@@ -56,14 +60,6 @@ public class SkillBookObjectManager {
             }else{
                 return null;
             }
-        }
-    }
-
-    public static void use(PlayerCharacter playerCharacter, SkillBookObject skillBookObject){
-        if(ConditionHandler.matchCondition(skillBookObject.getUseCondition(), playerCharacter)){
-            PlayerCharacterManager.learnSkillBySkillBook(playerCharacter, skillBookObject);
-        }else{
-            playerCharacter.msg(new ToastMessage("无法使用此技能书！"));
         }
     }
 

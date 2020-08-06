@@ -24,6 +24,17 @@ public class QuestDependency {
     @Mark(name="类型")
     private String type;
 
+    @Mark(name = "描述名称")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,6 +49,7 @@ public class QuestDependency {
 
     public void setQuest(String quest) {
         this.quest = quest;
+        this.name=quest;
     }
 
     public String getDependency() {

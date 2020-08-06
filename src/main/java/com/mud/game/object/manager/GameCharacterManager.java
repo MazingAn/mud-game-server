@@ -439,8 +439,8 @@ public class GameCharacterManager {
         if(character.getEquippedEquipments() == null){
             return null;
         }
-        String leftHandWeaponId = character.getEquippedEquipments().get("left_hand");
-        String rightHandWeaponId = character.getEquippedEquipments().get("right_hand");
+        String leftHandWeaponId = character.getEquippedEquipments().get("POSITION_LEFT_HAND");
+        String rightHandWeaponId = character.getEquippedEquipments().get("POSITION_RIGHT_HAND");
         if(leftHandWeaponId != null && !"".equals(leftHandWeaponId.trim())){
             return MongoMapper.equipmentObjectRepository.findEquipmentObjectById(leftHandWeaponId);
         }
@@ -450,6 +450,22 @@ public class GameCharacterManager {
         }
 
         return null;
+    }
+
+    /** 获取角色所有已经装备的武器 */
+    public static Set<EquipmentObject> getAllEquippedWeapon(CommonCharacter character){
+        Set<EquipmentObject> equippedWeapons = new HashSet<>();
+        if(character.getEquippedEquipments() != null){
+            String leftHandWeaponId = character.getEquippedEquipments().get("POSITION_LEFT_HAND");
+            String rightHandWeaponId = character.getEquippedEquipments().get("POSITION_RIGHT_HAND");
+            if(leftHandWeaponId != null && !"".equals(leftHandWeaponId.trim())){
+                equippedWeapons.add(MongoMapper.equipmentObjectRepository.findEquipmentObjectById(leftHandWeaponId));
+            }
+            if(rightHandWeaponId != null && !"".equals(rightHandWeaponId.trim())){
+                equippedWeapons.add(MongoMapper.equipmentObjectRepository.findEquipmentObjectById(rightHandWeaponId));
+            }
+        }
+        return equippedWeapons;
     }
 
 }

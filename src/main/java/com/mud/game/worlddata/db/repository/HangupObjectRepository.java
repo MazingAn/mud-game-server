@@ -1,8 +1,7 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.HangupObject;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface HangupObjectRepository extends PagingAndSortingRepository<HangupObject, Long> {
+public interface HangupObjectRepository extends SpecificationRepository<HangupObject, Long> {
 }

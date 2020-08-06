@@ -1,9 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.Family;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface FamilyRepository extends PagingAndSortingRepository<Family, Long> {
+public interface FamilyRepository extends SpecificationRepository<Family, Long> {
     Family findFamilyByDataKey(String dataKey);
 }

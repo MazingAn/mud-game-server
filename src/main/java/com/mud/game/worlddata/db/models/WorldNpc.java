@@ -16,7 +16,8 @@ public class WorldNpc extends BaseObject {
     //模型类型 Monster, Npc
     @Mark(name="模版")
     private String model;
-
+    @Mark(name = "描述名称")
+    private String name;
     //能否攻击
     @Mark(name="能否攻击")
     private boolean canAttack;
@@ -78,6 +79,15 @@ public class WorldNpc extends BaseObject {
     @Mark(name="图标")
     private String icon;
 
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getLocation() {
         return location;

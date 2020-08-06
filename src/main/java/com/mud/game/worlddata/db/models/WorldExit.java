@@ -6,7 +6,7 @@ import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 import javax.persistence.*;
 
 @Entity
-@Mark(name="世界出口")
+@Mark(name = "世界出口")
 public class WorldExit extends BaseObject {
 
     @Column(length = 32)
@@ -17,7 +17,8 @@ public class WorldExit extends BaseObject {
     //出口的原地址
     @Mark(name = "出发地", link = "worldRoom")
     private String location;
-
+    @Mark(name = "描述名称")
+    private String name;
     //出口的目的地
     @Mark(name = "目的地", link = "worldRoom")
     private String destination;
@@ -37,18 +38,28 @@ public class WorldExit extends BaseObject {
     private String lockDescription;
 
     //解锁出口的时候提示的信息
-    @Mark(name="解锁描述")
+    @Mark(name = "解锁描述")
     private String unlockDescription;
 
     //出口解锁的条件
     @Column(length = 1024)
-    @Mark(name="解锁条件")
+    @Mark(name = "解锁条件")
     private String unlockCondition;
 
     //出口显示的条件
     @Column(length = 1024)
-    @Mark(name="显示条件")
+    @Mark(name = "显示条件")
     private String showCondition;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getVerb() {
         return verb;

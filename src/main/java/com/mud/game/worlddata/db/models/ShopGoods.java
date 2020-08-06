@@ -13,7 +13,6 @@ public class ShopGoods {
     private Long id;
 
     @Mark(name="标识")
-    @Column(unique = true)
     private String dataKey;
 
     @Mark(name="名称")

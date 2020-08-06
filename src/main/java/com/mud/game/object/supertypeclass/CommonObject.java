@@ -34,6 +34,7 @@ public class CommonObject extends BaseGameObject {
     // 物品的总数
     private int totalNumber;
 
+
     public String getUnitName() {
         return unitName;
     }

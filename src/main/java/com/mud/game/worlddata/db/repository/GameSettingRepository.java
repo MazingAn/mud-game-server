@@ -1,11 +1,9 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.GameSetting;
-import org.springframework.data.domain.Page;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface GameSettingRepository extends PagingAndSortingRepository<GameSetting, Long> {
+public interface GameSettingRepository extends SpecificationRepository<GameSetting, Long> {
     GameSetting findGameSettingById(Long id);
     GameSetting deleteGameSettingById(Long id);
 }

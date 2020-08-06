@@ -1,8 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.Quest;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface QuestRepository extends PagingAndSortingRepository<Quest, Long> {
+public interface QuestRepository extends SpecificationRepository<Quest, Long> {
     Quest findQuestByDataKey(String dataKey);
 }

@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"hangup_type", "target"}))
-@Mark(name="挂机奖励")
+@Mark(name = "挂机奖励")
 public class HangupObject {
     /*
     游戏挂机时的奖励
@@ -14,20 +14,30 @@ public class HangupObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
-    @Column(name="hangup_type")
-    @Mark(name="挂机类型", link = "hangupType")
+    @Column(name = "hangup_type")
+    @Mark(name = "挂机类型", link = "hangupType")
     private String hangupType;
-    @Mark(name="目标", link = "allObjects")
-    @Column(name="target")
+    @Mark(name = "目标", link = "allObjects")
+    @Column(name = "target")
     private String target;
-    @Mark(name="概率")
+    @Mark(name = "概率")
     private float odds;
-    @Mark(name="描述")
+    @Mark(name = "描述")
     private String description;
 
 
+    @Mark(name = "描述名称")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getHangupType() {
         return hangupType;

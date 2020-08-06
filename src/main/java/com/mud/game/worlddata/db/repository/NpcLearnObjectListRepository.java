@@ -1,9 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
-import com.mud.game.worlddata.db.models.NormalObject;
 import com.mud.game.worlddata.db.models.NpcLearnObjectList;
-import org.springframework.data.repository.CrudRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface NpcLearnObjectListRepository extends CrudRepository<NpcLearnObjectList, Long> {
+public interface NpcLearnObjectListRepository extends SpecificationRepository<NpcLearnObjectList, Long> {
     NpcLearnObjectList getByNpcKey(String npcKey);
 }

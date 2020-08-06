@@ -10,14 +10,25 @@ import javax.persistence.*;
 public class NpcShop {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
 
-    @Mark(name="npc", link="npc")
+    @Mark(name = "npc", link = "npc")
     private String npc;
 
-    @Mark(name="商店", link="shop")
+    @Mark(name = "商店", link = "shop")
     private String shop;
+
+    @Mark(name = "描述名称")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -41,5 +52,6 @@ public class NpcShop {
 
     public void setShop(String shop) {
         this.shop = shop;
+        this.name = shop;
     }
 }

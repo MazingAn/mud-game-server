@@ -1,8 +1,12 @@
 package com.mud.game.object.manager;
 
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonItemContainer;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.structs.CommonObjectInfo;
+import com.mud.game.worlddata.db.models.NormalObject;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
+import com.mud.game.worlddata.db.models.supermodel.BaseObject;
 
 
 import java.awt.*;

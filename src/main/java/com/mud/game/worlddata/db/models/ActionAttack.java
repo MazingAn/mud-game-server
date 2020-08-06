@@ -14,16 +14,31 @@ public class ActionAttack {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Mark(name="编号")
     private Long id;
+
+    @Mark(name = "描述名称")
+    private String name;
+
     @Mark(name="事件", link="event")
     private String eventKey;
+
     @Mark(name="攻击者模板", link="characterModel")
     private String MobId;
+
     @Mark(name="概率")
     private float odds;
+
     @Mark(name="描述")
     private String description;
 
     public ActionAttack() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getId() {

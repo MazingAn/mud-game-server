@@ -1,12 +1,9 @@
 package com.mud.game.worlddata.db.repository;
 
-import com.mud.game.worlddata.db.models.CharacterModel;
 import com.mud.game.worlddata.db.models.EventData;
-import org.apache.poi.ss.formula.functions.Even;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface EventDataRepository extends PagingAndSortingRepository<EventData, Long> {
+public interface EventDataRepository extends SpecificationRepository<EventData, Long> {
     EventData findEventDataById(Long id);
     EventData findEventDataByDataKey(String dataKey);
     Iterable<EventData> findEventDataByTriggerObject(String objKey);

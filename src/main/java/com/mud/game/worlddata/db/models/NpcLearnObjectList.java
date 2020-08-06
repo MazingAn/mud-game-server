@@ -11,18 +11,29 @@ public class NpcLearnObjectList {
      * */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
     // npc的key
-    @Mark(name="npc", link="npc")
+    @Mark(name = "npc", link = "npc")
     @Column(unique = true)
     private String npcKey;
     // 需要的物品
-    @Mark(name="需要的物品", link="object")
+    @Mark(name = "需要的物品", link = "object")
     private String neededObject;
     // 没提交一个object 可以兑换的能量
-    @Mark(name="物品潜能兑换概率")
+    @Mark(name = "物品潜能兑换概率")
     private int perPotential;
+
+    @Mark(name = "描述名称")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -38,6 +49,7 @@ public class NpcLearnObjectList {
 
     public void setNpcKey(String npcKey) {
         this.npcKey = npcKey;
+        this.name = npcKey;
     }
 
     public String getNeededObject() {

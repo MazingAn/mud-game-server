@@ -1,9 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.SkillCategoryType;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface SkillCategoryTypeRepository extends PagingAndSortingRepository<SkillCategoryType, Long> {
+public interface SkillCategoryTypeRepository extends SpecificationRepository<SkillCategoryType, Long> {
     SkillCategoryType findSkillCategoryTypeByDataKey(String dataKey);
 }

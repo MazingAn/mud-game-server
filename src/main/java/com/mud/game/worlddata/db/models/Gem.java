@@ -17,10 +17,22 @@ public class Gem extends BaseCommonObject {
     @Mark(name = "装备位置", link = "equipmentPosition")
     private String positions;
 
+    @Mark(name = "描述名称")
+    private String name;
     //宝石的属性增益
     @Mark(name="属性")
     @Column(length = 2048)
     private String attrs;
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getQuality() {
         return quality;

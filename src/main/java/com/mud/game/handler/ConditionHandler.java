@@ -78,6 +78,8 @@ public class ConditionHandler {
         conditionSet.put("uncheck_attr", UnCheckAttr.class);
         conditionSet.put("never_unlock", NeverUnlock.class);
         conditionSet.put("check_room_step", CheckRoomStep.class);
+        conditionSet.put("has_skill", HasSkill.class);
+        conditionSet.put("has_equip_weapon_name", HasEquippedWeaponName.class);
     }
 
 }

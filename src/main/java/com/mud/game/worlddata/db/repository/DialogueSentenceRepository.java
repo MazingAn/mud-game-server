@@ -1,8 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.DialogueSentence;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface DialogueSentenceRepository extends PagingAndSortingRepository<DialogueSentence, Long> {
+public interface DialogueSentenceRepository extends SpecificationRepository<DialogueSentence, Long> {
     Iterable<DialogueSentence> findDialogueSentencesByDialogueOrderByOrdinalAsc(String dialogueKey);
 }

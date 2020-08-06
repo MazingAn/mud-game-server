@@ -65,6 +65,7 @@ public class PlayerManager {
                 // 转交session给新的caller
                 GameSessionService.updateCallerId(oldId, playerId, CallerType.ACCOUNT);
                 session.sendText(JsonResponse.JsonStringResponse(new LoginSuccessMessage(player)));
+                showCharacters(player, session);
                 return player;
             }
             // 检查不通过，直接显示错误信息
@@ -78,8 +79,8 @@ public class PlayerManager {
      * @param session Session 客户端连接session
      * */
     public static void showCharacters(Player player, Session session)  {
-        Set<SimpleCharacter> charAll = player.getPlayerCharacters();
-        session.sendText(JsonResponse.JsonStringResponse(new CharAllMessage(charAll)));
+        Set<SimpleCharacter> char_all = player.getPlayerCharacters();
+        session.sendText(JsonResponse.JsonStringResponse(new CharAllMessage(char_all)));
     }
 
     /** 删除一个游戏玩家账户，本质上不对账户进行删除操作，仅仅是锁定账户

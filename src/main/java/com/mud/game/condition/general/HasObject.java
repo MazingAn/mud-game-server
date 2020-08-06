@@ -1,9 +1,13 @@
 package com.mud.game.condition.general;
 
 import com.mud.game.condition.BaseCondition;
+import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 
 /**
  * 检查玩家身上是否有某一个物品
@@ -31,6 +35,14 @@ public class HasObject extends BaseCondition {
     public boolean match() throws NoSuchFieldException, IllegalAccessException {
         String[] args = getArgs();
         String objectDataKey = args[0];
-        return PlayerCharacterManager.hasObject(getPlayerCharacter(), objectDataKey, 1);
+        boolean result = PlayerCharacterManager.hasObject(getPlayerCharacter(), objectDataKey, 1);
+        if(!result){
+            BaseCommonObject template = CommonObjectBuilder.findObjectTemplateByDataKey(objectDataKey);
+            if(template != null){
+                getPlayerCharacter().msg(new MsgMessage(String.format("缺少物品{g%s{n", template.getName())));
+                getPlayerCharacter().msg(new ToastMessage(String.format("缺少物品{g%s{n", template.getName())));
+            }
+        }
+        return result;
     }
 }

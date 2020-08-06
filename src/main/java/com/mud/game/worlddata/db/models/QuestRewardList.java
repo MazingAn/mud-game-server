@@ -6,30 +6,40 @@ import javax.persistence.*;
 
 /**
  * 任务奖励表
- * */
+ */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"provider", "object"}))
-@Mark(name="任务奖励表")
+@Mark(name = "任务奖励表")
 public class QuestRewardList {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
 
-    @Mark(name="任务", link = "quest")
+    @Mark(name = "任务", link = "quest")
     private String provider;
 
-    @Mark(name="任务奖励", link = "allObjects")
+    @Mark(name = "任务奖励", link = "allObjects")
     private String object;
 
-    @Mark(name="数量")
+    @Mark(name = "数量")
     private int number;
 
-    @Mark(name="概率")
+    @Mark(name = "描述名称")
+    private String name;
+    @Mark(name = "概率")
     private float odds;
 
-    @Mark(name="触发条件")
+    @Mark(name = "触发条件")
     private String actionCondition;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;

@@ -1,8 +1,8 @@
 package com.mud.game.worlddata.db.repository;
 
 import com.mud.game.worlddata.db.models.QuestDialogueDependency;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 
-public interface QuestDialogueDependencyRepository extends PagingAndSortingRepository<QuestDialogueDependency, Long> {
+public interface QuestDialogueDependencyRepository extends SpecificationRepository<QuestDialogueDependency, Long> {
     Iterable<QuestDialogueDependency> findQuestDialogueDependenciesByDialogue(String dialogueKey);
 }
