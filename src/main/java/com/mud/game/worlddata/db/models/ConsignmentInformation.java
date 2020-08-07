@@ -16,6 +16,8 @@ public class ConsignmentInformation {
     private Long id;
     @Mark(name = "用户主键")
     private String palyerId;
+    @Mark(name = "用户姓名")
+    private String palyerName;
     @Mark(name = "商品主键")
     private String objectId;
     @Mark(name = "商品名称")
@@ -36,6 +38,14 @@ public class ConsignmentInformation {
     private int number;
     @Mark(name = "分类")
     private String category;
+
+    public String getPalyerName() {
+        return palyerName;
+    }
+
+    public void setPalyerName(String palyerName) {
+        this.palyerName = palyerName;
+    }
 
     public String getDescription() {
         return description;

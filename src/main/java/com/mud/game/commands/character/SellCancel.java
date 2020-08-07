@@ -71,7 +71,7 @@ public class SellCancel extends BaseCommand {
             CommonObjectBuilder.save(commonObject);
         }
         //物品放入玩家背包
-        PlayerCharacterManager.addObjectsToBagpack(caller, commonObject, args.getInt("number"));
+        PlayerCharacterManager.addObjectsToBagpack(caller, commonObject,consignmentInformation.getNumber());
         PlayerCharacterManager.showBagpack(caller);
         //给客户端返回已寄售列表
         List<ConsignmentInformationsMsg> consignmentInformationsMsgList = new ArrayList<>();

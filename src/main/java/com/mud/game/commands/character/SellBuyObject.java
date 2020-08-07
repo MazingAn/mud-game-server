@@ -56,6 +56,10 @@ public class SellBuyObject extends BaseCommand {
         //获取参数
         Long auctionId = args.getLong("auction_id"); //寄售id
         int number = args.getInt("number"); //购买数量
+        if (number <= 0) {
+            caller.msg(new AlertMessage("购买物品数量必须大于0！"));
+            return;
+        }
         //获取寄售信息
         ConsignmentInformation consignmentInformation = DbMapper.consignmentInfomationRepository.findConsignmentInformationById(auctionId);
         if (null == consignmentInformation) {

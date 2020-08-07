@@ -17,8 +17,7 @@ public class ConsignmentInformationsMsg {
     private String description;
 
     public ConsignmentInformationsMsg(PlayerCharacter seller, ConsignmentInformation goods) {
-        this.sellerName = seller.getName();
-        this.sellerId = seller.getId();
+        this.sellerName = goods.getPalyerName();
         this.objectName = goods.getObjectName();
         this.objectId = goods.getObjectId();
         this.price = goods.getPrice();

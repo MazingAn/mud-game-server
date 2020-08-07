@@ -55,9 +55,14 @@ public class SellObjects extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         String sell_object = args.getString("sell_object");
+        int number = args.getInt("number");
         int buyout_price = args.getInt("buyout_price");
         if (buyout_price <= 0) {
             caller.msg(new AlertMessage("金币必须大于0！"));
+            return;
+        }
+        if (number <= 0) {
+            caller.msg(new AlertMessage("上架物品数量必须大于0！"));
             return;
         }
         // 物品信息
@@ -101,6 +106,7 @@ public class SellObjects extends BaseCommand {
         int number = args.getInt("number");
         String moneyType = args.getString("moneyType");
         consignmentInformation.setPalyerId(caller.getId());
+        consignmentInformation.setPalyerName(caller.getName());
         consignmentInformation.setObjectId(sell_object);
         consignmentInformation.setObjectName(commonObject.getName());
         consignmentInformation.setQuality(commonObject.getQuality());
