@@ -1,6 +1,7 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.ConsignmentInformationsMsg;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.PlayerCharacterManager;
@@ -54,6 +55,11 @@ public class SellObjects extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         String sell_object = args.getString("sell_object");
+        int buyout_price = args.getInt("buyout_price");
+        if (buyout_price <= 0) {
+            caller.msg(new AlertMessage("金币必须大于0！"));
+            return;
+        }
         // 物品信息
         CommonObject commonObject = CommonObjectBuilder.findObjectById(sell_object);
         if (null == commonObject) {
@@ -75,7 +81,7 @@ public class SellObjects extends BaseCommand {
             CommonObjectBuilder.save(commonObject);
         }
         //删除背包内的已上架商品
-        PlayerCharacterManager.removeObjectsFromBagpack(caller, sell_object, args.getInt("number"));
+        PlayerCharacterManager.removeObjectsFromBagpack(caller, commonObject, args.getInt("number"));
         PlayerCharacterManager.showBagpack(caller);
         //给客户端返回新的寄售列表
         List<ConsignmentInformationsMsg> consignmentInformationsMsgList = new ArrayList<>();
@@ -99,6 +105,7 @@ public class SellObjects extends BaseCommand {
         consignmentInformation.setObjectName(commonObject.getName());
         consignmentInformation.setQuality(commonObject.getQuality());
         consignmentInformation.setObjectName(commonObject.getName());
+        consignmentInformation.setDescription(commonObject.getDescription());
         consignmentInformation.setPrice(buyout_price);
         consignmentInformation.setNumber(number);
         consignmentInformation.setCategory(commonObject.getCategory());

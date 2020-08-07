@@ -1,10 +1,12 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.messages.ConsignmentInformationsMsg;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.ConsignmentInformation;
 import org.json.JSONException;
@@ -12,6 +14,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yeauty.pojo.Session;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 取消寄售
@@ -66,5 +73,15 @@ public class SellCancel extends BaseCommand {
         //物品放入玩家背包
         PlayerCharacterManager.addObjectsToBagpack(caller, commonObject, args.getInt("number"));
         PlayerCharacterManager.showBagpack(caller);
+        //给客户端返回已寄售列表
+        List<ConsignmentInformationsMsg> consignmentInformationsMsgList = new ArrayList<>();
+        Iterable<ConsignmentInformation> informations = DbMapper.consignmentInfomationRepository.findByPalyerId(caller.getId());
+        Iterator<ConsignmentInformation> consignmentInformationIterator = informations.iterator();
+        while (consignmentInformationIterator.hasNext()) {
+            consignmentInformationsMsgList.add(new ConsignmentInformationsMsg(caller, consignmentInformationIterator.next()));
+        }
+        getSession().sendText(JsonResponse.JsonStringResponse(new HashMap() {{
+            put("sellPut_list", consignmentInformationsMsgList);
+        }}));
     }
 }

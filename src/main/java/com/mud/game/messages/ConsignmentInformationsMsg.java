@@ -14,6 +14,7 @@ public class ConsignmentInformationsMsg {
     private int quality;
     private String category;
     private Long auctionId;
+    private String description;
 
     public ConsignmentInformationsMsg(PlayerCharacter seller, ConsignmentInformation goods) {
         this.sellerName = seller.getName();
@@ -26,6 +27,15 @@ public class ConsignmentInformationsMsg {
         this.quality = goods.getQuality();
         this.category = goods.getCategory();
         this.auctionId = goods.getId();
+        this.description = goods.getDescription();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getAuctionId() {

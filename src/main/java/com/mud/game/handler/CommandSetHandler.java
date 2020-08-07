@@ -105,6 +105,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("buyout", SellBuyObject.class);
         playerCharacterCommandSet.put("sellCancel", SellCancel.class);
         playerCharacterCommandSet.put("auction", Auction.class);
+        playerCharacterCommandSet.put("sellPut", SellPut.class);
     }
 
     /**

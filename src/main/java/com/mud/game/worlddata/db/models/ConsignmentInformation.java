@@ -20,6 +20,8 @@ public class ConsignmentInformation {
     private String objectId;
     @Mark(name = "商品名称")
     private String objectName;
+    @Mark(name = "物品介绍")
+    private String description;
     @Mark(name = "查询名称")
     private String name;
     @Mark(name = "品级")
@@ -34,6 +36,14 @@ public class ConsignmentInformation {
     private int number;
     @Mark(name = "分类")
     private String category;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getCategory() {
         return category;

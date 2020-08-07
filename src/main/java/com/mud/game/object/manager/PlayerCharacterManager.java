@@ -1106,7 +1106,7 @@ public class PlayerCharacterManager {
             }
         } else {
             commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
-            if(commonObject != null){
+            if (commonObject != null) {
                 CommonObjectBuilder.save(commonObject);
                 return receiveObjectToBagpack(playerCharacter, commonObject, number);
             }
