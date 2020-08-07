@@ -11,17 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -29,7 +28,7 @@ import java.util.List;
  * 提供ActionAcceptQuest的增删改查
  */
 @RestController
-@RequestMapping("/backstageCommand")
+@RequestMapping("/commonSearch")
 @Api(tags = "后端统一查询接口")
 public class CommonSearchController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -40,22 +39,21 @@ public class CommonSearchController {
      * @param page
      * @param size
      * @param modelName
-     * @param name
      * @return
      */
-    @GetMapping("")
-    @ApiOperation("分页显示")
+    @PostMapping
+    @ResponseBody
     public Object query(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "20") int size,
                         String modelName,
-                        String name) {
+                        @RequestBody Map<String, String> map) {
         Page<Object> pageResult = null;
         Pageable paging = PageRequest.of(page, size);
         SpecificationRepository repository = DbMapper.modelRepositoryMap.get(modelName);
         if (null == repository) {
             return "查询失败，没有对应的modelName！";
         }
-        if (StringUtils.isNotBlank(name)) {
+        if (null != map && map.size() > 0){
             //规格定义
             Specification<Object> specification = new Specification<Object>() {
 
@@ -68,15 +66,18 @@ public class CommonSearchController {
                  */
                 @Override
                 public Predicate toPredicate(Root<Object> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                    List<Predicate> predicates = new ArrayList<>(); //所有的断言
+                    Predicate p = cb.conjunction();//所有的断言
                     //添加断言
-                    Predicate likeNickName = cb.like(root.get("name").as(String.class), "%" + name + "%");
-                    predicates.add(likeNickName);
-                    return cb.and(predicates.toArray(new Predicate[0]));
+                    Iterator<Map.Entry<String, String>> mapIterator = map.entrySet().iterator();
+                    while (mapIterator.hasNext()) {
+                        Map.Entry<String, String> entry = mapIterator.next();
+                        p = cb.and(p, cb.like(root.get(entry.getKey()).as(String.class), "%" + entry.getValue() + "%"));
+                    }
+                    return p;
                 }
             };
             pageResult = repository.findAll(specification, paging);
-        } else {
+        } else{
             pageResult = repository.findAll(paging);
         }
         return pageResult;
