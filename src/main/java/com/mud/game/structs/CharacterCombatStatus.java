@@ -12,6 +12,7 @@ public class CharacterCombatStatus {
     private int limit_hp;
     private int max_hp;
     private String dbref;
+    private String name;
 
     public CharacterCombatStatus() {
     }
@@ -24,6 +25,15 @@ public class CharacterCombatStatus {
         this.limit_hp = character.getLimit_hp();
         this.max_hp = character.getMax_hp();
         this.dbref = character.getId();
+        this.name = character.getName();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getMp() {
