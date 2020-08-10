@@ -3,6 +3,7 @@ package com.mud.game.server;
 import com.mud.game.handler.*;
 import com.mud.game.object.builder.UniqueWorldObjectBuilder;
 import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.object.updator.GameObjectUpdator;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.GameSetting;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -78,6 +79,7 @@ public class ServerManager {
         UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectObject");
         UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectCreator");
         UniqueWorldObjectBuilder.buildUniqueObjects("WorldNpcObject");
+        GameObjectUpdator.updateGameObject("Skill");
     }
 
 }

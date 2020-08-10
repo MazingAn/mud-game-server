@@ -24,8 +24,8 @@ public class WorldNpcObjectManager {
 
     /**
      * 创建npc
-     * */
-    public static WorldNpcObject build(WorldNpc template)  {
+     */
+    public static WorldNpcObject build(WorldNpc template) {
         WorldNpcObject obj = new WorldNpcObject();
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());
@@ -79,7 +79,7 @@ public class WorldNpcObjectManager {
         return obj;
     }
 
-    public static void update(WorldNpcObject obj, WorldNpc template)  {
+    public static void update(WorldNpcObject obj, WorldNpc template) {
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
         obj.setTeacher(template.isTeacher());
@@ -133,8 +133,8 @@ public class WorldNpcObjectManager {
     }
 
     public static void resetHealth(WorldNpcObject obj) {
-        if(obj.getLimit_hp() == 0) obj.setLimit_hp(200);
-        if(obj.getLimit_mp() == 0) obj.setLimit_mp(200);
+        if (obj.getLimit_hp() == 0) obj.setLimit_hp(200);
+        if (obj.getLimit_mp() == 0) obj.setLimit_mp(200);
         obj.setMax_hp(obj.getLimit_hp());
         obj.setHp(obj.getMax_hp());
         obj.setMax_mp(obj.getLimit_mp());
@@ -143,15 +143,24 @@ public class WorldNpcObjectManager {
 
     /**
      * 玩家查看本实例时候的回调
-     * @param npc 玩家查看的NPC
+     *
+     * @param npc             玩家查看的NPC
      * @param playerCharacter 玩家
-     * @param session 玩家通信隧道
-     * */
-    public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session)  {
+     * @param session         玩家通信隧道
+     */
+    public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) {
         /*
-        * @ 当玩家查看NPC的时候返回NPC信息和可用命令
-        * */
+         * @ 当玩家查看NPC的时候返回NPC信息和可用命令
+         * */
         Map<String, Object> lookMessage = new HashMap<>();
+        //  查看门派
+        if (null != npc.getSchool()) {
+            School school = DbMapper.schoolRepository.findSchoolByDataKey(npc.getSchool());
+            if (null != school) {
+                npc.setSchool(school.getName());
+            }
+        }
+
         NpcAppearance appearance = new NpcAppearance(npc);
         // 设置玩家可以对此物体执行的命令
         appearance.setCmds(WorldNpcObjectManager.getAvailableCommands(npc, playerCharacter));
@@ -162,47 +171,46 @@ public class WorldNpcObjectManager {
     /**
      * 获取NPC可执行的命令
      * NPC对应的命令还是比较多的，不同身份的NPC对不同玩家会有不通的可执行命令
-     *
-     * */
-    public static List<EmbeddedCommand> getAvailableCommands(WorldNpcObject npc, PlayerCharacter playerCharacter){
+     */
+    public static List<EmbeddedCommand> getAvailableCommands(WorldNpcObject npc, PlayerCharacter playerCharacter) {
 
         List<EmbeddedCommand> cmds = new ArrayList<>();
-        if(npc.getHp() <= 0)    return cmds;
+        if (npc.getHp() <= 0) return cmds;
         // 拜师命令
-        if(npc.isTeacher() && !(playerCharacter.getTeacher().equals(npc.getDataKey()))){
-           cmds.add(new EmbeddedCommand("拜师", "find_teacher", npc.getId()));
+        if (npc.isTeacher() && !(playerCharacter.getTeacher().equals(npc.getDataKey()))) {
+            cmds.add(new EmbeddedCommand("拜师", "find_teacher", npc.getId()));
         }
         // 请教与出师命令,师门任务命令
-        if(npc.isTeacher() && playerCharacter.getTeacher().equals(npc.getDataKey())){
+        if (npc.isTeacher() && playerCharacter.getTeacher().equals(npc.getDataKey())) {
             cmds.add(new EmbeddedCommand("请教", "learn_from_teacher", npc.getId()));
             cmds.add(new EmbeddedCommand("出师", "left_teacher", npc.getId()));
             cmds.add(new EmbeddedCommand("师门任务", "teacher_quest", npc.getId()));
         }
         // 学艺 通过特定物品或者交钱学习技能，不用拜师
-        if(npc.isLearnByObject()){
+        if (npc.isLearnByObject()) {
             cmds.add(new EmbeddedCommand("学艺", "learn_by_object", npc.getId()));
         }
         // 对话
-        if(!npc.getDialogues().isEmpty()){
+        if (!npc.getDialogues().isEmpty()) {
             cmds.add(new EmbeddedCommand("交谈", "talk", npc.getId()));
         }
         // 交易命令
-        if(!npc.getShops().isEmpty()){
-            for(String shopKey : npc.getShops()){
+        if (!npc.getShops().isEmpty()) {
+            for (String shopKey : npc.getShops()) {
                 Shop shop = DbMapper.shopRepository.findShopByDataKey(shopKey);
                 cmds.add(new EmbeddedCommand(shop.getName(), "shopping", shop.getDataKey()));
             }
         }
-        if(npc.canAttack){
+        if (npc.canAttack) {
             cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
         }
         // TODO: 副本传送命令
 
         // 地图传送命令
-        if(npc.transfer){
-            for(TransList record : DbMapper.transListRepository.findTransListByNpc(npc.getDataKey())){
+        if (npc.transfer) {
+            for (TransList record : DbMapper.transListRepository.findTransListByNpc(npc.getDataKey())) {
                 WorldRoom room = DbMapper.worldRoomRepository.findWorldRoomByDataKey(record.getRoom());
-                if(room != null){
+                if (room != null) {
                     Map<String, String> args = new HashMap<>();
                     args.put("npc", npc.getDataKey());
                     args.put("room", room.getDataKey());
@@ -215,12 +223,14 @@ public class WorldNpcObjectManager {
         return cmds;
     }
 
-    /**检测NPC是否能够提交任务给玩家*/
-    public static boolean canProvideQuest(WorldNpcObject npc, PlayerCharacter playerCharacter){
-        for(String dialogueKey : npc.getDialogues()){
+    /**
+     * 检测NPC是否能够提交任务给玩家
+     */
+    public static boolean canProvideQuest(WorldNpcObject npc, PlayerCharacter playerCharacter) {
+        for (String dialogueKey : npc.getDialogues()) {
             Iterable<QuestDialogueDependency> questDialogueDependencies = DbMapper.questDialogueDependencyRepository.findQuestDialogueDependenciesByDialogue(dialogueKey);
-            for(QuestDialogueDependency dependency : questDialogueDependencies){
-                if(GameQuestManager.canAcceptQuest(playerCharacter, dependency.getDependency())){
+            for (QuestDialogueDependency dependency : questDialogueDependencies) {
+                if (GameQuestManager.canAcceptQuest(playerCharacter, dependency.getDependency())) {
                     return true;
                 }
             }
@@ -228,19 +238,21 @@ public class WorldNpcObjectManager {
         return false;
     }
 
-    /**检测NPC处是否可以提交任务
+    /**
+     * 检测NPC处是否可以提交任务
+     *
      * @param playerCharacter 玩家
-     * @param npc 角色
+     * @param npc             角色
      * @return boolean 是否可以提交任务
-     * */
-    public static boolean canTurnInQuest(WorldNpcObject npc, PlayerCharacter playerCharacter){
-        for(String questObjectId : playerCharacter.getCurrentQuests()){
+     */
+    public static boolean canTurnInQuest(WorldNpcObject npc, PlayerCharacter playerCharacter) {
+        for (String questObjectId : playerCharacter.getCurrentQuests()) {
             QuestObject questObject = MongoMapper.questObjectRepository.findQuestObjectById(questObjectId);
-            if(GameQuestManager.isQuestAccomplished(playerCharacter, questObject.getDataKey())){
-                for(String dialogueKey : npc.getDialogues()){
+            if (GameQuestManager.isQuestAccomplished(playerCharacter, questObject.getDataKey())) {
+                for (String dialogueKey : npc.getDialogues()) {
                     Iterable<QuestDialogueDependency> questDialogueDependencies = DbMapper.questDialogueDependencyRepository.findQuestDialogueDependenciesByDialogue(dialogueKey);
-                    for(QuestDialogueDependency dependency : questDialogueDependencies){
-                        if(dependency.getType().equals(QuestStatusHandler.ACCOMPLISHED) && dependency.getDialogue().equals(dialogueKey)){
+                    for (QuestDialogueDependency dependency : questDialogueDependencies) {
+                        if (dependency.getType().equals(QuestStatusHandler.ACCOMPLISHED) && dependency.getDialogue().equals(dialogueKey)) {
                             return true;
                         }
                     }
@@ -252,13 +264,14 @@ public class WorldNpcObjectManager {
 
     /**
      * 绑定默认事件
+     *
      * @param obj npc对象
-     * */
-    private static void bindEvents(WorldNpcObject obj){
+     */
+    private static void bindEvents(WorldNpcObject obj) {
 
         Iterable<EventData> eventData = DbMapper.eventDataRepository.findEventDataByTriggerObject(obj.getDataKey());
         Set<String> events = new HashSet<>();
-        for(EventData event : eventData){
+        for (EventData event : eventData) {
             events.add(event.getDataKey());
         }
         obj.setEvents(events);
@@ -266,19 +279,20 @@ public class WorldNpcObjectManager {
 
     /**
      * 设置物品NPC死亡掉落表
-     * */
-    private static void bindLootList(WorldNpcObject obj){
+     */
+    private static void bindLootList(WorldNpcObject obj) {
 
     }
 
     /**
      * 绑定对话
+     *
      * @param obj npc对象
-     * */
-    private static void bindDialogues(WorldNpcObject obj){
+     */
+    private static void bindDialogues(WorldNpcObject obj) {
         Set<String> dialogues = new HashSet<>();
         Iterable<NpcDialogue> npcDialogues = DbMapper.npcDialogueRepository.findNpcDialoguesByNpc(obj.getDataKey());
-        for(NpcDialogue npcDialogue : npcDialogues){
+        for (NpcDialogue npcDialogue : npcDialogues) {
             dialogues.add(npcDialogue.getDialogue());
         }
         obj.setDialogues(dialogues);
@@ -286,41 +300,41 @@ public class WorldNpcObjectManager {
 
     /**
      * 绑定NPC与商店
-     * */
-    private static void bindShops(WorldNpcObject obj){
+     */
+    private static void bindShops(WorldNpcObject obj) {
         Set<String> shops = obj.getShops();
-        for( NpcShop npcShop : DbMapper.npcShopRepository.findNpcShopsByNpc(obj.getDataKey())){
+        for (NpcShop npcShop : DbMapper.npcShopRepository.findNpcShopsByNpc(obj.getDataKey())) {
             shops.add(npcShop.getShop());
         }
         obj.setShops(shops);
     }
 
-    private static void bindEquipments(WorldNpcObject obj){
+    private static void bindEquipments(WorldNpcObject obj) {
         /*
-        *  为npc绑定默认的装备
-        * */
+         *  为npc绑定默认的装备
+         * */
     }
 
-    private static void clearSkills(WorldNpcObject npc){
+    private static void clearSkills(WorldNpcObject npc) {
         // 删除技能实体
         MongoMapper.skillObjectRepository.removeSkillObjectsByOwner(npc.getId());
         // 清空玩家技能
         npc.setSkills(new HashSet<>());
     }
 
-    private static void bindDefaultSkills(WorldNpcObject npc)  {
+    private static void bindDefaultSkills(WorldNpcObject npc) {
         /*
-        * 为NPC绑定默认技能
-        * 查询npc默认技能记录
-        * 创建技能，把技能的id增加到npc的
-        * */
+         * 为NPC绑定默认技能
+         * 查询npc默认技能记录
+         * 创建技能，把技能的id增加到npc的
+         * */
         //删除所有旧的技能
         clearSkills(npc);
         // 创建新技能并把新技能的id追加过来
         Set<String> skills = new HashSet<>();
         Iterable<DefaultSkills> defaultSkills = DbMapper.defaultSkillsRepository.findDefaultSkillsByTarget(npc.getDataKey());
-        for(DefaultSkills skillRecord : defaultSkills){
-            try{
+        for (DefaultSkills skillRecord : defaultSkills) {
+            try {
                 SkillObject skillObject = SkillObjectManager.create(skillRecord.getSkillKey());
                 skillObject.setOwner(npc.getId());
                 skillObject.setLevel(skillRecord.getLevel());
@@ -331,11 +345,11 @@ public class WorldNpcObjectManager {
                 // 如果有子技能就绑定子技能
                 SkillObjectManager.bindSubSkills(skillObject, npc.getId(), skillRecord.getLevel());
                 // 如果默认技能是可装备的 则直接装备
-                if(skillRecord.isEquipped()){
+                if (skillRecord.isEquipped()) {
                     String position = skillRecord.getPosition();
                     SkillObjectManager.equipTo(skillObject, npc, position, null);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("角色 " + npc.getName() + " 在绑定技能 " + skillRecord.getSkillKey() + "的时候出现异常");
             }
@@ -344,21 +358,21 @@ public class WorldNpcObjectManager {
         npc.setSkills(skills);
     }
 
-    public static void getCanTeachSkills(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session)  {
+    public static void getCanTeachSkills(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) {
         /*
-        * @ 获得npc可以教授的技能列表，这个列表提供给玩家以便于学习技能
-        * */
+         * @ 获得npc可以教授的技能列表，这个列表提供给玩家以便于学习技能
+         * */
         // 创建一个字典容器，把技能按照categoryType分类，并初始化
         Map<String, Set<SimpleSkill>> skills = new HashMap<>();
-        for(String categoryTypeKey : SkillTypeHandler.categoryTypeMapping.keySet()){
+        for (String categoryTypeKey : SkillTypeHandler.categoryTypeMapping.keySet()) {
             skills.put(categoryTypeKey, new HashSet<>());
         }
 
         // 遍历目标所有技能，然后把技能放到对应的容器里面去
-        if(npc.isTeacher() || npc.isLearnByObject()){
-            for(String skillId : npc.getSkills()){
+        if (npc.isTeacher() || npc.isLearnByObject()) {
+            for (String skillId : npc.getSkills()) {
                 SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
-                if(skillObject.isPassive()){
+                if (skillObject.isPassive()) {
                     SimpleSkill skillInfo = new SimpleSkill(skillObject);
                     // 获得技能可以执行的命令
                     skillInfo.setCmds(SkillObjectManager.getAvailableCommands(skillObject, playerCharacter));
@@ -366,7 +380,7 @@ public class WorldNpcObjectManager {
                 }
             }
             session.sendText(JsonResponse.JsonStringResponse(new TeachersSkillMessage(skills)));
-        }else{
+        } else {
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.NPC_NOT_TEACH, npc.getName()))));
         }
     }

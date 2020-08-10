@@ -463,9 +463,15 @@ public class PlayerCharacterManager {
                     break;
             }
         }
-        String school = "";
         if (target.getSchool() != null && !target.getSchool().equals("无门无派")) {
-            desc = String.format("%s是来自{g%s{n的{g%s{n", he, school, title);
+            School school = DbMapper.schoolRepository.findSchoolByDataKey(target.getSchool());
+            if (null != school) {
+                // 称号未完善，暂时展示玩家名称
+                title = target.getName();
+                desc = String.format("%s是来自{g%s{n的{g%s{n", he, school.getName(), title);
+            } else {
+                desc = String.format("这人无门无派，浮萍一根，没有什么值得关注的。", he, title);
+            }
         } else {
             desc = String.format("这人无门无派，浮萍一根，没有什么值得关注的。", he, title);
         }

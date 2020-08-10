@@ -7,10 +7,11 @@ import com.mud.game.worlddata.db.models.PlayerTitle;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerCharacterAppearance{
+public class PlayerCharacterAppearance {
 
     private String desc;
     private String title;
+    private String name;
     private int hp;
     private int max_hp;
     private int limit_hp;
@@ -29,6 +30,15 @@ public class PlayerCharacterAppearance{
         this.max_mp = playerCharacter.getMax_mp();
         this.limit_mp = playerCharacter.getLimit_mp();
         this.is_player = true;
+        this.name = playerCharacter.getName();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTitle() {
@@ -113,7 +123,7 @@ public class PlayerCharacterAppearance{
 
 
     private String getTitleDisplay(String titleKey) {
-        if(titleKey!= null && !(titleKey.trim().equals(""))){
+        if (titleKey != null && !(titleKey.trim().equals(""))) {
             PlayerTitle title = DbMapper.playerTitleRepository.findPlayerTitleByDataKey(titleKey);
             return title.getName();
         }
