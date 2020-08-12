@@ -160,6 +160,15 @@ public class CommonItemContainerManager {
         return number <= toalNumber;
     }
 
+    public static boolean checkCanRemove(CommonItemContainer container, String dataKay, int number) {
+        /*
+         * @ 检查一定数量的物品能否被移除
+         * */
+        // 获取这个物品在当前容器里一共有多少个
+        int toalNumber = getNumberByDataKey(container, dataKay);
+        return number <= toalNumber;
+    }
+
     public static boolean hasObjectByDataKey(CommonItemContainer container, String objectKey, int number) {
         /*
          * 检查容器里面是否有某件物品

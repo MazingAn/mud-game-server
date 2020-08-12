@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 购买寄售商品
+ * 寄售列表
  * <p>
  * {cmd:"sellPut"
  * }

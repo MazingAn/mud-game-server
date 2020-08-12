@@ -106,6 +106,8 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("sellCancel", SellCancel.class);
         playerCharacterCommandSet.put("auction", Auction.class);
         playerCharacterCommandSet.put("sellPut", SellPut.class);
+        playerCharacterCommandSet.put("compositeList", CompositeList.class);
+        playerCharacterCommandSet.put("composite", Composite.class);
     }
 
     /**
