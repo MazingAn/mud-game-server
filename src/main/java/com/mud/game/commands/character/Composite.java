@@ -54,11 +54,13 @@ public class Composite extends BaseCommand {
         BaseCommonObject baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(dataKey);
         if (null == baseCommonObject) {
             playerCharacter.msg(new AlertMessage("此物品不存在!"));
+            return;
         }
         //
         List<CompositeMaterial> compositeMaterialList = DbMapper.compositeMaterialRepository.findCompositeMaterialByDataKey(dataKey);
         if (compositeMaterialList == null || compositeMaterialList.size() == 0) {
             playerCharacter.msg(new AlertMessage("此装备配方不存在！"));
+            return;
         }
         //校验合成材料是否足够
         //背包信息

@@ -1,23 +1,22 @@
 package com.mud.game.messages;
 
 import com.mud.game.object.typeclass.CompositeMaterialObject;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.worlddata.db.models.ConsignmentInformation;
 
 import java.util.List;
+import java.util.Map;
 
 public class CompositeListMessage {
-    private List<CompositeMaterialObject> compositeList;
+    private Map<String, List<CompositeMaterialObject>> compositeList;
 
-    public CompositeListMessage(List<CompositeMaterialObject> compositeList) {
+    public CompositeListMessage(Map<String, List<CompositeMaterialObject>> compositeList) {
         this.compositeList = compositeList;
     }
 
-    public List<CompositeMaterialObject> getCompositeList() {
+    public Map<String, List<CompositeMaterialObject>> getCompositeList() {
         return compositeList;
     }
 
-    public void setCompositeList(List<CompositeMaterialObject> compositeList) {
+    public void setCompositeList(Map<String, List<CompositeMaterialObject>> compositeList) {
         this.compositeList = compositeList;
     }
 }

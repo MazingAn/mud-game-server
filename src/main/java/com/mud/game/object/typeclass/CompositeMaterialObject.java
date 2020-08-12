@@ -11,6 +11,7 @@ public class CompositeMaterialObject {
     private String description;
     private String icon;
     private String attrs;
+    private String category;
     //  合成材料信息
     private List<CompositeMaterial> compositeMaterialList;
 
@@ -52,6 +53,14 @@ public class CompositeMaterialObject {
 
     public void setAttrs(String attrs) {
         this.attrs = attrs;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<CompositeMaterial> getCompositeMaterialList() {

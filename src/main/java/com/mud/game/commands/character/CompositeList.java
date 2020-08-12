@@ -20,10 +20,7 @@ import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.yeauty.pojo.Session;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -52,6 +49,7 @@ public class CompositeList extends BaseCommand {
         //用户信息
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();
         //参数
+        Map<String, List<CompositeMaterialObject>> commonObjectMap = new HashMap<>();
         List<CompositeMaterialObject> commonObjectList = new ArrayList<CompositeMaterialObject>();
         CompositeMaterialObject compositeMaterialObject = null;
         //装备列表
@@ -65,6 +63,8 @@ public class CompositeList extends BaseCommand {
             //合成配方信息
             getCompositeMaterialObject(commonObjectList, compositeMaterialObject, equipment.getDataKey());
         }
+        commonObjectMap.put("武器", commonObjectList);
+        commonObjectList = new ArrayList<CompositeMaterialObject>();
         //技能书列表
         Iterable<SkillBook> skillBookRepositoryAll = DbMapper.skillBookRepository.findAll();
         Iterator<SkillBook> skillBookIterator = skillBookRepositoryAll.iterator();
@@ -76,7 +76,8 @@ public class CompositeList extends BaseCommand {
             //合成配方信息
             getCompositeMaterialObject(commonObjectList, compositeMaterialObject, skillBook.getDataKey());
         }
-        playerCharacter.msg(new CompositeListMessage(commonObjectList));
+        commonObjectMap.put("技能书", commonObjectList);
+        playerCharacter.msg(new CompositeListMessage(commonObjectMap));
     }
 
     public List<CompositeMaterialObject> getCompositeMaterialObject(List<CompositeMaterialObject> compositeMaterialObjectList, CompositeMaterialObject compositeMaterialObject, String datakey) {
