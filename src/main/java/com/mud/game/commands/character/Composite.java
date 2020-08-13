@@ -56,7 +56,7 @@ public class Composite extends BaseCommand {
             playerCharacter.msg(new AlertMessage("此物品不存在!"));
             return;
         }
-        //
+        //校验配方
         List<CompositeMaterial> compositeMaterialList = DbMapper.compositeMaterialRepository.findCompositeMaterialByDataKey(dataKey);
         if (compositeMaterialList == null || compositeMaterialList.size() == 0) {
             playerCharacter.msg(new AlertMessage("此装备配方不存在！"));
@@ -66,14 +66,15 @@ public class Composite extends BaseCommand {
         //背包信息
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
         for (int i = 0; i < compositeMaterialList.size(); i++) {
-            if (!CommonItemContainerManager.checkCanRemove(bagpackObject, compositeMaterialList.get(i).getDataKey(), compositeMaterialList.get(i).getNumber())) {
-                //playerCharacter.msg(new AlertMessage("你的{g" + compositeMaterialList.get(i).getObjectName() + "{n不够!"));
+            if (!CommonItemContainerManager.checkCanRemove(bagpackObject, compositeMaterialList.get(i).getDependency(), compositeMaterialList.get(i).getNumber())) {
+                baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(compositeMaterialList.get(i).getDependency());
+                playerCharacter.msg(new AlertMessage("你的{g" + compositeMaterialList.get(i).getName() + "{n不够!"));
                 break;
             }
         }
         //从背包移除材料
         for (int i = 0; i < compositeMaterialList.size(); i++) {
-            PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, compositeMaterialList.get(i).getDataKey(), compositeMaterialList.get(i).getNumber());
+            PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, compositeMaterialList.get(i).getDependency(), compositeMaterialList.get(i).getNumber());
         }
         //生成物品放入背包
         PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, dataKey, 1);
