@@ -118,6 +118,11 @@ public class CommonItemContainerManager {
         return true;
     }
 
+    public static void updateItem(CommonItemContainer container, CommonObject commonObject){
+        String cellId = findCellById(container, commonObject.getId());
+        container.getItems().get(cellId).updateInfo(commonObject);
+    }
+
     /**
      * 检查要添加的物品能否被背包放下
      *

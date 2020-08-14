@@ -375,7 +375,8 @@ public class EquipmentObjectManager {
         }
         equipmentObject.setAttrs(attrs);
         MongoMapper.equipmentObjectRepository.save(equipmentObject);
-        PlayerCharacterManager.showBagpack(caller);
+        PlayerCharacterManager.syncBagpack(caller, equipmentObject);
         caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n强化等级{g+1{n!"));
+        PlayerCharacterManager.showBagpack(caller);
     }
 }

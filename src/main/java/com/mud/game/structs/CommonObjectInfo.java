@@ -44,6 +44,11 @@ public class CommonObjectInfo {
         }
     }
 
+    public void updateInfo(CommonObject commonObject) {
+        this.strength_level = commonObject.getLevel();
+        this.quality = commonObject.getQuality();
+    }
+
 
 
     public String getCategory() {

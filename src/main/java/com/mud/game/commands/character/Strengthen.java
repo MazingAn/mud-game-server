@@ -2,6 +2,7 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.manager.EquipmentObjectManager;
+import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;

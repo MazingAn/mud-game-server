@@ -1034,6 +1034,15 @@ public class PlayerCharacterManager {
     }
 
     /**
+     * 当装备等唯一物品，强化，进阶或者属性发生改变后，调用该方法，同步背包信息
+     * */
+    public static void syncBagpack(PlayerCharacter playerCharacter, CommonObject commonObject){
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
+        CommonItemContainerManager.updateItem(bagpackObject, commonObject);
+        MongoMapper.bagpackObjectRepository.save(bagpackObject);
+    }
+
+    /**
      * 返回玩家的背包信息
      *
      * @param playerCharacter 玩家
