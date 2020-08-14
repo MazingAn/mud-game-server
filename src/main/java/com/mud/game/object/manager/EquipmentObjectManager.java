@@ -1,6 +1,8 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.handler.EquipmentPositionHandler;
+import com.mud.game.messages.AlertMessage;
+import com.mud.game.messages.CheckStrengthenMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.supertypeclass.CommonCharacter;
@@ -8,23 +10,29 @@ import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.structs.CheckStrengthenInfo;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.EquipmentObjectAppearance;
+import com.mud.game.utils.collections.CloneUtils;
 import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.Equipment;
+import com.mud.game.worlddata.db.models.NormalObject;
+import com.mud.game.worlddata.db.models.StrengthenMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.springframework.beans.BeanUtils;
 import org.yeauty.pojo.Session;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EquipmentObjectManager {
+    //强化属性增加系数
+    private static final Double COEFFICIENT = 1.2;
+    //强化等级上限
+    private static final int MAXLEVEL = 10;
 
     public static EquipmentObject create(String equipmentTemplateKey) {
         /*创建一件装备*/
@@ -232,4 +240,142 @@ public class EquipmentObjectManager {
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
 
+    /**
+     * 返回强化材料信息及装备属性
+     */
+    public static void checkStrengthen(EquipmentObject equipmentObject, PlayerCharacter caller, Session session) {
+        //能否强化
+        Boolean can_strength = true;
+        Boolean isMaxLevel = false;
+
+        if (null == equipmentObject) {
+            caller.msg(new AlertMessage("装备信息为空!"));
+            return;
+        }
+        //校验
+        if (equipmentObject.getLevel() >= MAXLEVEL) {
+            caller.msg(new AlertMessage("装备已达到最大强化等级！"));
+            can_strength = false;
+            isMaxLevel = true;
+        }
+        //获取装备强化需要的材料列表
+        String dataKey = equipmentObject.getDataKey();
+        List<StrengthenMaterial> strengthenMaterialList = DbMapper.strengthenMaterialRepository.findStrengthenMaterialByDataKeyAndLevel(dataKey, equipmentObject.getLevel());
+        if (strengthenMaterialList == null || strengthenMaterialList.size() == 0) {
+            can_strength = false;
+        }
+        Map<String, Map<String, Object>> strengthenMaterialsMap = new HashMap<>();
+        Map<String, Object> strengthenMaterialMap = new HashMap<>();
+        Iterator<StrengthenMaterial> strengthenMaterialIterator = strengthenMaterialList.iterator();
+        StrengthenMaterial strengthenMaterial = null;
+        while (strengthenMaterialIterator.hasNext()) {
+            strengthenMaterial = strengthenMaterialIterator.next();
+            //获取材料信息
+            NormalObject target = DbMapper.normalObjectRepository.findNormalObjectByDataKey(strengthenMaterial.getDependency());
+            strengthenMaterialsMap = new HashMap<>();
+            strengthenMaterialMap.put("needed", strengthenMaterial.getNumber());
+            strengthenMaterialMap.put("icon", target.getIcon());
+            strengthenMaterialMap.put("name", target.getName());
+            strengthenMaterialMap.put("desc", target.getDescription());
+            BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(caller.getBagpack());
+            strengthenMaterialMap.put("owned", CommonItemContainerManager.getNumberByDataKey(bagpackObject, target.getDataKey()));
+            strengthenMaterialsMap.put(target.getDataKey(), strengthenMaterialMap);
+        }
+        //下一级装备属性
+        Map<String, Object> attr_after = new HashMap<>();
+        //目前装备属性
+        //返回数据
+        Map<String, Map<String, Object>> attr_befor = new HashMap<>();
+        //装备属性数据
+        Map<String, Object> attributeMap = new HashMap<>();
+        Iterator<Map.Entry<String, Map<String, Object>>> mapIterator = equipmentObject.getAttrs().entrySet().iterator();
+        while (mapIterator.hasNext()) {
+            Map.Entry<String, Map<String, Object>> mapEntry = mapIterator.next();
+            Iterator<Map.Entry<String, Object>> mapEntryIterator = mapEntry.getValue().entrySet().iterator();
+            attributeMap = new HashMap<>();
+            while (mapEntryIterator.hasNext()) {
+                Map.Entry<String, Object> map = mapEntryIterator.next();
+                attributeMap.put(map.getKey(), map.getValue());
+                if ("value".equals(map.getKey())) {
+                    Object value = map.getValue();
+                    int a = (int) Double.parseDouble(value.toString());
+                    double v = a * COEFFICIENT;
+                    attr_after.put(mapEntry.getKey(), Math.floor(v));
+                }
+            }
+            attributeMap.put("key", mapEntry.getKey());
+            attr_befor.put(mapEntry.getKey(), attributeMap);
+        }
+        //下一级装备属性
+        if (isMaxLevel) {
+            Iterator<Map.Entry<String, Object>> attrAfterIterator = attr_after.entrySet().iterator();
+            while (attrAfterIterator.hasNext()) {
+                Map.Entry<String, Object> entry = attrAfterIterator.next();
+                entry.setValue("强化已到最高等级！");
+            }
+        }
+        caller.msg(new CheckStrengthenMessage(new CheckStrengthenInfo(attr_after, can_strength, strengthenMaterialsMap, attr_befor)));
+    }
+
+
+    /**
+     * 强化
+     */
+    public static void strengthen(EquipmentObject equipmentObject, PlayerCharacter caller, Session session) {
+        String bagpackId = caller.getBagpack();
+        if (null == equipmentObject) {
+            caller.msg(new AlertMessage("装备信息为空!"));
+            return;
+        }
+        //校验
+        if (equipmentObject.getLevel() >= MAXLEVEL) {
+            caller.msg(new AlertMessage("装备已达到最大强化等级！"));
+            return;
+        }
+        //获取装备强化需要的材料列表
+        String dataKey = equipmentObject.getDataKey();
+        List<StrengthenMaterial> strengthenMaterialList = DbMapper.strengthenMaterialRepository.findStrengthenMaterialByDataKeyAndLevel(dataKey, equipmentObject.getLevel());
+        if (strengthenMaterialList == null || strengthenMaterialList.size() == 0) {
+            caller.msg(new AlertMessage("装备的强化材料为空"));
+            return;
+        }
+        //校验合成材料是否足够
+        //背包信息校验
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
+        for (int i = 0; i < strengthenMaterialList.size(); i++) {
+            if (!CommonItemContainerManager.checkCanRemove(bagpackObject, strengthenMaterialList.get(i).getDependency(), strengthenMaterialList.get(i).getNumber())) {
+                //获取材料信息
+                NormalObject target = DbMapper.normalObjectRepository.findNormalObjectByDataKey(strengthenMaterialList.get(i).getDependency());
+                caller.msg(new AlertMessage("你的{g" + target.getName() + "{n不够!"));
+                break;
+            }
+        }
+        //从背包移除材料
+        for (int i = 0; i < strengthenMaterialList.size(); i++) {
+            PlayerCharacterManager.removeObjectsFromBagpack(caller, strengthenMaterialList.get(i).getDependency(), strengthenMaterialList.get(i).getNumber());
+        }
+        //强化
+        equipmentObject.setLevel(equipmentObject.getLevel() + 1);
+        Map<String, Map<String, Object>> attrs = equipmentObject.getAttrs();
+        Iterator<Map.Entry<String, Map<String, Object>>> mapIterator = attrs.entrySet().iterator();
+        while (mapIterator.hasNext()) {
+            Map.Entry<String, Map<String, Object>> mapEntry = mapIterator.next();
+            Iterator<Map.Entry<String, Object>> mapEntryIterator = mapEntry.getValue().entrySet().iterator();
+            while (mapEntryIterator.hasNext()) {
+                Map.Entry<String, Object> map = mapEntryIterator.next();
+                if ("value".equals(map.getKey())) {
+                    if (null != map.getValue()) {
+                        Object value = map.getValue();
+                        int a = (int) Double.parseDouble(value.toString());
+                        double v = a * COEFFICIENT;
+                        map.setValue(Math.floor(v));
+                    }
+                }
+            }
+        }
+        equipmentObject.setAttrs(attrs);
+        MongoMapper.equipmentObjectRepository.save(equipmentObject);
+        PlayerCharacterManager.showBagpack(caller);
+        caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n强化等级{g+1{n!"));
+    }
 }

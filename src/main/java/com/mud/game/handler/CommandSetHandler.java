@@ -109,6 +109,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("compositeList", CompositeList.class);
         playerCharacterCommandSet.put("composite", Composite.class);
         playerCharacterCommandSet.put("check_strengthen", CheckStrengthen.class);
+        playerCharacterCommandSet.put("strength", Strengthen.class);
     }
 
     /**

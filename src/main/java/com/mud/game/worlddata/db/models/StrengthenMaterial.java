@@ -19,6 +19,9 @@ public class StrengthenMaterial {
     @Mark(name = "数量")
     private int number;
 
+    @Mark(name = "强化等级")
+    private int level;
+
     @Mark(name = "需要的材料", link = "allObjects")
     private String dependency;
     //材料名称
@@ -96,5 +99,13 @@ public class StrengthenMaterial {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }
