@@ -36,16 +36,6 @@ public class ActionTurnInQuestController {
         return DbMapper.actionTurnInQuestRepository.save(newActionTurnInQuest);
     }
 
-    @PostMapping("/xxxxxxxxxx")
-    @ApiOperation("xxxxxxxxx")
-    public void xxxxxxxxxxxxxx(String id) throws JSONException {
-        //5f2b7dbaa6897a3a9a060712
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("args", id);
-        new CheckAdvanced(null, null, jsonObject, null);
-    }
-
-
     /**
      * 查询ActionTurnInQuest
      *
