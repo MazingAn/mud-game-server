@@ -39,8 +39,6 @@ public class CheckQualityInfo {
 
     public CheckQualityInfo(EquipmentObject equipmentObject, List<QualityMaterial> qualityMaterialList, PlayerCharacter caller) {
         Boolean can_advanced = true;
-        //宝石
-        List<GemObject> gems = equipmentObject.getGems();
         this.needed_strength_level = MAX_LEVEL;
         this.owned_strength_level = equipmentObject.getLevel();
         this.quality_befor = equipmentObject.getQuality();
@@ -48,6 +46,10 @@ public class CheckQualityInfo {
         //判断是否达到强化的最高值
         if (equipmentObject.getLevel() != MAX_LEVEL) {
             caller.msg(new AlertMessage("装备强化值不足！"));
+            can_advanced = false;
+        }
+        if (equipmentObject.getQuality() > MAX_LEVEL) {
+            caller.msg(new AlertMessage("装备进阶以达到最大值！"));
             can_advanced = false;
         }
         //材料验证

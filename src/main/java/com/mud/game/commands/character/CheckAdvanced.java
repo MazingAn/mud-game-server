@@ -50,8 +50,5 @@ public class CheckAdvanced extends BaseCommand {
         //检查装备是否满足进阶条件-进阶材料
         CheckQualityInfo checkQualityInfo = new CheckQualityInfo(equipmentObject, qualityMaterialList, caller);
         caller.msg(new CheckQualityMessage(checkQualityInfo));
-        //检查装备是否满足进阶条件-进阶材料
-        //caller.msg(new CheckQualityMessage(new CheckQualityInfo(equipmentObject, qualityMaterialList, caller)));
-
     }
 }

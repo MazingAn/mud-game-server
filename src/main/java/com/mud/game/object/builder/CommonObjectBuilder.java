@@ -88,7 +88,6 @@ public class CommonObjectBuilder {
 
     public static void deleteObjectById(String id) {
         /*删除唯一物品*/
-
         if (MongoMapper.gemObjectRepository.existsById(id)) {
             MongoMapper.gemObjectRepository.deleteById(id);
         } else if (MongoMapper.normalObjectObjectRepository.existsById(id)) {

@@ -74,10 +74,9 @@ public class Composite extends BaseCommand {
         String[] materialArr = materials.split(",");
         for (int i = 0; i < materialArr.length; i++) {
             CommonObject removeObject = CommonObjectBuilder.findObjectById(materialArr[i]);
+            PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, removeObject, compositeMaterialList.get(i).getNumber());
             if (removeObject.getMaxStack() == 1) {
                 CommonObjectBuilder.deleteObjectById(removeObject.getId());
-            } else {
-                PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, removeObject, compositeMaterialList.get(i).getNumber());
             }
         }
         //生成物品放入背包

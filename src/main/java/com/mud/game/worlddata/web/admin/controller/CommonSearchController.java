@@ -41,7 +41,7 @@ public class CommonSearchController {
      * @param modelName
      * @return
      */
-    @PostMapping
+    @PostMapping("/add")
     @ResponseBody
     public Object query(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "20") int size,

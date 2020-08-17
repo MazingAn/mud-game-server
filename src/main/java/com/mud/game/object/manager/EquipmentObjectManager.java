@@ -358,6 +358,21 @@ public class EquipmentObjectManager {
         }
         //强化
         equipmentObject.setLevel(equipmentObject.getLevel() + 1);
+        equipmentObject.setAttrs(updateAttrs(equipmentObject, STRENGTHEN_COEFFICIENT));
+        MongoMapper.equipmentObjectRepository.save(equipmentObject);
+        PlayerCharacterManager.syncBagpack(caller, equipmentObject);
+        caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n强化等级{g+1{n!"));
+        PlayerCharacterManager.showBagpack(caller);
+    }
+
+    /**
+     * 修改装备属性
+     *
+     * @param equipmentObject 装备
+     * @param coefficient     系数
+     * @return
+     */
+    public static Map<String, Map<String, Object>> updateAttrs(EquipmentObject equipmentObject, Double coefficient) {
         Map<String, Map<String, Object>> attrs = equipmentObject.getAttrs();
         Iterator<Map.Entry<String, Map<String, Object>>> mapIterator = attrs.entrySet().iterator();
         while (mapIterator.hasNext()) {
@@ -369,16 +384,12 @@ public class EquipmentObjectManager {
                     if (null != map.getValue()) {
                         Object value = map.getValue();
                         int a = (int) Double.parseDouble(value.toString());
-                        double v = a * STRENGTHEN_COEFFICIENT;
+                        double v = a * coefficient;
                         map.setValue(Math.floor(v));
                     }
                 }
             }
         }
-        equipmentObject.setAttrs(attrs);
-        MongoMapper.equipmentObjectRepository.save(equipmentObject);
-        PlayerCharacterManager.syncBagpack(caller, equipmentObject);
-        caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n强化等级{g+1{n!"));
-        PlayerCharacterManager.showBagpack(caller);
+        return attrs;
     }
 }
