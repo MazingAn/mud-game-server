@@ -7,6 +7,8 @@ import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
+import java.util.List;
+
 public class CommonObjectBuilder {
 
     public static SkillObject buildSkill(String skillKey) {
@@ -81,6 +83,20 @@ public class CommonObjectBuilder {
             return MongoMapper.skillBookObjectRepository.findSkillBookObjectByDataKeyAndOwner(objectKey, ownerId);
         } else {
             return null;
+        }
+    }
+
+    public static void deleteObjectById(String id) {
+        /*删除唯一物品*/
+
+        if (MongoMapper.gemObjectRepository.existsById(id)) {
+            MongoMapper.gemObjectRepository.deleteById(id);
+        } else if (MongoMapper.normalObjectObjectRepository.existsById(id)) {
+            MongoMapper.normalObjectObjectRepository.deleteById(id);
+        } else if (MongoMapper.equipmentObjectRepository.existsById(id)) {
+            MongoMapper.equipmentObjectRepository.deleteById(id);
+        } else if (MongoMapper.skillBookObjectRepository.existsById(id)) {
+            MongoMapper.skillBookObjectRepository.deleteById(id);
         }
     }
 

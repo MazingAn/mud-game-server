@@ -1,20 +1,15 @@
 package com.mud.game.commands.character;
 
-import ch.qos.logback.classic.jmx.MBeanUtil;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.CompositeListMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.CompositeMaterialObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.CommonObjectInfo;
-import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.CompositeMaterial;
 import com.mud.game.worlddata.db.models.Equipment;
 import com.mud.game.worlddata.db.models.SkillBook;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;

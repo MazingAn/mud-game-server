@@ -5,7 +5,9 @@ import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.CheckStrengthenMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -13,7 +15,6 @@ import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.structs.CheckStrengthenInfo;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.EquipmentObjectAppearance;
-import com.mud.game.utils.collections.CloneUtils;
 import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
@@ -23,16 +24,16 @@ import com.mud.game.worlddata.db.models.Equipment;
 import com.mud.game.worlddata.db.models.NormalObject;
 import com.mud.game.worlddata.db.models.StrengthenMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.springframework.beans.BeanUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
 
+import static com.mud.game.constant.Constant.MAX_LEVEL;
+import static com.mud.game.constant.Constant.STRENGTHEN_COEFFICIENT;
+
+
 public class EquipmentObjectManager {
-    //强化属性增加系数
-    private static final Double COEFFICIENT = 1.2;
-    //强化等级上限
-    private static final int MAXLEVEL = 10;
+
 
     public static EquipmentObject create(String equipmentTemplateKey) {
         /*创建一件装备*/
@@ -253,7 +254,7 @@ public class EquipmentObjectManager {
             return;
         }
         //校验
-        if (equipmentObject.getLevel() >= MAXLEVEL) {
+        if (equipmentObject.getLevel() >= MAX_LEVEL) {
             caller.msg(new AlertMessage("装备已达到最大强化等级！"));
             can_strength = false;
             isMaxLevel = true;
@@ -299,7 +300,7 @@ public class EquipmentObjectManager {
                 if ("value".equals(map.getKey())) {
                     Object value = map.getValue();
                     int a = (int) Double.parseDouble(value.toString());
-                    double v = a * COEFFICIENT;
+                    double v = a * STRENGTHEN_COEFFICIENT;
                     attr_after.put(mapEntry.getKey(), Math.floor(v));
                 }
             }
@@ -328,7 +329,7 @@ public class EquipmentObjectManager {
             return;
         }
         //校验
-        if (equipmentObject.getLevel() >= MAXLEVEL) {
+        if (equipmentObject.getLevel() >= MAX_LEVEL) {
             caller.msg(new AlertMessage("装备已达到最大强化等级！"));
             return;
         }
@@ -352,7 +353,8 @@ public class EquipmentObjectManager {
         }
         //从背包移除材料
         for (int i = 0; i < strengthenMaterialList.size(); i++) {
-            PlayerCharacterManager.removeObjectsFromBagpack(caller, strengthenMaterialList.get(i).getDependency(), strengthenMaterialList.get(i).getNumber());
+            CommonObject removeObject = CommonObjectBuilder.findObjectByDataKeyAndOwner(strengthenMaterialList.get(i).getDependency(), caller.getId());
+            PlayerCharacterManager.removeObjectsFromBagpack(caller, removeObject, strengthenMaterialList.get(i).getNumber());
         }
         //强化
         equipmentObject.setLevel(equipmentObject.getLevel() + 1);
@@ -367,7 +369,7 @@ public class EquipmentObjectManager {
                     if (null != map.getValue()) {
                         Object value = map.getValue();
                         int a = (int) Double.parseDouble(value.toString());
-                        double v = a * COEFFICIENT;
+                        double v = a * STRENGTHEN_COEFFICIENT;
                         map.setValue(Math.floor(v));
                     }
                 }

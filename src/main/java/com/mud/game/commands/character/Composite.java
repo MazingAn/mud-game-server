@@ -5,12 +5,11 @@ import com.mud.game.messages.AlertMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.CommonItemContainerManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.CompositeMaterial;
-import com.mud.game.worlddata.db.models.Equipment;
-import com.mud.game.worlddata.db.models.SkillBook;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
@@ -25,9 +24,7 @@ import java.util.List;
  * {
  * cmd: "composite",   //命令
  * args: {
- * category: "TYPE_OBJECTTYPE_EQUIPMENT / TYPE_OBJECTTYPE_JINENGSHU",  //类型 区分装备和技能书
- * dataKey: maolv    //标识
- * }
+ * ******  //标识 * }
  * }
  */
 public class Composite extends BaseCommand {
@@ -51,6 +48,7 @@ public class Composite extends BaseCommand {
         //参数
         JSONObject args = getArgs();
         String dataKey = args.getString("dataKey");
+        String materials = args.getString("materials");
         BaseCommonObject baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(dataKey);
         if (null == baseCommonObject) {
             playerCharacter.msg(new AlertMessage("此物品不存在!"));
@@ -68,13 +66,19 @@ public class Composite extends BaseCommand {
         for (int i = 0; i < compositeMaterialList.size(); i++) {
             if (!CommonItemContainerManager.checkCanRemove(bagpackObject, compositeMaterialList.get(i).getDependency(), compositeMaterialList.get(i).getNumber())) {
                 baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(compositeMaterialList.get(i).getDependency());
-                playerCharacter.msg(new AlertMessage("你的{g" + compositeMaterialList.get(i).getName() + "{n不够!"));
-                break;
+                playerCharacter.msg(new AlertMessage("你的{g" + baseCommonObject.getName() + "{n不够!"));
+                return;
             }
         }
         //从背包移除材料
-        for (int i = 0; i < compositeMaterialList.size(); i++) {
-            PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, compositeMaterialList.get(i).getDependency(), compositeMaterialList.get(i).getNumber());
+        String[] materialArr = materials.split(",");
+        for (int i = 0; i < materialArr.length; i++) {
+            CommonObject removeObject = CommonObjectBuilder.findObjectById(materialArr[i]);
+            if (removeObject.getMaxStack() == 1) {
+                CommonObjectBuilder.deleteObjectById(removeObject.getId());
+            } else {
+                PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, removeObject, compositeMaterialList.get(i).getNumber());
+            }
         }
         //生成物品放入背包
         PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, dataKey, 1);

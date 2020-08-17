@@ -1035,8 +1035,8 @@ public class PlayerCharacterManager {
 
     /**
      * 当装备等唯一物品，强化，进阶或者属性发生改变后，调用该方法，同步背包信息
-     * */
-    public static void syncBagpack(PlayerCharacter playerCharacter, CommonObject commonObject){
+     */
+    public static void syncBagpack(PlayerCharacter playerCharacter, CommonObject commonObject) {
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
         CommonItemContainerManager.updateItem(bagpackObject, commonObject);
         MongoMapper.bagpackObjectRepository.save(bagpackObject);
@@ -1309,7 +1309,7 @@ public class PlayerCharacterManager {
      */
     public static boolean removeObjectsFromBagpack(PlayerCharacter playerCharacter, String removedObjectKey, int number) {
         if (hasObject(playerCharacter, removedObjectKey, number)) {
-            CommonObject removeObject = MongoMapper.normalObjectObjectRepository.findNormalObjectObjectByDataKeyAndOwner(removedObjectKey, playerCharacter.getId());
+            CommonObject removeObject = CommonObjectBuilder.findObjectByDataKeyAndOwner(removedObjectKey, playerCharacter.getId());
             return removeObjectsFromBagpack(playerCharacter, removeObject, number);
         } else {
             return false;

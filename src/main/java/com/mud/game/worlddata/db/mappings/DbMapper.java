@@ -73,6 +73,7 @@ public class DbMapper {
     public static ConsignmentInfomationRepository consignmentInfomationRepository;
     public static CompositeMaterialRepository compositeMaterialRepository;
     public static StrengthenMaterialRepository strengthenMaterialRepository;
+    public static QualityMaterialRepository qualityMaterialRepository;
 
 
     public static Map<String, SpecificationRepository> modelRepositoryMap = new HashMap<>();
@@ -402,5 +403,10 @@ public class DbMapper {
         modelRepositoryMap.put("strengthenMaterial", strengthenMaterialRepository);
     }
 
+    @Autowired
+    public void setQualityMaterialRepository(QualityMaterialRepository qualityMaterialRepository) {
+        DbMapper.qualityMaterialRepository = qualityMaterialRepository;
+        modelRepositoryMap.put("qualityMaterial", qualityMaterialRepository);
+    }
 }
 
