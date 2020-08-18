@@ -4,7 +4,6 @@ import com.mud.game.messages.AlertMessage;
 import com.mud.game.object.manager.CommonItemContainerManager;
 import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.EquipmentObject;
-import com.mud.game.object.typeclass.GemObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NormalObject;
@@ -37,14 +36,14 @@ public class CheckQualityInfo {
     //进阶之后的装备品级
     private int quality_after;
 
-    public CheckQualityInfo(EquipmentObject equipmentObject, List<QualityMaterial> qualityMaterialList, PlayerCharacter caller) {
+    public CheckQualityInfo(EquipmentObject equipmentObject, List<QualityMaterial> qualityMaterialList, PlayerCharacter caller, boolean b) {
         Boolean can_advanced = true;
         this.needed_strength_level = MAX_LEVEL;
         this.owned_strength_level = equipmentObject.getLevel();
         this.quality_befor = equipmentObject.getQuality();
         this.quality_after = equipmentObject.getQuality() + 1;
         //判断是否达到强化的最高值
-        if (equipmentObject.getLevel() != MAX_LEVEL) {
+        if (b && equipmentObject.getLevel() != MAX_LEVEL) {
             caller.msg(new AlertMessage("装备强化值不足！"));
             can_advanced = false;
         }

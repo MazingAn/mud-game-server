@@ -7,7 +7,6 @@ import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NormalObject;
-import com.mud.game.worlddata.db.models.QualityMaterial;
 import com.mud.game.worlddata.db.models.SlotMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
@@ -15,6 +14,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.mud.game.constant.Constant.MAX_SLOT;
 
 /**
  * 返回装备强化检查的反馈
@@ -43,7 +44,7 @@ public class checkSlotInfo {
         int slot_befor = equipmentObject.getOpendSlot();
         int slot_after = equipmentObject.getOpendSlot();
         //判断装备是否可以开孔
-        if (equipmentObject.getOpendSlot() < equipmentObject.getMaxSlot()) {
+        if (equipmentObject.getOpendSlot() < MAX_SLOT) {
             slot_after++;
         } else {
             caller.msg(new AlertMessage("装备打孔已达到最大值!"));

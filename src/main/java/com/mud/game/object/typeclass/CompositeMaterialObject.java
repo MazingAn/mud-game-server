@@ -3,6 +3,7 @@ package com.mud.game.object.typeclass;
 import com.mud.game.worlddata.db.models.CompositeMaterial;
 
 import java.util.List;
+import java.util.Map;
 
 public class CompositeMaterialObject {
     // 物品信息
@@ -13,7 +14,7 @@ public class CompositeMaterialObject {
     private String attrs;
     private String category;
     //  合成材料信息
-    private List<CompositeMaterial> compositeMaterialList;
+    private List<Map<String, String>> compositeMaterialList;
 
     public String getName() {
         return name;
@@ -63,11 +64,11 @@ public class CompositeMaterialObject {
         this.category = category;
     }
 
-    public List<CompositeMaterial> getCompositeMaterialList() {
+    public List<Map<String, String>> getCompositeMaterialList() {
         return compositeMaterialList;
     }
 
-    public void setCompositeMaterialList(List<CompositeMaterial> compositeMaterialList) {
+    public void setCompositeMaterialList(List<Map<String, String>> compositeMaterialList) {
         this.compositeMaterialList = compositeMaterialList;
     }
 }

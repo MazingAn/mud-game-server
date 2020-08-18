@@ -12,6 +12,7 @@ import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.CompositeMaterial;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
@@ -48,7 +49,7 @@ public class Composite extends BaseCommand {
         //参数
         JSONObject args = getArgs();
         String dataKey = args.getString("dataKey");
-        String materials = args.getString("materials");
+        JSONArray materials = args.getJSONArray("materials");
         BaseCommonObject baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(dataKey);
         if (null == baseCommonObject) {
             playerCharacter.msg(new AlertMessage("此物品不存在!"));
@@ -71,16 +72,24 @@ public class Composite extends BaseCommand {
             }
         }
         //从背包移除材料
-        String[] materialArr = materials.split(",");
-        for (int i = 0; i < materialArr.length; i++) {
-            CommonObject removeObject = CommonObjectBuilder.findObjectById(materialArr[i]);
-            PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, removeObject, compositeMaterialList.get(i).getNumber());
-            if (removeObject.getMaxStack() == 1) {
-                CommonObjectBuilder.deleteObjectById(removeObject.getId());
+        for (int i = 0; i < materials.length(); i++) {
+            if (null != materials.get(i)) {
+                CommonObject removeObject = CommonObjectBuilder.findObjectById(materials.get(i).toString());
+                if (null == removeObject) {
+                    playerCharacter.msg(new AlertMessage("材料信息错误！"));
+                    return;
+                }
+                PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, removeObject, compositeMaterialList.get(i).getNumber());
+                if (removeObject.getMaxStack() == 1) {
+                    CommonObjectBuilder.deleteObjectById(removeObject.getId());
+                }
+                //生成物品放入背包
+                PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, dataKey, 1);
+                PlayerCharacterManager.showBagpack(playerCharacter);
+            } else {
+                playerCharacter.msg(new AlertMessage("参数有误！"));
             }
         }
-        //生成物品放入背包
-        PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, dataKey, 1);
-        PlayerCharacterManager.showBagpack(playerCharacter);
+
     }
 }

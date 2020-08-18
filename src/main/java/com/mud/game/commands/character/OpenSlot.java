@@ -2,9 +2,8 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
-import com.mud.game.messages.checkSlotMessage;
+import com.mud.game.messages.CheckSlotMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
-import com.mud.game.object.manager.EquipmentObjectManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.EquipmentObject;
@@ -18,8 +17,6 @@ import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.util.List;
-
-import static com.mud.game.constant.Constant.QUALITY_COEFFICIENT;
 
 /**
  * {
@@ -71,6 +68,6 @@ public class OpenSlot extends BaseCommand {
         PlayerCharacterManager.showBagpack(caller);
         //返回下一级数据
         slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
-        caller.msg(new checkSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
+        caller.msg(new CheckSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
     }
 }

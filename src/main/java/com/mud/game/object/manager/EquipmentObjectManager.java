@@ -254,8 +254,8 @@ public class EquipmentObjectManager {
             return;
         }
         //校验
-        if (equipmentObject.getLevel() >= MAX_LEVEL) {
-            caller.msg(new AlertMessage("装备已达到最大强化等级！"));
+        if (equipmentObject.getLevel() == MAX_LEVEL) {
+            caller.msg(new AlertMessage("装备已达到最大强化等级，请进阶之后再来强化！"));
             can_strength = false;
             isMaxLevel = true;
         }
@@ -361,7 +361,9 @@ public class EquipmentObjectManager {
         equipmentObject.setAttrs(updateAttrs(equipmentObject, STRENGTHEN_COEFFICIENT));
         MongoMapper.equipmentObjectRepository.save(equipmentObject);
         PlayerCharacterManager.syncBagpack(caller, equipmentObject);
-        caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n强化等级{g+1{n!"));
+        if (equipmentObject.getLevel() != MAX_LEVEL) {
+            caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n强化等级{g+1{n!"));
+        }
         PlayerCharacterManager.showBagpack(caller);
     }
 

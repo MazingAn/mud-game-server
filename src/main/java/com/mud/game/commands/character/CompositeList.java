@@ -78,18 +78,22 @@ public class CompositeList extends BaseCommand {
     public List<CompositeMaterialObject> getCompositeMaterialObject(List<CompositeMaterialObject> compositeMaterialObjectList, CompositeMaterialObject compositeMaterialObject, String datakey) {
         BaseCommonObject baseCommonObject = null;
         CompositeMaterial compositeMaterial = null;
+        Map<String, String> map = null;
+        List<Map<String, String>> mapList = new ArrayList<>();
         List<CompositeMaterial> compositeMaterialList = DbMapper.compositeMaterialRepository.findCompositeMaterialByDataKey(datakey);
         Iterator<CompositeMaterial> compositeMaterialIterator = compositeMaterialList.iterator();
         while (compositeMaterialIterator.hasNext()) {
             compositeMaterial = compositeMaterialIterator.next();
+            map = new HashMap<>();
             //查询材料信息
             baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(compositeMaterial.getDependency());
-            compositeMaterial.setName(baseCommonObject.getName());
-            compositeMaterial.setDescription(baseCommonObject.getDescription());
-            compositeMaterial.setIcon(baseCommonObject.getIcon());
-            compositeMaterial.setCategory(baseCommonObject.getCategory());
+            map.put("name", baseCommonObject.getName());
+            map.put("icon", baseCommonObject.getIcon());
+            map.put("dataKey", baseCommonObject.getDataKey());
+            map.put("category", baseCommonObject.getCategory());
+            mapList.add(map);
         }
-        compositeMaterialObject.setCompositeMaterialList(compositeMaterialList);
+        compositeMaterialObject.setCompositeMaterialList(mapList);
         compositeMaterialObjectList.add(compositeMaterialObject);
         return compositeMaterialObjectList;
     }

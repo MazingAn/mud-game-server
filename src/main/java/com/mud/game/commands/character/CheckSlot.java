@@ -2,7 +2,7 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
-import com.mud.game.messages.checkSlotMessage;
+import com.mud.game.messages.CheckSlotMessage;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.checkSlotInfo;
@@ -50,6 +50,6 @@ public class CheckSlot extends BaseCommand {
         List<SlotMaterial> slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
         //TODO 返回数据
         //检查装备是否满足开孔条件-开孔材料
-        caller.msg(new checkSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
+        caller.msg(new CheckSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
     }
 }

@@ -5,10 +5,10 @@ import com.mud.game.structs.checkSlotInfo;
 /**
  * 返回装备强化检查的反馈
  */
-public class checkSlotMessage {
+public class CheckSlotMessage {
     private checkSlotInfo slot_open_check;
 
-    public checkSlotMessage(checkSlotInfo slot_open_check) {
+    public CheckSlotMessage(checkSlotInfo slot_open_check) {
         this.slot_open_check = slot_open_check;
     }
 

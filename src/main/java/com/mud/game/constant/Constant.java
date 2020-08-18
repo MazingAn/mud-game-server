@@ -9,4 +9,6 @@ public class Constant {
     public static final Double QUALITY_COEFFICIENT = 1.5;
     //进阶等级上限
     public static final int MAX_QUALITY = 10;
+    //最大开孔数
+    public static final int MAX_SLOT = 8;
 }
