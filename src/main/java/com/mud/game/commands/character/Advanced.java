@@ -2,12 +2,14 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
+import com.mud.game.messages.CheckQualityMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.EquipmentObjectManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.structs.CheckQualityInfo;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.QualityMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -75,9 +77,14 @@ public class Advanced extends BaseCommand {
         equipmentObject.setAttrs(EquipmentObjectManager.updateAttrs(equipmentObject, QUALITY_COEFFICIENT));
         equipmentObject.setLevel(0);
         equipmentObject.setQuality(equipmentObject.getQuality());
-        MongoMapper.equipmentObjectRepository.save(equipmentObject);
+        equipmentObject = MongoMapper.equipmentObjectRepository.save(equipmentObject);
         PlayerCharacterManager.syncBagpack(caller, equipmentObject);
         caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n进阶成功!"));
         PlayerCharacterManager.showBagpack(caller);
+        //返回下一阶段进阶数据
+        //进阶材料信息
+        qualityMaterialList = DbMapper.qualityMaterialRepository.findQualityMaterialByDataKeyAndQuality(equipmentObject.getDataKey(), equipmentObject.getQuality());
+        //检查装备是否满足进阶条件-进阶材料
+        caller.msg(new CheckQualityMessage(new CheckQualityInfo(equipmentObject, qualityMaterialList, caller)));
     }
 }

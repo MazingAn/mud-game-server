@@ -48,7 +48,6 @@ public class CheckAdvanced extends BaseCommand {
         //进阶材料信息
         List<QualityMaterial> qualityMaterialList = DbMapper.qualityMaterialRepository.findQualityMaterialByDataKeyAndQuality(equipmentObject.getDataKey(), equipmentObject.getQuality());
         //检查装备是否满足进阶条件-进阶材料
-        CheckQualityInfo checkQualityInfo = new CheckQualityInfo(equipmentObject, qualityMaterialList, caller);
-        caller.msg(new CheckQualityMessage(checkQualityInfo));
+        caller.msg(new CheckQualityMessage(new CheckQualityInfo(equipmentObject, qualityMaterialList, caller)));
     }
 }

@@ -49,11 +49,14 @@ public class CommonSearchController {
                         @RequestBody Map<String, String> map) {
         Page<Object> pageResult = null;
         Pageable paging = PageRequest.of(page, size);
-        SpecificationRepository repository = DbMapper.modelRepositoryMap.get(modelName);
+        if (StringUtils.isEmpty(modelName)) {
+            return "查询失败，modelName不能为空！";
+        }
+        SpecificationRepository repository = DbMapper.modelRepositoryMap.get(modelName.trim().toLowerCase());
         if (null == repository) {
             return "查询失败，没有对应的modelName！";
         }
-        if (null != map && map.size() > 0){
+        if (null != map && map.size() > 0) {
             //规格定义
             Specification<Object> specification = new Specification<Object>() {
 
@@ -77,7 +80,7 @@ public class CommonSearchController {
                 }
             };
             pageResult = repository.findAll(specification, paging);
-        } else{
+        } else {
             pageResult = repository.findAll(paging);
         }
         return pageResult;
