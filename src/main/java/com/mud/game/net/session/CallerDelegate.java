@@ -33,9 +33,6 @@ public class CallerDelegate {
      */
     public void executeCommand(String commandKey, JSONObject args) {
         Session session = GameSessionService.getSessionByCallerId(callerId);
-        if(commandKey.equals("check_advanced")){
-            System.out.printf("1111111111111");
-        }
         CallerType callerType = GameSessionService.getCallerTypeByCallerId(callerId);
         switch (callerType) {
             case ANONYMOUS:

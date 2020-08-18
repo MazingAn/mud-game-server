@@ -55,7 +55,7 @@ public class CheckQualityInfo {
         //材料验证
         //进阶材料信息
         if (qualityMaterialList.size() == 0) {
-            caller.msg("进阶材料错误！");
+            caller.msg(new AlertMessage("进阶材料错误！"));
             can_advanced = false;
         }
         //TODO

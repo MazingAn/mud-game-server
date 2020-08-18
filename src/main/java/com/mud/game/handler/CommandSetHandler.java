@@ -113,6 +113,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("check_advanced", CheckAdvanced.class);
         playerCharacterCommandSet.put("advanced", Advanced.class);
         playerCharacterCommandSet.put("check_slot", CheckSlot.class);
+        playerCharacterCommandSet.put("open_slot", OpenSlot.class);
     }
 
     /**

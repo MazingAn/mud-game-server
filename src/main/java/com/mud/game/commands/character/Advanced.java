@@ -19,8 +19,7 @@ import org.yeauty.pojo.Session;
 
 import java.util.List;
 
-import static com.mud.game.constant.Constant.MAX_LEVEL;
-import static com.mud.game.constant.Constant.QUALITY_COEFFICIENT;
+import static com.mud.game.constant.Constant.*;
 
 
 /**
@@ -57,6 +56,11 @@ public class Advanced extends BaseCommand {
         //判断是否达到强化的最高值
         if (equipmentObject.getLevel() != MAX_LEVEL) {
             caller.msg(new AlertMessage("装备强化值不足！"));
+            return;
+        }
+        //判断是否达到强化的最高值
+        if (equipmentObject.getQuality() == MAX_QUALITY) {
+            caller.msg(new AlertMessage("装备已达到最大进阶值！"));
             return;
         }
         //材料验证

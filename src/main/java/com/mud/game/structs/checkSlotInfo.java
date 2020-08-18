@@ -1,5 +1,6 @@
 package com.mud.game.structs;
 
+import com.mud.game.messages.AlertMessage;
 import com.mud.game.object.manager.CommonItemContainerManager;
 import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.EquipmentObject;
@@ -39,12 +40,17 @@ public class checkSlotInfo {
 
     public checkSlotInfo(EquipmentObject equipmentObject, List<SlotMaterial> slotMaterialList, PlayerCharacter caller) {
         Boolean can_open_slot = true;
-        int slot_befor = equipmentObject.getSlot();
-        int slot_after = equipmentObject.getSlot();
+        int slot_befor = equipmentObject.getOpendSlot();
+        int slot_after = equipmentObject.getOpendSlot();
         //判断装备是否可以开孔
-        if (equipmentObject.getSlot() < equipmentObject.getMaxSlot()) {
+        if (equipmentObject.getOpendSlot() < equipmentObject.getMaxSlot()) {
             slot_after++;
         } else {
+            caller.msg(new AlertMessage("装备打孔已达到最大值!"));
+            can_open_slot = false;
+        }
+        if (slotMaterialList.size() == 0) {
+            caller.msg(new AlertMessage("材料信息有误"));
             can_open_slot = false;
         }
         //需要的材料

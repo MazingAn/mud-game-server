@@ -16,7 +16,7 @@ public class EquipmentObject extends CommonObject {
     //装备最大开孔数量
     private int maxSlot;
     //装备开孔数量
-    private int slot;
+    private int opendSlot;
     //装备的属性
     private Map<String, Map<String, Object>> attrs;
     //镶嵌的宝石
@@ -93,11 +93,11 @@ public class EquipmentObject extends CommonObject {
         this.equippedPosition = equippedPosition;
     }
 
-    public int getSlot() {
-        return slot;
+    public int getOpendSlot() {
+        return opendSlot;
     }
 
-    public void setSlot(int slot) {
-        this.slot = slot;
+    public void setOpendSlot(int opendSlot) {
+        this.opendSlot = opendSlot;
     }
 }

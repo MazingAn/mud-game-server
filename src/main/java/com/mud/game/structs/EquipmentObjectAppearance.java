@@ -42,7 +42,7 @@ public class EquipmentObjectAppearance {
         this.strength_level = equipmentObject.getLevel();
         this.quality = equipmentObject.getQuality();
         // TODO：修改为已经使用的孔
-        this.opend_slot = equipmentObject.getMaxSlot();
+        this.opend_slot = equipmentObject.getOpendSlot();
         this.total_slot = equipmentObject.getMaxSlot();
         this.can_strength = false;
     }

@@ -7,4 +7,6 @@ public class Constant {
     public static final int MAX_LEVEL = 10;
     //进阶属性增加系数
     public static final Double QUALITY_COEFFICIENT = 1.5;
+    //进阶等级上限
+    public static final int MAX_QUALITY = 10;
 }

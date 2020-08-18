@@ -3,6 +3,10 @@ package com.mud.game.commands.character;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.checkSlotMessage;
+import com.mud.game.object.builder.CommonObjectBuilder;
+import com.mud.game.object.manager.EquipmentObjectManager;
+import com.mud.game.object.manager.PlayerCharacterManager;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.checkSlotInfo;
@@ -15,13 +19,15 @@ import org.yeauty.pojo.Session;
 
 import java.util.List;
 
+import static com.mud.game.constant.Constant.QUALITY_COEFFICIENT;
+
 /**
  * {
- * "cmd": "check_slot",
+ * "cmd" : "open_slot",
  * "args": <装备的dbref>
  * }
  */
-public class CheckSlot extends BaseCommand {
+public class OpenSlot extends BaseCommand {
     /**
      * 构造函数，获取传入的参数，并执行命令
      *
@@ -30,7 +36,7 @@ public class CheckSlot extends BaseCommand {
      * @param args    命令参数
      * @param session 命令信息的返回通道
      */
-    public CheckSlot(String key, Object caller, JSONObject args, Session session) {
+    public OpenSlot(String key, Object caller, JSONObject args, Session session) {
         super(key, caller, args, session);
     }
 
@@ -48,8 +54,23 @@ public class CheckSlot extends BaseCommand {
         }
         //获取材料信息
         List<SlotMaterial> slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
-        //TODO 返回数据
-        //检查装备是否满足开孔条件-开孔材料
+        if (slotMaterialList.size() == 0) {
+            caller.msg(new AlertMessage("材料信息有误"));
+            return;
+        }
+        //从背包移除材料
+        for (int i = 0; i < slotMaterialList.size(); i++) {
+            CommonObject removeObject = CommonObjectBuilder.findObjectByDataKeyAndOwner(slotMaterialList.get(i).getDependency(), caller.getId());
+            PlayerCharacterManager.removeObjectsFromBagpack(caller, removeObject, slotMaterialList.get(i).getNumber());
+        }
+        //打孔
+        equipmentObject.setOpendSlot(equipmentObject.getOpendSlot() + 1);
+        equipmentObject = MongoMapper.equipmentObjectRepository.save(equipmentObject);
+        PlayerCharacterManager.syncBagpack(caller, equipmentObject);
+        caller.msg(new AlertMessage("你的{g" + equipmentObject.getName() + "{n打孔成功!"));
+        PlayerCharacterManager.showBagpack(caller);
+        //返回下一级数据
+        slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
         caller.msg(new checkSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
     }
 }
