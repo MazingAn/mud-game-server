@@ -58,6 +58,9 @@ public class Look extends BaseCommand {
         }else if(MongoMapper.normalObjectObjectRepository.existsById(targetId)){
             NormalObjectObject target = MongoMapper.normalObjectObjectRepository.findNormalObjectObjectById(targetId);
             NormalObjectObjectManager.onPlayerLook(target, playerCharacter, session);
+        }else if(MongoMapper.gemObjectRepository.existsById(targetId)){
+            GemObject target = MongoMapper.gemObjectRepository.findGemObjectById(targetId);
+            GemObjectManager.onPlayerLook(target, playerCharacter, session);
         }else{
             playerCharacter.msg(new ToastMessage("没有找到这件物品的详细信息！"));
         }

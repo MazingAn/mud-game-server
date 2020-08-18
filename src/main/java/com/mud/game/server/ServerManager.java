@@ -73,13 +73,13 @@ public class ServerManager {
     }
 
     public static void apply(){
-//        UniqueWorldObjectBuilder.buildUniqueObjects("WorldAreaObject");
-//        UniqueWorldObjectBuilder.buildUniqueObjects("WorldRoomObject");
-//        UniqueWorldObjectBuilder.buildUniqueObjects("WorldExitObject");
-//        UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectObject");
-//        UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectCreator");
-//        UniqueWorldObjectBuilder.buildUniqueObjects("WorldNpcObject");
-//        GameObjectUpdator.updateGameObject("Skill");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldAreaObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldRoomObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldExitObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectObject");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldObjectCreator");
+        UniqueWorldObjectBuilder.buildUniqueObjects("WorldNpcObject");
+        GameObjectUpdator.updateGameObject("Skill");
         GameObjectUpdator.updateGameObject("SkillBook");
     }
 
