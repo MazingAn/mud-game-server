@@ -112,6 +112,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("strength", Strengthen.class);
         playerCharacterCommandSet.put("check_advanced", CheckAdvanced.class);
         playerCharacterCommandSet.put("advanced", Advanced.class);
+        playerCharacterCommandSet.put("check_slot", CheckSlot.class);
     }
 
     /**
