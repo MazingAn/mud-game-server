@@ -87,7 +87,7 @@ public class Composite extends BaseCommand {
                 PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, dataKey, 1);
                 PlayerCharacterManager.showBagpack(playerCharacter);
             } else {
-                playerCharacter.msg(new AlertMessage("参数有误！"));
+                playerCharacter.msg(new AlertMessage("参数错误！"));
             }
         }
 

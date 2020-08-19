@@ -1,8 +1,6 @@
 package com.mud.game.structs;
 
 import com.mud.game.object.typeclass.GemObject;
-import com.mud.game.utils.jsonutils.Attr2Map;
-import com.mud.game.worlddata.db.models.Gem;
 
 import java.util.Map;
 

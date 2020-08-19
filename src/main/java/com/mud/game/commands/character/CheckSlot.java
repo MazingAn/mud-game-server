@@ -43,7 +43,7 @@ public class CheckSlot extends BaseCommand {
         //装备信息
         EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(dbref);
         if (null == equipmentObject) {
-            caller.msg(new AlertMessage("装备信息有误!"));
+            caller.msg(new AlertMessage("装备信息错误!"));
             return;
         }
         //获取材料信息

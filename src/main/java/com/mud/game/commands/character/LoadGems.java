@@ -49,7 +49,7 @@ public class LoadGems extends BaseCommand {
         //  装备信息
         EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(dbref);
         if (null == equipmentObject) {
-            caller.msg(new AlertMessage("装备信息有误!"));
+            caller.msg(new AlertMessage("装备信息错误!"));
             return;
         }
         //装备可镶嵌的宝石
@@ -66,7 +66,6 @@ public class LoadGems extends BaseCommand {
         }
         caller.msg(new LoadGemsMessage(gemAllList));
         //已镶嵌的宝石
-
         caller.msg(new ImbedGemsMessage(equipmentObject.getGems()));
     }
 }

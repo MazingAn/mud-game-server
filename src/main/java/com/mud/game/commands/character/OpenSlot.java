@@ -46,13 +46,13 @@ public class OpenSlot extends BaseCommand {
         //装备信息
         EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(dbref);
         if (null == equipmentObject) {
-            caller.msg(new AlertMessage("装备信息有误!"));
+            caller.msg(new AlertMessage("装备信息错误!"));
             return;
         }
         //获取材料信息
         List<SlotMaterial> slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
         if (slotMaterialList.size() == 0) {
-            caller.msg(new AlertMessage("材料信息有误"));
+            caller.msg(new AlertMessage("材料信息错误"));
             return;
         }
         //从背包移除材料
