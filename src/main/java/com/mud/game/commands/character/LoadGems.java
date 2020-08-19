@@ -2,6 +2,7 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
+import com.mud.game.messages.ImbedGemsMessage;
 import com.mud.game.messages.LoadGemsMessage;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -51,7 +52,7 @@ public class LoadGems extends BaseCommand {
             caller.msg(new AlertMessage("装备信息有误!"));
             return;
         }
-        //装备可装备的位置
+        //装备可镶嵌的宝石
         Set<String> positions = equipmentObject.getPositions();
         Iterator<String> positionsIterator = positions.iterator();
         String positionStr = null;
@@ -64,5 +65,8 @@ public class LoadGems extends BaseCommand {
             gemAllList.addAll(gemList);
         }
         caller.msg(new LoadGemsMessage(gemAllList));
+        //已镶嵌的宝石
+
+        caller.msg(new ImbedGemsMessage(equipmentObject.getGems()));
     }
 }
