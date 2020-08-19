@@ -51,7 +51,6 @@ public class checkSlotInfo {
             can_open_slot = false;
         }
         if (slotMaterialList.size() == 0) {
-            caller.msg(new AlertMessage("材料信息有误"));
             can_open_slot = false;
         }
         //需要的材料
