@@ -48,17 +48,18 @@ public class Composite extends BaseCommand {
         String bagpackId = playerCharacter.getBagpack();
         //参数
         JSONObject args = getArgs();
+        if (null == args) {
+            playerCharacter.msg("无效的参数！");
+        }
         String dataKey = args.getString("dataKey");
         JSONArray materials = args.getJSONArray("materials");
         BaseCommonObject baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(dataKey);
         if (null == baseCommonObject) {
-            playerCharacter.msg(new AlertMessage("此物品不存在!"));
             return;
         }
         //校验配方
         List<CompositeMaterial> compositeMaterialList = DbMapper.compositeMaterialRepository.findCompositeMaterialByDataKey(dataKey);
         if (compositeMaterialList == null || compositeMaterialList.size() == 0) {
-            playerCharacter.msg(new AlertMessage("此装备配方不存在！"));
             return;
         }
         //校验合成材料是否足够
@@ -76,7 +77,6 @@ public class Composite extends BaseCommand {
             if (null != materials.get(i)) {
                 CommonObject removeObject = CommonObjectBuilder.findObjectById(materials.get(i).toString());
                 if (null == removeObject) {
-                    playerCharacter.msg(new AlertMessage("材料信息错误！"));
                     return;
                 }
                 PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, removeObject, compositeMaterialList.get(i).getNumber());
@@ -86,8 +86,6 @@ public class Composite extends BaseCommand {
                 //生成物品放入背包
                 PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, dataKey, 1);
                 PlayerCharacterManager.showBagpack(playerCharacter);
-            } else {
-                playerCharacter.msg(new AlertMessage("参数错误！"));
             }
         }
 

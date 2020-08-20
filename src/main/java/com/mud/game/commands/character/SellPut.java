@@ -41,6 +41,7 @@ public class SellPut extends BaseCommand {
 
     @Override
     public void execute() throws JSONException {
+
         //获取用户
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         //给客户端返回已寄售列表

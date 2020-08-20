@@ -1,15 +1,21 @@
 package com.mud.game.messages;
 
+import com.alibaba.fastjson.JSONArray;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.models.ConsignmentInformation;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConsignmentInformationsMsg {
     private String sellerName;
     private String sellerId;
     private String objectName;
     private String objectId;
-    private int price;
-    private String moneyType;
+    private List<Map<String, Object>> price;
     private int number;
     private int quality;
     private String category;
@@ -20,13 +26,40 @@ public class ConsignmentInformationsMsg {
         this.sellerName = goods.getPalyerName();
         this.objectName = goods.getObjectName();
         this.objectId = goods.getObjectId();
-        this.price = goods.getPrice();
-        this.moneyType = goods.getMoneyType();
         this.number = goods.getNumber();
         this.quality = goods.getQuality();
         this.category = goods.getCategory();
         this.auctionId = goods.getId();
         this.description = goods.getDescription();
+        String price = goods.getPrice();
+        this.price = new ArrayList<>();
+        if (StringUtils.isNotBlank(price)) {
+            com.alibaba.fastjson.JSONArray jsonArray = JSONArray.parseArray(price);
+            Map<String, Integer> map = new HashMap<>();
+            com.alibaba.fastjson.JSONObject jsonObject = null;
+            for (int i = 0; i < jsonArray.size(); i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+                for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                    map.put(entry.getKey(), Integer.parseInt(entry.getValue().toString()));
+                }
+            }
+            if (map.containsKey("OBJECT_JINYEZI")) {
+                this.price.add(new HashMap<String, Object>() {{
+                    put("金叶子", map.get("OBJECT_JINYEZI"));
+                }});
+                return;
+            }
+            if (map.containsKey("OBJECT_JINZI")) {
+                this.price.add(new HashMap<String, Object>() {{
+                    put("金子", map.get("OBJECT_JINZI"));
+                }});
+            }
+            if (map.containsKey("OBJECT_YINLIANG")) {
+                this.price.add(new HashMap<String, Object>() {{
+                    put("银子", map.get("OBJECT_YINLIANG"));
+                }});
+            }
+        }
     }
 
     public String getDescription() {
@@ -85,20 +118,12 @@ public class ConsignmentInformationsMsg {
         this.objectId = objectId;
     }
 
-    public int getPrice() {
+    public List<Map<String, Object>> getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(List<Map<String, Object>> price) {
         this.price = price;
-    }
-
-    public String getMoneyType() {
-        return moneyType;
-    }
-
-    public void setMoneyType(String moneyType) {
-        this.moneyType = moneyType;
     }
 
     public int getNumber() {

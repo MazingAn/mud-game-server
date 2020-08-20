@@ -250,12 +250,10 @@ public class EquipmentObjectManager {
         Boolean isMaxLevel = false;
 
         if (null == equipmentObject) {
-            caller.msg(new AlertMessage("装备信息为空!"));
             return;
         }
         //校验
         if (equipmentObject.getLevel() == MAX_LEVEL) {
-            caller.msg(new AlertMessage("装备已达到最大强化等级，请进阶之后再来强化！"));
             can_strength = false;
             isMaxLevel = true;
         }
@@ -325,19 +323,16 @@ public class EquipmentObjectManager {
     public static void strengthen(EquipmentObject equipmentObject, PlayerCharacter caller, Session session) {
         String bagpackId = caller.getBagpack();
         if (null == equipmentObject) {
-            caller.msg(new AlertMessage("装备信息为空!"));
             return;
         }
         //校验
         if (equipmentObject.getLevel() >= MAX_LEVEL) {
-            caller.msg(new AlertMessage("装备已达到最大强化等级！"));
             return;
         }
         //获取装备强化需要的材料列表
         String dataKey = equipmentObject.getDataKey();
         List<StrengthenMaterial> strengthenMaterialList = DbMapper.strengthenMaterialRepository.findStrengthenMaterialByDataKeyAndLevel(dataKey, equipmentObject.getLevel());
         if (strengthenMaterialList == null || strengthenMaterialList.size() == 0) {
-            caller.msg(new AlertMessage("装备的强化材料为空"));
             return;
         }
         //校验合成材料是否足够

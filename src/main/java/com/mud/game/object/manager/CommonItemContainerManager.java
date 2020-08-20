@@ -6,6 +6,8 @@ import com.mud.game.structs.CommonObjectInfo;
 
 import java.util.UUID;
 
+import static com.mud.game.constant.Constant.REMOVE_ITEM_FLASE_LIST;
+
 public class CommonItemContainerManager {
     /*
      * @ 管库游戏中的背包和仓库容器
@@ -91,11 +93,14 @@ public class CommonItemContainerManager {
                 if (unFullNumber >= number) {
                     // 如果没填充满的格子的数量大于要移除的，直接移除，返回true；搞定！！！
                     unFullCellInfo.setNumber(unFullNumber - number);
+
                     if (unFullCellInfo.getNumber() == 0) {
                         // 如果移除之后，number为零，则这个cell应该被移除
-                        container.getItems().remove(unFullCellId);
-                        // 包裹的使用数量-1
-                        container.setUsedCellNumber(container.getUsedCellNumber() - 1);
+                        if (!REMOVE_ITEM_FLASE_LIST.contains(commonObject.getDataKey())) {
+                            container.getItems().remove(unFullCellId);
+                            // 包裹的使用数量-1
+                            container.setUsedCellNumber(container.getUsedCellNumber() - 1);
+                        }
                     }
                     number = 0;
                 } else {
@@ -118,7 +123,7 @@ public class CommonItemContainerManager {
         return true;
     }
 
-    public static void updateItem(CommonItemContainer container, CommonObject commonObject){
+    public static void updateItem(CommonItemContainer container, CommonObject commonObject) {
         String cellId = findCellById(container, commonObject.getId());
         container.getItems().get(cellId).updateInfo(commonObject);
     }
@@ -194,7 +199,7 @@ public class CommonItemContainerManager {
         for (String key : container.getItems().keySet()) {
             CommonObjectInfo info = container.getItems().get(key);
             if (info.getDataKey().startsWith(objectKey)) {
-                if (info.getNumber() < info.getMax_stack()) {
+                if (info.getNumber() <= info.getMax_stack()) {
                     return key;
                 }
             }

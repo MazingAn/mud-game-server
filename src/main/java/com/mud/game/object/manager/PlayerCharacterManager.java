@@ -1,18 +1,13 @@
 package com.mud.game.object.manager;
 
-import com.mongodb.Mongo;
-import com.mud.game.condition.general.HasObject;
+import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.handler.ConditionHandler;
 import com.mud.game.handler.SkillTypeHandler;
-import com.mud.game.handler.UnitHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
-import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.builder.CommonObjectBuilder;
-import com.mud.game.object.builder.UniqueWorldObjectBuilder;
-import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
@@ -23,11 +18,9 @@ import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.utils.resultutils.UserOptionCode;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
-import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
 
-import javax.naming.spi.ObjectFactoryBuilder;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -1108,9 +1101,12 @@ public class PlayerCharacterManager {
          * 接受物品到背包
          * 把物品放入背包
          * */
-        CommonObject commonObject = null;
-        // 如果已经有了这个物品，则直接添加即可
-        if (hasObject(playerCharacter, commonObjectKey, 0)) {
+        CommonObject commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
+        if (commonObject == null) {
+            return false;
+        }
+        // 如果已经有了这个物品，则直接添加即可，并只能有一个格子
+        if (hasObject(playerCharacter, commonObjectKey, 0) && commonObject.isUnique()) {
             commonObject = CommonObjectBuilder.findObjectByDataKeyAndOwner(commonObjectKey, playerCharacter.getId());
             if (commonObject instanceof EquipmentObject) {
                 EquipmentObject equipmentObject = (EquipmentObject) CommonObjectBuilder.buildCommonObject(commonObjectKey);
@@ -1120,11 +1116,8 @@ public class PlayerCharacterManager {
                 return receiveObjectToBagpack(playerCharacter, skillBookObject, number);
             }
         } else {
-            commonObject = CommonObjectBuilder.buildCommonObject(commonObjectKey);
-            if (commonObject != null) {
-                CommonObjectBuilder.save(commonObject);
-                return receiveObjectToBagpack(playerCharacter, commonObject, number);
-            }
+            CommonObjectBuilder.save(commonObject);
+            return receiveObjectToBagpack(playerCharacter, commonObject, number);
         }
         return receiveObjectToBagpack(playerCharacter, commonObject, number);
     }
@@ -1182,6 +1175,9 @@ public class PlayerCharacterManager {
      * @param price           价格
      */
     public static boolean castMoney(PlayerCharacter playerCharacter, String unit, int price) {
+        if (price == 0) {
+            return true;
+        }
         // 有足够的钱，可以付款
         if (hasObject(playerCharacter, unit, price)) {
             return discardObject(playerCharacter, unit, price);
@@ -1209,14 +1205,24 @@ public class PlayerCharacterManager {
             // 银子
             String bagpackId = playerCharacter.getBagpack();
             BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
+            // 银子数量
             int currentNumber = CommonItemContainerManager.getNumberByDataKey(bagpackObject, unit);
-            int yinNumber = (currentNumber + number) % 100;
-            int jinNumber = (currentNumber + number) / 100;
             boolean result = false;
-            if (yinNumber != 0)
-                result = receiveObjectToBagpack(playerCharacter, "OBJECT_YINLIANG", yinNumber);
-            if (jinNumber != 0)
+            if (currentNumber + number < 100) {
+                //小于100直接追加
+                result = receiveObjectToBagpack(playerCharacter, "OBJECT_YINLIANG", number);
+            } else {
+                //大于100超出最大叠加
+                int yinNumber = (currentNumber + number) % 100;
+                int jinNumber = (currentNumber + number) / 100;
                 result = receiveObjectToBagpack(playerCharacter, "OBJECT_JINZI", jinNumber);
+                if (yinNumber - currentNumber > 0) {
+                    result = receiveObjectToBagpack(playerCharacter, "OBJECT_YINLIANG", yinNumber - currentNumber);
+                } else if (currentNumber - yinNumber != 0) {
+                    result = discardObject(playerCharacter, "OBJECT_YINLIANG", currentNumber - yinNumber);
+                }
+
+            }
             return result;
         } else {
             return receiveObjectToBagpack(playerCharacter, "OBJECT_JINZI", number);

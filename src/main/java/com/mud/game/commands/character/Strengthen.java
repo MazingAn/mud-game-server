@@ -41,6 +41,9 @@ public class Strengthen extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
+        if (null == args) {
+            caller.msg("无效的参数！");
+        }
         // 装备Id
         String dbref = args.getString("args");
         //获取装备信息

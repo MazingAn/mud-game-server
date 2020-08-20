@@ -45,22 +45,22 @@ public class Advanced extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
+        if (null == args) {
+            caller.msg("无效的参数！");
+        }
         // 装备Id
         String dbref = args.getString("args");
         //获取装备信息
         EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(dbref);
         if (null == equipmentObject) {
-            caller.msg("装备信息错误！");
             return;
         }
         //判断是否达到强化的最高值
         if (equipmentObject.getLevel() != MAX_LEVEL) {
-            caller.msg(new AlertMessage("装备强化值不足！"));
             return;
         }
         //判断是否达到强化的最高值
         if (equipmentObject.getQuality() == MAX_QUALITY) {
-            caller.msg(new AlertMessage("装备已达到最大进阶值！"));
             return;
         }
         //材料验证
@@ -68,7 +68,6 @@ public class Advanced extends BaseCommand {
         List<QualityMaterial> qualityMaterialList = DbMapper.qualityMaterialRepository.findQualityMaterialByDataKeyAndQuality(equipmentObject.getDataKey(), equipmentObject.getQuality());
         //进阶材料信息
         if (qualityMaterialList.size() == 0) {
-            caller.msg("进阶材料错误！");
             return;
         }
         //删除进阶材料

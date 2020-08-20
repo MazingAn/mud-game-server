@@ -41,18 +41,19 @@ public class OpenSlot extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
+        if (null == args) {
+            caller.msg("无效的参数！");
+        }
         // 装备Id
         String dbref = args.getString("args");
         //装备信息
         EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(dbref);
         if (null == equipmentObject) {
-            caller.msg(new AlertMessage("装备信息错误!"));
             return;
         }
         //获取材料信息
         List<SlotMaterial> slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
         if (slotMaterialList.size() == 0) {
-            caller.msg(new AlertMessage("材料信息错误"));
             return;
         }
         //从背包移除材料

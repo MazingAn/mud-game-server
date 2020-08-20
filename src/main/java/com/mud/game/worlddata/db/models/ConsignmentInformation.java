@@ -2,7 +2,10 @@ package com.mud.game.worlddata.db.models;
 
 import com.mud.game.utils.modelsutils.Mark;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * 寄售信息
@@ -29,9 +32,7 @@ public class ConsignmentInformation {
     @Mark(name = "品级")
     private int quality;
     @Mark(name = "价格")
-    private int price;
-    @Mark(name = "单位（如：金子的单位是  锭）")
-    private String moneyType;
+    private String price;
     @Mark(name = "创建时间")
     private String createTime;
     @Mark(name = "数量")
@@ -104,20 +105,12 @@ public class ConsignmentInformation {
         this.quality = quality;
     }
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
-    }
-
-    public String getMoneyType() {
-        return moneyType;
-    }
-
-    public void setMoneyType(String moneyType) {
-        this.moneyType = moneyType;
     }
 
     public String getCreateTime() {

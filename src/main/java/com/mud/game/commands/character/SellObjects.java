@@ -12,6 +12,7 @@ import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.ConsignmentInformation;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,11 +28,16 @@ import java.util.*;
  * <p>
  * {
  * cmd: "add_auction",   //命令
- * args: {
- * sell_object: "sell_object",  //物品id
- * buyout_price: "8", //价格
- * moneyType: "OBJECT_JINZI",   //金币单位
- * number: 1
+ * args:{
+ * // 价格
+ * //货币类型参数为两种，选择不同的货币类型则价格包含的对象也不一样：金子和金叶子，金子包含金子和银两，金叶子则只有金叶子
+ * buyout_price: [
+ * {"OBJECT_JINZI":1},{"OBJECT_YINLIANG":1} || {"OBJECT_JINYEZI":1}
+ * ],
+ * // 物品ID
+ * sell_object: dbref,
+ * // 数量
+ * number: this.goodsNumber,
  * }
  * }
  */
@@ -54,17 +60,43 @@ public class SellObjects extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
+        //物品id
         String sell_object = args.getString("sell_object");
+        //数量
         int number = args.getInt("number");
-        int buyout_price = args.getInt("buyout_price");
-        if (buyout_price <= 0) {
-            caller.msg(new AlertMessage("金币必须大于0！"));
-            return;
-        }
         if (number <= 0) {
             caller.msg(new AlertMessage("上架物品数量必须大于0！"));
             return;
         }
+        JSONArray buyoutPrice = args.getJSONArray("buyout_price");
+        if (null == buyoutPrice) {
+            caller.msg(new AlertMessage("价格不能为空！"));
+            return;
+        }
+        //价格校验
+        List<String> priceKeyList = new ArrayList<>();
+        JSONObject jsonObject = null;
+        Boolean priceZero = true;
+        for (int i = 0; i < buyoutPrice.length(); i++) {
+            jsonObject = buyoutPrice.getJSONObject(i);
+            Iterator it = jsonObject.keys();
+            while (it.hasNext()) {
+                String key = String.valueOf(it.next().toString());
+                priceKeyList.add(key);
+                if (!"0".equals(jsonObject.get(key).toString().trim())) {
+                    priceZero = false;
+                }
+            }
+        }
+        if (priceZero) {
+            caller.msg(new AlertMessage("价格不能为0！"));
+            return;
+        }
+        if (priceKeyList.contains("OBJECT_JINYEZI") && priceKeyList.size() > 1) {
+            caller.msg(new AlertMessage("金叶子不能和金子银子混用！"));
+            return;
+        }
+
         // 物品信息
         CommonObject commonObject = CommonObjectBuilder.findObjectById(sell_object);
         if (null == commonObject) {
@@ -102,9 +134,8 @@ public class SellObjects extends BaseCommand {
 
     private ConsignmentInformation buildConsignmentInformation(CommonObject commonObject, JSONObject args, String sell_object, PlayerCharacter caller) throws JSONException {
         ConsignmentInformation consignmentInformation = new ConsignmentInformation();
-        int buyout_price = args.getInt("buyout_price");
+        JSONArray buyoutPrice = args.getJSONArray("buyout_price");
         int number = args.getInt("number");
-        String moneyType = args.getString("moneyType");
         consignmentInformation.setPalyerId(caller.getId());
         consignmentInformation.setPalyerName(caller.getName());
         consignmentInformation.setObjectId(sell_object);
@@ -112,10 +143,9 @@ public class SellObjects extends BaseCommand {
         consignmentInformation.setQuality(commonObject.getQuality());
         consignmentInformation.setObjectName(commonObject.getName());
         consignmentInformation.setDescription(commonObject.getDescription());
-        consignmentInformation.setPrice(buyout_price);
+        consignmentInformation.setPrice(buyoutPrice.toString());
         consignmentInformation.setNumber(number);
         consignmentInformation.setCategory(commonObject.getCategory());
-        consignmentInformation.setMoneyType(moneyType);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         consignmentInformation.setCreateTime(df.format(new Date()));
         return consignmentInformation;
