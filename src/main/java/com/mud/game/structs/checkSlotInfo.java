@@ -47,7 +47,6 @@ public class checkSlotInfo {
         if (equipmentObject.getOpendSlot() < MAX_SLOT) {
             slot_after++;
         } else {
-            caller.msg(new AlertMessage("装备打孔已达到最大值!"));
             can_open_slot = false;
         }
         if (slotMaterialList.size() == 0) {

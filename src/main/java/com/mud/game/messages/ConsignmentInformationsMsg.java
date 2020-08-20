@@ -45,18 +45,18 @@ public class ConsignmentInformationsMsg {
             }
             if (map.containsKey("OBJECT_JINYEZI")) {
                 this.price.add(new HashMap<String, Object>() {{
-                    put("金叶子", map.get("OBJECT_JINYEZI"));
+                    put("OBJECT_JINYEZI", map.get("OBJECT_JINYEZI"));
                 }});
                 return;
             }
             if (map.containsKey("OBJECT_JINZI")) {
                 this.price.add(new HashMap<String, Object>() {{
-                    put("金子", map.get("OBJECT_JINZI"));
+                    put("OBJECT_JINZI", map.get("OBJECT_JINZI"));
                 }});
             }
             if (map.containsKey("OBJECT_YINLIANG")) {
                 this.price.add(new HashMap<String, Object>() {{
-                    put("银子", map.get("OBJECT_YINLIANG"));
+                    put("OBJECT_YINLIANG", map.get("OBJECT_YINLIANG"));
                 }});
             }
         }

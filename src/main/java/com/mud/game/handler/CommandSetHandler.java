@@ -115,6 +115,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("check_slot", CheckSlot.class);
         playerCharacterCommandSet.put("open_slot", OpenSlot.class);
         playerCharacterCommandSet.put("loadgems", LoadGems.class);
+        playerCharacterCommandSet.put("imbed", Imbed.class);
     }
 
     /**

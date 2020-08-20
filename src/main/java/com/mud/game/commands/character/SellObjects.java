@@ -93,7 +93,7 @@ public class SellObjects extends BaseCommand {
             return;
         }
         if (priceKeyList.contains("OBJECT_JINYEZI") && priceKeyList.size() > 1) {
-            caller.msg(new AlertMessage("金叶子不能和金子银子混用！"));
+            caller.msg(new AlertMessage("金叶子不能和金子银两混用！"));
             return;
         }
 

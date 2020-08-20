@@ -44,17 +44,14 @@ public class CheckQualityInfo {
         this.quality_after = equipmentObject.getQuality() + 1;
         //判断是否达到强化的最高值
         if (b && equipmentObject.getLevel() != MAX_LEVEL) {
-            caller.msg(new AlertMessage("装备强化值不足！"));
             can_advanced = false;
         }
         if (equipmentObject.getQuality() > MAX_LEVEL) {
-            caller.msg(new AlertMessage("装备进阶以达到最大值！"));
             can_advanced = false;
         }
         //材料验证
         //进阶材料信息
         if (qualityMaterialList.size() == 0) {
-            caller.msg(new AlertMessage("进阶材料错误！"));
             can_advanced = false;
         }
         //TODO

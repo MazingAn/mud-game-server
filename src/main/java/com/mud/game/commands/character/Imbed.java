@@ -45,7 +45,7 @@ public class Imbed extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         // 装备id
-        String dbref = args.getString("args");
+        String dbref = args.getString("equipment");
         //宝石id
         String gemDbref = args.getString("gem");
         if (StringUtils.isEmpty(dbref) || StringUtils.isEmpty(gemDbref)) {

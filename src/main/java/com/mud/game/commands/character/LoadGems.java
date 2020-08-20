@@ -2,13 +2,16 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
+import com.mud.game.messages.CheckSlotMessage;
 import com.mud.game.messages.ImbedGemsMessage;
 import com.mud.game.messages.LoadGemsMessage;
 import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.LoadGemsInfo;
+import com.mud.game.structs.checkSlotInfo;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.Gem;
+import com.mud.game.worlddata.db.models.SlotMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,6 +69,11 @@ public class LoadGems extends BaseCommand {
             gemList = DbMapper.gemRepository.findGemByPositionsLike(positionStr);
             gemAllList.addAll(gemList);
         }
+        //获取材料信息
+        List<SlotMaterial> slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
+        //TODO 返回数据
+        //检查装备是否满足开孔条件-开孔材料
+        caller.msg(new CheckSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
         caller.msg(new LoadGemsMessage(gemAllList));
         //已镶嵌的宝石
         caller.msg(new ImbedGemsMessage(equipmentObject.getGems()));

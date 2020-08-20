@@ -59,6 +59,6 @@ public class Attack extends BaseCommand {
 
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);
-        normalCombat.startCombat(combatSense);
+        normalCombat.startCombat(combatSense );
     }
 }
