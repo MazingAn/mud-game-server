@@ -134,6 +134,7 @@ public class EquipmentObjectManager {
                     float value = Float.parseFloat(valueStr.toString());
                     GameCharacterManager.changeStatus(character, attrKey, value * -1);
                 }
+                // 去掉装备宝石属性
                 equipmentObject.setEquipped(false);
                 equipmentObject.setEquippedPosition(null);
                 character.getEquippedEquipments().put(position, null);

@@ -62,6 +62,11 @@ public class Imbed extends BaseCommand {
         if (null == gemList) {
             gemList = new ArrayList<>();
         }
+        // 校验镶嵌的装备是否有空余孔数
+        if (equipmentObject.getOpendSlot() - gemList.size() <= 0) {
+            caller.msg(new AlertMessage("镶嵌失败!"));
+            return;
+        }
         //查询要装备的宝石
         GemObject gemObject = MongoMapper.gemObjectRepository.findGemObjectById(gemDbref);
         if (null == gemObject) {

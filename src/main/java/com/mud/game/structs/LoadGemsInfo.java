@@ -1,14 +1,9 @@
 package com.mud.game.structs;
 
 import com.mongodb.util.JSON;
-import com.mud.game.object.typeclass.EquipmentObject;
-import com.mud.game.utils.jsonutils.Attr2Map;
-import com.mud.game.worlddata.db.models.Gem;
-import org.apache.commons.lang.StringUtils;
+import com.mud.game.object.typeclass.GemObject;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 返回所有适合用在目标装备上的宝石
@@ -17,7 +12,7 @@ public class LoadGemsInfo {
     /**
      * 宝石的dbref
      */
-    private Long dbref;
+    private String dbref;
     /**
      * 宝石的名称
      */
@@ -39,21 +34,21 @@ public class LoadGemsInfo {
      */
     Map<String, Map<String, Object>> attr;
 
-    public LoadGemsInfo(Gem gem) {
-        this.dbref = gem.getId();
-        this.name = gem.getName();
-        this.positions = JSON.parse(gem.getPositions());
-        this.attr = Attr2Map.equipmentAttrTrans(gem.getAttrs());
-        this.icon = gem.getIcon();
-        this.desc = gem.getDescription();
+    public LoadGemsInfo(GemObject gemObject) {
+        this.dbref = gemObject.getId();
+        this.name = gemObject.getName();
+        this.positions = JSON.parse(gemObject.getPositions());
+        this.attr = gemObject.getAttrs();
+        this.icon = gemObject.getIcon();
+        this.desc = gemObject.getDescription();
     }
 
 
-    public Long getDbref() {
+    public String getDbref() {
         return dbref;
     }
 
-    public void setDbref(Long dbref) {
+    public void setDbref(String dbref) {
         this.dbref = dbref;
     }
 

@@ -37,6 +37,7 @@ public class GemObjectManager {
         gemObject.setQuality(template.getQuality());
         gemObject.setOwner(null);
         gemObject.setTotalNumber(0);
+        gemObject.setPositions(template.getPositions());
         gemObject.setAttrs(Attr2Map.equipmentAttrTrans(template.getAttrs()));
         return gemObject;
     }

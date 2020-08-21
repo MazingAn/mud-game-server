@@ -6,6 +6,7 @@ import com.mud.game.messages.CheckSlotMessage;
 import com.mud.game.messages.ImbedGemsMessage;
 import com.mud.game.messages.LoadGemsMessage;
 import com.mud.game.object.typeclass.EquipmentObject;
+import com.mud.game.object.typeclass.GemObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.LoadGemsInfo;
 import com.mud.game.structs.checkSlotInfo;
@@ -58,16 +59,17 @@ public class LoadGems extends BaseCommand {
             return;
         }
         //装备可镶嵌的宝石
+        // 可装备位置
         Set<String> positions = equipmentObject.getPositions();
         Iterator<String> positionsIterator = positions.iterator();
         String positionStr = null;
-        List<Gem> gemList = null;
-        List<Gem> gemAllList = new ArrayList<>();
+        List<GemObject> gemObjectList = null;
+        List<GemObject> gemAllList = new ArrayList<>();
         while (positionsIterator.hasNext()) {
-            gemList = new ArrayList<>();
-            positionStr = "%" + positionsIterator.next() + "%";
-            gemList = DbMapper.gemRepository.findGemByPositionsLike(positionStr);
-            gemAllList.addAll(gemList);
+            gemObjectList = new ArrayList<>();
+            positionStr = positionsIterator.next();
+            gemObjectList = MongoMapper.gemObjectRepository.findGemObjectByOwnerAndPositionsLike(caller.getId(), positionStr);
+            gemAllList.addAll(gemObjectList);
         }
         //获取材料信息
         List<SlotMaterial> slotMaterialList = DbMapper.slotMaterialRepository.findSlotMaterialByDataKeyAndSlotNumber(equipmentObject.getDataKey(), equipmentObject.getOpendSlot());
