@@ -90,7 +90,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("equip_equipment", EquipEquipment.class);
         playerCharacterCommandSet.put("take_off_equipment", TakeOffEquipment.class);
         playerCharacterCommandSet.put("attack", Attack.class);
-        playerCharacterCommandSet.put("castskill", CastSkill.class);
+        playerCharacterCommandSet.put("cast_skill", CastSkill.class);
         playerCharacterCommandSet.put("talk", Talk.class);
         playerCharacterCommandSet.put("dialogue", CmdDialogue.class);
         playerCharacterCommandSet.put("quests", CmdQuests.class);

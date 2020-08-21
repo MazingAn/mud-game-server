@@ -3,13 +3,10 @@ package com.mud.game.worlddata.db.mappings;
 import com.mud.game.worlddata.db.repository.*;
 import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.sun.deploy.perf.DeployPerfUtil.put;
 
 @Component
 public class DbMapper {

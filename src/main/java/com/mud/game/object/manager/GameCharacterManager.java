@@ -390,7 +390,7 @@ public class GameCharacterManager {
      * 为角色追加一个buff
      * */
     public static void addBuffer(String bufferName, float duration, int addedCount, int maxAdd,
-                                 boolean goodBuffer, String attrKey, float changedValue,
+                                 boolean goodBuffer, String attrKey, Object changedValue,
                                  CommonCharacter target, SkillObject skillObject){
         Map<String, Set<String>> characterBuffers = target.getBuffers();
         // 如果玩家已经有了这个buffer

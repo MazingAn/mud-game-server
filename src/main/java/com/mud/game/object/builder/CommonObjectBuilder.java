@@ -104,6 +104,7 @@ public class CommonObjectBuilder {
     public static CommonObject findObjectById(String objectId) {
         /*根据主键查询物品信息*/
         CommonObject commonObject = null;
+        GemObject gemObject = MongoMapper.gemObjectRepository.findGemObjectById(objectId);
         commonObject = MongoMapper.gemObjectRepository.findGemObjectById(objectId);
         if (null != commonObject) {
             return commonObject;

@@ -39,7 +39,7 @@ public class BufferManager {
      * @param skillObject  技能对象
      * */
     public static CharacterBuffer CreateBuffer(String name, float duration, int maxAdd,
-                               boolean goodBuffer, String attrKey, float changedValue,
+                               boolean goodBuffer, String attrKey, Object changedValue,
                                CommonCharacter target, SkillObject skillObject){
         CharacterBuffer characterBuffer = new CharacterBuffer(name, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject);
         Timer timer = new Timer();

@@ -76,6 +76,9 @@ public class LoadGems extends BaseCommand {
         //TODO 返回数据
         //检查装备是否满足开孔条件-开孔材料
         caller.msg(new CheckSlotMessage(new checkSlotInfo(equipmentObject, slotMaterialList, caller)));
+        if (null == gemAllList) {
+            gemAllList = new ArrayList<>();
+        }
         caller.msg(new LoadGemsMessage(gemAllList));
         //已镶嵌的宝石
         caller.msg(new ImbedGemsMessage(equipmentObject.getGems()));

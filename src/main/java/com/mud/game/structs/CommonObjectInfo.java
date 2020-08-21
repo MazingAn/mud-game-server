@@ -3,8 +3,11 @@ package com.mud.game.structs;
 
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.EquipmentObject;
+import com.mud.game.object.typeclass.GemObject;
+import com.mud.game.utils.modelsutils.Mark;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CommonObjectInfo {
@@ -20,8 +23,11 @@ public class CommonObjectInfo {
     private int max_stack;
     private boolean equipped;
     private Set<String> position;
+    private int slotNumber;
+    //镶嵌的宝石
+    private List<GemObject> gems;
 
-    public CommonObjectInfo(){
+    public CommonObjectInfo() {
     }
 
     public CommonObjectInfo(CommonObject commonObject, int number) {
@@ -35,10 +41,10 @@ public class CommonObjectInfo {
         this.quality = commonObject.getLevel();
         this.dataKey = commonObject.getDataKey();
         this.max_stack = commonObject.getMaxStack();
-        if(commonObject instanceof EquipmentObject){
-            this.position = ((EquipmentObject)commonObject).getPositions();
-            this.equipped = ((EquipmentObject)commonObject).isEquipped();
-        }else{
+        if (commonObject instanceof EquipmentObject) {
+            this.position = ((EquipmentObject) commonObject).getPositions();
+            this.equipped = ((EquipmentObject) commonObject).isEquipped();
+        } else {
             this.equipped = false;
             this.position = new HashSet<>();
         }
@@ -47,9 +53,25 @@ public class CommonObjectInfo {
     public void updateInfo(CommonObject commonObject) {
         this.strength_level = commonObject.getLevel();
         this.quality = commonObject.getQuality();
+        //this.gems = commonObject.getGems();
     }
 
 
+    public int getSlotNumber() {
+        return slotNumber;
+    }
+
+    public void setSlotNumber(int slotNumber) {
+        this.slotNumber = slotNumber;
+    }
+
+    public List<GemObject> getGems() {
+        return gems;
+    }
+
+    public void setGems(List<GemObject> gems) {
+        this.gems = gems;
+    }
 
     public String getCategory() {
         return category;

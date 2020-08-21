@@ -1,11 +1,14 @@
 package com.mud.game.object.supertypeclass;
 
+import com.mud.game.object.typeclass.GemObject;
+
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 /*
-* 游戏中所有可以被玩家携带的物品的基类
-* */
+ * 游戏中所有可以被玩家携带的物品的基类
+ * */
 public class CommonObject extends BaseGameObject {
     //单位（如：金子的单位是  锭）
     private String unitName;
@@ -33,6 +36,8 @@ public class CommonObject extends BaseGameObject {
     private String owner;
     // 物品的总数
     private int totalNumber;
+    //武器开孔数
+    private int slotNumber;
 
 
     public String getUnitName() {
@@ -137,5 +142,13 @@ public class CommonObject extends BaseGameObject {
 
     public void setTotalNumber(int totalNumber) {
         this.totalNumber = totalNumber;
+    }
+
+    public int getSlotNumber() {
+        return slotNumber;
+    }
+
+    public void setSlotNumber(int slotNumber) {
+        this.slotNumber = slotNumber;
     }
 }

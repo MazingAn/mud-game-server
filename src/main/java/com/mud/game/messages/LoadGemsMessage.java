@@ -11,9 +11,9 @@ public class LoadGemsMessage {
 
     private List<LoadGemsInfo> available_gems;
 
-    public LoadGemsMessage(List<GemObject> gemList) {
+    public  LoadGemsMessage(List<GemObject> gemList) {
         if (gemList.size() == 0) {
-            this.available_gems = null;
+            this.available_gems = new ArrayList<>();
         } else {
             available_gems = new ArrayList<>();
             for (int i = 0; i < gemList.size(); i++) {

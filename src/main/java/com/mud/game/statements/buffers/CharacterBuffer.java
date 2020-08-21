@@ -4,6 +4,7 @@ import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.buffers.BufferManager;
+import com.mud.game.utils.regxutils.StringChecker;
 
 import java.util.*;
 
@@ -14,14 +15,14 @@ public class CharacterBuffer {
     public int maxAdd;
     public boolean goodBuffer;
     public String attrKey;
-    public float changedValue;
+    public Object changedValue;
     public CommonCharacter target;
     public SkillObject skillObject;
     public String bufferId;
 
 
     public CharacterBuffer(String name, float duration, int maxAdd,
-                           boolean goodBuffer, String attrKey, float changedValue,
+                           boolean goodBuffer, String attrKey, Object changedValue,
                            CommonCharacter target, SkillObject skillObject) {
         this.name = name;
         this.duration = duration;
@@ -40,12 +41,29 @@ public class CharacterBuffer {
     public void apply(){
         try{
 
-            // 应用buffer
-            if(goodBuffer){
-                GameCharacterManager.changeStatus(target, attrKey, changedValue * skillObject.getLevel());
-            }else{
-                GameCharacterManager.changeStatus(target, attrKey, changedValue* -1 * skillObject.getLevel());
-            }
+            Object change = changedValue;
+            boolean isNumber = StringChecker.isNumber(changedValue.toString());
+            if(isNumber)
+                change =  goodBuffer? (float)changedValue * 1 : (float)changedValue * -1;
+            GameCharacterManager.changeStatus(target, attrKey, change);
+
+
+//            boolean isNumber = false;
+//            float floatChangedValue = 0;
+//            if(StringChecker.isNumber(changedValue.toString())) {
+//                isNumber = true;
+//                floatChangedValue = Float.parseFloat(changedValue.toString());
+//            }
+//            // 应用buffer
+//            if(isNumber){
+//                if(goodBuffer) {
+//                    GameCharacterManager.changeStatus(target, attrKey, floatChangedValue * skillObject.getLevel());
+//                }else {
+//                    GameCharacterManager.changeStatus(target, attrKey, floatChangedValue * -1 * skillObject.getLevel());
+//                }
+//            }else{
+//                GameCharacterManager.changeStatus(target, attrKey, changedValue);
+//            }
 
             Map<String, Set<String>> buffers =  target.getBuffers();
             if (!buffers.containsKey(name)) {
@@ -63,11 +81,11 @@ public class CharacterBuffer {
      * buffer 取消buffer
      * */
     public void undo(){
-        if(goodBuffer){
-            GameCharacterManager.changeStatus(target, attrKey, changedValue*-1);
-        }else{
-            GameCharacterManager.changeStatus(target, attrKey, changedValue);
-        }
+        Object change = changedValue;
+        boolean isNumber = StringChecker.isNumber(changedValue.toString());
+        if(isNumber)
+            change =  goodBuffer? (float)changedValue * -1  : (float)changedValue * 1;
+        GameCharacterManager.changeStatus(target, attrKey, change);
 
         Map<String, Set<String>> buffers = target.getBuffers();
         if(buffers.containsKey(name)){

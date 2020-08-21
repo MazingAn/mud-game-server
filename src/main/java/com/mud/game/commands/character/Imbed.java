@@ -3,6 +3,7 @@ package com.mud.game.commands.character;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.ImbedGemsMessage;
+import com.mud.game.messages.LoadGemsMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonObject;
@@ -16,7 +17,9 @@ import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * {
@@ -77,6 +80,7 @@ public class Imbed extends BaseCommand {
         gemList.add(gemObject);
         equipmentObject.setGems(gemList);
         MongoMapper.equipmentObjectRepository.save(equipmentObject);
+        PlayerCharacterManager.syncBagpack(caller, equipmentObject);
         //删除背包里的宝石
         CommonObject removeObject = CommonObjectBuilder.findObjectById(gemDbref);
         if (null == removeObject) {
@@ -84,6 +88,7 @@ public class Imbed extends BaseCommand {
             return;
         }
         PlayerCharacterManager.removeObjectsFromBagpack(caller, removeObject, 1);
+        MongoMapper.gemObjectRepository.deleteById(gemDbref);
         if (removeObject.getMaxStack() == 1) {
             CommonObjectBuilder.deleteObjectById(removeObject.getId());
         }
@@ -91,5 +96,21 @@ public class Imbed extends BaseCommand {
         caller.msg(new AlertMessage("镶嵌成功！"));
         //返回已镶嵌的所有宝石
         caller.msg(new ImbedGemsMessage(equipmentObject.getGems()));
+        //返回可镶嵌的宝石
+        String positionStr = null;
+        List<GemObject> gemObjectList = null;
+        Set<String> positions = equipmentObject.getPositions();
+        Iterator<String> positionsIterator = positions.iterator();
+        List<GemObject> gemAllList = new ArrayList<>();
+        while (positionsIterator.hasNext()) {
+            gemObjectList = new ArrayList<>();
+            positionStr = positionsIterator.next();
+            gemObjectList = MongoMapper.gemObjectRepository.findGemObjectByOwnerAndPositionsLike(caller.getId(), positionStr);
+            gemAllList.addAll(gemObjectList);
+        }
+        if (null == gemAllList) {
+            gemAllList = new ArrayList<>();
+        }
+        caller.msg(new LoadGemsMessage(gemAllList));
     }
 }

@@ -64,13 +64,15 @@ public class SellObjects extends BaseCommand {
         String sell_object = args.getString("sell_object");
         //数量
         int number = args.getInt("number");
-        if (number <= 0) {
-            caller.msg(new AlertMessage("上架物品数量必须大于0！"));
-            return;
-        }
         JSONArray buyoutPrice = args.getJSONArray("buyout_price");
         if (null == buyoutPrice) {
             caller.msg(new AlertMessage("价格不能为空！"));
+            return;
+        }
+        // 物品信息
+        CommonObject commonObject = CommonObjectBuilder.findObjectById(sell_object);
+        if (number <= 0 || number > commonObject.getTotalNumber()) {
+            caller.msg(new AlertMessage("上架物品失败！"));
             return;
         }
         //价格校验
@@ -97,8 +99,6 @@ public class SellObjects extends BaseCommand {
             return;
         }
 
-        // 物品信息
-        CommonObject commonObject = CommonObjectBuilder.findObjectById(sell_object);
         if (null == commonObject) {
             caller.msg("此物品不存在！");
             logger.error("此物品不存在！");

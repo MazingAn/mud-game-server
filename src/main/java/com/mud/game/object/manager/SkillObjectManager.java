@@ -20,6 +20,7 @@ import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.ActionLearnSkill;
 import com.mud.game.worlddata.db.models.Skill;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.apache.commons.lang.StringUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
@@ -113,7 +114,7 @@ public class SkillObjectManager {
         if (!ownerId.equals(character.getId())) {
             // 检查是否拥有这个技能
             character.msg(new MsgMessage("你没有这个技能！"));
-        } else if (!checkSubSKills(skillObject.getSubSKills(), character.getEquippedSkills())) {
+        } else if (!checkSubSKills(skillObject.getBasicSkill(), character.getEquippedSkills(), character)) {
             //检查是否装备子技能
             character.msg(new ToastMessage("没有装备子技能，无法装备技能"));
         } else if (!character.getState().equals(CharacterState.STATE_NORMAL)) {
@@ -179,17 +180,16 @@ public class SkillObjectManager {
     }
 
     /**
-     * @param subSKills      装备技能必须装备的子技能
+     * @param basicSkill     装备技能必须装备的子技能
      * @param equippedSkills 玩家已装备技能
+     * @param character
      * @return
      */
-    private static boolean checkSubSKills(Set<String> subSKills, Map<String, Set<String>> equippedSkills) {
-        if (null == equippedSkills || equippedSkills.size() == 0) {
+    private static boolean checkSubSKills(String basicSkill, Map<String, Set<String>> equippedSkills, CommonCharacter character) {
+        if (StringUtils.isEmpty(basicSkill)) {
             // 技能没有子技能要求
             return true;
         }
-        Iterator<String> stringIterator = subSKills.iterator();
-        String skillId = null;
         Set<String> stringSet = new HashSet<>();
         //获取已装备技能
         Iterator<Map.Entry<String, Set<String>>> mapIterator = equippedSkills.entrySet().iterator();
@@ -199,12 +199,9 @@ public class SkillObjectManager {
         }
 
         //校验子技能装备
-        while (stringIterator.hasNext()) {
-            skillId = stringIterator.next();
-            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
-            if (!stringSet.contains(skillId)) {
-                return false;
-            }
+        SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(basicSkill, character.getId());
+        if (!stringSet.contains(skillObject.getId())) {
+            return false;
         }
         return true;
     }

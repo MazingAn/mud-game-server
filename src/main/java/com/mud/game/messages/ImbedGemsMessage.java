@@ -13,7 +13,7 @@ public class ImbedGemsMessage {
 
     public ImbedGemsMessage(List<GemObject> gemList) {
         if (gemList.size() == 0) {
-            this.imbed_gems = null;
+            this.imbed_gems = new ArrayList<>();
         } else {
             imbed_gems = new ArrayList<>();
             for (int i = 0; i < gemList.size(); i++) {

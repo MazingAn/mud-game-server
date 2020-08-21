@@ -2,6 +2,7 @@ package com.mud.game.statements;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.combat.FighterManager;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
@@ -39,7 +40,10 @@ public abstract class BaseAttackSkillStatement {
         this.args = args;
         this.skillObject = skillObject;
         try{
-            attack();
+            if(caller.isCanCombat())
+                attack();
+            else
+                caller.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
         }catch (Exception e){
             logger.warn(String.format("%s 在执行技能 %s 的时候出现了错误", caller.getName(), key ));
         }

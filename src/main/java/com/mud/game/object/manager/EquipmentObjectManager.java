@@ -8,10 +8,7 @@ import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
-import com.mud.game.object.typeclass.BagpackObject;
-import com.mud.game.object.typeclass.EquipmentObject;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.CheckStrengthenInfo;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.EquipmentObjectAppearance;
@@ -21,6 +18,7 @@ import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.Equipment;
+import com.mud.game.worlddata.db.models.Gem;
 import com.mud.game.worlddata.db.models.NormalObject;
 import com.mud.game.worlddata.db.models.StrengthenMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -99,7 +97,18 @@ public class EquipmentObjectManager {
                 // 应用属性名字和对应的数值到角色身上
                 GameCharacterManager.changeStatus(character, attrKey, value);
             }
-
+            // 添加装备宝石属性
+            List<GemObject> gemObjectList = equipmentObject.getGems();
+            for (int i = 0; i < gemObjectList.size(); i++) {
+                if (gemObjectList.size() > 0) {
+                    for (String attrKey : gemObjectList.get(i).getAttrs().keySet()) {
+                        // 找到对应的属性名字 对应的数值
+                        Object value = gemObjectList.get(i).getAttrs().get(attrKey).get("value");
+                        // 应用属性名字和对应的数值到角色身上
+                        GameCharacterManager.changeStatus(character, attrKey, value);
+                    }
+                }
+            }
             // TODO：应用装备内的宝石的属性
             // 更新装备的状态
             equipmentObject.setEquipped(true);
@@ -135,6 +144,17 @@ public class EquipmentObjectManager {
                     GameCharacterManager.changeStatus(character, attrKey, value * -1);
                 }
                 // 去掉装备宝石属性
+                List<GemObject> gemObjectList = equipmentObject.getGems();
+                for (int i = 0; i < gemObjectList.size(); i++) {
+                    if (gemObjectList.size() > 0) {
+                        for (String attrKey : gemObjectList.get(i).getAttrs().keySet()) {
+                            Object valueStr = gemObjectList.get(i).getAttrs().get(attrKey).get("value");
+                            float value = Float.parseFloat(valueStr.toString());
+                            GameCharacterManager.changeStatus(character, attrKey, value * -1);
+                        }
+                    }
+                }
+
                 equipmentObject.setEquipped(false);
                 equipmentObject.setEquippedPosition(null);
                 character.getEquippedEquipments().put(position, null);

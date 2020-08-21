@@ -19,7 +19,7 @@ public class Skill {
     private String typeClass;
     @Mark(name="名称")
     private String name;
-    @Mark(name="父技能", link = "basicSkill")
+    @Mark(name="子技能", link = "basicSkill")
     private String basicSkill;
     @Mark(name="描述")
     @Column(length = 2048)
@@ -50,7 +50,7 @@ public class Skill {
     private String categoryType; //分类类型
     @Mark(name="装备位置", link = "skillPosition", multi = true)
     private String positions; //可以装备到的位置
-    @Mark(name="子技能", link = "uniqueSkill", multi = true)
+    @Mark(name="父技能", link = "uniqueSkill", multi = true)
     @Column(length = 4096)
     private String subSkills; //包含的子技能
     @Mark(name="武器类型", link = "weaponType")
