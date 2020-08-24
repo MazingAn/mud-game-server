@@ -13,7 +13,7 @@ public class SkillCastInfo {
     private String target;
     private String skill;
     private String cast;
-    private Map<String,Object> status;
+    private Map<String, Object> status;
     private String result;
 
     public SkillCastInfo() {
@@ -23,6 +23,17 @@ public class SkillCastInfo {
         this.caller = caller.getName();
         this.target = target.getName();
         this.skill = skillObject.getDataKey();
+        this.cast = cast;
+        this.status = new HashMap<>();
+        status.put(caller.getId(), new CombatStatus(caller));
+        status.put(target.getId(), new CombatStatus(target));
+        this.result = "";
+    }
+
+    public SkillCastInfo(CommonCharacter caller, CommonCharacter target, String cast) {
+        this.caller = caller.getName();
+        this.target = target.getName();
+        //  this.skill = desc;
         this.cast = cast;
         this.status = new HashMap<>();
         status.put(caller.getId(), new CombatStatus(caller));

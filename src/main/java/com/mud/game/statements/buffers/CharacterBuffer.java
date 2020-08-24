@@ -37,14 +37,14 @@ public class CharacterBuffer {
 
     /**
      * buffer 应用buffer
-     * */
-    public void apply(){
-        try{
+     */
+    public void apply() {
+        try {
 
             Object change = changedValue;
             boolean isNumber = StringChecker.isNumber(changedValue.toString());
-            if(isNumber)
-                change =  goodBuffer? (float)changedValue * 1 : (float)changedValue * -1;
+            if (isNumber)
+                change = goodBuffer ? (float) changedValue * 1 : (float) changedValue * -1;
             GameCharacterManager.changeStatus(target, attrKey, change);
 
 
@@ -65,30 +65,33 @@ public class CharacterBuffer {
 //                GameCharacterManager.changeStatus(target, attrKey, changedValue);
 //            }
 
-            Map<String, Set<String>> buffers =  target.getBuffers();
+            Map<String, Set<String>> buffers = target.getBuffers();
             if (!buffers.containsKey(name)) {
                 buffers.put(name, new HashSet<>());
             }
             buffers.get(name).add(bufferId);
             target.setBuffers(buffers);
             GameCharacterManager.saveCharacter(target);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * buffer 取消buffer
-     * */
-    public void undo(){
+     */
+    public void undo() {
         Object change = changedValue;
         boolean isNumber = StringChecker.isNumber(changedValue.toString());
-        if(isNumber)
-            change =  goodBuffer? (float)changedValue * -1  : (float)changedValue * 1;
+        if (isNumber)
+            change = goodBuffer ? (float) changedValue * -1 : (float) changedValue * 1;
+        if (attrKey.equals("canAttck")) {
+            change = true;
+        }
         GameCharacterManager.changeStatus(target, attrKey, change);
 
         Map<String, Set<String>> buffers = target.getBuffers();
-        if(buffers.containsKey(name)){
+        if (buffers.containsKey(name)) {
             buffers.get(name).remove(bufferId);
         }
         target.setBuffers(buffers);

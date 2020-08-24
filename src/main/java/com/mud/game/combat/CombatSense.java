@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * 战斗场景类
- *
+ * <p>
  * 战斗中提供蓝队blueTeam和红队readTeam两个队伍<br>
  * 负责管理战斗中的两支队伍的状态<br>
  * 后期可能的拓展：<br>
@@ -22,20 +22,27 @@ import java.util.concurrent.ScheduledExecutorService;
  * @author 安明哲
  * @version 1.0
  * @since 1.0
- *
- * */
+ */
 public class CombatSense {
 
-    /** 红队战斗成员列表 */
+    /**
+     * 红队战斗成员列表
+     */
     private ArrayList<CommonCharacter> redTeam;
 
-    /** 蓝队战斗成员列表 */
+    /**
+     * 蓝队战斗成员列表
+     */
     private ArrayList<CommonCharacter> blueTeam;
 
-    /** 获胜方颜色 */
+    /**
+     * 获胜方颜色
+     */
     private String winner;
 
-    /** 战斗结束的血量条件 */
+    /**
+     * 战斗结束的血量条件
+     */
     private int minHp;
 
     /**
@@ -43,8 +50,7 @@ public class CombatSense {
      *
      * @param redTeam  战斗一方的队伍（一个有角色对象组成的数组）
      * @param blueTeam 战斗一方的队伍（一个有角色对象组成的数组）
-     *
-     * */
+     */
     public CombatSense(ArrayList<CommonCharacter> redTeam,
                        ArrayList<CommonCharacter> blueTeam,
                        int minHp) {
@@ -56,41 +62,44 @@ public class CombatSense {
     /**
      * 获得队伍中存活（还可以战斗）的角色的数量
      *
-     * @param team 要检测的队伍
+     * @param team  要检测的队伍
      * @param minHp 判断角色是否还能继续参加战斗的界限值  如果血量低于这个值 则不能被算作存活人员
      * @return int 被检测队伍的存活（可继续战斗）人数
-     * */
+     */
     public int getAliveNumberInTeam(ArrayList<CommonCharacter> team, int minHp) {
         int aliveNumber = 0;
-        for(CommonCharacter character : team){
+        for (CommonCharacter character : team) {
             character = GameCharacterManager.getCharacterObject(character.getId());
-            if(character.getHp() <= minHp){
-                aliveNumber ++;
+            if (character.getHp() <= minHp) {
+                aliveNumber++;
             }
         }
         return aliveNumber;
     }
 
-    /** 给每个战斗成员发送消息 */
-    public void msgContents(Object messageObject){
-        for(CommonCharacter character : redTeam){
+    /**
+     * 给每个战斗成员发送消息
+     */
+    public void msgContents(Object messageObject) {
+        for (CommonCharacter character : redTeam) {
             character.msg(messageObject);
         }
-        for(CommonCharacter character : blueTeam){
+        for (CommonCharacter character : blueTeam) {
             character.msg(messageObject);
         }
     }
 
     /**
      * 检查战斗场景的状态，判断战斗是否结束
+     *
      * @return boolean 战斗是否可以结束
-     * */
-    public boolean isCombatFinished(){
-        if(getAliveNumberInTeam(redTeam, minHp) != 0){
+     */
+    public boolean isCombatFinished() {
+        if (getAliveNumberInTeam(redTeam, minHp) != 0) {
             winner = "blue";
             return true;
         }
-        if(getAliveNumberInTeam(blueTeam, minHp) != 0){
+        if (getAliveNumberInTeam(blueTeam, minHp) != 0) {
             winner = "red";
             return true;
         }
@@ -98,39 +107,49 @@ public class CombatSense {
     }
 
     /**
-     *  战斗结束的时候所做的处理
-     * */
-    public void onCombatFinish(){
+     * 战斗结束的时候所做的处理
+     */
+    public void onCombatFinish() {
         // 结束战斗
-        if(winner.equals("red")){
-            for(CommonCharacter character: redTeam){
+        if (winner.equals("red")) {
+            for (CommonCharacter character : redTeam) {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
+                character.setCanAttck(true);
+                GameCharacterManager.saveCharacter(character);
                 checkDied(character);
             }
-            for(CommonCharacter character: blueTeam){
+            for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
+                character.setCanAttck(true);
+                GameCharacterManager.saveCharacter(character);
                 checkDied(character);
             }
-        }else{
-            for(CommonCharacter character: redTeam){
+        } else {
+            for (CommonCharacter character : redTeam) {
                 character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
+                character.setCanAttck(true);
+                GameCharacterManager.saveCharacter(character);
                 checkDied(character);
             }
-            for(CommonCharacter character: blueTeam){
+            for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
+                character.setCanAttck(true);
+                GameCharacterManager.saveCharacter(character);
                 checkDied(character);
             }
         }
+
     }
 
     /**
      * 赢得队伍获取战利品
+     *
      * @param sense 战斗中的战斗场景 参见 {@link CombatSense}
-     * */
+     */
     public void lootSpoils(CombatSense sense) {
 
     }
@@ -138,14 +157,16 @@ public class CombatSense {
 
     /**
      * 检测玩家是否死亡，如果死亡发送复活命令
-     * */
-    private void checkDied(CommonCharacter character){
-        if(character.getHp() <= 0){
+     */
+    private void checkDied(CommonCharacter character) {
+        if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
         }
     }
 
-    /** GETTER SETTER 方法 */
+    /**
+     * GETTER SETTER 方法
+     */
     public ArrayList<CommonCharacter> getRedTeam() {
         return redTeam;
     }

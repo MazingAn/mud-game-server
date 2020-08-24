@@ -1,17 +1,13 @@
 package com.mud.game.structs;
 
-import com.mongodb.Mongo;
 import com.mud.game.handler.QuestObjectiveTypeHandler;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.typeclass.NormalObjectObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NormalObject;
-import com.mud.game.worlddata.db.models.WorldRoom;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import com.mud.game.worldrun.db.repository.NormalObjectObjectRepository;
 
 public class ObjectiveShowStatus {
 

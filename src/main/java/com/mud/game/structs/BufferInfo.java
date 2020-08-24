@@ -1,7 +1,10 @@
 package com.mud.game.structs;
 
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.statements.buffers.BufferManager;
+import com.mud.game.statements.buffers.CharacterBuffer;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,12 +18,18 @@ public class BufferInfo {
         Map<String, Set<String>> characterBuffers = character.getBuffers();
         for(String name : characterBuffers.keySet()){
             if(! characterBuffers.get(name).isEmpty()){
-                Map<String, Object> currentBufferInfo = new HashMap<>();
-                int added = characterBuffers.get(name).size();
-                boolean debuffer = !BufferManager.getBuffer(characterBuffers.get(name).toArray()[0].toString()).goodBuffer;
-                currentBufferInfo.put("added", added);
-                currentBufferInfo.put("debuffer", debuffer);
-                buffers.put(name, currentBufferInfo);
+                if( ! BufferManager.bufferMap.containsKey(characterBuffers.get(name).toArray()[0].toString())){
+                    characterBuffers.remove(name);
+                    character.setBuffers(characterBuffers);
+                    GameCharacterManager.saveCharacter(character);
+                }else{
+                    Map<String, Object> currentBufferInfo = new HashMap<>();
+                    int added = characterBuffers.get(name).size();
+                    boolean debuffer = !BufferManager.getBuffer(characterBuffers.get(name).toArray()[0].toString()).goodBuffer;
+                    currentBufferInfo.put("added", added);
+                    currentBufferInfo.put("debuffer", debuffer);
+                    buffers.put(name, currentBufferInfo);
+                }
             }
         }
     }

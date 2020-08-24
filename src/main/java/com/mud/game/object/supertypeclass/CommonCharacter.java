@@ -29,7 +29,8 @@ public class CommonCharacter extends BaseGameObject {
     public int after_smart; //先天悟性
     public int after_looks; //先天容貌
     public int after_lucky; //先天福缘
-    public boolean canCombat = true; //能否进行战斗
+    public boolean canCombat = true; //能否进行攻击
+    public boolean canAttck = true; //能否进行战斗
     //装备信息
     public List<String> equipments;
     public Map<String, String> equippedEquipments;
@@ -305,7 +306,7 @@ public class CommonCharacter extends BaseGameObject {
     }
 
     public Map<String, Set<String>> getBuffers() {
-        if(buffers == null) return new HashMap<>();
+        if (buffers == null) return new HashMap<>();
         return buffers;
     }
 
@@ -335,5 +336,13 @@ public class CommonCharacter extends BaseGameObject {
 
     public void setCanCombat(boolean canCombat) {
         this.canCombat = canCombat;
+    }
+
+    public boolean isCanAttck() {
+        return canAttck;
+    }
+
+    public void setCanAttck(boolean canAttck) {
+        this.canAttck = canAttck;
     }
 }
