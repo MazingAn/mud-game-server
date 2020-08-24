@@ -53,7 +53,8 @@ public class CommonObjectInfo {
     public void updateInfo(CommonObject commonObject) {
         this.strength_level = commonObject.getLevel();
         this.quality = commonObject.getQuality();
-        //this.gems = commonObject.getGems();
+        this.gems = commonObject.getGems();
+        this.gems = commonObject.getGems();
     }
 
 

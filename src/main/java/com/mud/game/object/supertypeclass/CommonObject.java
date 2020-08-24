@@ -38,6 +38,8 @@ public class CommonObject extends BaseGameObject {
     private int totalNumber;
     //武器开孔数
     private int slotNumber;
+    //镶嵌的宝石
+    private List<GemObject> gemss;
 
 
     public String getUnitName() {
@@ -150,5 +152,13 @@ public class CommonObject extends BaseGameObject {
 
     public void setSlotNumber(int slotNumber) {
         this.slotNumber = slotNumber;
+    }
+
+    public List<GemObject> getGems() {
+        return gemss;
+    }
+
+    public void setGems(List<GemObject> gems) {
+        this.gemss = gems;
     }
 }
