@@ -1,5 +1,11 @@
 package com.mud.game.handler;
 
+import com.mud.game.algorithm.AttackAlgorithm;
+import com.mud.game.algorithm.HarmInfo;
+import com.mud.game.combat.CombatSense;
+import com.mud.game.messages.SkillCastMessage;
+import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.buffers.AddBuffer;
@@ -7,6 +13,7 @@ import com.mud.game.statements.skills.IncrementsAttr;
 import com.mud.game.statements.skills.MangLuan;
 import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
 import com.mud.game.statements.skills.NormalHit;
+import com.mud.game.structs.SkillCastInfo;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -50,6 +57,22 @@ public class SkillFunctionHandler {
             String[] args = functionSplited[1].replaceAll("\\)", "").replaceAll("\\'", "").replaceAll("\"", "").split(",");
             // 根据技能是否是被动技能选择对应的functionSet；对于被动技能只返回技能属性加成
             // 对于主动技能，直接执行
+            //TODO 技能返回战斗场景信息
+            if (target != null) {
+                //计算伤害
+                HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
+                //应用伤害
+                GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1);
+                //构建战斗输出
+                String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
+                SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
+                //更新同步数据
+                GameCharacterManager.saveCharacter(target);
+                CombatSense sense = CombatHandler.getCombatSense(caller.getId());
+                sense.msgContents(new SkillCastMessage(skillCastInfo));
+            }
+
+            //函数
             Class clazz = null;
             if (skillObject.isPassive()) clazz = passiveSkillFunctionSet.get(key);
             else clazz = actionSkillFunctionSet.get(key);

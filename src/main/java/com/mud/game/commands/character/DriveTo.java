@@ -32,6 +32,7 @@ public class DriveTo extends BaseCommand {
         JSONObject args = getArgs();
         Session session = getSession();
         String roomId = args.getString("args");
+        // 只有玩家装备坐骑的时候这个方法才能使用，而且还是延时调用
         WorldRoomObject roomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectById(roomId);
         PlayerCharacterManager.moveTo(caller, roomObject.getDataKey());
     }

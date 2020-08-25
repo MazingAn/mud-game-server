@@ -1,15 +1,10 @@
 package com.mud.game.commands.character;
 
-import com.mud.game.combat.CombatSense;
 import com.mud.game.commands.BaseCommand;
-import com.mud.game.handler.CombatHandler;
-import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
-import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillObject;
-import com.mud.game.structs.SkillCastInfo;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
@@ -28,7 +23,7 @@ import org.yeauty.pojo.Session;
  *  }"
  *
  * </pre>
- */
+ * */
 public class CastSkill extends BaseCommand {
     /**
      * 构造函数，获取传入的参数，并执行命令
@@ -52,15 +47,5 @@ public class CastSkill extends BaseCommand {
         CommonCharacter target = GameCharacterManager.getCharacterObject(targetId);
         SkillObject skillObject = GameCharacterManager.getCharacterSkillByDataKey(caller, skillKey);
         GameCharacterManager.castSkill(caller, target, skillObject);
-        SkillCastInfo skillCastInfo = null;
-        if (!caller.isCanAttck()) {
-            skillCastInfo = new SkillCastInfo(caller, target, caller.getName() + "目前状态不能攻击！");
-        } else {
-            //构建战斗输出
-            String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, null);
-            skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
-        }
-        CombatSense sense = CombatHandler.getCombatSense(caller.getId());
-        sense.msgContents(new SkillCastMessage(skillCastInfo));
     }
 }

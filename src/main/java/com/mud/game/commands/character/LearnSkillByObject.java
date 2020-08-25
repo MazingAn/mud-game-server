@@ -1,12 +1,9 @@
 package com.mud.game.commands.character;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.WorldNpcObject;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;

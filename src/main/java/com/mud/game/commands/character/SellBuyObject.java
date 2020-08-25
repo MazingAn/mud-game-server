@@ -34,6 +34,8 @@ import java.util.*;
  */
 public class SellBuyObject extends BaseCommand {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    //收取10%佣金，完成交易上架者获取金钱的系数
+    private static final double COMMISSION_DEDUCTION = 0.9;
 
     /**
      * 构造函数，获取传入的参数，并执行命令
@@ -92,7 +94,7 @@ public class SellBuyObject extends BaseCommand {
             if (PlayerCharacterManager.castMoney(caller, "OBJECT_JINYEZI", jinyeziNum)) {
                 //接收一件物品放入背包,减去相应金钱
                 PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, number);
-                PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_JINYEZI", number * jinyeziNum);
+                PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_JINYEZI", (int) (number * jinyeziNum * COMMISSION_DEDUCTION));
             } else {
                 getSession().sendText(JsonResponse.JsonStringResponse(new AlertMessage("你的钱不够!")));
                 logger.error("你的金叶子不够！");
@@ -122,11 +124,11 @@ public class SellBuyObject extends BaseCommand {
                 //减去对应的钱
                 if (map.get("OBJECT_YINLIANG") > 0) {
                     PlayerCharacterManager.castMoney(caller, "OBJECT_YINLIANG", number * map.get("OBJECT_YINLIANG"));
-                    PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_YINLIANG", number * map.get("OBJECT_YINLIANG"));
+                    PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_YINLIANG", (int) (number * map.get("OBJECT_YINLIANG") * COMMISSION_DEDUCTION));
                 }
                 if (map.get("OBJECT_JINZI") > 0) {
                     PlayerCharacterManager.castMoney(caller, "OBJECT_JINZI", number * map.get("OBJECT_JINZI"));
-                    PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_JINZI", number * map.get("OBJECT_JINZI"));
+                    PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_JINZI", (int) (number * map.get("OBJECT_JINZI") * COMMISSION_DEDUCTION));
                 }
 
                 PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, number);

@@ -1447,6 +1447,9 @@ public class PlayerCharacterManager {
     public static void useObject(PlayerCharacter playerCharacter, String objectId) {
         if (MongoMapper.skillBookObjectRepository.existsById(objectId)) {
             useSkillBook(playerCharacter, objectId);
+        } else if (MongoMapper.normalObjectObjectRepository.existsById(objectId)) {
+            NormalObjectObject normalObjectObject = MongoMapper.normalObjectObjectRepository.findNormalObjectObjectById(objectId);
+            NormalObjectObjectManager.useObject(normalObjectObject, playerCharacter);
         }
     }
 
@@ -1471,5 +1474,36 @@ public class PlayerCharacterManager {
                 service.scheduleAtFixedRate(runnable, 2000, 3000, TimeUnit.MILLISECONDS);
             }
         }
+    }
+
+    /**
+     * 增加后天属性
+     *
+     * @param playerCharacter 用户对象
+     * @param atter           属性
+     * @param value           增加值
+     * @return
+     */
+    public static PlayerCharacter addAffterAttr(PlayerCharacter playerCharacter, String atter, int value) {
+        if ("after_arm".equals(atter)) {
+            playerCharacter.setAfter_arm(playerCharacter.getAfter_arm() + value);
+        }
+        if ("after_bone".equals(atter)) {
+            playerCharacter.setAfter_bone(playerCharacter.getAfter_bone() + value);
+        }
+        if ("after_body".equals(atter)) {
+            playerCharacter.setAfter_body(playerCharacter.getAfter_body() + value);
+        }
+        if ("after_smart".equals(atter)) {
+            playerCharacter.setAfter_smart(playerCharacter.getAfter_smart() + value);
+        }
+        if ("after_looks".equals(atter)) {
+            playerCharacter.setAfter_looks(playerCharacter.getAfter_looks() + value);
+        }
+        if ("after_lucky".equals(atter)) {
+            playerCharacter.setAfter_lucky(playerCharacter.getAfter_lucky() + value);
+        }
+        MongoMapper.playerCharacterRepository.save(playerCharacter);
+        return playerCharacter;
     }
 }
