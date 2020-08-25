@@ -446,7 +446,6 @@ public class SkillObjectManager {
             if (learnTarget instanceof SkillBookObject) {
                 needPotential = ((SkillBookObject) learnTarget).isUse_potential();
             }
-
             // 如果是知识类技能 则不需要潜能
             if (skillObject.getCategoryType().equals("SCT_ZHISHI")) {
                 needPotential = false;
@@ -494,6 +493,21 @@ public class SkillObjectManager {
             // 如果已经溢出，则表示可以升级技能
             while (currentBalance >= skillLevelUpNeedNumber) {
                 currentBalance = skillLevelUpNeedNumber - currentBalance;
+                // 预算技能升级子技能是否满足条件
+                if (!SkillObjectManager.BudgetSatisfyBasicSkill(skillObject, playerCharacter)) {
+                    Skill basicSkill = DbMapper.skillRepository.findSkillByDataKey(skillObject.getBasicSkill());
+                    session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.BASIC_SKILL_LEVEL_GT, skillObject.getName(), basicSkill.getName()))));
+                    PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                }
+                // 玩家技能等级不能大于npc的技能等级
+                if (learnTarget instanceof WorldNpcObject) {
+                    WorldNpcObject worldNpcObject = (WorldNpcObject) learnTarget;
+                    SkillObject npcSkillObject = GameCharacterManager.findSkillBySKillKey(worldNpcObject, skillObject.getDataKey());
+                    if (skillObject.getLevel() + 1 >= npcSkillObject.getLevel()) {
+                        session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NPC_SKILL_LEVEL_GT))));
+                        PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                    }
+                }
                 levelUp(skillObject, playerCharacter, session);
                 skillLevelUpNeedNumber = CommonAlgorithm.calculateSkillLevelUpNumber(skillObject);
             }
@@ -615,4 +629,75 @@ public class SkillObjectManager {
         }
     }
 
+    /**
+     * 判断学习技能子技能是否满足条件
+     *
+     * @param skillKey        技能key
+     * @param playerCharacter
+     * @return
+     */
+    public static boolean SatisfyBasicSkill(String skillKey, PlayerCharacter playerCharacter) {
+        Boolean isTrue = true;
+        Skill skill = DbMapper.skillRepository.findSkillByDataKey(skillKey);
+        String basicKill = skill.getBasicSkill();
+        if (StringUtils.isEmpty(basicKill)) {
+            return true;
+        }
+        //判断子技能是否满足条件
+        SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skillKey, playerCharacter.getId());
+        SkillObject basicSkillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skill.getBasicSkill(), playerCharacter.getId());
+        if (null == basicSkillObject) {
+            return false;
+        }
+        if (skillObject.getLevel() >= basicSkillObject.getLevel()) {
+            isTrue = false;
+        }
+        return isTrue;
+    }
+
+    /**
+     * 判断学习技能子技能是否满足条件
+     *
+     * @param skillObject     技能实体
+     * @param playerCharacter
+     * @return
+     */
+    public static boolean BudgetSatisfyBasicSkill(SkillObject skillObject, PlayerCharacter playerCharacter) {
+        Boolean isTrue = true;
+        String basicKill = skillObject.getBasicSkill();
+        if (StringUtils.isEmpty(basicKill)) {
+            return true;
+        }
+        //判断子技能是否满足条件
+        SkillObject basicSkillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skillObject.getBasicSkill(), playerCharacter.getId());
+        if (null == basicSkillObject) {
+            return false;
+        }
+        if (skillObject.getLevel() + 1 >= basicSkillObject.getLevel()) {
+            isTrue = false;
+        }
+        return isTrue;
+    }
+
+    /**
+     * 判断npc技能等级是否满足条件
+     *
+     * @param teacher
+     * @param playerCharacter
+     * @param skillKey
+     * @return
+     */
+    public static boolean SatisfyNpcSkill(CommonCharacter teacher, PlayerCharacter playerCharacter, String skillKey) {
+        Boolean isTrue = true;
+        SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skillKey, playerCharacter.getId());
+        if (null == skillObject) {
+            return true;
+        }
+        SkillObject npcSkillObject = GameCharacterManager.findSkillBySKillKey(teacher, skillKey);
+        //等级校验
+        if (skillObject.getLevel() >= npcSkillObject.getLevel()) {
+            isTrue = false;
+        }
+        return isTrue;
+    }
 }

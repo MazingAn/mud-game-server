@@ -734,6 +734,18 @@ public class PlayerCharacterManager {
         else if (playerCharacter.getPotential() < 100) {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_ENOUGH_POTENTIAL)));
             return null;
+        }
+        // 检测子技能是否满足条件
+        else if (!SkillObjectManager.SatisfyBasicSkill(skillKey, playerCharacter)) {
+            Skill skill = DbMapper.skillRepository.findSkillByDataKey(skillKey);
+            Skill basicSkill = DbMapper.skillRepository.findSkillByDataKey(skill.getBasicSkill());
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.BASIC_SKILL_LEVEL_GT, skill.getName(), basicSkill.getName()))));
+            return null;
+        }
+        //检查npc技能等级是否满足条件
+        else if (!SkillObjectManager.SatisfyNpcSkill(teacher, playerCharacter, skillKey)) {
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NPC_SKILL_LEVEL_GT))));
+            return null;
         } else {
             playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
@@ -857,7 +869,6 @@ public class PlayerCharacterManager {
             return runnable;
         }
     }
-
 
     /**
      * 玩家通过物品交换学习技能

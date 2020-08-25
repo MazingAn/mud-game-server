@@ -32,10 +32,10 @@ public class GameWords {
 
 
     // 拜师
-    public static  final String PLAYER_MUST_LEAVE_OLD_TEACHER = "{r%s{n对你说:\"阁下既然已经有了师门，又何必来这里打趣本人？\"";
-    public static  final String TEACHER_NOT_FOUND = "好像并没有找到{r%s{n这个人，你到底要拜谁为师？";
-    public static  final String PLAYER_FINDED_TEACHER = "你走上前去对{r%s{n行了拜师礼，并奉上了{c一盏茶{n？{{ %s满地的对你点了点头：\"从今以后，你就是我{b%s{n的{c徒弟{n了\"";
-    public static final String NPC_NOT_TEACH = "{r%s{n没有什么惊人的才能，也不收徒！" ;
+    public static final String PLAYER_MUST_LEAVE_OLD_TEACHER = "{r%s{n对你说:\"阁下既然已经有了师门，又何必来这里打趣本人？\"";
+    public static final String TEACHER_NOT_FOUND = "好像并没有找到{r%s{n这个人，你到底要拜谁为师？";
+    public static final String PLAYER_FINDED_TEACHER = "你走上前去对{r%s{n行了拜师礼，并奉上了{c一盏茶{n？{{ %s满地的对你点了点头：\"从今以后，你就是我{b%s{n的{c徒弟{n了\"";
+    public static final String NPC_NOT_TEACH = "{r%s{n没有什么惊人的才能，也不收徒！";
 
     // 学习技能
     public static final String ERROR_TEACHER = "{g%s{n脸疑惑的问到：\"在下好像并不记得有你这么个徒弟，何来请教一说\"";
@@ -73,7 +73,10 @@ public class GameWords {
     public static final String NOT_EQUIP_SKILL = "你并没有装备这个技能";
     // 学习技能条件
     public static final String NEED_SKILL_LEVEL_GT = "需要技能%s等级达到%s级";
-
+    // 子技能等级不够
+    public static final String BASIC_SKILL_LEVEL_GT = "学习%s技能击败，%s等级不够";
+    // 技能达到npc的技能等级
+    public static final String NPC_SKILL_LEVEL_GT = "你的技能已经不弱于你师傅";
     // 装备装备
     public static final String EQUIPMENT_ALREADY_EQUIPPED = "{c%s{n已经被装备。";
 
