@@ -646,6 +646,9 @@ public class SkillObjectManager {
         //判断子技能是否满足条件
         SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skillKey, playerCharacter.getId());
         SkillObject basicSkillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skill.getBasicSkill(), playerCharacter.getId());
+        if (null == skillObject) {
+            return true;
+        }
         if (null == basicSkillObject) {
             return false;
         }

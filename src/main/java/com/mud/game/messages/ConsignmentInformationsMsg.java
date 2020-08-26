@@ -23,7 +23,11 @@ public class ConsignmentInformationsMsg {
     private String description;
 
     public ConsignmentInformationsMsg(PlayerCharacter seller, ConsignmentInformation goods) {
-        this.sellerName = goods.getPalyerName();
+        if (seller.getId().equals(goods.getPalyerId())) {
+            this.sellerName = "你";
+        } else {
+            this.sellerName = goods.getPalyerName();
+        }
         this.objectName = goods.getObjectName();
         this.objectId = goods.getObjectId();
         this.number = goods.getNumber();

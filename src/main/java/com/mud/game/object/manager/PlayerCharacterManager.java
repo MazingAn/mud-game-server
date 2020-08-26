@@ -1402,7 +1402,7 @@ public class PlayerCharacterManager {
         String rebornObjectKey = ServerManager.gameSetting.getDefaultRebornObject();
         if (discardObject(playerCharacter, rebornObjectKey, 1)) {
             reborn(playerCharacter);
-            moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图
+            //   moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图到复活点
             showStatus(playerCharacter);
         } else {
             playerCharacter.msg(new ToastMessage("你没有让自己原地复活的灵丹妙药！"));

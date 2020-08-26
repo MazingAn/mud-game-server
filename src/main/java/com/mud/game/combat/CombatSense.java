@@ -1,10 +1,13 @@
 package com.mud.game.combat;
 
 import com.mud.game.messages.CombatFinishMessage;
+import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.RebornCommandsMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
+import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
@@ -124,6 +127,9 @@ public class CombatSense {
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 character.setCanAttck(true);
                 GameCharacterManager.saveCharacter(character);
+                PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
+                character.msg(new MsgMessage("你已经死了！"));
+                character.msg(new RebornCommandsMessage(playerCharacter));
                 checkDied(character);
             }
         } else {
@@ -132,6 +138,9 @@ public class CombatSense {
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 character.setCanAttck(true);
                 GameCharacterManager.saveCharacter(character);
+                PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
+                character.msg(new MsgMessage("你已经死了！"));
+                character.msg(new RebornCommandsMessage(playerCharacter));
                 checkDied(character);
             }
             for (CommonCharacter character : blueTeam) {
