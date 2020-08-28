@@ -6,12 +6,12 @@ package com.mud.game.structs;
 public class SkillCdInfo {
     private double cd;
     private String dbref;
-    private String datakey;
+    private String dataKey;
 
-    public SkillCdInfo(double cd, String dbref, String datakey) {
+    public SkillCdInfo(double cd, String dbref, String dataKey) {
         this.cd = cd;
         this.dbref = dbref;
-        this.datakey = datakey;
+        this.dataKey = dataKey;
     }
 
     public double getCd() {
@@ -30,11 +30,11 @@ public class SkillCdInfo {
         this.dbref = dbref;
     }
 
-    public String getDatakey() {
-        return datakey;
+    public String getDataKey() {
+        return dataKey;
     }
 
-    public void setDatakey(String datakey) {
-        this.datakey = datakey;
+    public void setDataKey(String dataKey) {
+        this.dataKey = dataKey;
     }
 }
