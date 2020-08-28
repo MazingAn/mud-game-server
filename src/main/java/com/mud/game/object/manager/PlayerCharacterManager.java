@@ -673,7 +673,7 @@ public class PlayerCharacterManager {
         /*
          * @发送消息给其他玩家
          * */
-        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterByName(name);
+        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterByName(name.trim());
         if (null == target) {
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("发送失败!")));
             return;
@@ -681,9 +681,9 @@ public class PlayerCharacterManager {
         Session targetSession = GameSessionService.getSessionByCallerId(target.getId());
         if (targetSession != null) {
             //给发送私聊的人返回数据
-            selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter,true)));
+            selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter, true)));
             //给接受私聊的人发送数据
-            targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target,  playerCharacter,false)));
+            targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter, false)));
         } else {
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("对方可能不在线")));
         }
@@ -1215,6 +1215,24 @@ public class PlayerCharacterManager {
     }
 
     /**
+     * 玩家使用货币
+     *
+     * @param playerCharacter 玩家
+     * @param unit            货币单位
+     * @param price           价格
+     */
+    public static boolean castMoney2(PlayerCharacter playerCharacter, String unit, int price) {
+        if (price == 0) {
+            return true;
+        }
+        // 有足够的钱，可以付款
+        if (hasMoney(playerCharacter, unit, price)) {
+            return discardMoney(playerCharacter, unit, price);
+        }
+        return false;
+    }
+
+    /**
      * 玩家获取货币
      *
      * @param playerCharacter 玩家
@@ -1389,6 +1407,49 @@ public class PlayerCharacterManager {
         return false;
     }
 
+    /**
+     * 根据key销毁物品
+     *
+     * @param playerCharacter 玩家
+     * @param objectKey       物品Key
+     * @param number          数量
+     * @return boolean 是否成功
+     */
+    public static boolean discardMoney(PlayerCharacter playerCharacter, String objectKey, int number) {
+        NormalObjectObject normalObjectObject =
+                MongoMapper.normalObjectObjectRepository.
+                        findNormalObjectObjectByDataKeyAndOwner(objectKey, playerCharacter.getId());
+        if (objectKey.equals("OBJECT_YINLIANG") && number > 99) {
+            NormalObjectObject jinzitObject = MongoMapper.normalObjectObjectRepository.findNormalObjectObjectByDataKeyAndOwner(objectKey, playerCharacter.getId());
+            int jinziNumber = (int) Math.floor(number / 100);
+            int yinglangNumber = number % 100;
+            if (normalObjectObject.getTotalNumber() >= yinglangNumber) {
+                if (removeObjectsFromBagpack(playerCharacter, normalObjectObject, yinglangNumber)) {
+                    normalObjectObject.setTotalNumber(normalObjectObject.getTotalNumber() - yinglangNumber);
+                    MongoMapper.normalObjectObjectRepository.save(normalObjectObject);
+                }
+            } else {
+                if (removeObjectsFromBagpack(playerCharacter, normalObjectObject, 100 - yinglangNumber)) {
+                    normalObjectObject.setTotalNumber(normalObjectObject.getTotalNumber() - (100 - yinglangNumber));
+                    jinziNumber = jinziNumber++;
+                    MongoMapper.normalObjectObjectRepository.save(normalObjectObject);
+                }
+            }
+            if (removeObjectsFromBagpack(playerCharacter, jinzitObject, jinziNumber)) {
+                jinzitObject.setTotalNumber(normalObjectObject.getTotalNumber() - jinziNumber);
+                MongoMapper.normalObjectObjectRepository.save(jinzitObject);
+                return true;
+            }
+        } else {
+            if (removeObjectsFromBagpack(playerCharacter, normalObjectObject, number)) {
+                normalObjectObject.setTotalNumber(normalObjectObject.getTotalNumber() - number);
+                MongoMapper.normalObjectObjectRepository.save(normalObjectObject);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * 检查背包是否有某种物品
@@ -1402,6 +1463,31 @@ public class PlayerCharacterManager {
         String bagpackId = playerCharacter.getBagpack();
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
         return CommonItemContainerManager.hasObjectByDataKey(bagpackObject, objectKey, number);
+    }
+
+    /**
+     * 检查背包是否有某种物品
+     *
+     * @param playerCharacter 玩家
+     * @param objectKey       物品的key
+     * @param number          需要的数量
+     * @return boolean 检测结果
+     */
+    public static boolean hasMoney(PlayerCharacter playerCharacter, String objectKey, int number) {
+        String bagpackId = playerCharacter.getBagpack();
+        BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
+        if (objectKey.equals("OBJECT_YINLIANG") && number > 99) {
+            //TODO 将背包里的金子转换成银锭在做比较
+            // 获取背包里金子的数量
+            int jinziNumber = CommonItemContainerManager.getNumberByDataKey(bagpackObject, "OBJECT_JINZI");
+            // 获取背包里银锭的数量
+            int yinliangNumber = CommonItemContainerManager.getNumberByDataKey(bagpackObject, objectKey);
+            // 将背包里金子换算成银子
+            return (jinziNumber * 100 + yinliangNumber) >= number;
+        } else {
+            //TODO 与换算无关直接判断
+            return CommonItemContainerManager.hasObjectByDataKey(bagpackObject, objectKey, number);
+        }
     }
 
     /**

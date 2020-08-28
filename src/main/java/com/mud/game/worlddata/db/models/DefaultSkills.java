@@ -13,8 +13,7 @@ public class DefaultSkills {
     @Mark(name="编号")
     private Long id;
 
-    @Mark(name = "描述名称")
-    private String name;
+
 
     @Column(name = "target")
     @Mark(name="目标", link="npc")
@@ -37,13 +36,6 @@ public class DefaultSkills {
     @Mark(name="等级")
     private int level; //默认技能的等级
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;

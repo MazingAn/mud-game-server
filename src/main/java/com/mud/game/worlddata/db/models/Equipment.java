@@ -35,18 +35,6 @@ public class Equipment extends BaseCommonObject {
     private String attrs;
 
 
-    @Mark(name = "描述名称")
-    private String name;
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getPositions() {
         return positions;

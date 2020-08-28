@@ -1,0 +1,40 @@
+package com.mud.game.structs;
+
+/**
+ * 技能cd
+ */
+public class SkillCdInfo {
+    private double cd;
+    private String dbref;
+    private String datakey;
+
+    public SkillCdInfo(double cd, String dbref, String datakey) {
+        this.cd = cd;
+        this.dbref = dbref;
+        this.datakey = datakey;
+    }
+
+    public double getCd() {
+        return cd;
+    }
+
+    public void setCd(double cd) {
+        this.cd = cd;
+    }
+
+    public String getDbref() {
+        return dbref;
+    }
+
+    public void setDbref(String dbref) {
+        this.dbref = dbref;
+    }
+
+    public String getDatakey() {
+        return datakey;
+    }
+
+    public void setDatakey(String datakey) {
+        this.datakey = datakey;
+    }
+}

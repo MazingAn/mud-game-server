@@ -26,21 +26,14 @@ public class QuestObjective {
     @Mark(name = "目标", link = "objectiveTypeObject")
     private String object;
 
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name = "数量")
     private int number;
 
     @Mark(name = "描述")
     private String description;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;
@@ -56,7 +49,6 @@ public class QuestObjective {
 
     public void setQuest(String quest) {
         this.quest = quest;
-        this.name = quest;
     }
 
     public String getObjectiveType() {

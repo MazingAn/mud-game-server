@@ -14,8 +14,7 @@ public class ActionLearnSkill {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Mark(name="编号")
     private Long id;
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name="事件", link = "event")
     private String eventKey;
     @Mark(name="技能", link="skill")
@@ -23,13 +22,7 @@ public class ActionLearnSkill {
     @Mark(name="最大学习等级")
     private int maxLevel;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public ActionLearnSkill() {
     }

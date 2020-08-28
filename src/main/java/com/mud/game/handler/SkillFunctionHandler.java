@@ -4,6 +4,7 @@ import com.mud.game.algorithm.AttackAlgorithm;
 import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.messages.SkillCastMessage;
+import com.mud.game.messages.SkillCdMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
@@ -15,10 +16,14 @@ import com.mud.game.statements.skills.ZhongDu;
 import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
 import com.mud.game.statements.skills.NormalHit;
 import com.mud.game.structs.SkillCastInfo;
+import com.mud.game.structs.SkillCdInfo;
 
 import java.lang.reflect.Constructor;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.mud.game.handler.SkillCdHandler.skillCdMap;
 
 /**
  * 技能函数缓存类
@@ -71,6 +76,12 @@ public class SkillFunctionHandler {
                 GameCharacterManager.saveCharacter(target);
                 CombatSense sense = CombatHandler.getCombatSense(caller.getId());
                 sense.msgContents(new SkillCastMessage(skillCastInfo));
+                //设置技能cd
+                SkillCdHandler.addSkillCd(caller.getId() + skillObject.getDataKey(), new Date());
+                //返回技能冷却时间
+                if (skillObject.getCd() != 0) {
+                    sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd(), skillObject.getId(),skillObject.getDataKey())));
+                }
             }
 
             //函数

@@ -138,7 +138,7 @@ public class CharacterBuffer {
                 GameCharacterManager.changeStatus(target, "hp", goodBuffer ? changedValue : Float.parseFloat(changedValue.toString()) * -1);
                 //构建战斗输出
                 if (target.getHp() > 0) {
-                    skillCastInfo = new SkillCastInfo(caller, target, skillObject, target.getName() + "中毒失去" + changedValue + "气血!!!!!!!!!!!!！");
+                    skillCastInfo = new SkillCastInfo(caller, target, skillObject, target.getName() + "中毒失去" + changedValue + "气血！");
                     sense.msgContents(new SkillCastMessage(skillCastInfo));
                 }
                 //更新同步数据

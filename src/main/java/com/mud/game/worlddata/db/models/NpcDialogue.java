@@ -19,18 +19,11 @@ public class NpcDialogue {
     @Mark(name = "对话", link = "dialogue")
     private String dialogue;
 
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name = "默认对话", link = "dialogue")
     private boolean defaultDialogue;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;

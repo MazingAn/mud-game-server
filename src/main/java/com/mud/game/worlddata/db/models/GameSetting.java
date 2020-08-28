@@ -14,8 +14,7 @@ public class GameSetting {
     @Mark(name="编号")
     private Long id;
 
-    @Mark(name = "描述名称")
-    private String name;
+
 
     /** 游戏名称 */
     @Mark(name = "欢迎信息")
@@ -71,13 +70,7 @@ public class GameSetting {
     @Mark(name = "默认复活道具", link = "allObjects")
     private String defaultRebornObject;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;

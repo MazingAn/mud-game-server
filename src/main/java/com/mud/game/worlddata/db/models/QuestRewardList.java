@@ -25,21 +25,14 @@ public class QuestRewardList {
     @Mark(name = "数量")
     private int number;
 
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name = "概率")
     private float odds;
 
     @Mark(name = "触发条件")
     private String actionCondition;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;

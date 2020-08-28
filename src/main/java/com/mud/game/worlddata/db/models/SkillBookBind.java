@@ -14,8 +14,7 @@ public class SkillBookBind {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Mark(name="编号")
     private Long id;
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name="技能书", link = "skillBook")
     @Column(name = "skill_book")
     private String skillBook;
@@ -47,11 +46,5 @@ public class SkillBookBind {
         this.skill = skill;
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

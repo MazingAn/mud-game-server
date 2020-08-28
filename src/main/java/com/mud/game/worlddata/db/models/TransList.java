@@ -17,8 +17,7 @@ public class TransList {
 
     @Mark(name="传送NPC", link = "transfer")
     private String npc;
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name="传送目的地", link = "worldRoom")
     private String room;
 
@@ -28,13 +27,7 @@ public class TransList {
     @Mark(name = "需要的物品数量")
     private int number;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public long getId() {
         return id;

@@ -3,7 +3,6 @@ package com.mud.game.object.manager;
 import com.mud.game.object.typeclass.GameChatChannel;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import com.mud.game.worldrun.db.repository.PlayerCharacterRepository;
 
 public class GameChannelManager {
     public static GameChatChannel create(String channelKey, String name, String permission){

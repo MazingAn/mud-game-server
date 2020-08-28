@@ -7,5 +7,4 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface DefaultEquipmentsRepository extends SpecificationRepository<DefaultEquipments, Long> {
-    Page<ActionAcceptQuest> findByNameLike(String specName, Pageable pageable);
 }

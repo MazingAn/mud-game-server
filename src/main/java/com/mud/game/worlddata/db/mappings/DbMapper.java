@@ -80,7 +80,7 @@ public class DbMapper {
     @Autowired
     public void setGameSettingRepository(GameSettingRepository gameSettingRepository) {
         DbMapper.gameSettingRepository = gameSettingRepository;
-        modelRepositoryMap.put("gameSetting", gameSettingRepository);
+        modelRepositoryMap.put("gamesetting", gameSettingRepository);
     }
 
     @Autowired
@@ -92,7 +92,7 @@ public class DbMapper {
     @Autowired
     public void setHangupObjectRepository(HangupObjectRepository hangupObjectRepository) {
         DbMapper.hangupObjectRepository = hangupObjectRepository;
-        modelRepositoryMap.put("hangupObject", hangupObjectRepository);
+        modelRepositoryMap.put("hangupobject", hangupObjectRepository);
     }
 
     @Autowired
@@ -104,37 +104,37 @@ public class DbMapper {
     @Autowired
     public void setPlayerTitleRepository(PlayerTitleRepository playerTitleRepository) {
         DbMapper.playerTitleRepository = playerTitleRepository;
-        modelRepositoryMap.put("playerTitle", playerTitleRepository);
+        modelRepositoryMap.put("playertitle", playerTitleRepository);
     }
 
     @Autowired
     public void setSkillBookBindRepository(SkillBookBindRepository skillBookBindRepository) {
         DbMapper.skillBookBindRepository = skillBookBindRepository;
-        modelRepositoryMap.put("skillBookBind", skillBookBindRepository);
+        modelRepositoryMap.put("skillbookbind", skillBookBindRepository);
     }
 
     @Autowired
     public void setWorldAreaRepository(WorldAreaRepository worldAreaRepository) {
         DbMapper.worldAreaRepository = worldAreaRepository;
-        modelRepositoryMap.put("worldArea", worldAreaRepository);
+        modelRepositoryMap.put("worldarea", worldAreaRepository);
     }
 
     @Autowired
     public void setWorldExitRepository(WorldExitRepository worldExitRepository) {
         DbMapper.worldExitRepository = worldExitRepository;
-        modelRepositoryMap.put("worldExit", worldExitRepository);
+        modelRepositoryMap.put("worldexit", worldExitRepository);
     }
 
     @Autowired
     public void setWorldObjectRepository(WorldObjectRepository worldObjectRepository) {
         DbMapper.worldObjectRepository = worldObjectRepository;
-        modelRepositoryMap.put("worldObject", worldObjectRepository);
+        modelRepositoryMap.put("worldobject", worldObjectRepository);
     }
 
     @Autowired
     public void setWorldRoomRepository(WorldRoomRepository worldRoomRepository) {
         DbMapper.worldRoomRepository = worldRoomRepository;
-        modelRepositoryMap.put("worldRoom", worldRoomRepository);
+        modelRepositoryMap.put("worldroom", worldRoomRepository);
     }
 
     @Autowired
@@ -146,7 +146,7 @@ public class DbMapper {
     @Autowired
     public void setSkillBookRepository(SkillBookRepository skillBookRepository) {
         DbMapper.skillBookRepository = skillBookRepository;
-        modelRepositoryMap.put("skillBook", skillBookRepository);
+        modelRepositoryMap.put("skillbook", skillBookRepository);
     }
 
     @Autowired
@@ -158,79 +158,79 @@ public class DbMapper {
     @Autowired
     public void setWorldNpcRepository(WorldNpcRepository worldNpcRepository) {
         DbMapper.worldNpcRepository = worldNpcRepository;
-        modelRepositoryMap.put("worldNpc", worldNpcRepository);
+        modelRepositoryMap.put("worldnpc", worldNpcRepository);
     }
 
     @Autowired
     public void setCharacterModelRepository(CharacterModelRepository characterModelRepository) {
         DbMapper.characterModelRepository = characterModelRepository;
-        modelRepositoryMap.put("characterModel", characterModelRepository);
+        modelRepositoryMap.put("charactermodel", characterModelRepository);
     }
 
     @Autowired
     public void setEventDataRepository(EventDataRepository eventDataRepository) {
         DbMapper.eventDataRepository = eventDataRepository;
-        modelRepositoryMap.put("eventData", eventDataRepository);
+        modelRepositoryMap.put("eventdata", eventDataRepository);
     }
 
     @Autowired
     public void setActionAcceptQuestRepository(ActionAcceptQuestRepository actionAcceptQuestRepository) {
         DbMapper.actionAcceptQuestRepository = actionAcceptQuestRepository;
-        modelRepositoryMap.put("actionAcceptQuest", actionAcceptQuestRepository);
+        modelRepositoryMap.put("actionacceptquest", actionAcceptQuestRepository);
     }
 
     @Autowired
     public void setActionAttackRepository(ActionAttackRepository actionAttackRepository) {
         DbMapper.actionAttackRepository = actionAttackRepository;
-        modelRepositoryMap.put("actionAttack", actionAttackRepository);
+        modelRepositoryMap.put("actionattack", actionAttackRepository);
     }
 
     @Autowired
     public void setActionChangeAttrRepository(ActionChangeAttrRepository actionChangeAttrRepository) {
         DbMapper.actionChangeAttrRepository = actionChangeAttrRepository;
-        modelRepositoryMap.put("actionChangeAttr", actionChangeAttrRepository);
+        modelRepositoryMap.put("actionchangeattr", actionChangeAttrRepository);
     }
 
     @Autowired
     public void setActionChangeStepRepository(ActionChangeStepRepository actionChangeStepRepository) {
         DbMapper.actionChangeStepRepository = actionChangeStepRepository;
-        modelRepositoryMap.put("actionChangeStep", actionChangeStepRepository);
+        modelRepositoryMap.put("actionchangestep", actionChangeStepRepository);
     }
 
     @Autowired
     public void setActionCloseEventRepository(ActionCloseEventRepository actionCloseEventRepository) {
         DbMapper.actionCloseEventRepository = actionCloseEventRepository;
-        modelRepositoryMap.put("actionCloseEvent", actionCloseEventRepository);
+        modelRepositoryMap.put("actioncloseevent", actionCloseEventRepository);
     }
 
     @Autowired
     public void setActionDialogueRepository(ActionDialogueRepository actionDialogueRepository) {
         DbMapper.actionDialogueRepository = actionDialogueRepository;
-        modelRepositoryMap.put("actionDialogue", actionDialogueRepository);
+        modelRepositoryMap.put("actiondialogue", actionDialogueRepository);
     }
 
     @Autowired
     public void setActionLearnSkillRepository(ActionLearnSkillRepository actionLearnSkillRepository) {
         DbMapper.actionLearnSkillRepository = actionLearnSkillRepository;
-        modelRepositoryMap.put("actionLearnSkill", actionLearnSkillRepository);
+        modelRepositoryMap.put("actionlearnskill", actionLearnSkillRepository);
     }
 
     @Autowired
     public void setActionTurnInQuestRepository(ActionTurnInQuestRepository actionTurnInQuestRepository) {
         DbMapper.actionTurnInQuestRepository = actionTurnInQuestRepository;
-        modelRepositoryMap.put("actionTurnInQuest", actionTurnInQuestRepository);
+        modelRepositoryMap.put("actionturninQuest", actionTurnInQuestRepository);
     }
 
     @Autowired
     public void setActionMoveRepository(ActionMoveRepository actionMoveRepository) {
         DbMapper.actionMoveRepository = actionMoveRepository;
-        modelRepositoryMap.put("actionMove", actionMoveRepository);
+        modelRepositoryMap.put("actionmove", actionMoveRepository);
     }
 
     @Autowired
     public void setLootListRepository(LootListRepository lootListRepository) {
         DbMapper.lootListRepository = lootListRepository;
-        modelRepositoryMap.put("lootList", lootListRepository);
+        modelRepositoryMap.put("lootlist", lootListRepository);
     }
 
     @Autowired
@@ -242,55 +242,55 @@ public class DbMapper {
     @Autowired
     public void setSkillCategoryTypeRepository(SkillCategoryTypeRepository skillCategoryTypeRepository) {
         DbMapper.skillCategoryTypeRepository = skillCategoryTypeRepository;
-        modelRepositoryMap.put("skillCategoryType", skillCategoryTypeRepository);
+        modelRepositoryMap.put("skillCategorytype", skillCategoryTypeRepository);
     }
 
     @Autowired
     public void setSkillFunctionTypeRepository(SkillFunctionTypeRepository skillFunctionTypeRepository) {
         DbMapper.skillFunctionTypeRepository = skillFunctionTypeRepository;
-        modelRepositoryMap.put("skillFunctionType", skillFunctionTypeRepository);
+        modelRepositoryMap.put("skillFunctiontype", skillFunctionTypeRepository);
     }
 
     @Autowired
     public void setSkillPositionRepository(SkillPositionRepository skillPositionRepository) {
         DbMapper.skillPositionRepository = skillPositionRepository;
-        modelRepositoryMap.put("skillPosition", skillPositionRepository);
+        modelRepositoryMap.put("skillposition", skillPositionRepository);
     }
 
     @Autowired
     public void setDefaultSkillsRepository(DefaultSkillsRepository defaultSkillsRepository) {
         DbMapper.defaultSkillsRepository = defaultSkillsRepository;
-        modelRepositoryMap.put("defaultSkills", defaultSkillsRepository);
+        modelRepositoryMap.put("defaultskills", defaultSkillsRepository);
     }
 
     @Autowired
     public void setDefaultEquipmentsRepository(DefaultEquipmentsRepository defaultEquipmentsRepository) {
         DbMapper.defaultEquipmentsRepository = defaultEquipmentsRepository;
-        modelRepositoryMap.put("defaultEquipments", defaultEquipmentsRepository);
+        modelRepositoryMap.put("defaultequipments", defaultEquipmentsRepository);
     }
 
     @Autowired
     public void setDefaultObjectsRepository(DefaultObjectsRepository defaultObjectsRepository) {
         DbMapper.defaultObjectsRepository = defaultObjectsRepository;
-        modelRepositoryMap.put("defaultObjects", defaultObjectsRepository);
+        modelRepositoryMap.put("defaultobjects", defaultObjectsRepository);
     }
 
     @Autowired
     public void setNormalObjectRepository(NormalObjectRepository normalObjectRepository) {
         DbMapper.normalObjectRepository = normalObjectRepository;
-        modelRepositoryMap.put("normalObject", normalObjectRepository);
+        modelRepositoryMap.put("normalobject", normalObjectRepository);
     }
 
     @Autowired
     public void setNpcLearnObjectListRepository(NpcLearnObjectListRepository npcLearnObjectListRepository) {
         DbMapper.npcLearnObjectListRepository = npcLearnObjectListRepository;
-        modelRepositoryMap.put("npcLearnObjectList", npcLearnObjectListRepository);
+        modelRepositoryMap.put("npclearnobjectlist", npcLearnObjectListRepository);
     }
 
     @Autowired
     public void setEquipmentPositionRepository(EquipmentPositionRepository equipmentPositionRepository) {
         DbMapper.equipmentPositionRepository = equipmentPositionRepository;
-        modelRepositoryMap.put("equipmentPosition", equipmentPositionRepository);
+        modelRepositoryMap.put("equipmentposition", equipmentPositionRepository);
     }
 
     @Autowired
@@ -302,13 +302,13 @@ public class DbMapper {
     @Autowired
     public void setDialogueSentenceRepository(DialogueSentenceRepository dialogueSentenceRepository) {
         DbMapper.dialogueSentenceRepository = dialogueSentenceRepository;
-        modelRepositoryMap.put("dialogueSentence", dialogueSentenceRepository);
+        modelRepositoryMap.put("dialoguesentence", dialogueSentenceRepository);
     }
 
     @Autowired
     public void setNpcDialogueRepository(NpcDialogueRepository npcDialogueRepository) {
         DbMapper.npcDialogueRepository = npcDialogueRepository;
-        modelRepositoryMap.put("npcDialogue", npcDialogueRepository);
+        modelRepositoryMap.put("npcdialogue", npcDialogueRepository);
     }
 
     @Autowired
@@ -320,31 +320,31 @@ public class DbMapper {
     @Autowired
     public void setQuestDependencyRepository(QuestDependencyRepository questDependencyRepository) {
         DbMapper.questDependencyRepository = questDependencyRepository;
-        modelRepositoryMap.put("questDependency", questDependencyRepository);
+        modelRepositoryMap.put("questdependency", questDependencyRepository);
     }
 
     @Autowired
     public void setQuestDialogueDependencyRepository(QuestDialogueDependencyRepository questDialogueDependencyRepository) {
         DbMapper.questDialogueDependencyRepository = questDialogueDependencyRepository;
-        modelRepositoryMap.put("questDialogueDependency", questDialogueDependencyRepository);
+        modelRepositoryMap.put("questdialoguedependency", questDialogueDependencyRepository);
     }
 
     @Autowired
     public void setQuestRewardListRepository(QuestRewardListRepository questRewardListRepository) {
         DbMapper.questRewardListRepository = questRewardListRepository;
-        modelRepositoryMap.put("questRewardList", questRewardListRepository);
+        modelRepositoryMap.put("questrewardlist", questRewardListRepository);
     }
 
     @Autowired
     public void setQuestObjectiveRepository(QuestObjectiveRepository questObjectiveRepository) {
         DbMapper.questObjectiveRepository = questObjectiveRepository;
-        modelRepositoryMap.put("questObjective", questObjectiveRepository);
+        modelRepositoryMap.put("questobjective", questObjectiveRepository);
     }
 
     @Autowired
     public void setNpcShopRepository(NpcShopRepository npcShopRepository) {
         DbMapper.npcShopRepository = npcShopRepository;
-        modelRepositoryMap.put("npcShop", npcShopRepository);
+        modelRepositoryMap.put("npcshop", npcShopRepository);
     }
 
     @Autowired
@@ -356,61 +356,61 @@ public class DbMapper {
     @Autowired
     public void setShopGoodsRepository(ShopGoodsRepository shopGoodsRepository) {
         DbMapper.shopGoodsRepository = shopGoodsRepository;
-        modelRepositoryMap.put("shopGoods", shopGoodsRepository);
+        modelRepositoryMap.put("shopgoods", shopGoodsRepository);
     }
 
     @Autowired
     public void setObjectTypeRepository(ObjectTypeRepository objectTypeRepository) {
         DbMapper.objectTypeRepository = objectTypeRepository;
-        modelRepositoryMap.put("objectType", objectTypeRepository);
+        modelRepositoryMap.put("objecttype", objectTypeRepository);
     }
 
     @Autowired
     public void setHangupTypeRepository(HangupTypeRepository hangupTypeRepository) {
         DbMapper.hangupTypeRepository = hangupTypeRepository;
-        modelRepositoryMap.put("hangupType", hangupTypeRepository);
+        modelRepositoryMap.put("hanguptype", hangupTypeRepository);
     }
 
     @Autowired
     public void setWeaponTypeRepository(WeaponTypeRepository weaponTypeRepository) {
         DbMapper.weaponTypeRepository = weaponTypeRepository;
-        modelRepositoryMap.put("weaponType", weaponTypeRepository);
+        modelRepositoryMap.put("weapontype", weaponTypeRepository);
     }
 
     @Autowired
     public void setTransListRepository(TransListRepository transListRepository) {
         DbMapper.transListRepository = transListRepository;
-        modelRepositoryMap.put("transList", transListRepository);
+        modelRepositoryMap.put("translist", transListRepository);
     }
 
     @Autowired
     public void setConsignmentInfomationRepository(ConsignmentInfomationRepository consignmentInfomationRepository) {
         DbMapper.consignmentInfomationRepository = consignmentInfomationRepository;
-        modelRepositoryMap.put("consignmentInfomation", consignmentInfomationRepository);
+        modelRepositoryMap.put("consignmentinfomation", consignmentInfomationRepository);
     }
 
     @Autowired
     public void setCompositeMaterialRepository(CompositeMaterialRepository compositeMaterialRepository) {
         DbMapper.compositeMaterialRepository = compositeMaterialRepository;
-        modelRepositoryMap.put("compositeMaterial", compositeMaterialRepository);
+        modelRepositoryMap.put("compositematerial", compositeMaterialRepository);
     }
 
     @Autowired
     public void setStrengthenMaterialRepository(StrengthenMaterialRepository strengthenMaterialRepository) {
         DbMapper.strengthenMaterialRepository = strengthenMaterialRepository;
-        modelRepositoryMap.put("strengthenMaterial", strengthenMaterialRepository);
+        modelRepositoryMap.put("strengthenmaterial", strengthenMaterialRepository);
     }
 
     @Autowired
     public void setQualityMaterialRepository(QualityMaterialRepository qualityMaterialRepository) {
         DbMapper.qualityMaterialRepository = qualityMaterialRepository;
-        modelRepositoryMap.put("qualityMaterial", qualityMaterialRepository);
+        modelRepositoryMap.put("qualitymaterial", qualityMaterialRepository);
     }
 
     @Autowired
     public void setSlotMaterialRepository(SlotMaterialRepository slotMaterialRepository) {
         DbMapper.slotMaterialRepository = slotMaterialRepository;
-        modelRepositoryMap.put("slotMaterial", slotMaterialRepository);
+        modelRepositoryMap.put("slotmaterial", slotMaterialRepository);
     }
 }
 

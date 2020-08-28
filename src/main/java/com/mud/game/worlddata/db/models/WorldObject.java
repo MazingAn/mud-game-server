@@ -21,8 +21,7 @@ public class WorldObject extends BaseObject {
     @Mark(name = "只生成一次")
     @Column(columnDefinition = "bool default false")
     private boolean lootOnce;
-    @Mark(name = "描述名称")
-    private String name;
+
     // 如果是物品生成器，获取物品的时候的数量
     @Mark(name = "物品生成数量")
     @Column(columnDefinition = "int default 1")
@@ -40,15 +39,7 @@ public class WorldObject extends BaseObject {
     @Mark(name = "图标")
     private String icon;
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getLocation() {
         return location;

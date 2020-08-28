@@ -14,8 +14,7 @@ public class ActionChangeAttr {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Mark(name="编号")
     private Long id;
-    @Mark(name = "描述名称")
-    private String name;
+
     @Mark(name="事件", link="event")
     private String eventKey;
     @Mark(name="属性名称", link="attrName")
@@ -27,13 +26,6 @@ public class ActionChangeAttr {
     @Mark(name="描述")
     private String description;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public ActionChangeAttr() {
     }

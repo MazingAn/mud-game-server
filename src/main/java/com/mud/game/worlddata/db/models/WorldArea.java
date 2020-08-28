@@ -13,18 +13,9 @@ public class WorldArea extends BaseObject {
     private String areaHome;
     @Mark(name = "区域背景")
     private String background;
-    @Mark(name = "描述名称")
-    private String name;
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     public String getAreaHome() {
         return areaHome;

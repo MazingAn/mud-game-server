@@ -14,18 +14,9 @@ public class NormalObject extends BaseCommonObject {
     @Mark(name="使用函数")
     private String actionFunction;
 
-    @Mark(name = "描述名称")
-    private String name;
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
+  
 
     public String getActionFunction() {
         return actionFunction;

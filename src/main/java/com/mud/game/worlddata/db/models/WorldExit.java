@@ -17,8 +17,7 @@ public class WorldExit extends BaseObject {
     //出口的原地址
     @Mark(name = "出发地", link = "worldRoom")
     private String location;
-    @Mark(name = "描述名称")
-    private String name;
+
     //出口的目的地
     @Mark(name = "目的地", link = "worldRoom")
     private String destination;
@@ -51,15 +50,7 @@ public class WorldExit extends BaseObject {
     @Mark(name = "显示条件")
     private String showCondition;
 
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getVerb() {
         return verb;

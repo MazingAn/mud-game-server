@@ -28,16 +28,9 @@ public class HangupObject {
     private String description;
 
 
-    @Mark(name = "描述名称")
-    private String name;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     public String getHangupType() {
         return hangupType;

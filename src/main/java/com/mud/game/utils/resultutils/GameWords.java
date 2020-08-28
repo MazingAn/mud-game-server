@@ -74,7 +74,7 @@ public class GameWords {
     // 学习技能条件
     public static final String NEED_SKILL_LEVEL_GT = "需要技能%s等级达到%s级";
     // 子技能等级不够
-    public static final String BASIC_SKILL_LEVEL_GT = "学习%s技能击败，%s等级不够";
+    public static final String BASIC_SKILL_LEVEL_GT = "学习%s技能失败，%s等级不够";
     // 技能达到npc的技能等级
     public static final String NPC_SKILL_LEVEL_GT = "你的技能已经不弱于你师傅";
     // 装备装备

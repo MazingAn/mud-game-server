@@ -21,9 +21,6 @@ public class DialogueSentence {
     @Size(min=2, max=64, message = "标识长度必须在2到64之间")
     private String dataKey;
 
-    @Mark(name = "描述名称")
-    private String name;
-
     @Mark(name="对话", link = "dialogue")
     @NotBlank(message = "数据标识不能为空")
     @Size(min=2, max=64, message = "标识长度必须在2到64之间")
@@ -41,13 +38,6 @@ public class DialogueSentence {
     @Mark(name="图标")
     private String icon;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Long getId() {
         return id;

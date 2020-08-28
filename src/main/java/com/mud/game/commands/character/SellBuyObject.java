@@ -126,6 +126,10 @@ public class SellBuyObject extends BaseCommand {
                 }
             }
             if (moneyEnough) {
+//                int a = map.get("OBJECT_YINLIANG");
+//                int b = map.get("OBJECT_JINZI");
+//                int c = b * 100 + a;`
+//                PlayerCharacterManager.castMoney(caller, "OBJECT_YINLIANG", number *c);
                 //减去对应的钱
                 if (map.get("OBJECT_YINLIANG") > 0) {
                     PlayerCharacterManager.castMoney(caller, "OBJECT_YINLIANG", number * map.get("OBJECT_YINLIANG"));

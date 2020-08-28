@@ -24,16 +24,9 @@ public class NpcLearnObjectList {
     @Mark(name = "物品潜能兑换概率")
     private int perPotential;
 
-    @Mark(name = "描述名称")
-    private String name;
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
 
     public Long getId() {
         return id;
@@ -49,7 +42,6 @@ public class NpcLearnObjectList {
 
     public void setNpcKey(String npcKey) {
         this.npcKey = npcKey;
-        this.name = npcKey;
     }
 
     public String getNeededObject() {
