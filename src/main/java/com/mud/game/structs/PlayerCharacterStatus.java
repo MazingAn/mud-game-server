@@ -27,7 +27,7 @@ public class PlayerCharacterStatus {
         this.status = status;
     }
 
-    private void setAllStatus(PlayerCharacter playerCharacter){
+    private void setAllStatus(PlayerCharacter playerCharacter) {
         status = new HashMap<>();
         int order = 0;
         status.put("level", new SimpleStatus("level", "等级", playerCharacter.getLevel(), ++order));
@@ -74,27 +74,30 @@ public class PlayerCharacterStatus {
         status.put("xiayi", new SimpleStatus("xiayi", "侠义", playerCharacter.getXiayi(), ++order));
         status.put("can_double_equip", new SimpleStatus("can_double_equip", "能否双持", playerCharacter.canDoubleEquip(), ++order));
 
-        Map<String,Map<String, Object>> customAttr = playerCharacter.getCustomerAttr();
+        Map<String, Map<String, Object>> customAttr = playerCharacter.getCustomerAttr();
         // 加载自定义属性
-        for(String attrKey : customAttr.keySet()){
+        for (String attrKey : customAttr.keySet()) {
             Map content = customAttr.get(attrKey);
             Object value = content.get("value");
-            String name = (String)content.get("name");
+            String name = (String) content.get("name");
             status.put(attrKey, new SimpleStatus(attrKey, name, value, ++order));
         }
     }
 
     private String getSchoolDisplay(String schoolKey) {
-        if(schoolKey!= null && !(schoolKey.trim().equals(""))){
+        if (schoolKey != null && !(schoolKey.trim().equals(""))) {
             School school = DbMapper.schoolRepository.findSchoolByDataKey(schoolKey);
+            if (null == school) {
+                return null;
+            }
             return school.getName();
         }
         return "无门无派";
     }
 
 
-    private String getFamilyDisplay(String familyKey){
-        if(familyKey!=null && !(familyKey.trim().equals(""))){
+    private String getFamilyDisplay(String familyKey) {
+        if (familyKey != null && !(familyKey.trim().equals(""))) {
             Family family = DbMapper.familyRepository.findFamilyByDataKey(familyKey);
             return family.getName();
         }
@@ -102,7 +105,7 @@ public class PlayerCharacterStatus {
     }
 
     private String getTeacherDisplay(String teacherKey) {
-        if(teacherKey!=null && !(teacherKey.trim().equals(""))){
+        if (teacherKey != null && !(teacherKey.trim().equals(""))) {
             WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(teacherKey);
             return npc.getName();
         }

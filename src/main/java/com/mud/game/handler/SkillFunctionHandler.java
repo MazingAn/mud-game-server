@@ -11,6 +11,7 @@ import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.buffers.AddBuffer;
 import com.mud.game.statements.skills.IncrementsAttr;
 import com.mud.game.statements.skills.MangLuan;
+import com.mud.game.statements.skills.ZhongDu;
 import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
 import com.mud.game.statements.skills.NormalHit;
 import com.mud.game.structs.SkillCastInfo;
@@ -117,6 +118,8 @@ public class SkillFunctionHandler {
         actionSkillFunctionSet.put("jianzhangwulianhuan", JianzhangWuLianHuan.class);
         // 忙乱
         actionSkillFunctionSet.put("mangluan", MangLuan.class);
+        // 中毒
+        actionSkillFunctionSet.put("zhongdu", ZhongDu.class);
     }
 
 }

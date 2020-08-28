@@ -669,15 +669,21 @@ public class PlayerCharacterManager {
     /**
      * 发送消息给其他玩家
      */
-    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String targetId, String message, Session selfSession) {
+    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String name, String message, Session selfSession) {
         /*
          * @发送消息给其他玩家
          * */
-        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
-        Session targetSession = GameSessionService.getSessionByCallerId(targetId);
+        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterByName(name);
+        if (null == target) {
+            selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("发送失败!")));
+            return;
+        }
+        Session targetSession = GameSessionService.getSessionByCallerId(target.getId());
         if (targetSession != null) {
-            selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, playerCharacter, target)));
-            targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, playerCharacter, target)));
+            //给发送私聊的人返回数据
+            selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter,true)));
+            //给接受私聊的人发送数据
+            targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target,  playerCharacter,false)));
         } else {
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("对方可能不在线")));
         }
@@ -739,7 +745,12 @@ public class PlayerCharacterManager {
         else if (!SkillObjectManager.SatisfyBasicSkill(skillKey, playerCharacter)) {
             Skill skill = DbMapper.skillRepository.findSkillByDataKey(skillKey);
             Skill basicSkill = DbMapper.skillRepository.findSkillByDataKey(skill.getBasicSkill());
-            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.BASIC_SKILL_LEVEL_GT, skill.getName(), basicSkill.getName()))));
+            if (null == basicSkill) {
+                session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.BASIC_SKILL_LEVEL_GT, skill.getName(), "此技能"))));
+            } else {
+                session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.BASIC_SKILL_LEVEL_GT, skill.getName(), basicSkill.getName()))));
+            }
+
             return null;
         }
         //检查npc技能等级是否满足条件

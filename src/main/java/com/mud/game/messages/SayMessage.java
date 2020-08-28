@@ -1,27 +1,43 @@
 package com.mud.game.messages;
 
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.structs.LinkCommand;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class SayMessage {
 
-    private Map<String, Object> chat_msg;
+    private Map<String, Object> chat_message;
 
-    public SayMessage(String message, PlayerCharacter caller, PlayerCharacter receiver){
-        chat_msg = new HashMap<>();
-        chat_msg.put("caller", new LinkCommand(caller));
-        chat_msg.put("receiver", new LinkCommand(receiver));
-        chat_msg.put("message",message);
+    public SayMessage(String message, PlayerCharacter caller, PlayerCharacter receiver, boolean isSender) {
+        chat_message = new HashMap<>();
+        String key = null;
+        String name = null;
+        String dbref = null;
+        if (isSender) {
+            key = "from";
+            name = caller.getName();
+            dbref = caller.getId();
+        } else {
+            key = "to";
+            name = receiver.getName();
+            dbref = receiver.getId();
+        }
+        String finalDbref = dbref;
+        String finalName = name;
+        chat_message.put(key, new HashMap<String, String>() {{
+            put("name", finalName);
+            put("dbref", finalDbref);
+        }});
+        chat_message.put("content", message);
+
     }
 
-    public Map<String, Object> getChat_msg() {
-        return chat_msg;
+    public Map<String, Object> getChat_message() {
+        return chat_message;
     }
 
-    public void setChat_msg(Map<String, Object> chat_msg) {
-        this.chat_msg = chat_msg;
+    public void setChat_message(Map<String, Object> chat_message) {
+        this.chat_message = chat_message;
     }
 }

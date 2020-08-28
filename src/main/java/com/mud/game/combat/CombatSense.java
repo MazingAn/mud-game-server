@@ -118,15 +118,12 @@ public class CombatSense {
             for (CommonCharacter character : redTeam) {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-                character.setCanAttck(true);
-                GameCharacterManager.saveCharacter(character);
                 checkDied(character);
             }
             for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-                character.setCanAttck(true);
-                GameCharacterManager.saveCharacter(character);
+
                 PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
                 character.msg(new MsgMessage("你已经死了！"));
                 character.msg(new RebornCommandsMessage(playerCharacter));
@@ -136,8 +133,7 @@ public class CombatSense {
             for (CommonCharacter character : redTeam) {
                 character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-                character.setCanAttck(true);
-                GameCharacterManager.saveCharacter(character);
+
                 PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
                 character.msg(new MsgMessage("你已经死了！"));
                 character.msg(new RebornCommandsMessage(playerCharacter));
@@ -146,8 +142,6 @@ public class CombatSense {
             for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-                character.setCanAttck(true);
-                GameCharacterManager.saveCharacter(character);
                 checkDied(character);
             }
         }

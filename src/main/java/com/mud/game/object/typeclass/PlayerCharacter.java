@@ -1,6 +1,5 @@
 package com.mud.game.object.typeclass;
 
-import com.mud.game.combat.CombatSense;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.structs.SimpleCharacter;
 

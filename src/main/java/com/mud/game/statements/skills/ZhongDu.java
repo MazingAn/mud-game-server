@@ -7,11 +7,7 @@ import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
 import org.json.JSONException;
 
-/**
- * 忙乱技能， 当玩家使用的时候，增加忙乱buff
- * 在忙乱状态下  玩家不可以进行攻击 //修改玩家的canCombat状态为false  忙乱过期后，修改canCombat状态为true
- * */
-public class MangLuan extends BaseAttackSkillStatement {
+public class ZhongDu extends BaseAttackSkillStatement {
     /**
      * 攻击技能基类的构造函数
      *
@@ -21,7 +17,7 @@ public class MangLuan extends BaseAttackSkillStatement {
      * @param key         技能函数的名称
      * @param args        技能函数的参数列表
      */
-    public MangLuan(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, String key, String[] args) {
+    public ZhongDu(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, String key, String[] args) {
         super(caller, target, skillObject, key, args);
     }
 
@@ -35,7 +31,7 @@ public class MangLuan extends BaseAttackSkillStatement {
         String[] args = getArgs();
         float duration = Float.parseFloat(args[0]);
         //增加一个忙乱buffer
-        GameCharacterManager.addBuffer("忙乱", duration, 0, 1, false,
-                "canAttck", false, target, skillObject, false, caller);
+        GameCharacterManager.addBuffer("中毒", duration, 0, 1, false,
+                "hp", 2, target, skillObject, true, caller);
     }
 }

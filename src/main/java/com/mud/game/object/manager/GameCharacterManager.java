@@ -1,7 +1,6 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.algorithm.CommonAlgorithm;
-import com.mud.game.handler.EquipmentPositionHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -10,9 +9,10 @@ import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.statements.buffers.BufferManager;
 import com.mud.game.statements.buffers.CharacterBuffer;
-import com.mud.game.structs.*;
+import com.mud.game.structs.CombatCommand;
+import com.mud.game.structs.ObjectMoveInfo;
+import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.resultutils.GameWords;
-import com.mud.game.worlddata.db.models.Equipment;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
@@ -141,7 +141,7 @@ public class GameCharacterManager {
                 if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
                 field.setInt(character, field.getInt(character) + Integer.parseInt(valueStr));
             } else if ("float".equalsIgnoreCase(field.getType().getName())) {
-                field.setFloat(character, field.getFloat(character) + Float.parseFloat(valueStr));
+                    field.setFloat(character, field.getFloat(character) + Float.parseFloat(valueStr));
             } else if ("double".equalsIgnoreCase(field.getType().getName())) {
                 field.setDouble(character, field.getDouble(character) + Double.parseDouble(valueStr));
             } else if ("String".equals(field.getType().getName())) {
@@ -422,20 +422,20 @@ public class GameCharacterManager {
      */
     public static void addBuffer(String bufferName, float duration, int addedCount, int maxAdd,
                                  boolean goodBuffer, String attrKey, Object changedValue,
-                                 CommonCharacter target, SkillObject skillObject) {
+                                 CommonCharacter target, SkillObject skillObject, boolean persistent, CommonCharacter caller) {
         Map<String, Set<String>> characterBuffers = target.getBuffers();
         // 如果玩家已经有了这个buffer
         if (characterBuffers.containsKey(bufferName)) {
             Set<String> usedBuffers = characterBuffers.get(bufferName);
             // 如果buffer可以叠加 则直接叠加
             if (usedBuffers.size() < maxAdd || usedBuffers.isEmpty()) {
-                CharacterBuffer buffer = BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject);
+                CharacterBuffer buffer = BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject, persistent,caller);
                 BufferManager.startBufferTimer(buffer.bufferId);
             }
         }
         // 如果玩家没有这个buffer
         else {
-            CharacterBuffer buffer = BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject);
+            CharacterBuffer buffer = BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject, persistent, caller);
             BufferManager.startBufferTimer(buffer.bufferId);
         }
         showBuffers(target);

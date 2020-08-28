@@ -1,9 +1,9 @@
 package com.mud.game.object.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.statements.buffers.CharacterBuffer;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -18,11 +18,11 @@ import java.util.concurrent.TimeUnit;
 public class PlayerScheduleManager {
     public static Map<String, ScheduledExecutorService> scheduledExecutorServiceMap = new HashMap<>();
 
-    public static ScheduledExecutorService createOrGetExecutorServiceForCaller(String callerId){
+    public static ScheduledExecutorService createOrGetExecutorServiceForCaller(String callerId) {
         ScheduledExecutorService service = null;
-        if(existExecutorServiceByCallerId(callerId)){
+        if (existExecutorServiceByCallerId(callerId)) {
             service = scheduledExecutorServiceMap.get(callerId);
-        }else{
+        } else {
             service = Executors.newSingleThreadScheduledExecutor();
             scheduledExecutorServiceMap.put(callerId, service);
         }
@@ -30,13 +30,13 @@ public class PlayerScheduleManager {
     }
 
 
-    public static boolean existExecutorServiceByCallerId(String callerId){
+    public static boolean existExecutorServiceByCallerId(String callerId) {
         return scheduledExecutorServiceMap.containsKey(callerId);
     }
 
-    public static void shutdownExecutorByCallerId(String callerId)  {
+    public static void shutdownExecutorByCallerId(String callerId) {
         ScheduledExecutorService service = scheduledExecutorServiceMap.get(callerId);
-        if(service != null){
+        if (service != null) {
             service.shutdown();
         }
         scheduledExecutorServiceMap.remove(callerId);
@@ -44,15 +44,15 @@ public class PlayerScheduleManager {
         caller.setState(CharacterState.STATE_NORMAL);
         MongoMapper.playerCharacterRepository.save(caller);
         Session session = GameSessionService.getSessionByCallerId(callerId);
-        if(session != null){
+        if (session != null) {
             session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(caller.getState())));
         }
     }
 
     public static void startExecutorByCallerId(String callerId, Long delay, Long interval, Runnable runnable) {
         /*
-        * 使用玩家的定时任务服务，开启一个定时任务刷新任务，定时任务启动延迟为delay毫秒，每隔interval毫秒执行一次，执行的内容是 runnable
-        * */
+         * 使用玩家的定时任务服务，开启一个定时任务刷新任务，定时任务启动延迟为delay毫秒，每隔interval毫秒执行一次，执行的内容是 runnable
+         * */
         ScheduledExecutorService service = scheduledExecutorServiceMap.get(callerId);
         service.scheduleAtFixedRate(runnable, delay, interval, TimeUnit.MILLISECONDS);
     }

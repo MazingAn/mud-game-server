@@ -2,8 +2,11 @@ package com.mud.game.commands.character;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.messages.MsgMessage;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.utils.jsonutils.JsonResponse;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
@@ -16,12 +19,12 @@ import org.yeauty.pojo.Session;
  *    {
  *        "cmd": "friend_chat",
  *        "args": {
- *           "dbref": "skill_id", //朋友Id
+ *           "name": "name", //朋友名称
  *           "message": "bla-bla-~~~" //消息内容
  *        }
  *    }
  * </pre>
- * */
+ */
 public class FriendChat extends BaseCommand {
 
     public FriendChat(String key, Object caller, JSONObject args, Session session) {
@@ -33,8 +36,11 @@ public class FriendChat extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         Session session = getSession();
         JSONObject args = getArgs();
-        String targetId = args.getString("dbref");
+        String name = args.getString("name");
         String message = args.getString("message");
-        PlayerCharacterManager.sendMessageToOtherPlayer(caller, targetId, message, session);
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(message)) {
+            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("发送失败!")));
+        }
+        PlayerCharacterManager.sendMessageToOtherPlayer(caller, name, message, session);
     }
 }

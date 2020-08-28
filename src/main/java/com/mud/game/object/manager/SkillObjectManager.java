@@ -498,6 +498,7 @@ public class SkillObjectManager {
                     Skill basicSkill = DbMapper.skillRepository.findSkillByDataKey(skillObject.getBasicSkill());
                     session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.BASIC_SKILL_LEVEL_GT, skillObject.getName(), basicSkill.getName()))));
                     PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+                    return;
                 }
                 // 玩家技能等级不能大于npc的技能等级
                 if (learnTarget instanceof WorldNpcObject) {
@@ -644,13 +645,14 @@ public class SkillObjectManager {
             return true;
         }
         //判断子技能是否满足条件
-        SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skillKey, playerCharacter.getId());
         SkillObject basicSkillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skill.getBasicSkill(), playerCharacter.getId());
-        if (null == skillObject) {
-            return true;
-        }
         if (null == basicSkillObject) {
             return false;
+        }
+
+        SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(skillKey, playerCharacter.getId());
+        if (null == skillObject) {
+            return true;
         }
         if (skillObject.getLevel() >= basicSkillObject.getLevel()) {
             isTrue = false;
@@ -676,7 +678,7 @@ public class SkillObjectManager {
         if (null == basicSkillObject) {
             return false;
         }
-        if (skillObject.getLevel() + 1 >= basicSkillObject.getLevel()) {
+        if (skillObject.getLevel() + 1 > basicSkillObject.getLevel()) {
             isTrue = false;
         }
         return isTrue;

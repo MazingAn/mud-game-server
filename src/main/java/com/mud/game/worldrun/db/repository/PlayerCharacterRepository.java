@@ -7,4 +7,6 @@ public interface PlayerCharacterRepository extends MongoRepository<PlayerCharact
     boolean existsByName(String name);
     PlayerCharacter findPlayerCharacterById(String id);
     Iterable<PlayerCharacter> findPlayerCharactersBySchool(String school);
+
+    PlayerCharacter findPlayerCharacterByName(String name);
 }

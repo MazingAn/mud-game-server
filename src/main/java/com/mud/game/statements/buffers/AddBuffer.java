@@ -37,6 +37,6 @@ public class AddBuffer extends BaseAttackSkillStatement {
         boolean goodBuffer = Integer.parseInt(args[5]) == 0;
         if(goodBuffer) target = caller;
         GameCharacterManager.addBuffer(bufferName, duration, 0, maxAdd, goodBuffer,
-                attrKey, changedValue, target, skillObject);
+                attrKey, changedValue, target, skillObject, false,caller);
     }
 }

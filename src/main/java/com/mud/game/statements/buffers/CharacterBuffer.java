@@ -1,12 +1,28 @@
 package com.mud.game.statements.buffers;
 
+import com.mud.game.algorithm.AttackAlgorithm;
+import com.mud.game.algorithm.HarmInfo;
+import com.mud.game.combat.CombatSense;
+import com.mud.game.handler.CombatHandler;
+import com.mud.game.messages.SkillCastMessage;
+import com.mud.game.messages.ToastMessage;
+import com.mud.game.net.session.GameSessionService;
+import com.mud.game.object.manager.FightBufferScheduleManager;
 import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.PlayerScheduleManager;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.buffers.BufferManager;
+import com.mud.game.structs.SkillCastInfo;
+import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.regxutils.StringChecker;
+import com.mud.game.utils.resultutils.GameWords;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.yeauty.pojo.Session;
 
 import java.util.*;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class CharacterBuffer {
     public String name;
@@ -17,13 +33,14 @@ public class CharacterBuffer {
     public String attrKey;
     public Object changedValue;
     public CommonCharacter target;
+    public CommonCharacter caller;
     public SkillObject skillObject;
     public String bufferId;
-
+    public boolean persistent;
 
     public CharacterBuffer(String name, float duration, int maxAdd,
                            boolean goodBuffer, String attrKey, Object changedValue,
-                           CommonCharacter target, SkillObject skillObject) {
+                           CommonCharacter target, SkillObject skillObject, boolean persistent, CommonCharacter caller) {
         this.name = name;
         this.duration = duration;
         this.maxAdd = maxAdd;
@@ -31,7 +48,9 @@ public class CharacterBuffer {
         this.attrKey = attrKey;
         this.changedValue = changedValue;
         this.target = target;
+        this.caller = caller;
         this.skillObject = skillObject;
+        this.persistent = persistent;
         this.bufferId = UUID.randomUUID().toString();
     }
 
@@ -81,14 +100,24 @@ public class CharacterBuffer {
      * buffer 取消buffer
      */
     public void undo() {
-        Object change = changedValue;
-        boolean isNumber = StringChecker.isNumber(changedValue.toString());
-        if (isNumber)
-            change = goodBuffer ? (float) changedValue * -1 : (float) changedValue * 1;
-        if (attrKey.equals("canAttck")) {
-            change = true;
+        //非连续效果，改变属性等
+        if (!this.persistent) {
+            Object change = changedValue;
+            boolean isNumber = StringChecker.isNumber(changedValue.toString());
+            if (isNumber)
+                change = goodBuffer ? (float) changedValue * -1 : (float) changedValue * 1;
+
+            boolean isBoolean = StringChecker.isBoolean(changedValue);
+            if (isBoolean) {
+                boolean booleanValue = ((Boolean) change).booleanValue();
+                change = !booleanValue;
+            }
+            GameCharacterManager.changeStatus(target, attrKey, change);
+        } else {
+            // 连续效果：中毒掉血
+            FightBufferScheduleManager.shutdownExecutorByBufferId(bufferId);
         }
-        GameCharacterManager.changeStatus(target, attrKey, change);
+
 
         Map<String, Set<String>> buffers = target.getBuffers();
         if (buffers.containsKey(name)) {
@@ -98,5 +127,26 @@ public class CharacterBuffer {
         GameCharacterManager.saveCharacter(target);
     }
 
+    public Runnable scheduleAtFixedRate(CommonCharacter target, boolean goodBuffer, String attrKey, Object changedValue) {
+        Runnable runnable = new Runnable() {
+            CombatSense sense = CombatHandler.getCombatSense(caller.getId());
+            SkillCastInfo skillCastInfo = null;
 
+            @Override
+            public void run() {
+                //应用伤害
+                GameCharacterManager.changeStatus(target, "hp", goodBuffer ? changedValue : Float.parseFloat(changedValue.toString()) * -1);
+                //构建战斗输出
+                if (target.getHp() > 0) {
+                    skillCastInfo = new SkillCastInfo(caller, target, skillObject, target.getName() + "中毒失去" + changedValue + "气血!!!!!!!!!!!!！");
+                    sense.msgContents(new SkillCastMessage(skillCastInfo));
+                }
+                //更新同步数据
+                GameCharacterManager.saveCharacter(target);
+
+            }
+
+        };
+        return runnable;
+    }
 }
