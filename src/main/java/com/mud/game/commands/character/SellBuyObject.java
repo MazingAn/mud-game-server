@@ -109,6 +109,11 @@ public class SellBuyObject extends BaseCommand {
                     map.put(entry.getKey(), Integer.parseInt(entry.getValue().toString()));
                 }
             }
+            //换算。银子不能超过99，超过自动转变为金子
+            if (map.get("OBJECT_YINLIANG") > 99) {
+                map.put("OBJECT_JINZI", map.get("OBJECT_JINZI") + (int) Math.floor(map.get("OBJECT_YINLIANG") / 100));
+                map.put("OBJECT_YINLIANG", map.get("OBJECT_YINLIANG") % 100);
+            }
             //校验
             Boolean moneyEnough = true;
             if (PlayerCharacterManager.hasObject(caller, "OBJECT_YINLIANG", map.get("OBJECT_YINLIANG"))) {
