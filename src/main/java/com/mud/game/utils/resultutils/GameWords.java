@@ -45,12 +45,18 @@ public class GameWords {
     public static final String NO_ENOUGH_POTENTIAL_BALANCE = "你在{g%s{n这里换取的潜能已经耗尽";
     public static final String SKILL_LEVEL_UP = "你的{g%s{n等级提升到了{g%s{n级。";
     public static final String LEARNED_SKILL = "你学会了技能{g%s{n。";
+    public static final String START_LEARNED_SKILL = "你开始向{g%s{n请教{g%s{n。";
+    public static final String START_LEARNED_SKILL_BOOK = "你开始学习{g%s{n。";
 
     // 挂机
     public static final String ROOM_CANNOT_MINING = "你无法在当前位置挖矿，请前往矿厂";
     public static final String NO_MINING_SKILL = "你还没有学会{g挖矿{n, 先找个{y矿工{n请教请教！";
+    public static final String NO_MINING_EQUIPMENT = "你没有装备{g铁镐{n, 先找{y矿工{n购买！";
+    public static final String NO_FISHING_YUGAN_EQUIPMENT = "你没有装备{g鱼竿{n, 先找{y垂钓者{n购买！";
+    public static final String NO_FISHING_YUER_EQUIPMENT = "你没有{g鱼饵{n, 先找{y垂钓者{n购买！";
     public static final String NO_FISHING_SKILL = "你还没有学会{g钓鱼{n, 先找个{y垂钓者{n请教请教！";
     public static final String NO_COLLECT_SKILL = "你还没有学会{g采药{n, 先找个{y采药人{n请教请教！";
+    public static final String NO_COLLECT_EQUIPMENT = "你没有装备{g药镰{n, 先找{y采药人{n购买！";
     public static final String PLAYER_GET_RANDOM_POTENTIAL = "你获得%s经验，%s点潜能";
     public static final String NO_ENOUGH_TILI = "你的{g体力{n已经透支，无法继续挂机";
     public static final String START_MINING = "你挥着铁镐开始认真挖矿。";
@@ -91,4 +97,6 @@ public class GameWords {
 
     // 无法创建任务
     public static final String CANNOT_CREATE_QUEST = "{r无法创建任务{n";
+    // 使用道具
+    public static final String USE_OBJECT = "你使用了{g%s{n";
 }

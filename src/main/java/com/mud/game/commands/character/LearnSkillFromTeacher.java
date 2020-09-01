@@ -5,6 +5,8 @@ import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.Skill;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
@@ -15,7 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- *  玩家学习自己师傅的技能
+ * 玩家学习自己师傅的技能
  * 请求示例：
  * <pre>
  *  {
@@ -26,7 +28,7 @@ import java.util.concurrent.TimeUnit;
  *      }
  *  }
  * </pre>
- * */
+ */
 public class LearnSkillFromTeacher extends BaseCommand {
 
     public LearnSkillFromTeacher(String key, Object caller, JSONObject args, Session session) {
@@ -41,9 +43,11 @@ public class LearnSkillFromTeacher extends BaseCommand {
         String teacherId = args.getString("from");
         String skillKey = args.getString("skill_key");
         Runnable runnable = PlayerCharacterManager.learnSkillFromTeacher(caller, skillKey, teacherId, session);
-        if(runnable != null) {
+        if (runnable != null) {
             ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
             service.scheduleAtFixedRate(runnable, 0, 2, TimeUnit.SECONDS);
+            Skill skillTemplate = DbMapper.skillRepository.findSkillByDataKey(skillKey);
         }
+
     }
 }

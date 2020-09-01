@@ -40,7 +40,7 @@ public class HangUpFishing extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         Session session = getSession();
-        // 检查玩家有没有挖矿技能
+        // 检查玩家有没有钓鱼技能
         if(!GameCharacterManager.hasSkill(caller, "skill_zhishi_diaoyu")){
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_FISHING_SKILL)));
         }else{

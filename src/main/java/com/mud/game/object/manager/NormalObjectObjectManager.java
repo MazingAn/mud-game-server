@@ -1,11 +1,13 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.handler.ObjectFunctionHandler;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.typeclass.NormalObjectObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.NormalObjectAppearance;
 import com.mud.game.utils.jsonutils.JsonResponse;
+import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NormalObject;
 import org.yeauty.pojo.Session;
@@ -70,6 +72,8 @@ public class NormalObjectObjectManager {
         String function = normalObjectObject.getFunction();
         //使用物品
         ObjectFunctionHandler.useObject(playerCharacter, playerCharacter, normalObjectObject);
+        //提示
+        playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
         //使用成功从背包移除物品
         PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, normalObjectObject, 1);
     }

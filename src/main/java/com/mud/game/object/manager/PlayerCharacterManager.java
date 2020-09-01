@@ -313,6 +313,7 @@ public class PlayerCharacterManager {
             //房间广播玩家动向
             WorldRoomObjectManager.onPlayerCharacterMove(playerCharacter, oldRoom, newRoom);
         }
+        playerCharacter.msg("你来到了{g" + newRoom.getName() + "{n");
         //事件监测
         WorldRoomObjectManager.triggerArriveAction(newRoom, playerCharacter);
     }
@@ -758,6 +759,7 @@ public class PlayerCharacterManager {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.NPC_SKILL_LEVEL_GT))));
             return null;
         } else {
+            playerCharacter.msg(String.format(GameWords.START_LEARNED_SKILL, teacher.getName(), skillTemplate.getName()));
             playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             session.sendText(JsonResponse.JsonStringResponse(new PlayerCharacterStateMessage(playerCharacter.getState())));
@@ -820,6 +822,7 @@ public class PlayerCharacterManager {
             playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             playerCharacter.msg(new PlayerCharacterStateMessage(playerCharacter.getState()));
+            playerCharacter.msg(String.format(GameWords.START_LEARNED_SKILL_BOOK,skillBookObject.getName()));
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -1613,5 +1616,20 @@ public class PlayerCharacterManager {
         }
         MongoMapper.playerCharacterRepository.save(playerCharacter);
         return playerCharacter;
+    }
+
+    /**
+     * 用户主手是否装备指定装备
+     *
+     * @param caller
+     * @param dataKey
+     * @return
+     */
+    public static boolean isPositionLeftHand(PlayerCharacter caller, String dataKey) {
+        Map<String, String> sourceData = caller.getEquippedEquipments();
+        if (sourceData.get("POSITION_LEFT_HAND") == null || sourceData.get("POSITION_LEFT_HAND") != dataKey) {
+            return false;
+        }
+        return true;
     }
 }
