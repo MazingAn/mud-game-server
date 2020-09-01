@@ -1,11 +1,7 @@
 package com.mud.game.structs;
 
 import com.mud.game.handler.SchoolHandler;
-import com.mud.game.object.account.Player;
-import com.mud.game.object.manager.WorldNpcObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.WorldNpcObject;
 
 public class SimpleCharacter {
     private String dbref;
@@ -15,8 +11,10 @@ public class SimpleCharacter {
     private String school;
     private boolean provide_quest;
     private boolean complete_quest;
+    private boolean can_attack;
 
-    public SimpleCharacter(){}
+    public SimpleCharacter() {
+    }
 
     public SimpleCharacter(CommonCharacter character) {
         this.dbref = character.getId();
@@ -26,6 +24,15 @@ public class SimpleCharacter {
         this.school = character.getSchool();
         this.provide_quest = false;
         this.complete_quest = false;
+        this.can_attack = character.canAttck;
+    }
+
+    public boolean isCan_attack() {
+        return can_attack;
+    }
+
+    public void setCan_attack(boolean can_attack) {
+        this.can_attack = can_attack;
     }
 
     public String getDbref() {
@@ -61,9 +68,9 @@ public class SimpleCharacter {
     }
 
     public String getSchool() {
-        if(SchoolHandler.mapping.get(school) == null){
+        if (SchoolHandler.mapping.get(school) == null) {
             return "无门无派";
-        }else{
+        } else {
             return SchoolHandler.mapping.get(school);
         }
     }

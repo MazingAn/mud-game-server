@@ -3,6 +3,7 @@ package com.mud.game.commands.character;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
@@ -42,9 +43,9 @@ public class HangUpMining extends BaseCommand {
         Session session = getSession();
         // 检查玩家有没有挖矿技能
         if (!GameCharacterManager.hasSkill(caller, "skill_zhishi_wakuang")) {
-            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_MINING_SKILL)));
-//        } else if (!PlayerCharacterManager.isPositionLeftHand(caller, "OBJECT_TIEGAO")) {
-//            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_MINING_EQUIPMENT)));
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_MINING_SKILL)));
+        } else if (!PlayerCharacterManager.isPositionLeftHand(caller, "OBJECT_TIEGAO")) {
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_MINING_EQUIPMENT)));
         } else {
             Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_MINING);
             if (runnable != null) {

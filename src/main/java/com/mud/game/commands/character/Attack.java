@@ -1,14 +1,11 @@
 package com.mud.game.commands.character;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.handler.CombatHandler;
-import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.worlddata.db.models.NormalObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;

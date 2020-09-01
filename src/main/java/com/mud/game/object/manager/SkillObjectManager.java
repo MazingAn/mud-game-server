@@ -114,9 +114,9 @@ public class SkillObjectManager {
         if (!ownerId.equals(character.getId())) {
             // 检查是否拥有这个技能
             character.msg(new MsgMessage("你没有这个技能！"));
-        } else if (!checkSubSKills(skillObject.getBasicSkill(), character.getEquippedSkills(), character)) {
-            //检查是否装备子技能
-            character.msg(new ToastMessage("没有装备子技能，无法装备技能"));
+//        } else if (!checkSubSKills(skillObject.getBasicSkill(), character.getEquippedSkills(), character)) {
+//            //检查是否装备子技能
+//            character.msg(new ToastMessage("没有装备子技能，无法装备技能"));
         } else if (!character.getState().equals(CharacterState.STATE_NORMAL)) {
             character.msg(new ToastMessage("你正在学习，无法装备技能"));
         } else if (skillObject.getEquippedPositions().contains(position)) {
@@ -550,6 +550,7 @@ public class SkillObjectManager {
         }
         MongoMapper.skillObjectRepository.save(skillObject);
         session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP, skillObject.getName(), skillObject.getLevel()))));
+        session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.SKILL_LEVEL_UP, skillObject.getName(), skillObject.getLevel()))));
     }
 
     public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, HarmInfo harmInfo) {

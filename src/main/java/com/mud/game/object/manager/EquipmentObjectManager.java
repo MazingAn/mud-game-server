@@ -91,11 +91,13 @@ public class EquipmentObjectManager {
 
             // 依次应用装备属性
             // 循环遍历 装备的属性
-            for (String attrKey : equipmentObject.getAttrs().keySet()) {
-                // 找到对应的属性名字 对应的数值
-                Object value = equipmentObject.getAttrs().get(attrKey).get("value");
-                // 应用属性名字和对应的数值到角色身上
-                GameCharacterManager.changeStatus(character, attrKey, value);
+            if (null != equipmentObject.getAttrs()) {
+                for (String attrKey : equipmentObject.getAttrs().keySet()) {
+                    // 找到对应的属性名字 对应的数值
+                    Object value = equipmentObject.getAttrs().get(attrKey).get("value");
+                    // 应用属性名字和对应的数值到角色身上
+                    GameCharacterManager.changeStatus(character, attrKey, value);
+                }
             }
             // 添加装备宝石属性
             List<GemObject> gemObjectList = equipmentObject.getGems();
@@ -138,11 +140,12 @@ public class EquipmentObjectManager {
                 character.msg(new ToastMessage("无法卸掉装备，请清理你的背包！"));
             } else {
                 // 开始卸掉装备
+                if(null!=equipmentObject.getAttrs()){
                 for (String attrKey : equipmentObject.getAttrs().keySet()) {
                     Object valueStr = equipmentObject.getAttrs().get(attrKey).get("value");
                     float value = Float.parseFloat(valueStr.toString());
                     GameCharacterManager.changeStatus(character, attrKey, value * -1);
-                }
+                }}
                 // 去掉装备宝石属性
                 List<GemObject> gemObjectList = equipmentObject.getGems();
                 for (int i = 0; i < gemObjectList.size(); i++) {

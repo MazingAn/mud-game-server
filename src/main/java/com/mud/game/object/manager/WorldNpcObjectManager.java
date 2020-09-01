@@ -175,7 +175,10 @@ public class WorldNpcObjectManager {
     public static List<EmbeddedCommand> getAvailableCommands(WorldNpcObject npc, PlayerCharacter playerCharacter) {
 
         List<EmbeddedCommand> cmds = new ArrayList<>();
-        if (npc.getHp() <= 0) return cmds;
+        if (npc.getHp() <= 0) {
+            cmds.add(new EmbeddedCommand("拾取", "pick_up", npc.getId()));
+            return cmds;
+        }
         // 拜师命令
         if (npc.isTeacher() && !(playerCharacter.getTeacher().equals(npc.getDataKey()))) {
             cmds.add(new EmbeddedCommand("拜师", "find_teacher", npc.getId()));
@@ -303,7 +306,7 @@ public class WorldNpcObjectManager {
      */
     private static void bindShops(WorldNpcObject obj) {
         Set<String> shops = obj.getShops();
-        if(obj.getDataKey().equals("NPC_XIAN_ZHANGTIEJIANG")){
+        if (obj.getDataKey().equals("NPC_XIAN_ZHANGTIEJIANG")) {
             System.out.printf("1");
         }
         for (NpcShop npcShop : DbMapper.npcShopRepository.findNpcShopsByNpc(obj.getDataKey())) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.EquipmentMessage;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
@@ -43,9 +44,9 @@ public class HangUpCollect extends BaseCommand {
         Session session = getSession();
         // 检查玩家有没有采药技能
         if (!GameCharacterManager.hasSkill(caller, "skill_zhishi_caiyao")) {
-            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_COLLECT_SKILL)));
-        } else if (!PlayerCharacterManager.isPositionLeftHand(caller,"OBJECT_YUER")) {
-            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_COLLECT_EQUIPMENT)));
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_COLLECT_SKILL)));
+        } else if (!PlayerCharacterManager.isPositionLeftHand(caller,"OBJECT_YAOLIAN")) {
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_COLLECT_EQUIPMENT)));
         } else {
             Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_COLLECT);
             if (runnable != null) {

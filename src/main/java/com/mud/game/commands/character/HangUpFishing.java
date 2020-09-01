@@ -3,8 +3,10 @@ package com.mud.game.commands.character;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.HangUpManager;
+import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.CharacterState;
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 玩家开始钓鱼
- *
+ * <p>
  * 请求示例：
  * <pre>
  *     {
@@ -28,8 +30,7 @@ import java.util.concurrent.TimeUnit;
  *         "args": "" // args 可以为空
  *     }
  * </pre>
- *
- * */
+ */
 public class HangUpFishing extends BaseCommand {
 
     public HangUpFishing(String key, Object caller, JSONObject args, Session session) {
@@ -38,14 +39,16 @@ public class HangUpFishing extends BaseCommand {
 
     @Override
     public void execute() throws JSONException {
-        PlayerCharacter caller = (PlayerCharacter)getCaller();
+        PlayerCharacter caller = (PlayerCharacter) getCaller();
         Session session = getSession();
         // 检查玩家有没有钓鱼技能
-        if(!GameCharacterManager.hasSkill(caller, "skill_zhishi_diaoyu")){
-            session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(GameWords.NO_FISHING_SKILL)));
-        }else{
+        if (!GameCharacterManager.hasSkill(caller, "skill_zhishi_diaoyu")) {
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_FISHING_SKILL)));
+        } else if (!PlayerCharacterManager.isPositionLeftHand(caller, "OBJECT_DIAOYUGAN")) {
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_FISHING_YUGAN_EQUIPMENT)));
+        } else {
             Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_FISHING);
-            if(runnable != null){
+            if (runnable != null) {
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
                 service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);
             }

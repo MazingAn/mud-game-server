@@ -822,7 +822,7 @@ public class PlayerCharacterManager {
             playerCharacter.setState(CharacterState.STATE_LEARN_SKILL);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             playerCharacter.msg(new PlayerCharacterStateMessage(playerCharacter.getState()));
-            playerCharacter.msg(String.format(GameWords.START_LEARNED_SKILL_BOOK,skillBookObject.getName()));
+            playerCharacter.msg(String.format(GameWords.START_LEARNED_SKILL_BOOK, skillBookObject.getName()));
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -990,6 +990,7 @@ public class PlayerCharacterManager {
             }
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.LEARNED_SKILL, skillObject.getName()))));
+            updatedSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.LEARNED_SKILL, skillObject.getName()))));
         }
 
         returnAllSkills(playerCharacter);
@@ -1627,7 +1628,7 @@ public class PlayerCharacterManager {
      */
     public static boolean isPositionLeftHand(PlayerCharacter caller, String dataKey) {
         Map<String, String> sourceData = caller.getEquippedEquipments();
-        if (sourceData.get("POSITION_LEFT_HAND") == null || sourceData.get("POSITION_LEFT_HAND") != dataKey) {
+        if (sourceData.get("POSITION_LEFT_HAND") == null || !MongoMapper.equipmentObjectRepository.findEquipmentObjectById(sourceData.get("POSITION_LEFT_HAND")).getDataKey().equals(dataKey)) {
             return false;
         }
         return true;

@@ -37,7 +37,7 @@ public class NormalHit extends BaseAttackSkillStatement {
         CombatSense sense = CombatHandler.getCombatSense(caller.getId());
         SkillCastInfo skillCastInfo = null;
         //判断能否进行攻击
-        if (!caller.isCanAttck()) {
+        if (!caller.isCanCombat()) {
             skillCastInfo = new SkillCastInfo(caller, target,caller.getName()+"目前状态不能攻击！");
         } else {
             //计算伤害

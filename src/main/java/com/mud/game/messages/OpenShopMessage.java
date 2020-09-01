@@ -38,6 +38,7 @@ public class OpenShopMessage {
             goodsList.add(new ShopGoodsStatus(shopGood));
         }
         shop.put("goods", goodsList);
+        shop.put("sys_shop", true);
     }
 
     public Map<String, Object> getShop() {
