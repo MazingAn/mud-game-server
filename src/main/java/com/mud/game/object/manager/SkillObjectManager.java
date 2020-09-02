@@ -107,16 +107,23 @@ public class SkillObjectManager {
      * @param session     通信通道
      */
     public static void equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session) {
+        //是否是外功
+        Boolean isForeignPower = skillObject.getPositions().contains("left_hand");
         /*
          * @ 装备技能到角色身上（仅限于被动技能）
          * */
         String ownerId = skillObject.getOwner();
+        //子技能
+        SkillObject basicSkillObject = findBasicSkill(skillObject, character, position);
         if (!ownerId.equals(character.getId())) {
             // 检查是否拥有这个技能
             character.msg(new MsgMessage("你没有这个技能！"));
 //        } else if (!checkSubSKills(skillObject.getBasicSkill(), character.getEquippedSkills(), character)) {
 //            //检查是否装备子技能
 //            character.msg(new ToastMessage("没有装备子技能，无法装备技能"));
+        } else if (basicSkillObject == null) {
+            //检查是否装备子技能
+            character.msg(new ToastMessage("没有学习"+basicSkillObject.getName()+"，无法装备技能"));
         } else if (!character.getState().equals(CharacterState.STATE_NORMAL)) {
             character.msg(new ToastMessage("你正在学习，无法装备技能"));
         } else if (skillObject.getEquippedPositions().contains(position)) {
@@ -149,7 +156,6 @@ public class SkillObjectManager {
             Set<String> positionSkills = new HashSet<>();
 
             // 应用技能的父技能(对应的基本技能)
-            SkillObject basicSkillObject = findBasicSkill(skillObject, character, position);
             if (basicSkillObject != null) {
                 // 装备基本技能
                 positionSkills.add(basicSkillObject.getId());
@@ -159,7 +165,6 @@ public class SkillObjectManager {
                 // 执行技能效果
                 castSkill(basicSkillObject, character, position);
             }
-
             // 装备技能本身
             positionSkills.add(skillObject.getId());
             // 更新角色技能表

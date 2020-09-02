@@ -1,6 +1,7 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.handler.ObjectFunctionHandler;
+import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.typeclass.NormalObjectObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -74,6 +75,7 @@ public class NormalObjectObjectManager {
         ObjectFunctionHandler.useObject(playerCharacter, playerCharacter, normalObjectObject);
         //提示
         playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
+        playerCharacter.msg(new MsgMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
         //使用成功从背包移除物品
         PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, normalObjectObject, 1);
     }

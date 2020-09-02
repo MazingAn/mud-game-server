@@ -13,6 +13,8 @@ import com.mud.game.structs.CombatCommand;
 import com.mud.game.structs.ObjectMoveInfo;
 import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.resultutils.GameWords;
+import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.NpcBoundItem;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
@@ -25,6 +27,10 @@ import java.util.*;
  * 在战斗，技能使用，装备使用这些环节，游戏中的NPC和玩家没有任何区别
  */
 public class GameCharacterManager {
+    /**
+     * npc掉落物品集合，value的key为物品dataKey,value为数量
+     */
+    public static final Map<String, Map<String, Integer>> npcBoundItemSet = new HashMap<>();
 
     /**
      * 玩家类的反射工具，通过反射把玩家类的属性找到并开放出去
@@ -141,7 +147,7 @@ public class GameCharacterManager {
                 if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
                 field.setInt(character, field.getInt(character) + Integer.parseInt(valueStr));
             } else if ("float".equalsIgnoreCase(field.getType().getName())) {
-                    field.setFloat(character, field.getFloat(character) + Float.parseFloat(valueStr));
+                field.setFloat(character, field.getFloat(character) + Float.parseFloat(valueStr));
             } else if ("double".equalsIgnoreCase(field.getType().getName())) {
                 field.setDouble(character, field.getDouble(character) + Double.parseDouble(valueStr));
             } else if ("String".equals(field.getType().getName())) {
@@ -356,8 +362,10 @@ public class GameCharacterManager {
      *                  延时触发复活
      */
     public static void die(CommonCharacter character) {
+        if (!character.getName().contains("的尸体")) {
+            character.setName(character.getName() + "的尸体");
+        }
         character.setHp(0);
-        character.setName(character.getName() + "的尸体");
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         saveCharacter(character);
         characterMoveOut(character);
@@ -366,6 +374,21 @@ public class GameCharacterManager {
             Timer timer = new Timer();
             float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
             timer.schedule(reborn(character), (int) rebornTime * 1000);
+            //npc死亡生成掉落物品
+            List<NpcBoundItem> npcBoundItemList = DbMapper.npcBoundItemRepository.findNpcBoundItemByNpcDataKey(character.getDataKey());
+            if (npcBoundItemList.size() > 0) {
+                Random random =  new Random();
+                Map<String, Integer> npcBoundItemMap = new HashMap<>();
+                for (int i = 0; i < npcBoundItemList.size(); i++) {
+                    float a = random.nextFloat();
+                    // 检查获取概率a
+                    if (a < npcBoundItemList.get(i).getAcquisitionProbability()) {
+                        npcBoundItemMap.put(npcBoundItemList.get(i).getObjectDataKey(), 1);
+                    }
+                }
+                npcBoundItemSet.put(character.getDataKey(), npcBoundItemMap);
+            }
+
         } else {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
             character.msg(new RebornCommandsMessage((PlayerCharacter) character));
@@ -429,7 +452,7 @@ public class GameCharacterManager {
             Set<String> usedBuffers = characterBuffers.get(bufferName);
             // 如果buffer可以叠加 则直接叠加
             if (usedBuffers.size() < maxAdd || usedBuffers.isEmpty()) {
-                CharacterBuffer buffer = BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject, persistent,caller);
+                CharacterBuffer buffer = BufferManager.CreateBuffer(bufferName, duration, maxAdd, goodBuffer, attrKey, changedValue, target, skillObject, persistent, caller);
                 BufferManager.startBufferTimer(buffer.bufferId);
             }
         }

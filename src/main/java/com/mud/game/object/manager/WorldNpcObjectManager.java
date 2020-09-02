@@ -6,6 +6,7 @@ import com.mud.game.handler.QuestStatusHandler;
 import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.TeachersSkillMessage;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.account.Player;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.*;
@@ -176,7 +177,16 @@ public class WorldNpcObjectManager {
 
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (npc.getHp() <= 0) {
-            cmds.add(new EmbeddedCommand("拾取", "pick_up", npc.getId()));
+            cmds.add(new EmbeddedCommand("拾取", "pick_up", npc.getDataKey()));
+            //返回掉落物品信息
+            playerCharacter.msg(new HashMap<String, Object>() {{
+                Map<String, Integer> map = GameCharacterManager.npcBoundItemSet.get(npc.getDataKey());
+                if (null == map) {
+                    put("look_pick_up", "空空如也~");
+                } else {
+                    put("look_pick_up", map);
+                }
+            }});
             return cmds;
         }
         // 拜师命令
