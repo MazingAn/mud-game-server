@@ -29,7 +29,7 @@ public class MongoMapper<F, S> {
     public static QuestObjectRepository questObjectRepository;
     public static GameChatChannelRepository gameChatChannelRepository;
     public static SkillBookObjectRepository skillBookObjectRepository;
-
+    public static MailObjectRepository mailObjectRepository;
 
 
     @Autowired
@@ -115,6 +115,11 @@ public class MongoMapper<F, S> {
     @Autowired
     public void setSkillBookObjectRepository(SkillBookObjectRepository skillBookObjectRepository) {
         MongoMapper.skillBookObjectRepository = skillBookObjectRepository;
+    }
+
+    @Autowired
+    public void setMailObjectRepository(MailObjectRepository mailObjectRepository) {
+        MongoMapper.mailObjectRepository = mailObjectRepository;
     }
 }
 

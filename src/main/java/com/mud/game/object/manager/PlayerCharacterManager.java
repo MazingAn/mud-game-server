@@ -151,6 +151,11 @@ public class PlayerCharacterManager {
                 GameSessionService.updateCallerType(playerCharacterId, CallerType.DIE);
                 playerCharacter.msg(new RebornCommandsMessage(playerCharacter));
             }
+            //当前用户接受邮件列表
+            List<MailObject>  recipientList = MongoMapper.mailObjectRepository.findMailObjectListByRecipientId(playerCharacterId);
+            if (recipientList != null && recipientList.size() > 0) {
+                playerCharacter.msg(new MailObjectMessage(playerCharacter, recipientList));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage("进入游戏失败，请稍后重试")));

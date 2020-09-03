@@ -3,6 +3,7 @@ package com.mud.game.thirdpart.wechat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +20,7 @@ import java.util.List;
  * timestamp
  * nonce
  */
-@Controller
+@RestController
 public class WechatLoginCtrl {
 
     public static final String TOKEN = "1234567890qwertyuiop";
