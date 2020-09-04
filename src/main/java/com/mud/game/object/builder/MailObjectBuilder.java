@@ -32,12 +32,13 @@ public class MailObjectBuilder {
         MongoMapper.mailObjectRepository.save(mailObject);
     }
 
-    private static AttachmentInfo getMailObjectInfo(BaseCommonObject baseCommonObject, int number) {
+    public static AttachmentInfo getMailObjectInfo(BaseCommonObject baseCommonObject, int number) {
         AttachmentInfo attachmentInfo = new AttachmentInfo();
         attachmentInfo.setAttachmentName(baseCommonObject.getName());
         attachmentInfo.setIcon(baseCommonObject.getIcon());
         attachmentInfo.setObjectId(String.valueOf(baseCommonObject.getId()));
         attachmentInfo.setNumber(number);
+        attachmentInfo.setDataKey(baseCommonObject.getDataKey());
         return attachmentInfo;
     }
 }

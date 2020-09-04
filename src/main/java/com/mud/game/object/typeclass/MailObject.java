@@ -1,12 +1,8 @@
 package com.mud.game.object.typeclass;
 
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.structs.AttachmentInfo;
-import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 
 import javax.persistence.Id;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class MailObject {
@@ -39,7 +35,10 @@ public class MailObject {
      * 状态
      */
     private Boolean isReaded;
-
+    /**
+     * 标识
+     */
+    private Boolean dataKey;
 
     public String getId() {
         return id;
@@ -89,13 +88,6 @@ public class MailObject {
         this.content = content;
     }
 
-    public List<AttachmentInfo> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<AttachmentInfo> attachments) {
-        this.attachments = attachments;
-    }
 
     public String getStarteTime() {
         return starteTime;
@@ -111,5 +103,21 @@ public class MailObject {
 
     public void setReaded(Boolean readed) {
         isReaded = readed;
+    }
+
+    public List<AttachmentInfo> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentInfo> attachments) {
+        this.attachments = attachments;
+    }
+
+    public Boolean getDataKey() {
+        return dataKey;
+    }
+
+    public void setDataKey(Boolean dataKey) {
+        this.dataKey = dataKey;
     }
 }

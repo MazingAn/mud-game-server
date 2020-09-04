@@ -152,7 +152,7 @@ public class PlayerCharacterManager {
                 playerCharacter.msg(new RebornCommandsMessage(playerCharacter));
             }
             //当前用户接受邮件列表
-            List<MailObject>  recipientList = MongoMapper.mailObjectRepository.findMailObjectListByRecipientId(playerCharacterId);
+            List<MailObject> recipientList = MongoMapper.mailObjectRepository.findMailObjectListByRecipientId(playerCharacterId);
             if (recipientList != null && recipientList.size() > 0) {
                 playerCharacter.msg(new MailObjectMessage(playerCharacter, recipientList));
             }
@@ -675,21 +675,29 @@ public class PlayerCharacterManager {
     /**
      * 发送消息给其他玩家
      */
-    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String name, String message, Session selfSession) {
+    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String dbref, String message, Session selfSession, String type) {
         /*
          * @发送消息给其他玩家
          * */
-        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterByName(name.trim());
+        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(dbref.trim());
         if (null == target) {
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("发送失败!")));
             return;
         }
         Session targetSession = GameSessionService.getSessionByCallerId(target.getId());
         if (targetSession != null) {
-            //给发送私聊的人返回数据
-            selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter, true)));
-            //给接受私聊的人发送数据
-            targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter, false)));
+            if (type.equals("friend_chat")) {
+                //给发送好友的人返回数据
+                selfSession.sendText(JsonResponse.JsonStringResponse(new FriendMessage(message, playerCharacter, target, true)));
+                //给接受好友的人发送数据
+                targetSession.sendText(JsonResponse.JsonStringResponse(new FriendMessage(message, playerCharacter, target, false)));
+            } else if (type.equals("private_chat")) {
+                //给发送私聊的人返回数据
+                selfSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter, true)));
+                //给接受私聊的人发送数据
+                targetSession.sendText(JsonResponse.JsonStringResponse(new SayMessage(message, target, playerCharacter, false)));
+
+            }
         } else {
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("对方可能不在线")));
         }

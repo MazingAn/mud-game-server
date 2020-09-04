@@ -4,7 +4,6 @@ import com.mud.game.condition.BaseCondition;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
-import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;

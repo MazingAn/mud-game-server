@@ -1,11 +1,7 @@
 package com.mud.game.structs;
 
-import com.mud.game.object.builder.CommonObjectBuilder;
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.MailObject;
-import com.mud.game.object.typeclass.PlayerCharacter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MailObjectInfo {

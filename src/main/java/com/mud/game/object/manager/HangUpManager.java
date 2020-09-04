@@ -1,18 +1,13 @@
 package com.mud.game.object.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.messages.ToastMessage;
-import com.mud.game.net.session.GameSessionService;
-import com.mud.game.object.account.Player;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.structs.CharacterState;
-import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.yeauty.pojo.Session;
 
 public class HangUpManager {
 

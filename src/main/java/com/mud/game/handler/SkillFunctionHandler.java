@@ -23,8 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.mud.game.handler.SkillCdHandler.skillCdMap;
-
 /**
  * 技能函数缓存类
  * <p>
@@ -68,7 +66,7 @@ public class SkillFunctionHandler {
                 //计算伤害
                 HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
                 //应用伤害
-                GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1);
+                GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1,caller);
                 //构建战斗输出
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);

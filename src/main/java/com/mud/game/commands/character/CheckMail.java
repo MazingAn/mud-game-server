@@ -1,15 +1,10 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
-import com.mud.game.messages.MailObjectMessage;
-import com.mud.game.object.typeclass.MailObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
-
-import java.util.List;
 
 /**
  * 邮件列表

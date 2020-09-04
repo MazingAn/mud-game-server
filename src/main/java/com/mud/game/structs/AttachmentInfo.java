@@ -1,6 +1,8 @@
 package com.mud.game.structs;
 
-public class AttachmentInfo {
+import java.io.Serializable;
+
+public class AttachmentInfo  implements Serializable {
     /**
      * 名称
      */
@@ -17,6 +19,10 @@ public class AttachmentInfo {
      * 数量
      */
     private int number;
+    /**
+     * dataKey
+     */
+    private String dataKey;
 
     public String getAttachmentName() {
         return attachmentName;
@@ -48,5 +54,13 @@ public class AttachmentInfo {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public String getDataKey() {
+        return dataKey;
+    }
+
+    public void setDataKey(String dataKey) {
+        this.dataKey = dataKey;
     }
 }

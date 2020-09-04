@@ -1,6 +1,7 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.algorithm.CommonAlgorithm;
+import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -13,8 +14,6 @@ import com.mud.game.structs.CombatCommand;
 import com.mud.game.structs.ObjectMoveInfo;
 import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.resultutils.GameWords;
-import com.mud.game.worlddata.db.mappings.DbMapper;
-import com.mud.game.worlddata.db.models.NpcBoundItem;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
@@ -30,7 +29,7 @@ public class GameCharacterManager {
     /**
      * npc掉落物品集合，value的key为物品dataKey,value为数量
      */
-    public static final Map<String, Map<String, Integer>> npcBoundItemSet = new HashMap<>();
+    public static final Map<String, NpcBoundItemInfo> npcBoundItemSet = new HashMap<>();
 
     /**
      * 玩家类的反射工具，通过反射把玩家类的属性找到并开放出去
@@ -125,13 +124,12 @@ public class GameCharacterManager {
             System.out.println("无法转换类型");
         }
     }
-
     /**
      * 修改角色的某个属性
      *
-     * @param character CommonCharacter 角色
-     * @param attrKey   String 属性名称
-     * @param value     Object 属性值
+     * @param character       CommonCharacter 角色
+     * @param attrKey         String 属性名称
+     * @param value           Object 属性值
      */
     public static void changeStatus(CommonCharacter character, String attrKey, Object value) {
         /*
@@ -195,6 +193,81 @@ public class GameCharacterManager {
         // 检测角色死亡
         if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
+        }
+
+    }
+
+
+    /**
+     * 修改角色的某个属性
+     *
+     * @param character       CommonCharacter 角色
+     * @param attrKey         String 属性名称
+     * @param value           Object 属性值
+     * @param commonCharacter 变更来源角色
+     */
+    public static void changeStatus(CommonCharacter character, String attrKey, Object value, CommonCharacter commonCharacter) {
+        /*
+         * @ 这个方法主要用来增加或减少角色的属性
+         * @ 角色的属性分为默认属性，这部分属性可以直接通过get set方法获取和设置
+         * @ 还有一部分属性是自定义属性， 这部分属性是在数据库里面自己定义的，需要修改CustomertAttr
+         * */
+        // 检查是不是角色的默认属性,使用反射检查玩家是否有这个属性，如果没有会抛出NoSuchFieldException，那么则可能在自定义属性中
+        try {
+            Field field = character.getClass().getField(attrKey);
+            String valueStr = value.toString();
+            if ("int".equals(field.getType().getName()) || "Integer".equals(field.getType().getName())) {
+                if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                field.setInt(character, field.getInt(character) + Integer.parseInt(valueStr));
+            } else if ("float".equalsIgnoreCase(field.getType().getName())) {
+                field.setFloat(character, field.getFloat(character) + Float.parseFloat(valueStr));
+            } else if ("double".equalsIgnoreCase(field.getType().getName())) {
+                field.setDouble(character, field.getDouble(character) + Double.parseDouble(valueStr));
+            } else if ("String".equals(field.getType().getName())) {
+                field.set(character, valueStr);
+            } else if ("byte".equalsIgnoreCase(field.getType().getName())) {
+                if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                field.setByte(character, (byte) (field.getByte(character) + Byte.parseByte(valueStr)));
+            } else if ("long".equalsIgnoreCase(field.getType().getName())) {
+                if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                field.setLong(character, field.getLong(character) + Long.parseLong(valueStr));
+            } else if ("boolean".equalsIgnoreCase(field.getType().getName())) {
+                field.setBoolean(character, Boolean.parseBoolean(valueStr));
+            } else {
+                field.set(character, value);
+            }
+            // 检查时都有后天属性发生变动，这个时候应该追加其影响的其他属性
+            checkOnAfterAttrChange(character, attrKey, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            // 既然抛出了上述异常，那么这个属性可能在自定义属性中
+            Map<String, Map<String, Object>> cattr = character.getCustomerAttr();
+            if (cattr.containsKey(attrKey)) {
+                // 根据属性的类型运算
+                Object originValue = cattr.get(attrKey).get("value");
+                if (originValue.getClass() == Integer.class) {
+                    String valueStr = value.toString();
+                    if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                    int finalValue = (int) originValue + Integer.parseInt(valueStr);
+                    cattr.get(attrKey).put("value", finalValue);
+                }
+                if (originValue.getClass() == Float.class) {
+                    float finalValue = (float) originValue + (float) value;
+                    cattr.get(attrKey).put("value", finalValue);
+                }
+            } else {
+                // 如果自定义属性中也没有找到，那这这不步操作肯定是运维人员配置的有问题，这部操作就GG了，测试期间先打印一下
+                System.out.println("没有找到对应的属性：" + attrKey);
+            }
+            // 持久化
+            GameCharacterManager.saveCharacter(character);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            System.out.println("无法转换类型");
+        }
+
+        // 检测角色死亡
+        if (character.getHp() <= 0) {
+            GameCharacterManager.die(character, commonCharacter);
         }
 
     }
@@ -374,21 +447,34 @@ public class GameCharacterManager {
             Timer timer = new Timer();
             float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
             timer.schedule(reborn(character), (int) rebornTime * 1000);
-            //npc死亡生成掉落物品
-            List<NpcBoundItem> npcBoundItemList = DbMapper.npcBoundItemRepository.findNpcBoundItemByNpcDataKey(character.getDataKey());
-            if (npcBoundItemList.size() > 0) {
-                Random random =  new Random();
-                Map<String, Integer> npcBoundItemMap = new HashMap<>();
-                for (int i = 0; i < npcBoundItemList.size(); i++) {
-                    float a = random.nextFloat();
-                    // 检查获取概率a
-                    if (a < npcBoundItemList.get(i).getAcquisitionProbability()) {
-                        npcBoundItemMap.put(npcBoundItemList.get(i).getObjectDataKey(), 1);
-                    }
-                }
-                npcBoundItemSet.put(character.getDataKey(), npcBoundItemMap);
-            }
+        } else {
+            GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
+            character.msg(new RebornCommandsMessage((PlayerCharacter) character));
+        }
+    }
 
+    /**
+     * 角色死亡触发
+     *
+     * @param commonCharacter 击杀者
+     * @param character       角色死亡之后更新信息到客户端
+     *                        延时触发复活
+     */
+    public static void die(CommonCharacter character, CommonCharacter commonCharacter) {
+        if (!character.getName().contains("的尸体")) {
+            character.setName(character.getName() + "的尸体");
+        }
+        character.setHp(0);
+        GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
+        saveCharacter(character);
+        characterMoveOut(character);
+        characterMoveIn(character);
+        if (character instanceof WorldNpcObject) {
+            Timer timer = new Timer();
+            float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+            timer.schedule(reborn(character), (int) rebornTime * 1000);
+            //生成战利品
+            WorldNpcObjectManager.getTrophy(character,commonCharacter);
         } else {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
             character.msg(new RebornCommandsMessage((PlayerCharacter) character));

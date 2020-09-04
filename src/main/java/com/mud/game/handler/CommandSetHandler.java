@@ -116,10 +116,14 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("open_slot", OpenSlot.class);
         playerCharacterCommandSet.put("loadgems", LoadGems.class);
         playerCharacterCommandSet.put("imbed", Imbed.class);
-        playerCharacterCommandSet.put("pick_up", SendMail.class);
+        playerCharacterCommandSet.put("pick_up", PickUp.class);
+        playerCharacterCommandSet.put("pick_up_one", PickUpOne.class);
+        playerCharacterCommandSet.put("pick_up_list", PickUpList.class);
         //邮件发送命令 playerCharacterCommandSet.put("send_mail", SendMail.class);
         playerCharacterCommandSet.put("check_mail", CheckMail.class);
         playerCharacterCommandSet.put("delete_mail", DeleteMail.class);
+        playerCharacterCommandSet.put("read_mail", ReadMail.class);
+        playerCharacterCommandSet.put("extract_mail_attachment", ExtractMailAttachment.class);
     }
 
     /**

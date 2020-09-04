@@ -18,7 +18,6 @@ import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.Equipment;
-import com.mud.game.worlddata.db.models.Gem;
 import com.mud.game.worlddata.db.models.NormalObject;
 import com.mud.game.worlddata.db.models.StrengthenMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;

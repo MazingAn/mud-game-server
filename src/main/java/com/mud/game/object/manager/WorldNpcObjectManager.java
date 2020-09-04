@@ -2,12 +2,14 @@ package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.Mongo;
+import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.handler.QuestStatusHandler;
 import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.TeachersSkillMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.account.Player;
+import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.*;
 import com.mud.game.utils.jsonutils.Attr2Map;
@@ -20,6 +22,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
+
+import static com.mud.game.object.manager.GameCharacterManager.npcBoundItemSet;
 
 public class WorldNpcObjectManager {
 
@@ -177,16 +181,7 @@ public class WorldNpcObjectManager {
 
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (npc.getHp() <= 0) {
-            cmds.add(new EmbeddedCommand("拾取", "pick_up", npc.getDataKey()));
-            //返回掉落物品信息
-            playerCharacter.msg(new HashMap<String, Object>() {{
-                Map<String, Integer> map = GameCharacterManager.npcBoundItemSet.get(npc.getDataKey());
-                if (null == map) {
-                    put("look_pick_up", "空空如也~");
-                } else {
-                    put("look_pick_up", map);
-                }
-            }});
+            cmds.add(new EmbeddedCommand("拾取", "pick_up_list", npc.getDataKey()));
             return cmds;
         }
         // 拜师命令
@@ -399,5 +394,77 @@ public class WorldNpcObjectManager {
         } else {
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.NPC_NOT_TEACH, npc.getName()))));
         }
+    }
+
+    /**
+     * npc死亡生成掉落物品
+     *
+     * @param character
+     */
+    public static void getTrophy(CommonCharacter character, CommonCharacter commonCharacter) {
+        List<NpcBoundItem> npcBoundItemList = DbMapper.npcBoundItemRepository.findNpcBoundItemByNpcDataKey(character.getDataKey());
+        if (npcBoundItemList.size() > 0) {
+            Random random = new Random();
+            Map<String, Integer> npcBoundItemMap = new HashMap<>();
+            for (int i = 0; i < npcBoundItemList.size(); i++) {
+                float a = random.nextFloat();
+                // 检查获取概率a
+                if (a < npcBoundItemList.get(i).getAcquisitionProbability()) {
+                    npcBoundItemMap.put(npcBoundItemList.get(i).getObjectDataKey(), 1);
+                }
+            }
+
+            npcBoundItemSet.put(character.getDataKey(), new NpcBoundItemInfo(new Date(), commonCharacter.getId(), npcBoundItemMap));
+        }
+    }
+
+    /**
+     * 尸体是否已复活、在固定时间内只有击杀者可以拾取
+     *
+     * @param caller
+     * @param npcDataKey
+     * @param npcBoundItemInfo
+     * @return
+     */
+    public static boolean getTrophyCheck(PlayerCharacter caller, String npcDataKey, NpcBoundItemInfo npcBoundItemInfo) {
+        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+        if (worldNpcObject.getHp() > 0) {
+            caller.msg(worldNpcObject.getName() + "已复活！");
+            return false;
+        }
+        //判断当前时间是否在开放拾取的时间内
+        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 10) {
+            if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public static boolean getTrophyCheckOne(PlayerCharacter caller, String npcDataKey, NpcBoundItemInfo npcBoundItemInfo, String objectDataKey) {
+        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+        if (worldNpcObject.getHp() > 0) {
+            caller.msg(worldNpcObject.getName() + "已复活！");
+            return false;
+        }
+        //判断当前时间是否在开放拾取的时间内
+        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 10) {
+            if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
+                return false;
+            }
+        }
+        if (null != npcBoundItemInfo.getNpcBoundItemMap() && npcBoundItemInfo.getNpcBoundItemMap().containsKey(objectDataKey)) {
+            return false;
+        }
+        return true;
+    }
+
+    //判断当前时间是否在开放拾取的时间内
+    public static int calLastedTime(Date startDate) {
+        long a = new Date().getTime();
+        long b = startDate.getTime();
+        int c = (int) ((a - b) / 1000);
+        return c;
     }
 }

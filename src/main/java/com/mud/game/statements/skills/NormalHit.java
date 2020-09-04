@@ -43,7 +43,7 @@ public class NormalHit extends BaseAttackSkillStatement {
             //计算伤害
             HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
             //应用伤害
-            GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1);
+            GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
             //构建战斗输出
             String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
             skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
