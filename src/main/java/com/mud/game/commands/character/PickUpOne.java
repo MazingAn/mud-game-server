@@ -3,15 +3,24 @@ package com.mud.game.commands.character;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.WorldNpcObjectManager;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang.StringUtils.isNumeric;
 
 /**
  * 拾取一个战利品
@@ -40,25 +49,45 @@ public class PickUpOne extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
-        String npcDataKey = args.getString("npcDataKey");
-        String objectDataKey = args.getString("objectDataKey");
-        NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(npcDataKey);
+        String dbref = args.getString("npcDbref");
+        String goodDbref = args.getString("goodDbref");
+        //TODO 首先创建装备，设置锻造属性
+        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(dbref);
+        NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(dbref);
         if (null == npcBoundItemInfo) {
             caller.msg(new ToastMessage("物品不存在"));
             return;
         }
-        if (WorldNpcObjectManager.getTrophyCheckOne(caller, npcDataKey, npcBoundItemInfo, objectDataKey)) {
+        //TODO 返回已拾取装备
+        List<String> list = new ArrayList<>();
+        if (WorldNpcObjectManager.getTrophyCheckOne(caller, worldNpcObject, npcBoundItemInfo, goodDbref)) {
             //拾取物品到背包
             Map<String, Integer> dataKeyMap = npcBoundItemInfo.getNpcBoundItemMap();
-            if (PlayerCharacterManager.receiveObjectToBagpack(caller, objectDataKey, dataKeyMap.get(objectDataKey))) {
-                npcBoundItemInfo.getNpcBoundItemMap().remove(objectDataKey);
+            //判断是模板物品还是唯一物品
+            if (isNumeric(goodDbref)) {
+                if (PlayerCharacterManager.receiveObjectToBagpack(caller, goodDbref, dataKeyMap.get(goodDbref))) {
+                    npcBoundItemInfo.getNpcBoundItemMap().remove(goodDbref);
+                    list.add(goodDbref);
+                }
+            } else {
+                CommonObject commonObject = CommonObjectBuilder.findObjectById(goodDbref);
+                if (PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, dataKeyMap.get(goodDbref))) {
+                    npcBoundItemInfo.getNpcBoundItemMap().remove(goodDbref);
+                    list.add(goodDbref);
+                }
             }
             //战利品数据修改
             if (npcBoundItemInfo.getNpcBoundItemMap().size() == 0) {
-                GameCharacterManager.npcBoundItemSet.remove(npcDataKey);
+                list = new ArrayList<>();
+                GameCharacterManager.npcBoundItemSet.remove(dbref);
             } else {
-                GameCharacterManager.npcBoundItemSet.put(npcDataKey, npcBoundItemInfo);
+                GameCharacterManager.npcBoundItemSet.put(dbref, npcBoundItemInfo);
             }
+            //返回数据
+            caller.msg(new HashMap<String, String>() {{
+                put("remove_pick_up_one", dbref);
+            }});
         }
+
     }
 }

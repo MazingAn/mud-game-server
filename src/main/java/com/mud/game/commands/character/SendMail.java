@@ -63,8 +63,8 @@ public class SendMail extends BaseCommand {
             caller.msg("邮件发送失败!");
             return;
         }
-        List<BaseCommonObject> commonObjectList = new ArrayList<>();
-        commonObjectList.add(CommonObjectBuilder.findObjectTemplateByDataKey(dataKey));
+        List<CommonObject> commonObjectList = new ArrayList<>();
+        //commonObjectList.add(CommonObjectBuilder.findObjectTemplateByDataKey(dataKey));
         //持久化邮件信息
         MailObjectBuilder.save(caller, target, content, commonObjectList, number);
     }

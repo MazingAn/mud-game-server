@@ -675,11 +675,11 @@ public class PlayerCharacterManager {
     /**
      * 发送消息给其他玩家
      */
-    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String dbref, String message, Session selfSession, String type) {
+    public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String name, String message, Session selfSession, String type) {
         /*
          * @发送消息给其他玩家
          * */
-        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(dbref.trim());
+        PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterByName(name.trim());
         if (null == target) {
             selfSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage("发送失败!")));
             return;
@@ -1117,7 +1117,7 @@ public class PlayerCharacterManager {
             MongoMapper.bagpackObjectRepository.save(bagpackObject);
             commonObject.setOwner(playerCharacter.getId());
             CommonObjectBuilder.save(commonObject);
-            playerCharacter.msg(new AlertMessage(new GettingObjectMessage(commonObject, number).getMsg()));
+            playerCharacter.msg(new ToastMessage(new GettingObjectMessage(commonObject, number).getMsg()));
             showBagpack(playerCharacter);
             afterPlayerReceiveObject(playerCharacter, commonObject, number);
             return true;

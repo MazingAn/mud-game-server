@@ -8,9 +8,11 @@ import com.mud.game.object.builder.MailObjectBuilder;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.WorldNpcObjectManager;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.AttachmentInfo;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
@@ -64,11 +66,11 @@ public class PickUpList extends BaseCommand {
         }
         //不为空
         List<AttachmentInfo> attachmentInfoList = new ArrayList<>();
-        BaseCommonObject baseCommonObject = null;
+        CommonObject commonObject = null;
         for (String str : npcBoundItemMap.keySet()) {
-            baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(str);
-            if (null != baseCommonObject) {
-                 attachmentInfoList.add(MailObjectBuilder.getMailObjectInfo(baseCommonObject, npcBoundItemMap.get(str)));
+            commonObject = CommonObjectBuilder.findObjectById(str);
+            if (null != commonObject) {
+                 attachmentInfoList.add(MailObjectBuilder.getMailObjectInfo(commonObject, npcBoundItemMap.get(str)));
             }
         }
         caller.msg(new HashMap<String, Object>() {{

@@ -36,12 +36,12 @@ public class FriendChat extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         Session session = getSession();
         JSONObject args = getArgs();
-        String dbref = args.getString("dbref");
+        String name = args.getString("name");
         String message = args.getString("message");
         String type = args.getString("type");
-        if (StringUtils.isEmpty(dbref) || StringUtils.isEmpty(message)) {
+        if (StringUtils.isEmpty(name) || StringUtils.isEmpty(message)) {
             session.sendText(JsonResponse.JsonStringResponse(new MsgMessage("发送失败!")));
         }
-        PlayerCharacterManager.sendMessageToOtherPlayer(caller, dbref, message, session,type);
+        PlayerCharacterManager.sendMessageToOtherPlayer(caller, name, message, session,type);
     }
 }

@@ -9,7 +9,9 @@ import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.TeachersSkillMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.account.Player;
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.*;
 import com.mud.game.utils.jsonutils.Attr2Map;
@@ -17,6 +19,7 @@ import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
+import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.yeauty.pojo.Session;
@@ -181,7 +184,7 @@ public class WorldNpcObjectManager {
 
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (npc.getHp() <= 0) {
-            cmds.add(new EmbeddedCommand("拾取", "pick_up_list", npc.getDataKey()));
+            cmds.add(new EmbeddedCommand("拾取", "pick_up_list", npc.getId()));
             return cmds;
         }
         // 拜师命令
@@ -410,24 +413,36 @@ public class WorldNpcObjectManager {
                 float a = random.nextFloat();
                 // 检查获取概率a
                 if (a < npcBoundItemList.get(i).getAcquisitionProbability()) {
-                    npcBoundItemMap.put(npcBoundItemList.get(i).getObjectDataKey(), 1);
+                    BaseCommonObject baseCommonObject = CommonObjectBuilder.findObjectTemplateByDataKey(npcBoundItemList.get(i).getObjectDataKey());
+                    if (baseCommonObject != null && baseCommonObject.getCategory().equals("TYPE_OBJECTTYPE_EQUIPMENT")) {
+                        //生成装备强化等级
+                        int level = randomInterval(npcBoundItemList.get(i).getLevelMinLevel(), npcBoundItemList.get(i).getLevelMaxLevel());
+                        int quality = randomInterval(npcBoundItemList.get(i).getQualityMinLevel(), npcBoundItemList.get(i).getQualityMaxLevel());
+                        EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.save(EquipmentObjectManager.createSpecifyLevelAndQuality(npcBoundItemList.get(i).getObjectDataKey(), level, quality));
+                        npcBoundItemMap.put(equipmentObject.getId(), 1);
+                    }
                 }
             }
 
-            npcBoundItemSet.put(character.getDataKey(), new NpcBoundItemInfo(new Date(), commonCharacter.getId(), npcBoundItemMap));
+            npcBoundItemSet.put(character.getId(), new NpcBoundItemInfo(new Date(), commonCharacter.getId(), npcBoundItemMap));
         }
+    }
+
+    //生成区间内随机数
+    private static int randomInterval(int levelMinLevel, int levelMaxLevel) {
+        Random random = new Random();
+        return random.nextInt(levelMaxLevel - levelMinLevel + 1) + levelMinLevel;
     }
 
     /**
      * 尸体是否已复活、在固定时间内只有击杀者可以拾取
      *
      * @param caller
-     * @param npcDataKey
+     * @param worldNpcObject
      * @param npcBoundItemInfo
      * @return
      */
-    public static boolean getTrophyCheck(PlayerCharacter caller, String npcDataKey, NpcBoundItemInfo npcBoundItemInfo) {
-        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+    public static boolean getTrophyCheck(PlayerCharacter caller, WorldNpcObject worldNpcObject, NpcBoundItemInfo npcBoundItemInfo) {
         if (worldNpcObject.getHp() > 0) {
             caller.msg(worldNpcObject.getName() + "已复活！");
             return false;
@@ -442,8 +457,7 @@ public class WorldNpcObjectManager {
     }
 
 
-    public static boolean getTrophyCheckOne(PlayerCharacter caller, String npcDataKey, NpcBoundItemInfo npcBoundItemInfo, String objectDataKey) {
-        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+    public static boolean getTrophyCheckOne(PlayerCharacter caller, WorldNpcObject worldNpcObject, NpcBoundItemInfo npcBoundItemInfo, String objectDataKey) {
         if (worldNpcObject.getHp() > 0) {
             caller.msg(worldNpcObject.getName() + "已复活！");
             return false;
@@ -454,7 +468,7 @@ public class WorldNpcObjectManager {
                 return false;
             }
         }
-        if (null != npcBoundItemInfo.getNpcBoundItemMap() && npcBoundItemInfo.getNpcBoundItemMap().containsKey(objectDataKey)) {
+        if (null == npcBoundItemInfo.getNpcBoundItemMap() || !npcBoundItemInfo.getNpcBoundItemMap().containsKey(objectDataKey)) {
             return false;
         }
         return true;

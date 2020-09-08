@@ -75,13 +75,13 @@ public class ExtractMailAttachment extends BaseCommand {
         }
         //判断模板物品还是已生成物品
         for (int i = 0; i < attachmentList.size(); i++) {
-            if (isNumeric(attachmentList.get(i).getObjectId())) {
+            if (isNumeric(attachmentList.get(i).getDbref())) {
 
                 if (PlayerCharacterManager.receiveObjectToBagpack(caller, attachmentList.get(i).getDataKey(), attachmentList.get(i).getNumber())) {
                     newAttachmentList.remove(i);
                 }
             } else {
-                CommonObject commonObject = CommonObjectBuilder.findObjectById(attachmentList.get(i).getObjectId());
+                CommonObject commonObject = CommonObjectBuilder.findObjectById(attachmentList.get(i).getDbref());
                 if (PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, attachmentList.get(i).getNumber())) {
                     //物品唯一修改物品归属
                     if (commonObject.isUnique()) {

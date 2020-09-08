@@ -41,6 +41,7 @@ public class ChoseAction extends BaseCommand {
         Session session = getSession();
         JSONObject args = getArgs();
         String eventKey = args.getString("event");
+        String dbref = args.getString("dbref");
         EventData eventData = DbMapper.eventDataRepository.findEventDataByDataKey(eventKey);
         GameEventManager.trigger(playerCharacter, eventData);
     }

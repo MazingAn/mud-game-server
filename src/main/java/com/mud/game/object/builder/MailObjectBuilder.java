@@ -1,5 +1,6 @@
 package com.mud.game.object.builder;
 
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.MailObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.AttachmentInfo;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class MailObjectBuilder {
 
-    public static void save(PlayerCharacter caller, PlayerCharacter target, String content, List<BaseCommonObject> commonObjectList, int number) {
+    public static void save(PlayerCharacter caller, PlayerCharacter target, String content, List<CommonObject> commonObjectList, int number) {
         MailObject mailObject = new MailObject();
         mailObject.setInitiatorId(caller.getId());
         mailObject.setInitiatorName(caller.getName());
@@ -32,13 +33,15 @@ public class MailObjectBuilder {
         MongoMapper.mailObjectRepository.save(mailObject);
     }
 
-    public static AttachmentInfo getMailObjectInfo(BaseCommonObject baseCommonObject, int number) {
+    public static AttachmentInfo getMailObjectInfo(CommonObject commonObject, int number) {
         AttachmentInfo attachmentInfo = new AttachmentInfo();
-        attachmentInfo.setAttachmentName(baseCommonObject.getName());
-        attachmentInfo.setIcon(baseCommonObject.getIcon());
-        attachmentInfo.setObjectId(String.valueOf(baseCommonObject.getId()));
+        attachmentInfo.setAttachmentName(commonObject.getName());
+        attachmentInfo.setIcon(commonObject.getIcon());
+        attachmentInfo.setDbref(String.valueOf(commonObject.getId()));
         attachmentInfo.setNumber(number);
-        attachmentInfo.setDataKey(baseCommonObject.getDataKey());
+        attachmentInfo.setDataKey(commonObject.getDataKey());
+        attachmentInfo.setQuality(commonObject.getQuality());
+        attachmentInfo.setLevel(commonObject.getLevel());
         return attachmentInfo;
     }
 }

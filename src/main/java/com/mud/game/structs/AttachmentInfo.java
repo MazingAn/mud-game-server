@@ -1,8 +1,10 @@
 package com.mud.game.structs;
 
+import com.mud.game.utils.modelsutils.Mark;
+
 import java.io.Serializable;
 
-public class AttachmentInfo  implements Serializable {
+public class AttachmentInfo implements Serializable {
     /**
      * 名称
      */
@@ -14,7 +16,7 @@ public class AttachmentInfo  implements Serializable {
     /**
      * objectId
      */
-    private String objectId;
+    private String dbref;
     /**
      * 数量
      */
@@ -23,6 +25,11 @@ public class AttachmentInfo  implements Serializable {
      * dataKey
      */
     private String dataKey;
+
+    //装备的品级
+    private int quality;
+    // 物品等级
+    private int level;
 
     public String getAttachmentName() {
         return attachmentName;
@@ -40,13 +47,6 @@ public class AttachmentInfo  implements Serializable {
         this.icon = icon;
     }
 
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
 
     public int getNumber() {
         return number;
@@ -62,5 +62,29 @@ public class AttachmentInfo  implements Serializable {
 
     public void setDataKey(String dataKey) {
         this.dataKey = dataKey;
+    }
+
+    public int getQuality() {
+        return quality;
+    }
+
+    public void setQuality(int quality) {
+        this.quality = quality;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public String getDbref() {
+        return dbref;
+    }
+
+    public void setDbref(String dbref) {
+        this.dbref = dbref;
     }
 }

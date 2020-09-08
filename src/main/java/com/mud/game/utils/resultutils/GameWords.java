@@ -8,7 +8,7 @@ public class GameWords {
 
     // 玩家状态
     public static final String PLAYER_DIED = "{y你已经死了！{n";
-    public static final String PLAYER_RECOVER_HP = "你回复了{g%s{n点最气血";
+    public static final String PLAYER_RECOVER_HP = "你回复了{g%s{n点气血";
     public static final String PLAYER_RECOVER_MAX_HP = "你回复了{g%s{n点最大气血";
     public static final String NEED_NOT_CURE = "你的{g气血充盈{n，不需要{r疗伤{n！";
     public static final String PLAYER_CURE_END = "{g你已经恢复到最佳状态！{n";

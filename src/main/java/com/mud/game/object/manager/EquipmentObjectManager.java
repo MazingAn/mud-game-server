@@ -25,8 +25,7 @@ import org.yeauty.pojo.Session;
 
 import java.util.*;
 
-import static com.mud.game.constant.Constant.MAX_LEVEL;
-import static com.mud.game.constant.Constant.STRENGTHEN_COEFFICIENT;
+import static com.mud.game.constant.Constant.*;
 
 
 public class EquipmentObjectManager {
@@ -61,6 +60,98 @@ public class EquipmentObjectManager {
             System.out.println("在创建装备的时候出现问题，请检查游戏装备配置文件，装备KEY： " + equipmentTemplateKey);
         }
         return equipment;
+    }
+
+    public static EquipmentObject createSpecifyLevelAndQuality(String equipmentTemplateKey, int level, int quality) {
+        /*创建一件装备，指定进阶和强化等级*/
+        EquipmentObject equipment = new EquipmentObject();
+        try {
+            Equipment template = DbMapper.equipmentRepository.findEquipmentByDataKey(equipmentTemplateKey);
+            equipment.setDataKey(template.getDataKey());
+            equipment.setName(template.getName());
+            equipment.setDescription(template.getDescription());
+            equipment.setUnitName(template.getUnitName());
+            equipment.setCategory(template.getCategory());
+            equipment.setUnique(template.isUniqueInBag());
+            equipment.setMaxStack(template.getMaxStack());
+            equipment.setCanDiscard(template.isCanDiscard());
+            equipment.setCanRemove(template.isCanRemove());
+            equipment.setIcon(template.getIcon());
+            equipment.setPositions(JsonStrConvetor.ToSet(template.getPositions()));
+            equipment.setSuite(template.getSuite());
+            equipment.setWeaponType(template.getWeaponType());
+            equipment.setMaxSlot(template.getMaxSlot());
+            equipment.setQuality(template.getQuality());
+            equipment.setGems(new ArrayList<>());
+            equipment.setOwner(null);
+            equipment.setEquipped(false);
+            equipment.setTotalNumber(0);
+            equipment.setLevel(level);
+            equipment.setQuality(quality);
+            //设置进阶属性
+            equipment.setAttrs(specifyAttr(Attr2Map.equipmentAttrTrans(template.getAttrs()), level, quality - template.getQuality()));
+        } catch (Exception e) {
+            System.out.println("在创建装备的时候出现问题，请检查游戏装备配置文件，装备KEY： " + equipmentTemplateKey);
+        }
+        return equipment;
+    }
+
+    /**
+     * 根据强化等级和进阶等级配置装备属性
+     *
+     * @param equipmentAttrTrans
+     * @param level
+     * @param quality
+     * @return
+     */
+    private static Map<String, Map<String, Object>> specifyAttr(Map<String, Map<String, Object>> equipmentAttrTrans, int level, int quality) {
+        Iterator<Map.Entry<String, Map<String, Object>>> mapIterator = equipmentAttrTrans.entrySet().iterator();
+        if (quality > 0) {
+            for (int i = 0; i < quality; i++) {
+                while (mapIterator.hasNext()) {
+                    Map.Entry<String, Map<String, Object>> mapEntry = mapIterator.next();
+                    Iterator<Map.Entry<String, Object>> mapEntryIterator = mapEntry.getValue().entrySet().iterator();
+                    while (mapEntryIterator.hasNext()) {
+                        Map.Entry<String, Object> map = mapEntryIterator.next();
+                        if ("value".equals(map.getKey())) {
+                            if (null != map.getValue()) {
+                                Object value = map.getValue();
+                                int a = (int) Double.parseDouble(value.toString());
+                                //强化属性
+                                for (int j = 0; j < MAX_LEVEL; j++) {
+                                    a = (int) Math.floor(a * STRENGTHEN_COEFFICIENT);
+                                }
+                                //进阶
+                                map.setValue(Math.floor(a * QUALITY_COEFFICIENT));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //TODO 强化属性
+        if (level > 0) {
+            for (int i = 0; i < level; i++) {
+                while (mapIterator.hasNext()) {
+                    Map.Entry<String, Map<String, Object>> mapEntry = mapIterator.next();
+                    Iterator<Map.Entry<String, Object>> mapEntryIterator = mapEntry.getValue().entrySet().iterator();
+                    while (mapEntryIterator.hasNext()) {
+                        Map.Entry<String, Object> map = mapEntryIterator.next();
+                        if ("value".equals(map.getKey())) {
+                            if (null != map.getValue()) {
+                                Object value = map.getValue();
+                                int a = (int) Double.parseDouble(value.toString());
+                                //强化属性
+                                for (int j = 0; j < level; j++) {
+                                    a = (int) Math.floor(a * STRENGTHEN_COEFFICIENT);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return equipmentAttrTrans;
     }
 
     /**
@@ -139,12 +230,13 @@ public class EquipmentObjectManager {
                 character.msg(new ToastMessage("无法卸掉装备，请清理你的背包！"));
             } else {
                 // 开始卸掉装备
-                if(null!=equipmentObject.getAttrs()){
-                for (String attrKey : equipmentObject.getAttrs().keySet()) {
-                    Object valueStr = equipmentObject.getAttrs().get(attrKey).get("value");
-                    float value = Float.parseFloat(valueStr.toString());
-                    GameCharacterManager.changeStatus(character, attrKey, value * -1);
-                }}
+                if (null != equipmentObject.getAttrs()) {
+                    for (String attrKey : equipmentObject.getAttrs().keySet()) {
+                        Object valueStr = equipmentObject.getAttrs().get(attrKey).get("value");
+                        float value = Float.parseFloat(valueStr.toString());
+                        GameCharacterManager.changeStatus(character, attrKey, value * -1);
+                    }
+                }
                 // 去掉装备宝石属性
                 List<GemObject> gemObjectList = equipmentObject.getGems();
                 for (int i = 0; i < gemObjectList.size(); i++) {

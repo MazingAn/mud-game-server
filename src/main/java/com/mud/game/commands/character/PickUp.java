@@ -3,9 +3,11 @@ package com.mud.game.commands.character;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.WorldNpcObjectManager;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.utils.collections.ListUtils;
@@ -15,8 +17,11 @@ import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang.StringUtils.isNumeric;
 
 /**
  * 拾取战利品
@@ -44,21 +49,32 @@ public class PickUp extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         // npc的dataKey
-        String npcDataKey = args.getString("args");
-        NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(npcDataKey);
+        String dbref = args.getString("args");
+        NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(dbref);
         if (null == npcBoundItemInfo) {
             caller.msg(new ToastMessage("物品不存在"));
             return;
         }
-        if (WorldNpcObjectManager.getTrophyCheck(caller, npcDataKey, npcBoundItemInfo)) {
+        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(dbref);
+        List<String> list = new ArrayList<>();
+        if (WorldNpcObjectManager.getTrophyCheck(caller, worldNpcObject, npcBoundItemInfo)) {
             //拾取物品到背包
             // 检查获取概率
             Map<String, Integer> npcBoundItemMap = npcBoundItemInfo.getNpcBoundItemMap();
-            List<Integer> list = new ArrayList<>();
             int index = 0;
             for (String key : npcBoundItemMap.keySet()) {
-                if (PlayerCharacterManager.receiveObjectToBagpack(caller, key, npcBoundItemMap.get(key))) {
-                    list.add(index);
+                //判断是模板物品还是唯一物品
+                if (isNumeric(key)) {
+                    if (PlayerCharacterManager.receiveObjectToBagpack(caller, key, npcBoundItemMap.get(key))) {
+                        npcBoundItemInfo.getNpcBoundItemMap().remove(key);
+                        list.add(key);
+                    }
+                } else {
+                    CommonObject commonObject = CommonObjectBuilder.findObjectById(key);
+                    if (PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, npcBoundItemMap.get(key))) {
+                        npcBoundItemInfo.getNpcBoundItemMap().remove(key);
+                        list.add(key);
+                    }
                 }
                 index++;
             }
@@ -67,11 +83,17 @@ public class PickUp extends BaseCommand {
             }
             //战利品数据修改
             if (npcBoundItemMap.size() == 0) {
-                GameCharacterManager.npcBoundItemSet.remove(npcDataKey);
+                list = new ArrayList<>();
+                GameCharacterManager.npcBoundItemSet.remove(dbref);
             } else {
                 npcBoundItemInfo.setNpcBoundItemMap(npcBoundItemMap);
-                GameCharacterManager.npcBoundItemSet.put(npcDataKey, npcBoundItemInfo);
+                GameCharacterManager.npcBoundItemSet.put(dbref, npcBoundItemInfo);
             }
+            //返回数据
+            List<String> finalList = list;
+            caller.msg(new HashMap<String, Object>() {{
+                put("remove_pick_up_one", finalList);
+            }});
         }
     }
 }

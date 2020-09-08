@@ -24,6 +24,18 @@ public class NpcBoundItem {
     @Mark(name = "获取概率")
     private double acquisitionProbability;
 
+    @Mark(name = "强化最高等级")
+    private int levelMaxLevel;
+
+    @Mark(name = "强化最低等级")
+    private int levelMinLevel;
+
+    @Mark(name = "进阶最高等级")
+    private int qualityMaxLevel;
+
+    @Mark(name = "进阶最低等级")
+    private int qualityMinLevel;
+
     public Long getId() {
         return id;
     }
@@ -54,5 +66,37 @@ public class NpcBoundItem {
 
     public void setAcquisitionProbability(double acquisitionProbability) {
         this.acquisitionProbability = acquisitionProbability;
+    }
+
+    public int getLevelMaxLevel() {
+        return levelMaxLevel;
+    }
+
+    public void setLevelMaxLevel(int levelMaxLevel) {
+        this.levelMaxLevel = levelMaxLevel;
+    }
+
+    public int getLevelMinLevel() {
+        return levelMinLevel;
+    }
+
+    public void setLevelMinLevel(int levelMinLevel) {
+        this.levelMinLevel = levelMinLevel;
+    }
+
+    public int getQualityMaxLevel() {
+        return qualityMaxLevel;
+    }
+
+    public void setQualityMaxLevel(int qualityMaxLevel) {
+        this.qualityMaxLevel = qualityMaxLevel;
+    }
+
+    public int getQualityMinLevel() {
+        return qualityMinLevel;
+    }
+
+    public void setQualityMinLevel(int qualityMinLevel) {
+        this.qualityMinLevel = qualityMinLevel;
     }
 }
