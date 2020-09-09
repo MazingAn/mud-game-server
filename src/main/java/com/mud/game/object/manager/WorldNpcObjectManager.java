@@ -314,9 +314,6 @@ public class WorldNpcObjectManager {
      */
     private static void bindShops(WorldNpcObject obj) {
         Set<String> shops = obj.getShops();
-        if (obj.getDataKey().equals("NPC_XIAN_ZHANGTIEJIANG")) {
-            System.out.printf("1");
-        }
         for (NpcShop npcShop : DbMapper.npcShopRepository.findNpcShopsByNpc(obj.getDataKey())) {
             shops.add(npcShop.getShop());
         }

@@ -37,19 +37,15 @@ public class NormalHit extends BaseAttackSkillStatement {
         CombatSense sense = CombatHandler.getCombatSense(caller.getId());
         SkillCastInfo skillCastInfo = null;
         //判断能否进行攻击
-        if (!caller.isCanCombat()) {
-            skillCastInfo = new SkillCastInfo(caller, target,caller.getName()+"目前状态不能攻击！");
-        } else {
-            //计算伤害
-            HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
-            //应用伤害
-            GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
-            //构建战斗输出
-            String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
-            skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
-            //更新同步数据
-            GameCharacterManager.saveCharacter(target);
-        }
+        //计算伤害
+        HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
+        //应用伤害
+        GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
+        //构建战斗输出
+        String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
+        skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
+        //更新同步数据
+        GameCharacterManager.saveCharacter(target);
         sense.msgContents(new SkillCastMessage(skillCastInfo));
     }
 

@@ -124,6 +124,8 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("delete_mail", DeleteMail.class);
         playerCharacterCommandSet.put("read_mail", ReadMail.class);
         playerCharacterCommandSet.put("extract_mail_attachment", ExtractMailAttachment.class);
+        playerCharacterCommandSet.put("equipment_title", EquipmentTitle.class);
+        playerCharacterCommandSet.put("take_off_title", TakeOffTitle.class);
     }
 
     /**

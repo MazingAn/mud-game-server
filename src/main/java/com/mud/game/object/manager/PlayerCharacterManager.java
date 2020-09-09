@@ -138,6 +138,8 @@ public class PlayerCharacterManager {
             returnEquippedEquipments(playerCharacter);
             // 发送玩家的技能信息
             returnAllSkills(playerCharacter);
+            //发送玩家的称号信息
+            playerCharacter.msg(new TitlesMessage(playerCharacter));
             // 发送玩家的背包信息
             showBagpack(playerCharacter);
             // 发送玩家当前的状态

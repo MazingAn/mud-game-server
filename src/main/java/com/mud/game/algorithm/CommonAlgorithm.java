@@ -179,7 +179,7 @@ public class CommonAlgorithm {
     }
 
     public static void onAfterCanAttckChange(CommonCharacter character, String attrKey, boolean parseBoolean) {
-        character.setCanAttck(parseBoolean);
+        character.setCanCombat(parseBoolean);
         GameCharacterManager.saveCharacter(character);
     }
 }

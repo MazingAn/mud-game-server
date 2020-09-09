@@ -2,6 +2,7 @@ package com.mud.game.server;
 
 import com.mud.game.handler.*;
 import com.mud.game.object.builder.UniqueWorldObjectBuilder;
+import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.updator.GameObjectUpdator;
 import com.mud.game.worlddata.db.mappings.DbMapper;
@@ -12,12 +13,12 @@ public class ServerManager {
 
     public static GameSetting gameSetting;
 
-    public static void start(){
+    public static void start() {
         // 拿到游戏配置信息
         System.out.println("正在加载游戏配置...");
         try {
             gameSetting = DbMapper.gameSettingRepository.findAll().iterator().next();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("服务器基础设置找到！！！");
             gameSetting = null;
         }
@@ -25,9 +26,9 @@ public class ServerManager {
 
         System.out.println("正在加载NPC...");
         // 复活所有NPC
-        for(WorldNpcObject npc : MongoMapper.worldNpcObjectRepository.findAll()){
+        for (WorldNpcObject npc : MongoMapper.worldNpcObjectRepository.findAll()) {
             npc.setHp(npc.getMax_hp());
-            npc.setName(npc.getName().replaceAll("的尸体",""));
+            npc.setName(npc.getName().replaceAll("的尸体", ""));
             MongoMapper.worldNpcObjectRepository.save(npc);
         }
 
@@ -54,6 +55,7 @@ public class ServerManager {
         EventActionTypeHandler.initEventActionType();
         SkillActionHandler.initSkillActionList();
         ObjectFunctionHandler.initObjectFunctionSet();
+        HangUpManager.iniRandomObjectList();
         // 创建默认频道...
         System.out.println("创建默认频道...");
         ChannelHandler.initChannels();
@@ -61,19 +63,19 @@ public class ServerManager {
         System.out.println("服务器启动完成！");
     }
 
-    public static void stop(){
+    public static void stop() {
 
     }
 
-    public static void restart(){
+    public static void restart() {
         start();
         stop();
     }
 
-    public static void update(){
+    public static void update() {
     }
 
-    public static void apply(){
+    public static void apply() {
         UniqueWorldObjectBuilder.buildUniqueObjects("WorldAreaObject");
         UniqueWorldObjectBuilder.buildUniqueObjects("WorldRoomObject");
         UniqueWorldObjectBuilder.buildUniqueObjects("WorldExitObject");

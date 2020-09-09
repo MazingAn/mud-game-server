@@ -284,7 +284,7 @@ public class GameCharacterManager {
         String strValue = changedValue.toString();
         if (strValue.contains(".")) strValue = strValue.split("\\.")[0];
 
-        if (attrKey.equals("canAttck")) {
+        if (attrKey.equals("canCombat")) {
             CommonAlgorithm.onAfterCanAttckChange(character, attrKey, Boolean.parseBoolean(strValue));
             return;
         }

@@ -11,6 +11,7 @@ import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.structs.EmbeddedCommand;
+import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.structs.SkillEffect;
 import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
@@ -123,7 +124,7 @@ public class SkillObjectManager {
 //            character.msg(new ToastMessage("没有装备子技能，无法装备技能"));
         } else if (basicSkillObject == null) {
             //检查是否装备子技能
-            character.msg(new ToastMessage("没有学习"+basicSkillObject.getName()+"，无法装备技能"));
+            character.msg(new ToastMessage("没有学习" + basicSkillObject.getName() + "，无法装备技能"));
         } else if (!character.getState().equals(CharacterState.STATE_NORMAL)) {
             character.msg(new ToastMessage("你正在学习，无法装备技能"));
         } else if (skillObject.getEquippedPositions().contains(position)) {
@@ -310,8 +311,10 @@ public class SkillObjectManager {
      * @param target      技能作用的对象
      */
     public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target) {
-        if (!skillObject.isPassive())
+        if (!skillObject.isPassive()) {
             SkillFunctionHandler.useSkill(caller, target, skillObject);
+        }
+
     }
 
     public static void undoSkill(SkillObject skillObject, CommonCharacter character, String position) {

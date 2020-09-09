@@ -19,6 +19,8 @@ public class PlayerCharacter extends CommonCharacter {
     public double randomNumber;
     // 玩家称号
     public Set<String> titleKeySet;
+    // 玩家装备的称号
+    public String title;
     public int level;
     public int exp;
     public int limitExp;
@@ -326,7 +328,7 @@ public class PlayerCharacter extends CommonCharacter {
     }
 
     public Set<String> getCurrentQuests() {
-        if(currentQuests == null) {
+        if (currentQuests == null) {
             currentQuests = new HashSet<>();
         }
         return currentQuests;
@@ -337,7 +339,7 @@ public class PlayerCharacter extends CommonCharacter {
     }
 
     public Set<String> getFinishedQuests() {
-        if(finishedQuests == null){
+        if (finishedQuests == null) {
             finishedQuests = new HashSet<>();
         }
         return finishedQuests;
@@ -345,5 +347,13 @@ public class PlayerCharacter extends CommonCharacter {
 
     public void setFinishedQuests(Set<String> finishedQuests) {
         this.finishedQuests = finishedQuests;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

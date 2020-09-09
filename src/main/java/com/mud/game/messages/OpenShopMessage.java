@@ -16,11 +16,11 @@ public class OpenShopMessage {
         Shop shopRecord = DbMapper.shopRepository.findShopBySystemShop(true);
         this.shop = new HashMap<>();
         shop.put("dbref", shopRecord.getDataKey());
-        shop.put("name",  shopRecord.getName());
+        shop.put("name", shopRecord.getName());
         shop.put("desc", shopRecord.getDescription());
         shop.put("icon", shopRecord.getIcon());
         List<ShopGoodsStatus> goodsList = new ArrayList<>();
-        for(ShopGoods shopGood : DbMapper.shopGoodsRepository.findShopGoodsByShop(shopRecord.getDataKey())){
+        for (ShopGoods shopGood : DbMapper.shopGoodsRepository.findShopGoodsByShop(shopRecord.getDataKey())) {
             goodsList.add(new ShopGoodsStatus(shopGood));
         }
         shop.put("goods", goodsList);
@@ -30,11 +30,11 @@ public class OpenShopMessage {
         this.shop = new HashMap<>();
         Shop shopRecord = DbMapper.shopRepository.findShopByDataKey(shopKey);
         shop.put("dbref", shopKey);
-        shop.put("name",  shopRecord.getName());
+        shop.put("name", shopRecord.getName());
         shop.put("desc", shopRecord.getDescription());
         shop.put("icon", shopRecord.getIcon());
         List<ShopGoodsStatus> goodsList = new ArrayList<>();
-        for(ShopGoods shopGood : DbMapper.shopGoodsRepository.findShopGoodsByShop(shopKey)){
+        for (ShopGoods shopGood : DbMapper.shopGoodsRepository.findShopGoodsByShop(shopKey)) {
             goodsList.add(new ShopGoodsStatus(shopGood));
         }
         shop.put("goods", goodsList);
@@ -49,7 +49,7 @@ public class OpenShopMessage {
         this.shop = shop;
     }
 
-    class ShopGoodsStatus{
+    class ShopGoodsStatus {
         private String dbref;
         private String name;
         private String desc;
@@ -57,6 +57,7 @@ public class OpenShopMessage {
         private int price;
         private String unit;
         private String icon;
+        private String category;
 
         public ShopGoodsStatus(ShopGoods record) {
             this.dbref = record.getDataKey();
@@ -66,6 +67,7 @@ public class OpenShopMessage {
             this.price = record.getPrice();
             this.unit = record.getUnit();
             this.icon = record.getIcon();
+            this.category = record.getCategory();
         }
 
         public String getDbref() {
@@ -122,6 +124,14 @@ public class OpenShopMessage {
 
         public void setIcon(String icon) {
             this.icon = icon;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
         }
     }
 }

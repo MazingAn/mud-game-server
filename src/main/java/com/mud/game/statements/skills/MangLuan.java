@@ -36,6 +36,6 @@ public class MangLuan extends BaseAttackSkillStatement {
         float duration = Float.parseFloat(args[0]);
         //增加一个忙乱buffer
         GameCharacterManager.addBuffer("忙乱", duration, 0, 1, false,
-                "canAttck", false, target, skillObject, false, caller);
+                "canCombat", false, target, skillObject, false, caller);
     }
 }

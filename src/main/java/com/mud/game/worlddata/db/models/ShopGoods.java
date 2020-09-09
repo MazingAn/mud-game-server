@@ -5,42 +5,45 @@ import com.mud.game.utils.modelsutils.Mark;
 import javax.persistence.*;
 
 @Entity
-@Mark(name="商品")
+@Mark(name = "商品")
 public class ShopGoods {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @Mark(name = "编号")
     private Long id;
 
-    @Mark(name="标识")
+    @Mark(name = "标识")
     private String dataKey;
 
-    @Mark(name="名称")
+    @Mark(name = "名称")
     private String name;
 
-    @Mark(name="描述")
+    @Mark(name = "描述")
     private String description;
 
-    @Mark(name="商店", link = "shop")
+    @Mark(name = "商店", link = "shop")
     private String shop;
 
-    @Mark(name="商品", link = "allObjects")
+    @Mark(name = "商品", link = "allObjects")
     private String goods;
 
-    @Mark(name="数量")
+    @Mark(name = "数量")
     private int number;
 
-    @Mark(name="价格")
+    @Mark(name = "价格")
     private int price;
 
-    @Mark(name="货币单位", link = "moneyType")
+    @Mark(name = "货币单位", link = "moneyType")
     private String unit;
 
-    @Mark(name="购买条件")
+    @Mark(name = "购买条件")
     private String buyCondition;
 
-    @Mark(name="图标")
+    @Mark(name = "图标")
     private String icon;
+
+    @Mark(name = "分类")
+    private String category;
 
     public Long getId() {
         return id;
@@ -128,5 +131,13 @@ public class ShopGoods {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
