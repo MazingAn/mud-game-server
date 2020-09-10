@@ -15,10 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isNumeric;
 
@@ -68,24 +65,28 @@ public class PickUpOne extends BaseCommand {
                 if (PlayerCharacterManager.receiveObjectToBagpack(caller, goodDbref, dataKeyMap.get(goodDbref))) {
                     npcBoundItemInfo.getNpcBoundItemMap().remove(goodDbref);
                     list.add(goodDbref);
+                } else {
+                    return;
                 }
             } else {
                 CommonObject commonObject = CommonObjectBuilder.findObjectById(goodDbref);
                 if (PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, dataKeyMap.get(goodDbref))) {
                     npcBoundItemInfo.getNpcBoundItemMap().remove(goodDbref);
                     list.add(goodDbref);
+                } else {
+                    return;
                 }
             }
             //战利品数据修改
             if (npcBoundItemInfo.getNpcBoundItemMap().size() == 0) {
-                list = new ArrayList<>();
                 GameCharacterManager.npcBoundItemSet.remove(dbref);
             } else {
                 GameCharacterManager.npcBoundItemSet.put(dbref, npcBoundItemInfo);
             }
             //返回数据
-            caller.msg(new HashMap<String, String>() {{
-                put("remove_pick_up_one", dbref);
+            List<String> finalList = list;
+            caller.msg(new HashMap<String, Object>() {{
+                put("remove_pick_up", finalList);
             }});
         }
 

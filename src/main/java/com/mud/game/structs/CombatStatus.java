@@ -12,6 +12,7 @@ public class CombatStatus {
     private int max_mp;
     private int mp;
     private int limit_mp;
+    private String name;
     private Map<String, Map<String, Object>> buffers;
 
     public CombatStatus() {
@@ -25,6 +26,7 @@ public class CombatStatus {
         this.mp = character.getMp();
         this.limit_mp = character.getLimit_mp();
         this.buffers = new BufferInfo(character).getBuffers();
+        this.name = character.getName();
     }
 
     public int getMax_hp() {
@@ -81,5 +83,13 @@ public class CombatStatus {
 
     public void setBuffers(Map<String, Map<String, Object>> buffers) {
         this.buffers = buffers;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

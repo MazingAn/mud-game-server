@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class TitlesInfo {
     private String name;
-    private Boolean useing;
+    private Boolean using;
     private List<EmbeddedCommand> cmds;
 
     public TitlesInfo(PlayerTitle playerTitle, PlayerCharacter character) {
@@ -18,11 +18,11 @@ public class TitlesInfo {
         this.cmds = new ArrayList<>();
         Map<String, Object> args = new HashMap<>();
         if (playerTitle.getDataKey() != null && playerTitle.getDataKey().equals(character.getTitle())) {
-            this.useing = true;
+            this.using = true;
             args.put("dataKey", playerTitle.getDataKey());
             this.cmds.add(new EmbeddedCommand("卸掉", "take_off_title", args));
         } else {
-            this.useing = false;
+            this.using = false;
             args.put("dataKey", playerTitle.getDataKey());
             this.cmds.add(new EmbeddedCommand("装备", "equipment_title", args));
         }
@@ -36,12 +36,12 @@ public class TitlesInfo {
         this.name = name;
     }
 
-    public Boolean getUseing() {
-        return useing;
+    public Boolean getUsing() {
+        return using;
     }
 
-    public void setUseing(Boolean useing) {
-        this.useing = useing;
+    public void setUsing(Boolean using) {
+        this.using = using;
     }
 
     public List<EmbeddedCommand> getCmds() {

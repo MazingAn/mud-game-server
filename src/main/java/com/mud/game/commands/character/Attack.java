@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 /**
  * 开始攻击某一个对手（玩家或者NPC）
- *
+ * <p>
  * 请求示例：
  * <pre>
  * {
@@ -23,8 +23,7 @@ import java.util.ArrayList;
  *      "args": "攻击对象的ID"
  * }
  * </pre>
- *
- * */
+ */
 
 public class Attack extends BaseCommand {
 
@@ -36,26 +35,30 @@ public class Attack extends BaseCommand {
     @Override
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
+        CombatSense combatSense = CombatHandler.getCombatSense(caller.getId());
         JSONObject args = getArgs();
         String target = args.getString("args");
         CommonCharacter targetObject = null;
-        if(MongoMapper.worldNpcObjectRepository.existsById(target)){
+        if (MongoMapper.worldNpcObjectRepository.existsById(target)) {
             targetObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(target);
-        }else{
+        } else {
             targetObject = MongoMapper.playerCharacterRepository.findPlayerCharacterById(target);
         }
-
-        ArrayList<CommonCharacter> redTeam = new ArrayList<>();
-        ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
-        redTeam.add(caller);
-        blueTeam.add(targetObject);
-
-        CombatSense combatSense = new CombatSense(redTeam, blueTeam, 0);
+        if (combatSense == null) {
+            ArrayList<CommonCharacter> redTeam = new ArrayList<>();
+            ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
+            redTeam.add(caller);
+            blueTeam.add(targetObject);
+            combatSense = new CombatSense(redTeam, blueTeam, 0);
+        } else {
+            combatSense.getBlueTeam().add(targetObject);
+        }
         CombatHandler.addCombatSense(targetObject.getId(), combatSense);
         CombatHandler.addCombatSense(caller.getId(), combatSense);
 
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);
-        normalCombat.startCombat(combatSense );
+        normalCombat.startCombat(combatSense);
     }
+
 }

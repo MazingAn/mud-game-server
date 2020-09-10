@@ -27,6 +27,8 @@ public class EventAction {
      * @param actionRecord 玩家触发移动事件的时候对应的配置记录 参考：{@link ActionMove}
      * */
     public static void actionMove(PlayerCharacter playerCharacter, ActionMove actionRecord) {
+        playerCharacter.setRoomStep(0);
+        GameCharacterManager.saveCharacter(playerCharacter);
         WorldRoomObject targetRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(actionRecord.getRoomKey());
         playerCharacter.msg(new MsgMessage(actionRecord.getDescription()));
         // 强制更新客户端地图

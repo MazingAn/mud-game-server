@@ -92,7 +92,7 @@ public class PickUp extends BaseCommand {
             //返回数据
             List<String> finalList = list;
             caller.msg(new HashMap<String, Object>() {{
-                put("remove_pick_up_one", finalList);
+                put("remove_pick_up", finalList);
             }});
         }
     }

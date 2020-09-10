@@ -1,6 +1,9 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.algorithm.CommonAlgorithm;
+import com.mud.game.combat.CombatSense;
+import com.mud.game.combat.NormalCombat;
+import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.ConditionHandler;
 import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.messages.*;
@@ -19,6 +22,7 @@ import com.mud.game.utils.resultutils.UserOptionCode;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.apache.commons.lang.StringUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
@@ -148,6 +152,13 @@ public class PlayerCharacterManager {
             playerCharacter.msg(new PuppetMessage(new PuppetInfo(playerCharacter)));
             // 发送频道信息
             showChannels(playerCharacter);
+            //如果在战斗中
+            CombatSense combatSense = CombatHandler.getCombatSense(playerCharacter.getId());
+            if (combatSense != null) {
+                NormalCombat normalCombat = new NormalCombat();
+                normalCombat.init(combatSense);
+                normalCombat.startCombat(combatSense);
+            }
             // 如果死亡发送复活命令
             if (playerCharacter.getHp() <= 0) {
                 GameSessionService.updateCallerType(playerCharacterId, CallerType.DIE);
@@ -300,6 +311,7 @@ public class PlayerCharacterManager {
         WorldRoomObject newRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(roomKey);
         WorldRoomObjectManager.removeOfflinePlayer(oldRoom);
         WorldRoomObjectManager.removeOfflinePlayer(newRoom);
+        playerCharacter.setRoomStep(0);
         //移动
         playerCharacter.setLocation(newRoom.getDataKey());
         if (oldRoom != null && !newRoom.getLocation().equals(oldRoom.getLocation())) {
@@ -467,8 +479,13 @@ public class PlayerCharacterManager {
         if (target.getSchool() != null && !target.getSchool().equals("无门无派")) {
             School school = DbMapper.schoolRepository.findSchoolByDataKey(target.getSchool());
             if (null != school) {
+                StringBuffer stringBuffer = new StringBuffer();
                 // 称号未完善，暂时展示玩家名称
-                title = target.getName();
+                if (StringUtils.isNotBlank(target.getTitle())) {
+                    stringBuffer.append(DbMapper.playerTitleRepository.findPlayerTitleByDataKey(target.getTitle()).getName());
+                }
+                stringBuffer.append(target.getName());
+                title = stringBuffer.toString();
                 desc = String.format("%s是来自{g%s{n的{g%s{n", he, school.getName(), title);
             } else {
                 desc = String.format("这人无门无派，浮萍一根，没有什么值得关注的。", he, title);

@@ -1,18 +1,16 @@
 package com.mud.game.combat;
 
+import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.CombatFinishMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.RebornCommandsMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.util.ArrayList;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * 战斗场景类
@@ -98,11 +96,11 @@ public class CombatSense {
      * @return boolean 战斗是否可以结束
      */
     public boolean isCombatFinished() {
-        if (getAliveNumberInTeam(redTeam, minHp) != 0) {
+        if (getAliveNumberInTeam(redTeam, minHp) == redTeam.size()) {
             winner = "blue";
             return true;
         }
-        if (getAliveNumberInTeam(blueTeam, minHp) != 0) {
+        if (getAliveNumberInTeam(blueTeam, minHp) == blueTeam.size()) {
             winner = "red";
             return true;
         }
@@ -145,7 +143,6 @@ public class CombatSense {
                 checkDied(character);
             }
         }
-
     }
 
     /**
@@ -165,6 +162,7 @@ public class CombatSense {
         if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
         }
+        CombatHandler.removeCombatSense(character.getId());
     }
 
     /**

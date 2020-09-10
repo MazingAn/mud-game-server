@@ -3,6 +3,7 @@ package com.mud.game.structs;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.PlayerTitle;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ public class PlayerCharacterAppearance {
 
     private String desc;
     private String title;
+    private String school;
     private String name;
     private int hp;
     private int max_hp;
@@ -31,6 +33,24 @@ public class PlayerCharacterAppearance {
         this.limit_mp = playerCharacter.getLimit_mp();
         this.is_player = true;
         this.name = playerCharacter.getName();
+        if (StringUtils.isNotBlank(playerCharacter.getSchool())) {
+            this.school = DbMapper.schoolRepository.findSchoolByDataKey(playerCharacter.school).getName();
+        } else {
+            this.school = "";
+        }
+        if (StringUtils.isNotBlank(playerCharacter.getTitle())) {
+            this.title = DbMapper.playerTitleRepository.findPlayerTitleByDataKey(playerCharacter.title).getName();
+        } else {
+            this.title = "";
+        }
+    }
+
+    public String getSchool() {
+        return school;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
     }
 
     public String getName() {
@@ -42,7 +62,7 @@ public class PlayerCharacterAppearance {
     }
 
     public String getTitle() {
-        return getTitleDisplay(title);
+        return title;
     }
 
     public void setTitle(String title) {

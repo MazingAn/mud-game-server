@@ -10,6 +10,7 @@ import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.collections.ListUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -49,10 +50,18 @@ public class FighterManager {
      * @param character 要给设置目标的角色
      * @param targets   角色可选的目标列表
      */
-    public static void setRandomTarget(CommonCharacter character, ArrayList<CommonCharacter> targets) {
+    public static CommonCharacter setRandomTarget(CommonCharacter character, ArrayList<CommonCharacter> targets) {
+        List<CommonCharacter> commonCharacterList = new ArrayList<>();
+        for (CommonCharacter commonCharacter : targets) {
+            if (commonCharacter.getHp() > 0) {
+                commonCharacterList.add(commonCharacter);
+            }
+        }
         // 为角色随机设置对手
-        CommonCharacter target = ListUtils.randomChoice(targets);
+        CommonCharacter target = ListUtils.randomChoice(commonCharacterList);
+
         character.setTarget(target.getId());
+        return target;
     }
 
     /**
@@ -69,12 +78,16 @@ public class FighterManager {
             @Override
             public void run() {
                 if (!sense.isCombatFinished()) {
-                    if (!character.autoCombatPause) {
+                    if (!character.autoCombatPause && character.getHp() > 0) {
                         CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
                         CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
                         if (!character.isCanCombat()) {
                             character.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
                         } else {
+                            //如果目标已死亡，重新选定目标
+                            if (target.getHp() <= 0) {
+                                target = FighterManager.setRandomTarget(character, sense.getBlueTeam());
+                            }
                             GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
                             if (sense.isCombatFinished()) {
                                 sense.onCombatFinish();

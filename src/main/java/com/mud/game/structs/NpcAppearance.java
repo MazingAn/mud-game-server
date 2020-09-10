@@ -1,28 +1,46 @@
 package com.mud.game.structs;
 
 import com.mud.game.object.typeclass.WorldNpcObject;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 
-public class NpcAppearance extends GameObjectAppearance{
+public class NpcAppearance extends GameObjectAppearance {
 
     private String title_name;
     private String school_title_name;
-    private String school;
     private int hp;
     private int max_hp;
     private int mp;
     private int max_mp;
+    private boolean is_player;
 
     public NpcAppearance(WorldNpcObject npc) {
         super(npc);
-        this.title_name = npc.getTitle();
-        this.school_title_name = npc.getSchoolTitle();
-        this.school = npc.getSchool();
+        if (StringUtils.isNotBlank(npc.getTitle()) && !"None".equals(npc.getTitle())) {
+            this.title_name = npc.getTitle();
+        } else {
+            this.title_name = "";
+        }
+        if (StringUtils.isNotBlank(npc.getSchoolTitle()) && !"None".equals(npc.getSchoolTitle())) {
+            this.school_title_name = npc.getSchoolTitle();
+        } else {
+            this.school_title_name = "";
+        }
+
         this.hp = npc.getHp();
         this.mp = npc.getMp();
         this.max_hp = npc.getMax_hp();
         this.max_mp = npc.getMax_mp();
+        this.is_player = false;
     }
 
+    public boolean isIs_player() {
+        return is_player;
+    }
+
+    public void setIs_player(boolean is_player) {
+        this.is_player = is_player;
+    }
 
     public String getTitle_name() {
         return title_name;
@@ -38,14 +56,6 @@ public class NpcAppearance extends GameObjectAppearance{
 
     public void setSchool_title_name(String school_title_name) {
         this.school_title_name = school_title_name;
-    }
-
-    public String getSchool() {
-        return school;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
     }
 
     public int getHp() {
