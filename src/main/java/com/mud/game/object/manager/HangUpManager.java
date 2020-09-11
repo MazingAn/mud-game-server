@@ -226,13 +226,15 @@ public class HangUpManager {
     private static void getRandomObjectReward(PlayerCharacter playerCharacter, List<HangupObject> hangupObjectList) {
         int randomInterval = randomInterval(1, 100);
         float num = 0;
+        float index = 0;
         for (HangupObject hangupObject : hangupObjectList) {
             float odds = hangupObject.getOdds() * 100;
-            if (num < randomInterval && randomInterval < odds) {
+            index = index + odds;
+            if (num < randomInterval && randomInterval <= index) {
                 PlayerCharacterManager.receiveObjectToBagpack(playerCharacter, hangupObject.getTarget(), 1);
                 return;
             }
-            num = num + odds;
+            num = index;
         }
     }
 

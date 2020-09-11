@@ -435,13 +435,13 @@ public class GameCharacterManager {
      *                  延时触发复活
      */
     public static void die(CommonCharacter character) {
-        if (!character.getName().contains("的尸体")) {
-            character.setName(character.getName() + "的尸体");
-        }
         character.setHp(0);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         saveCharacter(character);
         characterMoveOut(character);
+        if (!character.getName().contains("的尸体")) {
+            character.setName(character.getName() + "的尸体");
+        }
         characterMoveIn(character);
         if (character instanceof WorldNpcObject) {
             Timer timer = new Timer();
@@ -461,13 +461,13 @@ public class GameCharacterManager {
      *                        延时触发复活
      */
     public static void die(CommonCharacter character, CommonCharacter commonCharacter) {
-        if (!character.getName().contains("的尸体")) {
-            character.setName(character.getName() + "的尸体");
-        }
         character.setHp(0);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         saveCharacter(character);
         characterMoveOut(character);
+        if (!character.getName().contains("的尸体")) {
+            character.setName(character.getName() + "的尸体");
+        }
         characterMoveIn(character);
         if (character instanceof WorldNpcObject) {
             Timer timer = new Timer();

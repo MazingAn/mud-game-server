@@ -55,7 +55,7 @@ public class PickUp extends BaseCommand {
             caller.msg(new ToastMessage("物品不存在"));
             return;
         }
-        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(dbref);
+        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(dbref);
         List<String> list = new ArrayList<>();
         if (WorldNpcObjectManager.getTrophyCheck(caller, worldNpcObject, npcBoundItemInfo)) {
             //拾取物品到背包
@@ -66,13 +66,13 @@ public class PickUp extends BaseCommand {
                 //判断是模板物品还是唯一物品
                 if (isNumeric(key)) {
                     if (PlayerCharacterManager.receiveObjectToBagpack(caller, key, npcBoundItemMap.get(key))) {
-                        npcBoundItemInfo.getNpcBoundItemMap().remove(key);
+                        //npcBoundItemInfo.getNpcBoundItemMap().remove(key);
                         list.add(key);
                     }
                 } else {
                     CommonObject commonObject = CommonObjectBuilder.findObjectById(key);
                     if (PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, npcBoundItemMap.get(key))) {
-                        npcBoundItemInfo.getNpcBoundItemMap().remove(key);
+                        //npcBoundItemInfo.getNpcBoundItemMap().remove(key);
                         list.add(key);
                     }
                 }

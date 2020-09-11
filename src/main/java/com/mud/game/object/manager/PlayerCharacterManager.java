@@ -5,16 +5,19 @@ import com.mud.game.combat.CombatSense;
 import com.mud.game.combat.NormalCombat;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.ConditionHandler;
+import com.mud.game.handler.ObjectFunctionHandler;
 import com.mud.game.handler.SkillTypeHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
 import com.mud.game.object.builder.CommonObjectBuilder;
+import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.structs.*;
+import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
@@ -25,6 +28,7 @@ import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.apache.commons.lang.StringUtils;
 import org.yeauty.pojo.Session;
 
+import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -82,6 +86,25 @@ public class PlayerCharacterManager {
             // 根据先天属性计算角色的初始属性
             CommonAlgorithm.resetInbornAttrs(playerCharacter);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
+            //  配置随机天赋
+            List<Family> familyList = DbMapper.familyRepository.findAll();
+            if (familyList != null && familyList.size() > 0) {
+                Family family = ListUtils.randomChoice(familyList);
+                playerCharacter.setFamily(family.getDataKey());
+                //天赋加成
+                String[] functionSplited = family.getEffect().split("\\(");
+                String key = functionSplited[0].replaceAll("\"", "").replaceAll("\\'", "");
+                String[] args = functionSplited[1].replaceAll("\\)", "").replaceAll("\\'", "").replaceAll("\"", "").split(",");
+                //函数
+                Class clazz = ObjectFunctionHandler.objectFunctionMap.get(key);
+                try {
+                    Constructor c = clazz.getConstructor(CommonCharacter.class, CommonCharacter.class, NormalObjectObject.class, String.class, String[].class);
+                    c.newInstance(playerCharacter, playerCharacter, null, key, args);
+                } catch (Exception e) {
+                    System.out.println(String.format("玩家在执行物品函数%s的时候触发了异常", key));
+                    e.printStackTrace();
+                }
+            }
             // 初始化玩家的背包和仓库
             initBagPack(playerCharacter);
             initWareHouse(playerCharacter);
@@ -1629,24 +1652,54 @@ public class PlayerCharacterManager {
      * @return
      */
     public static PlayerCharacter addAffterAttr(PlayerCharacter playerCharacter, String atter, int value) {
-        if ("after_arm".equals(atter)) {
-            playerCharacter.setAfter_arm(playerCharacter.getAfter_arm() + value);
+        switch (atter) {
+            case "after_arm":
+                playerCharacter.setAfter_arm(playerCharacter.getAfter_arm() + value);
+                break;
+            case "after_bone":
+                playerCharacter.setAfter_bone(playerCharacter.getAfter_bone() + value);
+                break;
+            case "after_body":
+                playerCharacter.setAfter_body(playerCharacter.getAfter_body() + value);
+                break;
+            case "after_smart":
+                playerCharacter.setAfter_smart(playerCharacter.getAfter_smart() + value);
+                break;
+            case "after_looks":
+                playerCharacter.setAfter_looks(playerCharacter.getAfter_looks() + value);
+                break;
+            case "after_lucky":
+                playerCharacter.setAfter_lucky(playerCharacter.getAfter_lucky() + value);
+                break;
+            case "dao_xishu":
+                playerCharacter.setDaoXiShu(playerCharacter.getDaoXiShu() + value);
+                break;
+            case "qimen_xishu":
+                playerCharacter.setQiMenXishu(playerCharacter.getQiMenXishu() + value);
+                break;
+            case "jian_xishu":
+                playerCharacter.setJianXishu(playerCharacter.getJianXishu() + value);
+                break;
+            case "quan_xishu":
+                playerCharacter.setQuanXishu(playerCharacter.getQuanXishu() + value);
+                break;
+            case "neili_xishu":
+                playerCharacter.setNeigongXishu(playerCharacter.getNeigongXishu() + value);
+                break;
+            case "du_xishu":
+                playerCharacter.setDuXiShu(playerCharacter.getDuXiShu() + value);
+                break;
+            case "yi_xishu":
+                playerCharacter.setYiXiShu(playerCharacter.getYiXiShu() + value);
+                break;
+            case "zaxue_xishu":
+                playerCharacter.setZaXueXiShu(playerCharacter.getZaXueXiShu() + value);
+                break;
+            case "dushu_xishu":
+                playerCharacter.setXueXiXishu(playerCharacter.getXueXiXishu() + value);
+                break;
         }
-        if ("after_bone".equals(atter)) {
-            playerCharacter.setAfter_bone(playerCharacter.getAfter_bone() + value);
-        }
-        if ("after_body".equals(atter)) {
-            playerCharacter.setAfter_body(playerCharacter.getAfter_body() + value);
-        }
-        if ("after_smart".equals(atter)) {
-            playerCharacter.setAfter_smart(playerCharacter.getAfter_smart() + value);
-        }
-        if ("after_looks".equals(atter)) {
-            playerCharacter.setAfter_looks(playerCharacter.getAfter_looks() + value);
-        }
-        if ("after_lucky".equals(atter)) {
-            playerCharacter.setAfter_lucky(playerCharacter.getAfter_lucky() + value);
-        }
+
         MongoMapper.playerCharacterRepository.save(playerCharacter);
         return playerCharacter;
     }

@@ -24,7 +24,7 @@ public class ObjectFunctionHandler {
     /**
      * 物品效果函数缓存 key为函数名称 value为对应的物品函数类
      */
-    private static final Map<String, Class> objectFunctionMap = new HashMap<>();
+    public static final Map<String, Class> objectFunctionMap = new HashMap<>();
 
     /**
      * 使用效果

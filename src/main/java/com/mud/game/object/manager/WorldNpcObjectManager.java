@@ -184,7 +184,7 @@ public class WorldNpcObjectManager {
 
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (npc.getHp() <= 0) {
-            cmds.add(new EmbeddedCommand("拾取", "pick_up_list", npc.getId()));
+            cmds.add(new EmbeddedCommand("查看", "pick_up_list", npc.getId()));
             return cmds;
         }
         // 拜师命令

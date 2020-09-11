@@ -51,17 +51,13 @@ public class PickUpList extends BaseCommand {
         String npcDataKey = args.getString("args");
         NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(npcDataKey);
         if (null == npcBoundItemInfo) {
-            caller.msg(new HashMap<String, Object>() {{
-                put("puck_up_list", null);
-            }});
+            caller.msg(new ToastMessage("{g没有掉落物品！{n"));
             return;
         }
         //拿到战利品
         Map<String, Integer> npcBoundItemMap = npcBoundItemInfo.getNpcBoundItemMap();
-        if (null == npcBoundItemMap) {
-            caller.msg(new HashMap<String, Object>() {{
-                put("puck_up_list", null);
-            }});
+        if (null == npcBoundItemMap || npcBoundItemMap.size() == 0) {
+            caller.msg(new ToastMessage("{g没有掉落物品！{n"));
             return;
         }
         //不为空
@@ -70,7 +66,7 @@ public class PickUpList extends BaseCommand {
         for (String str : npcBoundItemMap.keySet()) {
             commonObject = CommonObjectBuilder.findObjectById(str);
             if (null != commonObject) {
-                 attachmentInfoList.add(MailObjectBuilder.getMailObjectInfo(commonObject, npcBoundItemMap.get(str)));
+                attachmentInfoList.add(MailObjectBuilder.getMailObjectInfo(commonObject, npcBoundItemMap.get(str)));
             }
         }
         caller.msg(new HashMap<String, Object>() {{

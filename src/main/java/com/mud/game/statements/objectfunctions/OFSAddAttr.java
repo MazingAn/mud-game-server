@@ -24,7 +24,7 @@ public class OFSAddAttr extends BaseObjectFunctionStatement {
         String attr = args[0];
         String value = args[1];
         //增加后天属性
-        character = PlayerCharacterManager.addAffterAttr(character, attr, Integer.parseInt(value));
+        character = PlayerCharacterManager.addAffterAttr(character, attr, Integer.parseInt(value.trim()));
         character.msg(new PlayerCharacterStatus(character));
 
     }
