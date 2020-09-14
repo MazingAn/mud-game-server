@@ -2,6 +2,7 @@ package com.mud.game.messages;
 
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.SimpleCharacter;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,10 +16,18 @@ public class FriendListMessage {
         this.friends = new HashMap<>();
         Set<SimpleCharacter> apply = new HashSet<>();
         Set<SimpleCharacter> passed = new HashSet<>();
-        for(String key:playerCharacter.getFriends().keySet()){
+        Boolean isMessage = false;
+        for (String key : playerCharacter.getFriends().keySet()) {
+            if (playerCharacter.getFriends().get(key) == null) {
+                playerCharacter.getFriends().put(key, new SimpleCharacter(MongoMapper.playerCharacterRepository.findPlayerCharacterById(key)));
+                isMessage = true;
+            }
             passed.add(playerCharacter.getFriends().get(key));
         }
-        for(String key:playerCharacter.getFriendRequests().keySet()){
+        if (isMessage) {
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
+        }
+        for (String key : playerCharacter.getFriendRequests().keySet()) {
             apply.add(playerCharacter.getFriendRequests().get(key));
         }
         friends.put("apply", apply);
