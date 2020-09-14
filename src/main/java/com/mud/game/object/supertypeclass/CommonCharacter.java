@@ -29,8 +29,8 @@ public class CommonCharacter extends BaseGameObject {
     public int after_smart; //先天悟性
     public int after_looks; //先天容貌
     public int after_lucky; //先天福缘
-    public boolean canCombat; //能否进行攻击
-    public boolean canAttck; //能否进行战斗
+    public boolean canCombat = true; //能否进行攻击
+    public boolean canAttck = true; //能否进行战斗
     //装备信息
     public List<String> equipments;
     public Map<String, String> equippedEquipments;

@@ -124,12 +124,13 @@ public class GameCharacterManager {
             System.out.println("无法转换类型");
         }
     }
+
     /**
      * 修改角色的某个属性
      *
-     * @param character       CommonCharacter 角色
-     * @param attrKey         String 属性名称
-     * @param value           Object 属性值
+     * @param character CommonCharacter 角色
+     * @param attrKey   String 属性名称
+     * @param value     Object 属性值
      */
     public static void changeStatus(CommonCharacter character, String attrKey, Object value) {
         /*
@@ -436,6 +437,7 @@ public class GameCharacterManager {
      */
     public static void die(CommonCharacter character) {
         character.setHp(0);
+        character.setCanAttck(false);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         saveCharacter(character);
         characterMoveOut(character);
@@ -462,6 +464,7 @@ public class GameCharacterManager {
      */
     public static void die(CommonCharacter character, CommonCharacter commonCharacter) {
         character.setHp(0);
+        character.setCanAttck(false);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         saveCharacter(character);
         characterMoveOut(character);
@@ -474,7 +477,7 @@ public class GameCharacterManager {
             float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
             timer.schedule(reborn(character), (int) rebornTime * 1000);
             //生成战利品
-            WorldNpcObjectManager.getTrophy(character,commonCharacter);
+            WorldNpcObjectManager.getTrophy(character, commonCharacter);
         } else {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
             character.msg(new RebornCommandsMessage((PlayerCharacter) character));
@@ -491,9 +494,10 @@ public class GameCharacterManager {
         return new TimerTask() {
             @Override
             public void run() {
-                character.setHp(character.getMax_hp());
-                character.setName(character.getName().replaceAll("的尸体", ""));
                 characterMoveOut(character);
+                character.setHp(character.getMax_hp());
+                character.setCanAttck(true);
+                character.setName(character.getName().replaceAll("的尸体", ""));
                 characterMoveIn(character);
                 GameCharacterManager.saveCharacter(character);
             }

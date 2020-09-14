@@ -119,6 +119,8 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.weaponTypeRepository);
             case "TransList":
                 return new Importor(stream, fileName, DbMapper.transListRepository);
+            case "NpcBoundItem":
+                return new Importor(stream, fileName, DbMapper.npcBoundItemRepository);
             default:
                 return null;
         }

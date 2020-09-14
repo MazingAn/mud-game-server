@@ -1,14 +1,15 @@
 package com.mud.game.commands.account;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.object.account.Player;
 import com.mud.game.object.manager.PlayerCharacterManager;
+import com.mud.game.object.manager.PlayerManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
-
 
 
 /**
@@ -26,7 +27,7 @@ import org.yeauty.pojo.Session;
  *          }
  *      }
  * </pre>
- * */
+ */
 
 public class CharCreate extends BaseCommand {
 
@@ -44,8 +45,10 @@ public class CharCreate extends BaseCommand {
         int body = innateValues.getInt(2);
         int smart = innateValues.getInt(3);
         PlayerCharacter playerCharacter = PlayerCharacterManager.create(name, gender, arm, bone, body, smart, getSession());
-        if(playerCharacter != null) {
+        if (playerCharacter != null) {
             PlayerCharacterManager.puppet(playerCharacter.getId(), getSession());
         }
+        Player player = MongoMapper.playerRepository.findPlayerById(playerCharacter.getPlayer());
+        PlayerManager.showCharacters(player, getSession());
     }
 }

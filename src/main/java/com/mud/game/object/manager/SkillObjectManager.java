@@ -122,9 +122,14 @@ public class SkillObjectManager {
 //        } else if (!checkSubSKills(skillObject.getBasicSkill(), character.getEquippedSkills(), character)) {
 //            //检查是否装备子技能
 //            character.msg(new ToastMessage("没有装备子技能，无法装备技能"));
-        } else if (basicSkillObject == null) {
-            //检查是否装备子技能
-            character.msg(new ToastMessage("没有学习" + basicSkillObject.getName() + "，无法装备技能"));
+        } else if (StringUtils.isNotEmpty(skillObject.getBasicSkill()) && basicSkillObject == null) {
+            String killName = null;
+            Skill skill = DbMapper.skillRepository.findSkillByDataKey(skillObject.getBasicSkill());
+            killName = skill.getName();
+            if ("zhaojia".equals(position)) {
+                killName = "基本招架";
+            }
+            character.msg(new ToastMessage("没有学习" + killName + "，无法装备技能"));
         } else if (!character.getState().equals(CharacterState.STATE_NORMAL)) {
             character.msg(new ToastMessage("你正在学习，无法装备技能"));
         } else if (skillObject.getEquippedPositions().contains(position)) {

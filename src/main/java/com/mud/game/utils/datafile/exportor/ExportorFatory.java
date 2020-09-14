@@ -117,6 +117,8 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.weaponTypeRepository, outFilePath, tableName, type);
             case "TransList":
                 return new Exportor(DbMapper.transListRepository, outFilePath, tableName, type);
+            case "NpcBoundItem":
+                return new Exportor(DbMapper.npcBoundItemRepository, outFilePath, tableName, type);
             default:
                 return null;
         }
