@@ -67,7 +67,7 @@ public class SkillBookObjectManager {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if(skillBookObject.isCanDiscard()){
-            cmds.add(new EmbeddedCommand("丢弃", "discard", skillBookObject.getId()));
+            //cmds.add(new EmbeddedCommand("丢弃", "discard", skillBookObject.getId()));
         }
         cmds.add(new EmbeddedCommand("研读", "use", skillBookObject.getId()));
         return cmds;

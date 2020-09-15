@@ -10,6 +10,7 @@ import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.WorldNpcObjectManager;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.structs.AttachmentInfo;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -27,7 +28,7 @@ import java.util.Map;
  * <p>
  * {
  * cmd: "pick_up_list",
- * args: npc的dataKey
+ * args: npc的dbref
  * }
  */
 public class PickUpList extends BaseCommand {
@@ -48,16 +49,17 @@ public class PickUpList extends BaseCommand {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         // 装备id
-        String npcDataKey = args.getString("args");
-        NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(npcDataKey);
+        String dbref = args.getString("args");
+        NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(dbref);
+        WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(dbref);
         if (null == npcBoundItemInfo) {
-            caller.msg(new ToastMessage("{g没有掉落物品！{n"));
+            caller.msg(new ToastMessage("{g" + worldNpcObject.getName() + "上没什么都没有！{n"));
             return;
         }
         //拿到战利品
         Map<String, Integer> npcBoundItemMap = npcBoundItemInfo.getNpcBoundItemMap();
         if (null == npcBoundItemMap || npcBoundItemMap.size() == 0) {
-            caller.msg(new ToastMessage("{g没有掉落物品！{n"));
+            caller.msg(new ToastMessage("{g" + worldNpcObject.getName() + "上没什么都没有！{n"));
             return;
         }
         //不为空

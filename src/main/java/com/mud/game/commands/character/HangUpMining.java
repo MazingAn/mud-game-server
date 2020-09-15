@@ -48,6 +48,7 @@ public class HangUpMining extends BaseCommand {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_MINING_EQUIPMENT)));
         } else {
             Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_MINING);
+            //TODO 根据技能等级/装备品级决定出发频率
             if (runnable != null) {
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
                 service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);

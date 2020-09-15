@@ -715,6 +715,53 @@ public class PlayerCharacterManager {
     }
 
     /**
+     * 删除/拒绝好友请求
+     *
+     * @param caller
+     * @param friendId
+     * @param session
+     */
+    public static void rejectFriendRequest(PlayerCharacter caller, String friendId, Session session) {
+        /*
+         * @ 拒绝好友的请求/删除好友
+         * @ 把好友信息从申请列表移除/好友列表移除
+         * @ 给对方发送拒绝信息/送双方好友列表中删除
+         * */
+        PlayerCharacter friend = MongoMapper.playerCharacterRepository.findPlayerCharacterById(friendId);
+        // 好友列表
+        Map<String, SimpleCharacter> friends = caller.getFriends();
+        // 请求列表
+        Map<String, SimpleCharacter> friendRequests = caller.getFriendRequests();
+        //对方session
+        Session friendsSession = GameSessionService.getSessionByCallerId(friendId);
+        //删除好友
+        if (friends.containsKey(friendId)) {
+            friends.remove(friendId);
+            //对方删除好友信息
+            friend.getFriends().remove(caller.getId());
+            // 持久化
+            MongoMapper.playerCharacterRepository.save(friend);
+            if (friendsSession != null) {
+                // 发送新的好友列表给对方客户端
+                friendsSession.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(friend)));
+            }
+            // 发送好友删除之后的消息
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.DELETE_BE_APPLIED_FRIEND_REQUEST, friend.getName()))));
+        }
+        //删除好友请求
+        if (friendRequests.containsKey(friendId)) {
+            friendRequests.remove(friendId);
+            if (friendsSession != null) {
+                friendsSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_BE_REFUSED_FRIEND_REQUEST, caller.getName()))));
+            }
+            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.PLAYER_REFUSE_FRIEND_REQUEST, friend.getName()))));
+        }
+        // 发送新的好友列表的给己方客户端
+        session.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(caller)));
+        MongoMapper.playerCharacterRepository.save(caller);
+    }
+
+    /**
      * 发送消息给其他玩家
      */
     public static void sendMessageToOtherPlayer(PlayerCharacter playerCharacter, String name, String message, Session selfSession, String type) {
@@ -1123,8 +1170,10 @@ public class PlayerCharacterManager {
      */
     public static void showBagpack(PlayerCharacter playerCharacter) {
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
-        Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
-        playerCharacter.msg(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values)));
+        Map<String, CommonObjectInfo> valuess = bagpackObject.getItems();
+        // Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
+        // playerCharacter.msg(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values)));
+        playerCharacter.msg(new BagPackListMessage(valuess));
     }
 
     /**
@@ -1560,6 +1609,7 @@ public class PlayerCharacterManager {
             reborn(playerCharacter);
             //   moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图到复活点
             showStatus(playerCharacter);
+            PlayerCharacterManager.lookAround(playerCharacter);
         } else {
             playerCharacter.msg(new ToastMessage("你没有让自己原地复活的灵丹妙药！"));
         }
@@ -1576,6 +1626,7 @@ public class PlayerCharacterManager {
         WorldRoomObject homeRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(getHome(playerCharacter).getDataKey());
         revealMap(playerCharacter, homeRoom, true);
         moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图
+        PlayerCharacterManager.lookAround(playerCharacter);
         showStatus(playerCharacter);
     }
 
@@ -1718,4 +1769,5 @@ public class PlayerCharacterManager {
         }
         return true;
     }
+
 }

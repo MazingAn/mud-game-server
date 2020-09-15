@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CommonObjectInfo {
+    private String itemId;
     private String category;
     private String dataKey;
     private String dbref;
@@ -57,6 +58,13 @@ public class CommonObjectInfo {
         this.gems = commonObject.getGems();
     }
 
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
 
     public int getSlotNumber() {
         return slotNumber;

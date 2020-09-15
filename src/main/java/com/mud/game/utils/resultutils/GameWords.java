@@ -29,6 +29,7 @@ public class GameWords {
     public static final String PLAYER_BE_REFUSED_FRIEND_REQUEST = "{r%s{n看上去脸色并不太好，没有理你！"; //好友请求被拒绝
     public static final String PLAYER_APPLY_FRIEND_REQUEST = "你同意了{r%s{n的请求，对他说：\"如此甚好，真实荣幸之至！\""; //同意好友请求
     public static final String PLAYER_BE_APPLIED_FRIEND_REQUEST = "{r%s{n同意了你的请求，并对你说：\"如此甚好，真实荣幸之至！\""; //好友请求被同意
+    public static final String DELETE_BE_APPLIED_FRIEND_REQUEST = "你删除了好友{r%s{n！"; //好友请求被同意
 
 
     // 拜师

@@ -49,7 +49,7 @@ public class NormalObjectObjectManager {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (normalObjectObject.isCanDiscard()) {
-            cmds.add(new EmbeddedCommand("丢弃", "discard", normalObjectObject.getId()));
+            //cmds.add(new EmbeddedCommand("丢弃", "discard", normalObjectObject.getId()));
         }
         if (normalObjectObject.getFunction() != null && !normalObjectObject.getFunction().trim().equals("")) {
             cmds.add(new EmbeddedCommand("使用", "use", normalObjectObject.getId()));

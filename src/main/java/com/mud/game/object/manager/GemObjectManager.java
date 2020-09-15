@@ -58,7 +58,7 @@ public class GemObjectManager {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (gemObject.isCanDiscard()) {
-            cmds.add(new EmbeddedCommand("丢弃", "discard", gemObject.getId()));
+           // cmds.add(new EmbeddedCommand("丢弃", "discard", gemObject.getId()));
         }
         return cmds;
     }

@@ -563,7 +563,6 @@ public class SkillObjectManager {
         }
         MongoMapper.skillObjectRepository.save(skillObject);
         session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP, skillObject.getName(), skillObject.getLevel()))));
-        session.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.SKILL_LEVEL_UP, skillObject.getName(), skillObject.getLevel()))));
     }
 
     public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, HarmInfo harmInfo) {

@@ -64,6 +64,7 @@ public class CommandSetHandler {
      */
     public static void initPlayerCharacterCommandSet() {
         playerCharacterCommandSet.put("idle", Idle.class);
+        playerCharacterCommandSet.put("reject_friend", RejectFriend.class);
         playerCharacterCommandSet.put("goto", GotoRoom.class);
         playerCharacterCommandSet.put("look", Look.class);
         playerCharacterCommandSet.put("chose_action", ChoseAction.class);
@@ -126,6 +127,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("extract_mail_attachment", ExtractMailAttachment.class);
         playerCharacterCommandSet.put("equipment_title", EquipmentTitle.class);
         playerCharacterCommandSet.put("take_off_title", TakeOffTitle.class);
+        playerCharacterCommandSet.put("discard", Discard.class);
     }
 
     /**

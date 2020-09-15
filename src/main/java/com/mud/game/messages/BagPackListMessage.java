@@ -3,11 +3,12 @@ package com.mud.game.messages;
 import com.mud.game.structs.CommonObjectInfo;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 /**
- *  返回信息类： 背包信息消息
- *  <pre>
+ * 返回信息类： 背包信息消息
+ * <pre>
  *  返回示例：
  *  {
  *      "inventory": [
@@ -28,10 +29,9 @@ import java.util.ArrayList;
  *      ]
  *  }
  *  </pre>
- *  返回背包数据是一个数组，数组元素为一个 CommonObjectInfo的json序列化字符串。<br>
- *      关于CommonObjectInfo 参见 : {@link CommonObjectInfo}
- *
- * */
+ * 返回背包数据是一个数组，数组元素为一个 CommonObjectInfo的json序列化字符串。<br>
+ * 关于CommonObjectInfo 参见 : {@link CommonObjectInfo}
+ */
 
 public class BagPackListMessage {
 
@@ -39,6 +39,17 @@ public class BagPackListMessage {
 
     public BagPackListMessage(ArrayList<CommonObjectInfo> inventory) {
         this.inventory = inventory;
+    }
+
+    public BagPackListMessage(Map<String, CommonObjectInfo> valuess) {
+        ArrayList<CommonObjectInfo> commonObjectInfoArrayList = new ArrayList<>();
+        CommonObjectInfo commonObjectInfo = new CommonObjectInfo();
+        for (String itemId : valuess.keySet()) {
+            commonObjectInfo = valuess.get(itemId);
+            commonObjectInfo.setItemId(itemId);
+            commonObjectInfoArrayList.add(commonObjectInfo);
+        }
+        this.inventory = commonObjectInfoArrayList;
     }
 
     public ArrayList<CommonObjectInfo> getInventory() {
