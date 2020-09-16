@@ -38,21 +38,45 @@ public class HangUpManager {
      *
      * @param playerCharacter 挂机主体
      * @param currentAction   当亲挂机状态
+     * @param addProbability
      * @return Runnable 挂机执行主体
      */
-    public static Runnable start(PlayerCharacter playerCharacter, CharacterState currentAction) {
+    public static Runnable start(PlayerCharacter playerCharacter, CharacterState currentAction, double addProbability) {
         if (!commonHangUpCheck(playerCharacter, currentAction)) {
             return null;
         } else {
             playerCharacter.setState(currentAction);
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             sendStartMessage(playerCharacter);
+            List<HangupObject> hangupObjectList = new ArrayList<>();
+            switch (currentAction) {
+                case STATE_FISHING:
+                    //钓鱼
+                    hangupObjectList = STATE_FISHING_LIST;
+                    break;
+                case STATE_MINING:
+                    //挖矿
+                    hangupObjectList = STATE_MINING_LIST;
+                    break;
+                case STATE_COLLECT:
+                    //采药
+                    hangupObjectList = STATE_COLLECT_LIST;
+                    break;
+                default:
+                    //TODO 其他挂机类型
+            }
+            if (hangupObjectList.size() > 0 && addProbability != 0) {
+                for (HangupObject hangupObject : hangupObjectList) {
+                    hangupObject.setOdds((float) (hangupObject.getOdds() + addProbability));
+                }
+            }
+            List<HangupObject> finalHangupObjectList = hangupObjectList;
             Runnable runnable = new Runnable() {
                 // run方法将周期性运行
                 @Override
                 public void run() {
                     if (playerHasEnoughTili(playerCharacter)) {
-                        playerHangUp(playerCharacter, currentAction);
+                        playerHangUp(playerCharacter, currentAction, finalHangupObjectList);
                     }
                 }
             };
@@ -94,7 +118,7 @@ public class HangUpManager {
     /**
      * 玩家挂机的具体操作
      */
-    private static void playerHangUp(PlayerCharacter playerCharacter, CharacterState currentAction) {
+    private static void playerHangUp(PlayerCharacter playerCharacter, CharacterState currentAction, List<HangupObject> hangupObjectList) {
         try {
             if (currentAction.equals(CharacterState.STATE_CURE)) {//处理玩家疗伤
                 onPlayerCure(playerCharacter);
@@ -103,7 +127,10 @@ public class HangUpManager {
             } else {//其他类型挂机逻辑
                 // TODO:发送随机的句子
                 sendRandomNotify(playerCharacter, currentAction);
-                getRandomObject(playerCharacter, currentAction);
+                if (hangupObjectList.size() > 0) {
+                    // getRandomObject(playerCharacter, currentAction, hangupObjectList);
+                    getRandomObjectReward(playerCharacter, hangupObjectList);
+                }
                 int addedValue = addRandomPotential(playerCharacter);
                 playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_GET_RANDOM_POTENTIAL, addedValue, addedValue)));
             }
@@ -191,7 +218,7 @@ public class HangUpManager {
      * @param playerCharacter 挂机的主体
      * @param currentAction   当前挂机的状态
      */
-    private static void getRandomObject(PlayerCharacter playerCharacter, CharacterState currentAction) {
+    private static void getRandomObject(PlayerCharacter playerCharacter, CharacterState currentAction, List<HangupObject> hangupObjectList) {
         /*
          * TODO：
          *   @ 根据当前挂机的行动，随机奖励挂机可以得到的物品
@@ -201,15 +228,15 @@ public class HangUpManager {
         switch (currentAction) {
             case STATE_FISHING:
                 //钓鱼
-                getRandomObjectReward(playerCharacter, STATE_FISHING_LIST);
+                getRandomObjectReward(playerCharacter, hangupObjectList);
                 break;
             case STATE_MINING:
                 //挖矿
-                getRandomObjectReward(playerCharacter, STATE_MINING_LIST);
+                getRandomObjectReward(playerCharacter, hangupObjectList);
                 break;
             case STATE_COLLECT:
                 //采药
-                getRandomObjectReward(playerCharacter, STATE_COLLECT_LIST);
+                getRandomObjectReward(playerCharacter, hangupObjectList);
                 break;
             default:
                 //TODO 其他挂机类型
@@ -414,4 +441,16 @@ public class HangUpManager {
         }
     }
 
+    /**
+     * 根据生活技能等级、装备品级计算触发奖励概率加成
+     *
+     * @param level
+     * @param quality
+     * @return
+     */
+    public static Float getAddProbability(int level, int quality) {
+        Float levelNum = 0.001f;
+        Float qualityNum = 0.01f;
+        return (level * levelNum) + ((quality - 1) * qualityNum);
+    }
 }

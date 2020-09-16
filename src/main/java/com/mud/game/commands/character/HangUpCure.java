@@ -39,7 +39,7 @@ public class HangUpCure extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter)getCaller();
         // 开始疗伤挂机
-        Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_CURE);
+        Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_CURE,0);
         if(runnable != null){
             ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
             service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);

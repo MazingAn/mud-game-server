@@ -1770,4 +1770,22 @@ public class PlayerCharacterManager {
         return true;
     }
 
+    /**
+     * 用户主手是否装备指定装备
+     *
+     * @param caller
+     * @param dataKey
+     * @return EquipmentObject  装备，若为null则没有装备指定装备
+     */
+    public static EquipmentObject getPositionLeftHand(PlayerCharacter caller, String dataKey) {
+        Map<String, String> sourceData = caller.getEquippedEquipments();
+        if (sourceData.get("POSITION_LEFT_HAND") == null) {
+            return null;
+        }
+        EquipmentObject equipmentObject = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(sourceData.get("POSITION_LEFT_HAND"));
+        if (equipmentObject.getDataKey().equals(dataKey)) {
+            return equipmentObject;
+        }
+        return null;
+    }
 }

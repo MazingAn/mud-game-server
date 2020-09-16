@@ -9,7 +9,9 @@ import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
+import com.mud.game.object.typeclass.EquipmentObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
@@ -42,13 +44,18 @@ public class HangUpCollect extends BaseCommand {
     public void execute() throws JSONException {
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         Session session = getSession();
+        SkillObject skillObject = GameCharacterManager.getSkill(caller, "skill_zhishi_caiyao");
+        EquipmentObject equipmentObject = PlayerCharacterManager.getPositionLeftHand(caller, "OBJECT_YAOLIAN");
         // 检查玩家有没有采药技能
-        if (!GameCharacterManager.hasSkill(caller, "skill_zhishi_caiyao")) {
+        if (null == skillObject) {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_COLLECT_SKILL)));
-        } else if (!PlayerCharacterManager.isPositionLeftHand(caller,"OBJECT_YAOLIAN")) {
+        } else if (null == equipmentObject) {
             session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(GameWords.NO_COLLECT_EQUIPMENT)));
         } else {
-            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_COLLECT);
+            //触发概率加成
+            //TODO 根据技能等级/装备品级决定触发频率
+            Float addProbability = HangUpManager.getAddProbability(skillObject.getLevel(), equipmentObject.getQuality());
+            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_COLLECT,addProbability);
             if (runnable != null) {
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
                 service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);

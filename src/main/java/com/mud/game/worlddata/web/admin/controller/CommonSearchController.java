@@ -1,7 +1,9 @@
 package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.ObjectType;
 import com.mud.game.worlddata.web.admin.service.SpecificationRepository;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
@@ -13,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,11 +45,16 @@ public class CommonSearchController {
     public Object query(@RequestParam(defaultValue = "0") int page,
                         @RequestParam(defaultValue = "20") int size,
                         String modelName,
-                        @RequestBody Map<String, String> map) {
+                        @RequestBody Map<String, Object> map) {
         Page<Object> pageResult = null;
         Pageable paging = PageRequest.of(page, size);
         if (StringUtils.isEmpty(modelName)) {
             return "查询失败，modelName不能为空！";
+        }
+        for (String key : map.keySet()) {
+            if (null == map.get(key) || StringUtils.isBlank(map.get(key).toString())) {
+                return "查询失败，参数不合法！";
+            }
         }
         SpecificationRepository repository = DbMapper.modelRepositoryMap.get(modelName.trim().toLowerCase());
         if (null == repository) {
@@ -71,10 +75,15 @@ public class CommonSearchController {
                 public Predicate toPredicate(Root<Object> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                     Predicate p = cb.conjunction();//所有的断言
                     //添加断言
-                    Iterator<Map.Entry<String, String>> mapIterator = map.entrySet().iterator();
+                    Iterator<Map.Entry<String, Object>> mapIterator = map.entrySet().iterator();
                     while (mapIterator.hasNext()) {
-                        Map.Entry<String, String> entry = mapIterator.next();
-                        p = cb.and(p, cb.like(root.get(entry.getKey()).as(String.class), "%" + entry.getValue() + "%"));
+                        Map.Entry<String, Object> entry = mapIterator.next();
+                        Class<?> aClass = root.get(entry.getKey()).getJavaType();
+                        if (entry.getValue() instanceof Boolean && aClass == Boolean.TYPE) {
+                            p = cb.equal(root.<Boolean>get(entry.getKey()), entry.getValue());
+                        } else {
+                            p = cb.like(root.get(entry.getKey()).as(String.class), "%" + entry.getValue().toString() + "%");
+                        }
                     }
                     return p;
                 }

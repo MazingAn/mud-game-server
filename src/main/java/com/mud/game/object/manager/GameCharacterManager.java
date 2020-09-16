@@ -321,6 +321,20 @@ public class GameCharacterManager {
         return findSkillBySKillKey(character, skillKey) != null;
     }
 
+    /**
+     * 检查角色是否拥有某一个技能
+     *
+     * @param character Character 角色
+     * @param skillKey  String 技能key
+     * @return SkillObject  返回技能，null则没有这个技能
+     */
+    public static SkillObject getSkill(CommonCharacter character, String skillKey) {
+        /*
+         * @ 检查角色是否拥有某个技能
+         * */
+        return findSkillBySKillKey(character, skillKey);
+    }
+
     public static boolean skillLevelGt(CommonCharacter character, String skillKey, int compareLevel) {
         boolean result = false;
         SkillObject skillObject = findSkillBySKillKey(character, skillKey);

@@ -219,7 +219,7 @@ public class DbMapper {
     @Autowired
     public void setActionTurnInQuestRepository(ActionTurnInQuestRepository actionTurnInQuestRepository) {
         DbMapper.actionTurnInQuestRepository = actionTurnInQuestRepository;
-        modelRepositoryMap.put("actionturninQuest", actionTurnInQuestRepository);
+        modelRepositoryMap.put("actionturninquest", actionTurnInQuestRepository);
     }
 
     @Autowired
@@ -243,13 +243,13 @@ public class DbMapper {
     @Autowired
     public void setSkillCategoryTypeRepository(SkillCategoryTypeRepository skillCategoryTypeRepository) {
         DbMapper.skillCategoryTypeRepository = skillCategoryTypeRepository;
-        modelRepositoryMap.put("skillCategorytype", skillCategoryTypeRepository);
+        modelRepositoryMap.put("skillcategorytype", skillCategoryTypeRepository);
     }
 
     @Autowired
     public void setSkillFunctionTypeRepository(SkillFunctionTypeRepository skillFunctionTypeRepository) {
         DbMapper.skillFunctionTypeRepository = skillFunctionTypeRepository;
-        modelRepositoryMap.put("skillFunctiontype", skillFunctionTypeRepository);
+        modelRepositoryMap.put("skillfunctiontype", skillFunctionTypeRepository);
     }
 
     @Autowired
