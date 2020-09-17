@@ -56,14 +56,14 @@ public class NpcDangPuController {
     /**
      * 修改游戏设置
      *
-     * @param updatednpc出售权限 更新的游戏设置
+     * @param npcDangPu 更新的游戏设置
      * @param id             要更新的行的id
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public NpcDangPu editnpc出售权限(@RequestBody NpcDangPu updatednpc出售权限, @PathVariable Long id) {
-        updatednpc出售权限.setId(id);
-        return DbMapper.npcDangPuRepository.save(updatednpc出售权限);
+    public NpcDangPu editnpc出售权限(@RequestBody NpcDangPu npcDangPu, @PathVariable Long id) {
+        npcDangPu.setId(id);
+        return DbMapper.npcDangPuRepository.save(npcDangPu);
     }
 
     /**

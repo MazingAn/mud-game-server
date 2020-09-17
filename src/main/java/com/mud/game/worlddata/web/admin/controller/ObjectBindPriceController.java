@@ -56,14 +56,14 @@ public class ObjectBindPriceController {
     /**
      * 修改游戏设置
      *
-     * @param updated物品价格 更新的游戏设置
+     * @param objectBindPrice 更新的游戏设置
      * @param id          要更新的行的id
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public ObjectBindPrice edit物品价格(@RequestBody ObjectBindPrice updated物品价格, @PathVariable Long id) {
-        updated物品价格.setId(id);
-        return DbMapper.objectBindPriceRepository.save(updated物品价格);
+    public ObjectBindPrice editBindPrice(@RequestBody ObjectBindPrice objectBindPrice, @PathVariable Long id) {
+        objectBindPrice.setId(id);
+        return DbMapper.objectBindPriceRepository.save(objectBindPrice);
     }
 
     /**
@@ -74,7 +74,7 @@ public class ObjectBindPriceController {
      */
     @DeleteMapping("/{id}")
     @Transactional
-    public void delete物品价格(@Valid @PathVariable Long id) {
+    public void deleteBindPrice(@Valid @PathVariable Long id) {
         DbMapper.objectBindPriceRepository.deleteById(id);
     }
 }
