@@ -2,7 +2,6 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.ObjectBindPrice;
-import com.mud.game.worlddata.db.models.ObjectBindPrice;
 import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +20,10 @@ import javax.validation.Valid;
 @Api(tags = "物品价格出售管理接口")
 public class ObjectBindPriceController {
     /**
-     * 增加Shop
+     * 增加物品价格
      *
      * @param ObjectBindPrice 表单提交的ObjectBindPrice
-     * @return 保存后的Shop信息
+     * @return 保存后的物品价格信息
      */
     @PostMapping("/add")
     public ObjectBindPrice addObjectBindPrice(@Valid @RequestBody ObjectBindPrice ObjectBindPrice) {
@@ -32,7 +31,7 @@ public class ObjectBindPriceController {
     }
 
     /**
-     * 查询Shop
+     * 查询物品价格
      *
      * @param page 请求页码
      * @param size 每页展示的数量
@@ -57,25 +56,25 @@ public class ObjectBindPriceController {
     /**
      * 修改游戏设置
      *
-     * @param updatedShop 更新的游戏设置
+     * @param updated物品价格 更新的游戏设置
      * @param id          要更新的行的id
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public ObjectBindPrice editShop(@RequestBody ObjectBindPrice updatedShop, @PathVariable Long id) {
-        updatedShop.setId(id);
-        return DbMapper.objectBindPriceRepository.save(updatedShop);
+    public ObjectBindPrice edit物品价格(@RequestBody ObjectBindPrice updated物品价格, @PathVariable Long id) {
+        updated物品价格.setId(id);
+        return DbMapper.objectBindPriceRepository.save(updated物品价格);
     }
 
     /**
-     * 删除游戏设置
+     * 删除物品价格
      *
      * @param id 要删除的行的ID
      * @return 删除的信息内容
      */
     @DeleteMapping("/{id}")
     @Transactional
-    public void deleteShop(@Valid @PathVariable Long id) {
+    public void delete物品价格(@Valid @PathVariable Long id) {
         DbMapper.objectBindPriceRepository.deleteById(id);
     }
 }

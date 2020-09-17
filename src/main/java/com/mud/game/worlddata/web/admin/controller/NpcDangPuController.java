@@ -2,7 +2,6 @@ package com.mud.game.worlddata.web.admin.controller;
 
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NpcDangPu;
-import com.mud.game.worlddata.db.models.Shop;
 import io.swagger.annotations.Api;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +17,13 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping("/NpcDangPu")
-@Api(tags = "npc出售管理接口")
+@Api(tags = "npc出售权限管理接口")
 public class NpcDangPuController {
     /**
-     * 增加Shop
+     * 增加npc出售权限
      *
      * @param npcDangPu 表单提交的npcDangPu
-     * @return 保存后的Shop信息
+     * @return 保存后的npc出售权限信息
      */
     @PostMapping("/add")
     public NpcDangPu addNpcDangPu(@Valid @RequestBody NpcDangPu npcDangPu) {
@@ -32,7 +31,7 @@ public class NpcDangPuController {
     }
 
     /**
-     * 查询Shop
+     * 查询npc出售权限
      *
      * @param page 请求页码
      * @param size 每页展示的数量
@@ -57,14 +56,14 @@ public class NpcDangPuController {
     /**
      * 修改游戏设置
      *
-     * @param updatedShop 更新的游戏设置
-     * @param id          要更新的行的id
+     * @param updatednpc出售权限 更新的游戏设置
+     * @param id             要更新的行的id
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public NpcDangPu editShop(@RequestBody NpcDangPu updatedShop, @PathVariable Long id) {
-        updatedShop.setId(id);
-        return DbMapper.npcDangPuRepository.save(updatedShop);
+    public NpcDangPu editnpc出售权限(@RequestBody NpcDangPu updatednpc出售权限, @PathVariable Long id) {
+        updatednpc出售权限.setId(id);
+        return DbMapper.npcDangPuRepository.save(updatednpc出售权限);
     }
 
     /**
@@ -75,7 +74,7 @@ public class NpcDangPuController {
      */
     @DeleteMapping("/{id}")
     @Transactional
-    public void deleteShop(@Valid @PathVariable Long id) {
+    public void deletenpc出售权限(@Valid @PathVariable Long id) {
         DbMapper.npcDangPuRepository.deleteById(id);
     }
 }
