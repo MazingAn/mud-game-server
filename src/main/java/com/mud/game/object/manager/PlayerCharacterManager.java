@@ -1443,8 +1443,9 @@ public class PlayerCharacterManager {
         BagpackObject bagpackObject = MongoMapper.bagpackObjectRepository.findBagpackObjectById(bagpackId);
         if (CommonItemContainerManager.removeItem(bagpackObject, removedObject, number)) {
             MongoMapper.bagpackObjectRepository.save(bagpackObject);
-            Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
-            playerCharacter.msg(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values)));
+            PlayerCharacterManager.showBagpack(playerCharacter);
+//            Collection<CommonObjectInfo> values = bagpackObject.getItems().values();
+//            playerCharacter.msg(new BagPackListMessage(new ArrayList<CommonObjectInfo>(values)));
             return true;
         } else {
             playerCharacter.msg(new AlertMessage(String.format(GameWords.CAN_NOT_REMOVE_FROM_BAGPACK,

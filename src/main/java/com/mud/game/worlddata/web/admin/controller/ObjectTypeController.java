@@ -51,7 +51,7 @@ public class ObjectTypeController {
     public Iterable<?> findObjectsByType(@PathVariable  String typeKey){
         switch (typeKey){
             case "EQUIPMENT":
-                return DbMapper.equipmentPositionRepository.findAll();
+                return DbMapper.equipmentRepository.findAll();
             case "SKILL_BOOK":
                 return DbMapper.skillBookRepository.findAll();
             case "GEM":

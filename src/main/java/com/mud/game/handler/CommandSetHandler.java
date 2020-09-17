@@ -128,6 +128,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("equipment_title", EquipmentTitle.class);
         playerCharacterCommandSet.put("take_off_title", TakeOffTitle.class);
         playerCharacterCommandSet.put("discard", Discard.class);
+        playerCharacterCommandSet.put("check_price", CheckPrice.class);
     }
 
     /**

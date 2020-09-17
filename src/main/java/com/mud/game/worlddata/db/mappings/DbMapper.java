@@ -73,6 +73,8 @@ public class DbMapper {
     public static QualityMaterialRepository qualityMaterialRepository;
     public static SlotMaterialRepository slotMaterialRepository;
     public static NpcBoundItemRepository npcBoundItemRepository;
+    public static ObjectBindPriceRepository objectBindPriceRepository;
+    public static NpcDangPuRepository npcDangPuRepository;
 
 
     public static Map<String, SpecificationRepository> modelRepositoryMap = new HashMap<>();
@@ -417,8 +419,17 @@ public class DbMapper {
     @Autowired
     public void setNpcBoundItemRepository(NpcBoundItemRepository npcBoundItemRepository) {
         DbMapper.npcBoundItemRepository = npcBoundItemRepository;
-        modelRepositoryMap.put("npcBoundItem", npcBoundItemRepository);
+        modelRepositoryMap.put("npcbounditem", npcBoundItemRepository);
+    }
+    @Autowired
+    public void setObjectBindPriceRepository(ObjectBindPriceRepository objectBindPriceRepository) {
+        DbMapper.objectBindPriceRepository = objectBindPriceRepository;
+    }
 
+    @Autowired
+    public void setNpcDangPuRepository(NpcDangPuRepository npcDangPuRepository) {
+        DbMapper.npcDangPuRepository = npcDangPuRepository;
+        modelRepositoryMap.put("npcdangpu", npcDangPuRepository);
     }
 }
 

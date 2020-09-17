@@ -38,7 +38,7 @@ public class WorldNpcObjectManager {
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
-        obj.setTeacher(template.isTeacher());
+        obj.setTeacher(template.getIsTeacher());
         obj.setLearnByObject(template.isCanLearnByObject());
         obj.setTeachCondition(template.getTeachCondition());
         // 初始化npc信息
@@ -90,7 +90,7 @@ public class WorldNpcObjectManager {
     public static void update(WorldNpcObject obj, WorldNpc template) {
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
-        obj.setTeacher(template.isTeacher());
+        obj.setTeacher(template.getIsTeacher());
         obj.setLearnByObject(template.isCanLearnByObject());
         obj.setTeachCondition(template.getTeachCondition());
         obj.setRebornTime(template.getRebornTime());
@@ -214,6 +214,11 @@ public class WorldNpcObjectManager {
         }
         if (npc.canAttack) {
             cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
+        }
+        //出售
+        NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());
+        if (null != npcDangPu) {
+            cmds.add(new EmbeddedCommand("出售", "chu_shou", npc.getId()));
         }
         // TODO: 副本传送命令
 
