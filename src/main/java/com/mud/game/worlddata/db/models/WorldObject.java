@@ -10,6 +10,10 @@ import java.net.URL;
 @Mark(name = "世界物体")
 public class WorldObject extends BaseObject {
 
+
+    @Mark(name = "类型类", link = "worldObjectTypeClass")
+    private String typeClass;
+
     @Mark(name = "所处位置", link = "worldRoom")
     private String location;
 
@@ -40,6 +44,13 @@ public class WorldObject extends BaseObject {
     private String icon;
 
 
+    public String getTypeClass() {
+        return typeClass;
+    }
+
+    public void setTypeClass(String typeClass) {
+        this.typeClass = typeClass;
+    }
 
     public String getLocation() {
         return location;

@@ -24,8 +24,6 @@ public class BaseObject {
     @Size(min=2, max=64, message = "标识长度必须在2到64之间")
     private String dataKey;
 
-    @Mark(name="类型类", link = "worldObjectTypeClass")
-    private String typeClass;
 
     @Mark(name="名称")
     @Column(length = 64)
@@ -50,14 +48,6 @@ public class BaseObject {
 
     public void setDataKey(String dataKey) {
         this.dataKey = dataKey;
-    }
-
-    public String getTypeClass() {
-        return typeClass;
-    }
-
-    public void setTypeClass(String typeClass) {
-        this.typeClass = typeClass;
     }
 
     public String getName() {
