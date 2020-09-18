@@ -85,6 +85,9 @@ public class PlayerCharacterManager {
             playerCharacter.setEquippedSkills(new HashMap<>());
             // 根据先天属性计算角色的初始属性
             CommonAlgorithm.resetInbornAttrs(playerCharacter);
+            //初始化房间
+            GameSetting gameSetting = DbMapper.gameSettingRepository.findFirstByOrderByIdDesc();
+            playerCharacter.setLocation(gameSetting.getStartLocation());
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             //  配置随机天赋
             List<Family> familyList = DbMapper.familyRepository.findAll();

@@ -1,12 +1,8 @@
 package com.mud.game.combat;
 
-import com.mud.game.object.account.Player;
 import com.mud.game.object.manager.GameCharacterManager;
-import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.object.typeclass.SkillObject;
 
 public class AICastSkill {
 

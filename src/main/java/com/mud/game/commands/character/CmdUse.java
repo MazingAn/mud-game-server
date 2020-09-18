@@ -2,7 +2,6 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.manager.PlayerCharacterManager;
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import org.json.JSONException;
 import org.json.JSONObject;

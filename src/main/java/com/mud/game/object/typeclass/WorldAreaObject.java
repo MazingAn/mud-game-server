@@ -1,12 +1,6 @@
 package com.mud.game.object.typeclass;
 
-import com.mud.game.object.supertypeclass.BaseGameObject;
 import com.mud.game.object.supertypeclass.WorldObject;
-import com.mud.game.worlddata.db.models.WorldArea;
-import com.mud.game.worldrun.db.repository.WorldAreaObjectRepository;
-import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.net.URL;
 
 
 public class WorldAreaObject extends WorldObject {

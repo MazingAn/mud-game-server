@@ -421,9 +421,11 @@ public class DbMapper {
         DbMapper.npcBoundItemRepository = npcBoundItemRepository;
         modelRepositoryMap.put("npcbounditem", npcBoundItemRepository);
     }
+
     @Autowired
     public void setObjectBindPriceRepository(ObjectBindPriceRepository objectBindPriceRepository) {
         DbMapper.objectBindPriceRepository = objectBindPriceRepository;
+        modelRepositoryMap.put("objectbindprice", objectBindPriceRepository);
     }
 
     @Autowired

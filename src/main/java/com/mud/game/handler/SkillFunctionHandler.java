@@ -66,7 +66,7 @@ public class SkillFunctionHandler {
                 //计算伤害
                 HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
                 //应用伤害
-                GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1,caller);
+                GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
                 //构建战斗输出
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
@@ -78,7 +78,11 @@ public class SkillFunctionHandler {
                 SkillCdHandler.addSkillCd(caller.getId() + skillObject.getDataKey(), new Date());
                 //返回技能冷却时间
                 if (skillObject.getCd() != 0) {
-                    sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd(), skillObject.getId(),skillObject.getDataKey())));
+                    sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd(), skillObject.getId(), skillObject.getDataKey())));
+                }
+                //技能未命中
+                if (null == harmInfo) {
+                    return;
                 }
             }
 

@@ -2,6 +2,7 @@ package com.mud.game.object.manager;
 
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.combat.NpcBoundItemInfo;
+import com.mud.game.commands.character.CastSkill;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -14,10 +15,14 @@ import com.mud.game.structs.CombatCommand;
 import com.mud.game.structs.ObjectMoveInfo;
 import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.resultutils.GameWords;
+import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.DefaultSkills;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static com.mud.game.handler.SkillCdHandler.skillCdMap;
 
 
 /**
@@ -405,6 +410,18 @@ public class GameCharacterManager {
      * @param character CommonCharacter 角色
      */
     public static SkillObject getDefaultSkill(CommonCharacter character) {
+        //dataKey不等于null为npc，首先配置npc使用技能
+        if (null != character.getDataKey()) {
+            Iterable<DefaultSkills> defaultSkills = DbMapper.defaultSkillsRepository.findDefaultSkillsByTargetAndEquipped(character.getDataKey(), true);
+            for (DefaultSkills defaultSkill : defaultSkills) {
+                SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner(defaultSkill.getSkillKey(), character.getId());
+                if (!skillObject.isPassive()) {
+                    if (!(skillCdMap.containsKey(character.getId() + skillObject.getDataKey()) && CastSkill.calLastedTime(skillCdMap.get(character.getId() + skillObject.getDataKey())) < skillObject.getCd())) {
+                        return skillObject;
+                    }
+                }
+            }
+        }
         if (character.getDefaultSkill() == null) {
             // 如果橘角色没有默认技能 则根据默认技能的key查找这个技能 并创建
             String defaultSkillKey = ServerManager.gameSetting.getDefaultSkill();

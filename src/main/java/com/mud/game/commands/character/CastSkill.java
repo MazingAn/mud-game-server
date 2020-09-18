@@ -62,7 +62,7 @@ public class CastSkill extends BaseCommand {
     }
 
     //获取技能施放时间
-    public int calLastedTime(Date startDate) {
+    public static int calLastedTime(Date startDate) {
         long a = new Date().getTime();
         long b = startDate.getTime();
         int c = (int) ((a - b) / 1000);

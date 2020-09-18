@@ -79,8 +79,9 @@ public class CommonSearchController {
                     while (mapIterator.hasNext()) {
                         Map.Entry<String, Object> entry = mapIterator.next();
                         Class<?> aClass = root.get(entry.getKey()).getJavaType();
-                        if (entry.getValue() instanceof Boolean && aClass == Boolean.TYPE) {
-                            p = cb.equal(root.<Boolean>get(entry.getKey()), entry.getValue());
+                        if (aClass == Boolean.TYPE) {
+                            Boolean value = Boolean.parseBoolean(entry.getValue().toString().trim());
+                            p = cb.equal(root.<Boolean>get(entry.getKey()), value);
                         } else {
                             p = cb.like(root.get(entry.getKey()).as(String.class), "%" + entry.getValue().toString() + "%");
                         }

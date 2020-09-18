@@ -1,7 +1,11 @@
 package com.mud.game.worlddata.web.admin.controller;
 
+import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.utils.jsonutils.JsonStrConvetor;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DefaultSkills;
+import com.mud.game.worlddata.db.models.Skill;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
@@ -11,12 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.Set;
 
 
 /**
  * 游戏区域Controller
  * 提供DefaultSkills的增删改查
- * */
+ */
 @RestController
 @RequestMapping("/DefaultSkills")
 @Api(tags = "默认技能维护接口")
@@ -25,12 +30,30 @@ public class DefaultSkillsController {
      * 增加DefaultSkills
      *
      * @param newDefaultSkills 表单提交的DefaultSkills
-     *
      * @return 保存后的DefaultSkills信息
-     * */
+     */
     @PostMapping("/add")
     @ApiOperation("增加默认技能")
-    public DefaultSkills addDefaultSkills(@Valid  @RequestBody DefaultSkills newDefaultSkills) {
+    public DefaultSkills addDefaultSkills(@Valid @RequestBody DefaultSkills newDefaultSkills) {
+        // 绑定子技能
+        try {
+            Skill template = DbMapper.skillRepository.findSkillByDataKey(newDefaultSkills.getSkillKey());
+            if (template.getSubSkills() != null && !template.getSubSkills().trim().equals("")) {
+                Set<String> subSkillKeys = JsonStrConvetor.ToSet(template.getSubSkills());
+                for (String skillKey : subSkillKeys) {
+                    DefaultSkills subSkillObject = new DefaultSkills();
+                    subSkillObject.setTarget(newDefaultSkills.getTarget());
+                    subSkillObject.setLevel(newDefaultSkills.getLevel());
+                    subSkillObject.setSkillKey(skillKey);
+                    subSkillObject.setEquipped(newDefaultSkills.isEquipped());
+                    subSkillObject.setTeachIt(newDefaultSkills.isTeachIt());
+                    subSkillObject.setPosition(newDefaultSkills.getPosition());
+                    DbMapper.defaultSkillsRepository.save(subSkillObject);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return DbMapper.defaultSkillsRepository.save(newDefaultSkills);
     }
 
@@ -40,11 +63,11 @@ public class DefaultSkillsController {
      * @param page 请求页码
      * @param size 每页展示的数量
      * @return 分页信息和页面内容
-     * */
+     */
     @GetMapping("")
     @ApiOperation("分页查询默认技能记录")
-    public Page<DefaultSkills> query(@RequestParam(defaultValue="0") int page,
-                                   @RequestParam(defaultValue="20") int size){
+    public Page<DefaultSkills> query(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "20") int size) {
         Pageable paging = PageRequest.of(page, size);
         Page<DefaultSkills> pageResult = DbMapper.defaultSkillsRepository.findAll(paging);
         return pageResult;
@@ -54,7 +77,7 @@ public class DefaultSkillsController {
      * 修改游戏设置
      *
      * @param updatedDefaultSkills 更新的游戏设置
-     * @param id  要更新的行的id
+     * @param id                   要更新的行的id
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
@@ -69,11 +92,11 @@ public class DefaultSkillsController {
      *
      * @param id 要删除的行的ID
      * @return 删除的信息内容
-     * */
+     */
     @DeleteMapping("/{id}")
     @Transactional
     @ApiOperation("删除默认技能")
-    public void deleteDefaultSkills(@Valid @PathVariable Long id){
+    public void deleteDefaultSkills(@Valid @PathVariable Long id) {
         DbMapper.defaultSkillsRepository.deleteById(id);
     }
 
