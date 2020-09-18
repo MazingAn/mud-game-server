@@ -1,6 +1,5 @@
 package com.mud.game.commands.character;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.*;
