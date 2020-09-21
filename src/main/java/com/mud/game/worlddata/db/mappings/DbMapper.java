@@ -75,6 +75,7 @@ public class DbMapper {
     public static NpcBoundItemRepository npcBoundItemRepository;
     public static ObjectBindPriceRepository objectBindPriceRepository;
     public static NpcDangPuRepository npcDangPuRepository;
+    public static DataDictionaryRepository dataDictionaryRepository;
 
 
     public static Map<String, SpecificationRepository> modelRepositoryMap = new HashMap<>();
@@ -432,6 +433,13 @@ public class DbMapper {
     public void setNpcDangPuRepository(NpcDangPuRepository npcDangPuRepository) {
         DbMapper.npcDangPuRepository = npcDangPuRepository;
         modelRepositoryMap.put("npcdangpu", npcDangPuRepository);
+    }
+
+    @Autowired
+    public void setDataDictionaryRepository(DataDictionaryRepository dataDictionaryRepository) {
+        DbMapper.dataDictionaryRepository = dataDictionaryRepository;
+        modelRepositoryMap.put("dataDictionary", dataDictionaryRepository);
+
     }
 }
 

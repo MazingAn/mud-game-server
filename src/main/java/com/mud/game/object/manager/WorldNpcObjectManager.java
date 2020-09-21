@@ -218,7 +218,7 @@ public class WorldNpcObjectManager {
         //出售
         NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());
         if (null != npcDangPu) {
-            cmds.add(new EmbeddedCommand("出售", "chu_shou", npc.getId()));
+            cmds.add(new EmbeddedCommand("出售", "open_pawn_shop", npc.getId()));
         }
         // TODO: 副本传送命令
 

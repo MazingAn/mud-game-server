@@ -14,7 +14,7 @@ public class ExportorFatory {
 
     public static Exportor createExportor(String outFilePath, String tableName, String type) {
 
-        switch (tableName){
+        switch (tableName) {
             case "Equipment":
                 return new Exportor(DbMapper.equipmentRepository, outFilePath, tableName, type);
             case "Family":
@@ -119,6 +119,20 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.transListRepository, outFilePath, tableName, type);
             case "NpcBoundItem":
                 return new Exportor(DbMapper.npcBoundItemRepository, outFilePath, tableName, type);
+            case "ConsignmentInformation":
+                return new Exportor(DbMapper.consignmentInfomationRepository, outFilePath, tableName, type);
+            case "SlotMaterial":
+                return new Exportor(DbMapper.slotMaterialRepository, outFilePath, tableName, type);
+            case "ObjectBindPrice":
+                return new Exportor(DbMapper.objectBindPriceRepository, outFilePath, tableName, type);
+            case "NpcDangPu":
+                return new Exportor(DbMapper.npcDangPuRepository, outFilePath, tableName, type);
+            case "CompositeMaterial":
+                return new Exportor(DbMapper.compositeMaterialRepository, outFilePath, tableName, type);
+            case "StrengthenMaterial":
+                return new Exportor(DbMapper.strengthenMaterialRepository, outFilePath, tableName, type);
+            case "QualityMaterial":
+                return new Exportor(DbMapper.qualityMaterialRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

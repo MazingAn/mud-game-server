@@ -13,25 +13,29 @@ public class CompositeMaterial {
     @Mark(name = "编号")
     private Long id;
 
-    @Mark(name = "配方标识")
+    @Mark(name = "合成物品标识", link = "allObjects")
     private String dataKey;
 
     @Mark(name = "数量")
     private int number;
 
-    @Mark(name = "需要的配方", link = "allObjects")
+    @Mark(name = "配方标识", link = "allObjects")
     private String dependency;
     //配方名称
     @Transient
+    @Mark(name = "数量")
     private String name;
     //配方描述
     @Transient
+    @Mark(name = "描述")
     private String description;
     //配方图片
     @Transient
+    @Mark(name = "图片")
     private String icon;
     //配方类型
     @Transient
+    @Mark(name = "类型")
     private String category;
 
     public Long getId() {

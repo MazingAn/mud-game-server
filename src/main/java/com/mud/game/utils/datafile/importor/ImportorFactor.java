@@ -121,6 +121,20 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.transListRepository);
             case "NpcBoundItem":
                 return new Importor(stream, fileName, DbMapper.npcBoundItemRepository);
+            case "ConsignmentInformation":
+                return new Importor(stream, fileName, DbMapper.consignmentInfomationRepository);
+            case "SlotMaterial":
+                return new Importor(stream, fileName, DbMapper.slotMaterialRepository);
+            case "ObjectBindPrice":
+                return new Importor(stream, fileName, DbMapper.objectBindPriceRepository);
+            case "NpcDangPu":
+                return new Importor(stream, fileName, DbMapper.npcDangPuRepository);
+            case "CompositeMaterial":
+                return new Importor(stream, fileName, DbMapper.compositeMaterialRepository);
+            case "StrengthenMaterial":
+                return new Importor(stream, fileName, DbMapper.strengthenMaterialRepository);
+            case "QualityMaterial":
+                return new Importor(stream, fileName, DbMapper.qualityMaterialRepository);
             default:
                 return null;
         }

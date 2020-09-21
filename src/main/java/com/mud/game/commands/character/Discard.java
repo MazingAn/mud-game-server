@@ -7,6 +7,8 @@ import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.CommonObjectInfo;
+import com.mud.game.worlddata.db.mappings.DbMapper;
+import com.mud.game.worlddata.db.models.DataDictionary;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
@@ -58,7 +60,13 @@ public class Discard extends BaseCommand {
             stringBuffer.append(commonObjectInfo.getName());
             stringBuffer.append("{n ");
             stringBuffer.append("。");
+
             playerCharacter.msg(new ToastMessage(stringBuffer.toString()));
+            DataDictionary dataDictionary = DbMapper.dataDictionaryRepository.findDataDictionaryByDataKey("DISCARD_CONTENTS");
+            if (null != dataDictionary) {
+                playerCharacter.msg(dataDictionary.getContent());
+
+            }
             //删除唯一物品
             if (baseCommonObject.getMaxStack() == 1) {
                 CommonObjectBuilder.deleteObjectById(commonObjectInfo.getDbref());

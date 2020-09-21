@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 /**
- * 游戏区域Controller
+ * 游戏当铺Controller
  * 提供NpcDangPu的增删改查
  */
 @RestController
@@ -61,7 +61,7 @@ public class NpcDangPuController {
      * @return 更新后信息内容
      */
     @PutMapping("/{id}")
-    public NpcDangPu editnpc出售权限(@RequestBody NpcDangPu npcDangPu, @PathVariable Long id) {
+    public NpcDangPu editnpcNpcDangPu(@RequestBody NpcDangPu npcDangPu, @PathVariable Long id) {
         npcDangPu.setId(id);
         return DbMapper.npcDangPuRepository.save(npcDangPu);
     }
@@ -74,7 +74,8 @@ public class NpcDangPuController {
      */
     @DeleteMapping("/{id}")
     @Transactional
-    public void deletenpc出售权限(@Valid @PathVariable Long id) {
+    public void deletenpcNpcDangPu(@Valid @PathVariable Long id) {
         DbMapper.npcDangPuRepository.deleteById(id);
     }
+
 }

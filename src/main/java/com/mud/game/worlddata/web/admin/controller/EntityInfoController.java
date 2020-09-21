@@ -28,6 +28,8 @@ public class EntityInfoController {
             return EntityInfoLoader.load(clazz);
         }catch (ClassNotFoundException e){
             return new EntityInfo();
+        }catch (Exception e){
+            return new EntityInfo();
         }
     }
 
