@@ -20,7 +20,7 @@ public class ObjectBindPrice {
     @Mark(name = "编号")
     private Long id;
 
-    @Mark(name = "标识")
+    @Mark(name = "标识", link = "allObjects")
     @NotNull
     private String dataKey;
 
@@ -35,6 +35,9 @@ public class ObjectBindPrice {
         this.id = id;
         this.dataKey = dataKey;
         this.price = price;
+    }
+
+    public ObjectBindPrice() {
     }
 
     public void setId(Long id) {

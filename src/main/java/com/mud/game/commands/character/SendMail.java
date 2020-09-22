@@ -2,12 +2,9 @@ package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.ToastMessage;
-import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.builder.MailObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonObject;
-import com.mud.game.object.typeclass.MailObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
-import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;

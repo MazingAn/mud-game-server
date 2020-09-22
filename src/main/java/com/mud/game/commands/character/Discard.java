@@ -68,7 +68,7 @@ public class Discard extends BaseCommand {
 
             }
             //删除唯一物品
-            if (baseCommonObject.getMaxStack() == 1) {
+            if (baseCommonObject != null && baseCommonObject.getMaxStack() == 1) {
                 CommonObjectBuilder.deleteObjectById(commonObjectInfo.getDbref());
             }
             map.remove(itemId);
