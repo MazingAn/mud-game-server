@@ -33,6 +33,7 @@ public class NormalObjectObjectManager {
             normalObjectObject.setMaxStack(template.getMaxStack());
             normalObjectObject.setCanDiscard(template.isCanDiscard());
             normalObjectObject.setCanRemove(template.isCanRemove());
+            normalObjectObject.setCanSell(template.isCanSell());
             normalObjectObject.setFunction(template.getActionFunction());
             normalObjectObject.setIcon(template.getIcon());
             normalObjectObject.setQuality(1);

@@ -45,6 +45,7 @@ public class EquipmentObjectManager {
             equipment.setMaxStack(template.getMaxStack());
             equipment.setCanDiscard(template.isCanDiscard());
             equipment.setCanRemove(template.isCanRemove());
+            equipment.setCanSell(template.isCanSell());
             equipment.setIcon(template.getIcon());
             equipment.setPositions(JsonStrConvetor.ToSet(template.getPositions()));
             equipment.setSuite(template.getSuite());

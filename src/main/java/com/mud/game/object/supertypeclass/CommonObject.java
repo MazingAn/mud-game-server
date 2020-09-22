@@ -24,6 +24,8 @@ public class CommonObject extends BaseGameObject {
     private boolean canDiscard;
     //能否丢弃
     private boolean canRemove;
+    //能否出售
+    private boolean canSell;
     //图标
     private String icon;
     //事件
@@ -160,5 +162,21 @@ public class CommonObject extends BaseGameObject {
 
     public void setGems(List<GemObject> gems) {
         this.gemss = gems;
+    }
+
+    public boolean isCanSell() {
+        return canSell;
+    }
+
+    public void setCanSell(boolean canSell) {
+        this.canSell = canSell;
+    }
+
+    public List<GemObject> getGemss() {
+        return gemss;
+    }
+
+    public void setGemss(List<GemObject> gemss) {
+        this.gemss = gemss;
     }
 }

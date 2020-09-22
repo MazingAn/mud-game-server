@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SkillBookObjectManager {
-    public static SkillBookObject create(String templateKey)  {
+    public static SkillBookObject create(String templateKey) {
         SkillBookObject skillBookObject = new SkillBookObject();
         SkillBook template = DbMapper.skillBookRepository.findSkillBookByDataKey(templateKey);
         skillBookObject.setDataKey(template.getDataKey());
@@ -33,6 +33,7 @@ public class SkillBookObjectManager {
         skillBookObject.setMaxStack(template.getMaxStack());
         skillBookObject.setCanDiscard(template.isCanDiscard());
         skillBookObject.setCanRemove(template.isCanRemove());
+        skillBookObject.setCanSell(template.isCanSell());
         skillBookObject.setIcon(template.getIcon());
         skillBookObject.setQuality(template.getQuality());
         skillBookObject.setOwner(null);
@@ -45,19 +46,20 @@ public class SkillBookObjectManager {
 
     /**
      * 获取技能书支持学习的一个技能
+     *
      * @param skillBookObject skillBookObject
-     * */
-    public static String getCurrentSkill(SkillBookObject skillBookObject){
-        if(skillBookObject.getCurrentSkill() != null){
+     */
+    public static String getCurrentSkill(SkillBookObject skillBookObject) {
+        if (skillBookObject.getCurrentSkill() != null) {
             return skillBookObject.getCurrentSkill();
-        }else{
+        } else {
             Iterable<SkillBookBind> binds = DbMapper.skillBookBindRepository.findSkillBookBindsBySkillBook(skillBookObject.getDataKey());
-            if(binds.iterator().hasNext()){
+            if (binds.iterator().hasNext()) {
                 String randomSkill = ListUtils.randomChoice(new ArrayList<>(IterableUtils.toList(binds))).getSkill();
                 skillBookObject.setCurrentSkill(randomSkill);
                 MongoMapper.skillBookObjectRepository.save(skillBookObject);
                 return randomSkill;
-            }else{
+            } else {
                 return null;
             }
         }
@@ -66,14 +68,14 @@ public class SkillBookObjectManager {
     public static List<EmbeddedCommand> getAvailableCommands(SkillBookObject skillBookObject, PlayerCharacter playerCharacter) {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
-        if(skillBookObject.isCanDiscard()){
+        if (skillBookObject.isCanDiscard()) {
             //cmds.add(new EmbeddedCommand("丢弃", "discard", skillBookObject.getId()));
         }
         cmds.add(new EmbeddedCommand("研读", "use", skillBookObject.getId()));
         return cmds;
     }
 
-    public static void onPlayerLook(SkillBookObject skillBookObject, PlayerCharacter playerCharacter, Session session)  {
+    public static void onPlayerLook(SkillBookObject skillBookObject, PlayerCharacter playerCharacter, Session session) {
         /*
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */

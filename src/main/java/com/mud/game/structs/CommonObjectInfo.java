@@ -23,8 +23,10 @@ public class CommonObjectInfo {
     private int quality;
     private int max_stack;
     private boolean equipped;
+    private boolean canSell;
     private Set<String> position;
     private int slotNumber;
+
     //镶嵌的宝石
     private List<GemObject> gems;
 
@@ -38,6 +40,7 @@ public class CommonObjectInfo {
         this.icon = commonObject.getIcon();
         this.name = commonObject.getName();
         this.number = number;
+        this.canSell = commonObject.isCanSell();
         this.strength_level = commonObject.getLevel();
         this.quality = commonObject.getLevel();
         this.dataKey = commonObject.getDataKey();
@@ -176,5 +179,13 @@ public class CommonObjectInfo {
 
     public void setPosition(Set<String> position) {
         this.position = position;
+    }
+
+    public boolean isCanSell() {
+        return canSell;
+    }
+
+    public void setCanSell(boolean canSell) {
+        this.canSell = canSell;
     }
 }

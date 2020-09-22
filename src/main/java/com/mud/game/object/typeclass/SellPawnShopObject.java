@@ -1,6 +1,5 @@
 package com.mud.game.object.typeclass;
 
-import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.structs.CommonObjectInfo;
 
 import javax.persistence.Id;

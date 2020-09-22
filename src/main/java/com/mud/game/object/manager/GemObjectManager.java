@@ -33,6 +33,7 @@ public class GemObjectManager {
         gemObject.setMaxStack(template.getMaxStack());
         gemObject.setCanDiscard(template.isCanDiscard());
         gemObject.setCanRemove(template.isCanRemove());
+        gemObject.setCanSell(template.isCanSell());
         gemObject.setIcon(template.getIcon());
         gemObject.setQuality(template.getQuality());
         gemObject.setOwner(null);
