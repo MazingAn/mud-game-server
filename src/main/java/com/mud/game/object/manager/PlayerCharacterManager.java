@@ -203,7 +203,7 @@ public class PlayerCharacterManager {
                 Session targetSession = null;
                 targetSession = GameSessionService.getSessionByCallerId(id);
                 if (targetSession != null) {
-                    targetSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName()))));
+                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName()))));
                 }
             }
         } catch (Exception e) {
