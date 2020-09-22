@@ -6,6 +6,7 @@ import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.SellPawnShopObject;
 import com.mud.game.structs.CommonObjectInfo;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.ObjectBindPrice;
@@ -15,7 +16,11 @@ import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
+
+import static com.mud.game.constant.Constant.SALE_RECORD_NUM;
 
 /**
  * 打开当铺
@@ -60,10 +65,27 @@ public class SellToPawnShop extends BaseCommand {
                 //从背包移除物品
                 //将唯一物品设置为无归属
                 CommonObject commonObject = CommonObjectBuilder.findObjectById(commonObjectInfo.getDbref());
-                if (commonObject != null && commonObject.getMaxStack() == 1) {
-                    CommonObjectBuilder.deleteObjectById(commonObjectInfo.getDbref());
-                    commonObject.setOwner(null);
-                    CommonObjectBuilder.save(commonObject);
+                if (commonObject != null) {
+                    //出售记录
+                    SellPawnShopObject sellPawnShopObject = MongoMapper.sellPawnShopObjectRepository.findSellPawnShopObjectByOwner(playerCharacter.getId());
+                    if (null == sellPawnShopObject) {
+                        sellPawnShopObject = new SellPawnShopObject();
+                        sellPawnShopObject.setOwner(playerCharacter.getId());
+                        sellPawnShopObject.setCommonObjectInfoList(new ArrayList<CommonObjectInfo>());
+                    }
+                    if (sellPawnShopObject.getCommonObjectInfoList().size() == SALE_RECORD_NUM) {
+                        sellPawnShopObject.getCommonObjectInfoList().remove(sellPawnShopObject.getCommonObjectInfoList().size() - 1);
+                    }
+                    Collections.reverse(sellPawnShopObject.getCommonObjectInfoList());
+                    sellPawnShopObject.getCommonObjectInfoList().add(commonObjectInfo);
+                    Collections.reverse(sellPawnShopObject.getCommonObjectInfoList());
+                    MongoMapper.sellPawnShopObjectRepository.save(sellPawnShopObject);
+
+                    if (commonObject.getMaxStack() == 1) {
+                        CommonObjectBuilder.deleteObjectById(commonObjectInfo.getDbref());
+                        commonObject.setOwner(null);
+                        CommonObjectBuilder.save(commonObject);
+                    }
                 }
                 map.remove(itemId);
                 //todo 增加钱数

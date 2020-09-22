@@ -20,4 +20,7 @@ public class Constant {
         add("OBJECT_YINLIANG");
         add("OBJECT_JINYEZI");
     }};
+    //当铺保存玩家多少出售记录
+    public static final int SALE_RECORD_NUM = 5;
+
 }
