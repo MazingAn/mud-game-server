@@ -31,6 +31,8 @@ public class GameWords {
     public static final String PLAYER_BE_APPLIED_FRIEND_REQUEST = "{r%s{n同意了你的请求，并对你说：\"如此甚好，真实荣幸之至！\""; //好友请求被同意
     public static final String DELETE_BE_APPLIED_FRIEND_REQUEST = "你删除了好友{r%s{n！"; //好友请求被同意
 
+    //好友上线提示
+    public static final String FRIEND_ONLINE_REMINDER = "你的好友{r%s{n已上线！"; //好友上线提示
 
     // 拜师
     public static final String PLAYER_MUST_LEAVE_OLD_TEACHER = "{r%s{n对你说:\"阁下既然已经有了师门，又何必来这里打趣本人？\"";

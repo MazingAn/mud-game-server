@@ -33,6 +33,8 @@ import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.mud.game.utils.resultutils.GameWords.FRIEND_ONLINE_REMINDER;
+
 public class PlayerCharacterManager {
 
     /**
@@ -194,6 +196,15 @@ public class PlayerCharacterManager {
             List<MailObject> recipientList = MongoMapper.mailObjectRepository.findMailObjectListByRecipientId(playerCharacterId);
             if (recipientList != null && recipientList.size() > 0) {
                 playerCharacter.msg(new MailObjectMessage(playerCharacter, recipientList));
+            }
+            //给好友发送上线信息
+            Map<String, SimpleCharacter> friendMap = playerCharacter.getFriends();
+            for (String id : friendMap.keySet()) {
+                Session targetSession = null;
+                targetSession = GameSessionService.getSessionByCallerId(id);
+                if (targetSession != null) {
+                    targetSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName()))));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
