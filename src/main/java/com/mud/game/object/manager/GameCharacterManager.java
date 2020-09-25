@@ -3,6 +3,7 @@ package com.mud.game.object.manager;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.commands.character.CastSkill;
+import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -265,15 +266,27 @@ public class GameCharacterManager {
                 System.out.println("没有找到对应的属性：" + attrKey);
             }
             // 持久化
-            GameCharacterManager.saveCharacter(character);
+            CommonCharacter commonCharacter1 = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
+            if (commonCharacter1 == null) {
+                GameCharacterManager.saveCharacter(character);
+            } else {
+                AutoContestHandler.addCommonCharacter(character.getId() + commonCharacter.getId(), character);
+            }
+
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.out.println("无法转换类型");
         }
 
         // 检测角色死亡
+        //非切磋或切磋时死亡的非npc
         if (character.getHp() <= 0) {
-            GameCharacterManager.die(character, commonCharacter);
+            CommonCharacter commonCharacter1 = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
+            if (commonCharacter1 == null) {
+                GameCharacterManager.die(character, commonCharacter, true);
+            } else {
+                GameCharacterManager.die(character, commonCharacter, false);
+            }
         }
 
     }
@@ -444,8 +457,8 @@ public class GameCharacterManager {
      * @param target      CommonCharacter 技能作用对象
      * @param skillObject SkillObject 技能实例
      */
-    public static void castSkill(CommonCharacter character, CommonCharacter target, SkillObject skillObject) {
-        SkillObjectManager.castSkill(skillObject, character, target);
+    public static void castSkill(CommonCharacter character, CommonCharacter target, SkillObject skillObject, Boolean isAutoContest) {
+        SkillObjectManager.castSkill(skillObject, character, target, isAutoContest);
     }
 
     /**
@@ -493,22 +506,26 @@ public class GameCharacterManager {
      * @param character       角色死亡之后更新信息到客户端
      *                        延时触发复活
      */
-    public static void die(CommonCharacter character, CommonCharacter commonCharacter) {
+    public static void die(CommonCharacter character, CommonCharacter commonCharacter, Boolean b) {
         character.setHp(0);
         character.setCanAttck(false);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
-        saveCharacter(character);
-        characterMoveOut(character);
-        if (!character.getName().contains("的尸体")) {
-            character.setName(character.getName() + "的尸体");
+        if (b) {
+            saveCharacter(character);
+            characterMoveOut(character);
+            if (!character.getName().contains("的尸体")) {
+                character.setName(character.getName() + "的尸体");
+            }
+            characterMoveIn(character);
         }
-        characterMoveIn(character);
         if (character instanceof WorldNpcObject) {
-            Timer timer = new Timer();
-            float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
-            timer.schedule(reborn(character), (int) rebornTime * 1000);
-            //生成战利品
-            WorldNpcObjectManager.getTrophy(character, commonCharacter);
+            if (b) {
+                Timer timer = new Timer();
+                float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+                timer.schedule(reborn(character), (int) rebornTime * 1000);
+                //生成战利品
+                WorldNpcObjectManager.getTrophy(character, commonCharacter);
+            }
         } else {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
             character.msg(new RebornCommandsMessage((PlayerCharacter) character));

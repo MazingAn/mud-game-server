@@ -1,5 +1,6 @@
 package com.mud.game.combat;
 
+import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.GraduationHandler;
 import com.mud.game.messages.CombatFinishMessage;
@@ -71,7 +72,13 @@ public class CombatSense {
     public int getAliveNumberInTeam(ArrayList<CommonCharacter> team, int minHp) {
         int aliveNumber = 0;
         for (CommonCharacter character : team) {
-            character = GameCharacterManager.getCharacterObject(character.getId());
+            //内存读取对象信息或从库里查询
+            CommonCharacter character1 = AutoContestHandler.getCommonCharacter(character.getId() + character.getTarget());
+            if (null == character1) {
+                character = GameCharacterManager.getCharacterObject(character.getId());
+            } else {
+                character = character1;
+            }
             if (character.getHp() <= minHp) {
                 aliveNumber++;
             }
@@ -162,6 +169,8 @@ public class CombatSense {
      * 检测玩家是否死亡，如果死亡发送复活命令
      */
     private void checkDied(CommonCharacter character) {
+        AutoContestHandler.removeCommonCharacter(character.getId() + character.getTarget());
+        AutoContestHandler.removeCommonCharacter(character.getTarget() + character.getId());
         if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
         }

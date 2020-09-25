@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.algorithm.AttackAlgorithm;
 import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.combat.CombatSense;
+import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.object.manager.SkillObjectManager;
@@ -45,7 +46,14 @@ public class NormalHit extends BaseAttackSkillStatement {
         String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
         skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
         //更新同步数据
-        GameCharacterManager.saveCharacter(target);
+        //GameCharacterManager.saveCharacter(target);
+        CommonCharacter commonCharacter = AutoContestHandler.getCommonCharacter(caller.getId() + target.getId());
+        if (commonCharacter == null) {
+            commonCharacter = AutoContestHandler.getCommonCharacter(target.getId() + caller.getId());
+        }
+        if (commonCharacter == null) {
+            GameCharacterManager.saveCharacter(target);
+        }
         sense.msgContents(new SkillCastMessage(skillCastInfo));
     }
 
