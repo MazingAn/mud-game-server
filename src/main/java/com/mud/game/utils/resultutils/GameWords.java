@@ -33,7 +33,8 @@ public class GameWords {
 
     //好友上线提示
     public static final String FRIEND_ONLINE_REMINDER = "你的好友{g%s{n已上线！"; //好友上线提示
-
+    //仇人上线提示
+    public static final String ENEMY_ONLINE_REMINDER = "你的仇人{r%s{n已在{r%s{n上线！";
     // 拜师
     public static final String PLAYER_MUST_LEAVE_OLD_TEACHER = "{r%s{n对你说:\"阁下既然已经有了师门，又何必来这里打趣本人？\"";
     public static final String TEACHER_NOT_FOUND = "好像并没有找到{r%s{n这个人，你到底要拜谁为师？";

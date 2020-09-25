@@ -1,6 +1,7 @@
 package com.mud.game.combat;
 
 import com.mud.game.handler.CombatHandler;
+import com.mud.game.handler.GraduationHandler;
 import com.mud.game.messages.CombatFinishMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.RebornCommandsMessage;
@@ -117,6 +118,7 @@ public class CombatSense {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character);
+                checkGraduation(character, blueTeam);
             }
             for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(false));
@@ -141,6 +143,7 @@ public class CombatSense {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character);
+                checkGraduation(character, redTeam);
             }
         }
     }
@@ -163,6 +166,24 @@ public class CombatSense {
             GameCharacterManager.die(character);
         }
         CombatHandler.removeCombatSense(character.getId());
+    }
+
+    /**
+     * 检测玩家是否出师
+     */
+    private void checkGraduation(CommonCharacter character, ArrayList<CommonCharacter> team) {
+        //出师判断
+        if (GraduationHandler.existsGraduationList(character.getId()) && character instanceof PlayerCharacter) {
+            //判断敌对阵营里是否有师傅
+            PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
+            for (CommonCharacter commonCharacter : team) {
+                if (commonCharacter.getDataKey().equals(playerCharacter.getTeacher())) {
+                    playerCharacter.setTeacher("");
+                    MongoMapper.playerCharacterRepository.save(playerCharacter);
+                }
+            }
+            GraduationHandler.removeGraduationList(character.getId());
+        }
     }
 
     /**

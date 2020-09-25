@@ -33,6 +33,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.mud.game.utils.resultutils.GameWords.ENEMY_ONLINE_REMINDER;
 import static com.mud.game.utils.resultutils.GameWords.FRIEND_ONLINE_REMINDER;
 
 public class PlayerCharacterManager {
@@ -197,6 +198,7 @@ public class PlayerCharacterManager {
             if (recipientList != null && recipientList.size() > 0) {
                 playerCharacter.msg(new MailObjectMessage(playerCharacter, recipientList));
             }
+
             //给好友发送上线信息
             Map<String, SimpleCharacter> friendMap = playerCharacter.getFriends();
             for (String id : friendMap.keySet()) {
@@ -206,6 +208,17 @@ public class PlayerCharacterManager {
                     targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName()))));
                 }
             }
+            //仇人上线提醒
+            Map<String, SimpleCharacter> enemyMap = playerCharacter.getEnemys();
+            for (String id : enemyMap.keySet()) {
+                Session targetSession = null;
+                targetSession = GameSessionService.getSessionByCallerId(id);
+                WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+                if (targetSession != null) {
+                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldRoomObject.getName()))));
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage("进入游戏失败，请稍后重试")));
@@ -618,6 +631,8 @@ public class PlayerCharacterManager {
             }
             // 添加攻击命令
             cmds.add(new EmbeddedCommand("攻击", "attack", target.getId()));
+            // 添加切磋命令
+            cmds.add(new EmbeddedCommand("切磋", "learn_from_friend", target.getId()));
         }
         return cmds;
     }

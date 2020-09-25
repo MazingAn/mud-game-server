@@ -78,14 +78,14 @@ public class FighterManager {
             @Override
             public void run() {
                 if (!sense.isCombatFinished()) {
-                    if (!character.autoCombatPause && character.getHp() > 0) {
+                    if (!character.autoCombatPause && character.getHp() > sense.getMinHp()) {
                         CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
                         CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
                         if (!character.isCanCombat()) {
                             character.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
                         } else {
                             //如果目标已死亡，重新选定目标
-                            if (target.getHp() <= 0) {
+                            if (target.getHp() <= sense.getMinHp()) {
                                 target = FighterManager.setRandomTarget(character, sense.getBlueTeam());
                             }
                             GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));

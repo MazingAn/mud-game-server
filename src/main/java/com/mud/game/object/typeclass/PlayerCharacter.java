@@ -43,6 +43,8 @@ public class PlayerCharacter extends CommonCharacter {
     public float tili;
     public int goodAndEvil;
     public boolean doubleEquip;
+    // 玩家的仇人列表
+    public Map<String, SimpleCharacter> enemys;
     // 玩家的好友列表
     public Map<String, SimpleCharacter> friends;
     // 玩家接受到的好友请求列表
@@ -63,6 +65,7 @@ public class PlayerCharacter extends CommonCharacter {
         this.revealedMap = new HashMap<>();
         this.unlockedExit = new HashSet<>();
         this.friends = new HashMap<>();
+        this.enemys = new HashMap<>();
         this.friendRequests = new HashMap<>();
         this.learnByObjectRecord = new HashMap<>();
     }
@@ -355,5 +358,13 @@ public class PlayerCharacter extends CommonCharacter {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Map<String, SimpleCharacter> getEnemys() {
+        return enemys;
+    }
+
+    public void setEnemys(Map<String, SimpleCharacter> enemys) {
+        this.enemys = enemys;
     }
 }
