@@ -57,7 +57,7 @@ public class CastSkill extends BaseCommand {
         if (skillCdMap.containsKey(caller.getId() + skillKey) && calLastedTime(skillCdMap.get(caller.getId() + skillKey)) < skillObject.getCd()) {
             getSession().sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format("技能" + skillObject.getName() + "正在冷却！"))));
         } else {
-            GameCharacterManager.castSkill(caller, target, skillObject);
+            GameCharacterManager.castSkill(caller, target, skillObject, false);
         }
     }
 

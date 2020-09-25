@@ -11,7 +11,6 @@ import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.structs.EmbeddedCommand;
-import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.structs.SkillEffect;
 import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
@@ -69,7 +68,7 @@ public class SkillObjectManager {
         /*
          * 计算技能的效果
          * */
-        SkillFunctionHandler.useSkill(caller, target, skillObject);
+        SkillFunctionHandler.useSkill(caller, target, skillObject, false);
     }
 
     /**
@@ -310,14 +309,14 @@ public class SkillObjectManager {
 
     /**
      * 执行技能，限定主动技能
-     *
-     * @param skillObject 要执行的技能
+     *  @param skillObject 要执行的技能
      * @param caller      技能的释放者
      * @param target      技能作用的对象
+     * @param isAutoContest
      */
-    public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target) {
+    public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target, Boolean isAutoContest) {
         if (!skillObject.isPassive()) {
-            SkillFunctionHandler.useSkill(caller, target, skillObject);
+            SkillFunctionHandler.useSkill(caller, target, skillObject,isAutoContest);
         }
 
     }

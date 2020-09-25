@@ -132,6 +132,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("open_pawn_shop", OpenPawnShop.class);
         playerCharacterCommandSet.put("sell_to_pawn_shop", SellToPawnShop.class);
         playerCharacterCommandSet.put("buy_back_pawn_shop", BuyBackPawnShop.class);
+        playerCharacterCommandSet.put("left_teacher", LeftTeacher.class);
     }
 
     /**

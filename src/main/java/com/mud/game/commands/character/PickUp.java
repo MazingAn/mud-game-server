@@ -66,13 +66,11 @@ public class PickUp extends BaseCommand {
                 //判断是模板物品还是唯一物品
                 if (isNumeric(key)) {
                     if (PlayerCharacterManager.receiveObjectToBagpack(caller, key, npcBoundItemMap.get(key))) {
-                        //npcBoundItemInfo.getNpcBoundItemMap().remove(key);
                         list.add(key);
                     }
                 } else {
                     CommonObject commonObject = CommonObjectBuilder.findObjectById(key);
                     if (PlayerCharacterManager.receiveObjectToBagpack(caller, commonObject, npcBoundItemMap.get(key))) {
-                        //npcBoundItemInfo.getNpcBoundItemMap().remove(key);
                         list.add(key);
                     }
                 }

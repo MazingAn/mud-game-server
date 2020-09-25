@@ -197,6 +197,8 @@ public class WorldNpcObjectManager {
             cmds.add(new EmbeddedCommand("出师", "left_teacher", npc.getId()));
             cmds.add(new EmbeddedCommand("师门任务", "teacher_quest", npc.getId()));
         }
+        //cmds.add(new EmbeddedCommand("出师", "left_teacher", npc.getId()));
+
         // 学艺 通过特定物品或者交钱学习技能，不用拜师
         if (npc.isLearnByObject()) {
             cmds.add(new EmbeddedCommand("学艺", "learn_by_object", npc.getId()));
@@ -450,7 +452,7 @@ public class WorldNpcObjectManager {
             return false;
         }
         //判断当前时间是否在开放拾取的时间内
-        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 10) {
+        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 50) {
             if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
                 return false;
             }
@@ -465,7 +467,7 @@ public class WorldNpcObjectManager {
             return false;
         }
         //判断当前时间是否在开放拾取的时间内
-        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 10) {
+        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 50) {
             if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
                 return false;
             }

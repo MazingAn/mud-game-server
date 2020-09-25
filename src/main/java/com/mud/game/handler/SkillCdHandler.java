@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SkillCdHandler {
+    //普通技能cd
     public static Map<String, Date> skillCdMap = new HashMap<>();
 
     public static void addSkillCd(String key, Date date) {

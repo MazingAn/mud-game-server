@@ -1,11 +1,14 @@
 package com.mud.game.combat;
 
+import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.messages.JoinCombatMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.collections.ListUtils;
 
@@ -88,7 +91,7 @@ public class FighterManager {
                             if (target.getHp() <= 0) {
                                 target = FighterManager.setRandomTarget(character, sense.getBlueTeam());
                             }
-                            GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
+                            GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller), false);
                             if (sense.isCombatFinished()) {
                                 sense.onCombatFinish();
                             }
@@ -108,4 +111,55 @@ public class FighterManager {
         service.shutdown();
     }
 
+    /**
+     * 战斗开始后，角色默认使用自动攻击的方式展开战斗
+     *
+     * @param playerCharacter 要进行自动攻击的角色
+     * @param targetObject    要进行攻击的目标
+     */
+    public static void startAutoContest(CommonCharacter playerCharacter, CommonCharacter targetObject) {
+        // 设置对手，开始普通攻击
+        String characterId = playerCharacter.getId();
+        CombatSense sense = CombatHandler.getCombatSense(characterId + targetObject.getId());
+        ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(characterId);
+
+        //从内存中获取战斗人员信息
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!sense.isCombatFinished()) {
+                    CommonCharacter playerCharacterCommonCharacter = playerCharacter;
+                    if (playerCharacter instanceof WorldNpcObject) {
+                        playerCharacterCommonCharacter = AutoContestHandler.getCommonCharacter(playerCharacter.getId() + targetObject.getId());
+                    }
+
+                    CommonCharacter targetObjectCommonCharacter = targetObject;
+                    if (targetObject instanceof WorldNpcObject) {
+                        targetObjectCommonCharacter = AutoContestHandler.getCommonCharacter(targetObject.getId() + playerCharacter.getId());
+                    }
+
+                    if (!playerCharacterCommonCharacter.autoCombatPause && playerCharacterCommonCharacter.getHp() > 0) {
+                        if (!playerCharacterCommonCharacter.isCanCombat()) {
+                            playerCharacterCommonCharacter.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
+                        } else {
+                            //如果目标已死亡，重新选定目标
+                            if (targetObjectCommonCharacter.getHp() <= 0) {
+                                targetObjectCommonCharacter = FighterManager.setRandomTarget(playerCharacterCommonCharacter, sense.getBlueTeam());
+                            }
+                            GameCharacterManager.castSkill(playerCharacterCommonCharacter, targetObjectCommonCharacter, GameCharacterManager.getDefaultSkill(playerCharacterCommonCharacter), true);
+                            if (sense.isCombatFinished()) {
+                                sense.onCombatFinish();
+                            }
+                        }
+                    }
+
+
+                } else {
+                    sense.onCombatFinish();
+                }
+            }
+        };
+        int delay = (sense.getBlueTeam().contains(playerCharacter)) ? 0 : (int) (gameSetting.getGlobalCD() * 1000 / 2);
+        service.scheduleAtFixedRate(runnable, delay, (int) (gameSetting.getGlobalCD() * 1000), TimeUnit.MILLISECONDS);
+    }
 }
