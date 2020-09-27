@@ -279,7 +279,7 @@ public class GameCharacterManager {
         }
 
         // 检测角色死亡
-        //非切磋或切磋时死亡的非npc
+        //判断非切磋或切磋时死亡
         if (character.getHp() <= 0) {
             CommonCharacter commonCharacter1 = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
             if (commonCharacter1 == null) {
@@ -517,6 +517,12 @@ public class GameCharacterManager {
                 character.setName(character.getName() + "的尸体");
             }
             characterMoveIn(character);
+            //如果击杀者和被击杀者都是玩家的话，增加击杀者的犯罪值
+            if (character instanceof PlayerCharacter && commonCharacter instanceof PlayerCharacter) {
+                PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(commonCharacter.getId());
+                playerCharacter.setCrimeValue(playerCharacter.getCrimeValue() + 1);
+                MongoMapper.playerCharacterRepository.save(playerCharacter);
+            }
         }
         if (character instanceof WorldNpcObject) {
             if (b) {

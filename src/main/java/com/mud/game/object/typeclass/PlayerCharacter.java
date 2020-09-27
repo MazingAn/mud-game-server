@@ -40,6 +40,7 @@ public class PlayerCharacter extends CommonCharacter {
     public float xueXiXishu;
     public String family;
     public int xiayi;
+    public int crimeValue;
     public float tili;
     public int goodAndEvil;
     public boolean doubleEquip;
@@ -68,6 +69,7 @@ public class PlayerCharacter extends CommonCharacter {
         this.enemys = new HashMap<>();
         this.friendRequests = new HashMap<>();
         this.learnByObjectRecord = new HashMap<>();
+        this.crimeValue = 0;
     }
 
     public String getPlayer() {
@@ -366,5 +368,13 @@ public class PlayerCharacter extends CommonCharacter {
 
     public void setEnemys(Map<String, SimpleCharacter> enemys) {
         this.enemys = enemys;
+    }
+
+    public int getCrimeValue() {
+        return crimeValue;
+    }
+
+    public void setCrimeValue(int crimeValue) {
+        this.crimeValue = crimeValue;
     }
 }

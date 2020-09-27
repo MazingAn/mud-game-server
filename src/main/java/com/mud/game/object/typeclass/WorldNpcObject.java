@@ -1,6 +1,7 @@
 package com.mud.game.object.typeclass;
 
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.utils.modelsutils.Mark;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -33,7 +34,8 @@ public class WorldNpcObject extends CommonCharacter {
     public Set<String> shops;
     // 是否可以传送玩家
     public boolean transfer;
-
+    //犯罪值控制命令
+    private Boolean crimeControlCmd;
 
     public Set<String> getEvents() {
         return events;
@@ -132,7 +134,7 @@ public class WorldNpcObject extends CommonCharacter {
     }
 
     public Set<String> getShops() {
-        if(shops == null){
+        if (shops == null) {
             shops = new HashSet<>();
         }
         return shops;
@@ -148,5 +150,13 @@ public class WorldNpcObject extends CommonCharacter {
 
     public void setTransfer(boolean transfer) {
         this.transfer = transfer;
+    }
+
+    public Boolean getCrimeControlCmd() {
+        return crimeControlCmd;
+    }
+
+    public void setCrimeControlCmd(Boolean crimeControlCmd) {
+        this.crimeControlCmd = crimeControlCmd;
     }
 }

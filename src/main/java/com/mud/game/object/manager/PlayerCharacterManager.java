@@ -26,6 +26,7 @@ import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.lang.reflect.Constructor;
@@ -33,6 +34,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_ATTACK;
 import static com.mud.game.utils.resultutils.GameWords.ENEMY_ONLINE_REMINDER;
 import static com.mud.game.utils.resultutils.GameWords.FRIEND_ONLINE_REMINDER;
 
@@ -107,7 +109,7 @@ public class PlayerCharacterManager {
                     Constructor c = clazz.getConstructor(CommonCharacter.class, CommonCharacter.class, NormalObjectObject.class, String.class, String[].class);
                     c.newInstance(playerCharacter, playerCharacter, null, key, args);
                 } catch (Exception e) {
-                    System.out.println(String.format("玩家在执行物品函数%s的时候触发了异常", key));
+                    System.out.println(String.format("玩家在执行天赋函数%s的时候触发了异常", key));
                     e.printStackTrace();
                 }
             }
@@ -304,6 +306,7 @@ public class PlayerCharacterManager {
         }
         location_info.put("players", playerCharacters);
         // 可以看到的NPC
+        List<CommonCharacter> commonCharacterList = new ArrayList<>();
         List<SimpleCharacter> npcs = new ArrayList<>();
         for (String npcDataKey : location.getNpcs()) {
             WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
@@ -312,13 +315,44 @@ public class PlayerCharacterManager {
                 simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
                 simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
                 npcs.add(simpleCharacter);
+                if (npc.getHp() > 0) {
+                    commonCharacterList.add(npc);
+                }
             }
+        }
+        //犯罪值大于阈值，触发npc战斗
+        if (location.isCanAttack() && playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
+            getAttack(playerCharacter, commonCharacterList);
         }
         location_info.put("npcs", npcs);
         // 可以执行的命令
         location_info.put("cmds", WorldRoomObjectManager.getAvailableCommands(location, playerCharacter));
         playerCharacter.msg(new LookAroundMessage(location_info));
         playerCharacter.msg(new CurrentLocationMessage(new RoomInfo(location)));
+    }
+
+    /**
+     * 自动发起战斗
+     */
+    public static void getAttack(PlayerCharacter caller, List<CommonCharacter> commonCharacterList) {
+        CombatSense combatSense = CombatHandler.getCombatSense(caller.getId());
+        if (combatSense == null) {
+            ArrayList<CommonCharacter> redTeam = new ArrayList<>();
+            ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
+            redTeam.add(caller);
+            blueTeam.addAll(commonCharacterList);
+            combatSense = new CombatSense(redTeam, blueTeam, 0);
+        } else {
+            combatSense.getBlueTeam().addAll(commonCharacterList);
+        }
+        for (CommonCharacter commonCharacter : commonCharacterList) {
+            CombatHandler.addCombatSense(commonCharacter.getId(), combatSense);
+        }
+        CombatHandler.addCombatSense(caller.getId(), combatSense);
+
+        NormalCombat normalCombat = new NormalCombat();
+        normalCombat.init(combatSense);
+        normalCombat.startCombat(combatSense);
     }
 
     /**

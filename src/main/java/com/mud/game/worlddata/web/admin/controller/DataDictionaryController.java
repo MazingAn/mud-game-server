@@ -1,5 +1,6 @@
 package com.mud.game.worlddata.web.admin.controller;
 
+import com.mud.game.constant.PostConstructConstant;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DataDictionary;
 import io.swagger.annotations.Api;
@@ -63,7 +64,9 @@ public class DataDictionaryController {
     @PutMapping("/{id}")
     public DataDictionary editDataDictionary(@RequestBody DataDictionary DataDictionary, @PathVariable Long id) {
         DataDictionary.setId(id);
-        return DbMapper.dataDictionaryRepository.save(DataDictionary);
+        DbMapper.dataDictionaryRepository.save(DataDictionary);
+        PostConstructConstant.overload();
+        return DataDictionary;
     }
 
     /**

@@ -26,6 +26,8 @@ import org.yeauty.pojo.Session;
 
 import java.util.*;
 
+import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_CMDS;
+import static com.mud.game.constant.PostConstructConstant.CUT_BACKCRIME_NPC_DATAKEY;
 import static com.mud.game.object.manager.GameCharacterManager.npcBoundItemSet;
 
 public class WorldNpcObjectManager {
@@ -60,6 +62,7 @@ public class WorldNpcObjectManager {
         obj.setRebornTime(template.getRebornTime());
         obj.setCanAttack(template.isCanAttack());
         obj.setTransfer(template.isTransfer());
+        obj.setCrimeControlCmd(template.getCrimeControlCmd());
         // 玩家信息的初始化设置
         obj.setAfter_arm(0);
         obj.setAfter_body(0);
@@ -94,6 +97,7 @@ public class WorldNpcObjectManager {
         obj.setLearnByObject(template.isCanLearnByObject());
         obj.setTeachCondition(template.getTeachCondition());
         obj.setRebornTime(template.getRebornTime());
+        obj.setCrimeControlCmd(template.getCrimeControlCmd());
         // 初始化npc信息
         // 根据注册的信息设置角色信息
         obj.setName(template.getName());
@@ -181,8 +185,13 @@ public class WorldNpcObjectManager {
      * NPC对应的命令还是比较多的，不同身份的NPC对不同玩家会有不通的可执行命令
      */
     public static List<EmbeddedCommand> getAvailableCommands(WorldNpcObject npc, PlayerCharacter playerCharacter) {
-
         List<EmbeddedCommand> cmds = new ArrayList<>();
+        //如果玩家犯罪值大于阈值，则城镇不能操作npc
+        // 判断npc是否可以无操作（城镇npc）
+        if (playerCharacter.getCrimeValue() >= CRIME_VALUE_CMDS && npc.getCrimeControlCmd()) {
+            return cmds;
+        }
+
         if (npc.getHp() <= 0) {
             cmds.add(new EmbeddedCommand("查看", "pick_up_list", npc.getId()));
             return cmds;
@@ -216,6 +225,10 @@ public class WorldNpcObjectManager {
         }
         if (npc.canAttack) {
             cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
+        }
+        //减少犯罪值
+        if (npc.getDataKey().equals(CUT_BACKCRIME_NPC_DATAKEY)) {
+            cmds.add(new EmbeddedCommand("减少犯罪值", "cut_back_crimevalue", npc.getId()));
         }
         //出售
         NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());

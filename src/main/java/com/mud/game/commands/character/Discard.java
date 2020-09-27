@@ -17,6 +17,8 @@ import org.yeauty.pojo.Session;
 
 import java.util.Map;
 
+import static com.mud.game.constant.PostConstructConstant.DISCARD_CONTENTS;
+
 /**
  * 丢弃道具：目前根据背包格子丢弃
  * <p>
@@ -62,11 +64,8 @@ public class Discard extends BaseCommand {
             stringBuffer.append("。");
 
             playerCharacter.msg(new ToastMessage(stringBuffer.toString()));
-            DataDictionary dataDictionary = DbMapper.dataDictionaryRepository.findDataDictionaryByDataKey("DISCARD_CONTENTS");
-            if (null != dataDictionary) {
-                playerCharacter.msg(dataDictionary.getContent());
+            playerCharacter.msg(DISCARD_CONTENTS);
 
-            }
             //删除唯一物品
             if (baseCommonObject != null && baseCommonObject.getMaxStack() == 1) {
                 CommonObjectBuilder.deleteObjectById(commonObjectInfo.getDbref());

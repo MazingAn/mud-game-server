@@ -1,8 +1,10 @@
 package com.mud.game.handler;
 
+import com.mud.game.commands.character.CutBackCrimevalue;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.NormalObjectObject;
 import com.mud.game.statements.objectfunctions.OFSAddAttr;
+import com.mud.game.statements.objectfunctions.OFSCutBackCrime;
 import com.mud.game.statements.objectfunctions.OFSMoveTo;
 import com.mud.game.statements.objectfunctions.OFSRestore;
 
@@ -65,6 +67,8 @@ public class ObjectFunctionHandler {
         objectFunctionMap.put("huifu", OFSRestore.class);
         // 属性加成
         objectFunctionMap.put("add_attr", OFSAddAttr.class);
+        // 减少犯罪值
+        objectFunctionMap.put("cut_back_crimevalue", OFSCutBackCrime.class);
     }
 
 }

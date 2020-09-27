@@ -20,7 +20,10 @@ public class WorldRoomObject extends WorldObject {
     private Set<String> creators;
     private Set<String> npcs;
     private Set<String> events;
-
+    /**
+     * room内是否检测到玩家达到犯罪值npc主动攻击
+     */
+    private boolean canAttack;
 
     public WorldRoomObject() {
         this.players = new HashSet<String>();
@@ -29,7 +32,6 @@ public class WorldRoomObject extends WorldObject {
         this.creators = new HashSet<String>();
         this.npcs = new HashSet<String>();
     }
-
 
 
     public int getLevel() {
@@ -126,5 +128,13 @@ public class WorldRoomObject extends WorldObject {
 
     public void setCreators(Set<String> creators) {
         this.creators = creators;
+    }
+
+    public boolean isCanAttack() {
+        return canAttack;
+    }
+
+    public void setCanAttack(boolean canAttack) {
+        this.canAttack = canAttack;
     }
 }

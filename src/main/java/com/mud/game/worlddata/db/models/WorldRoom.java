@@ -35,7 +35,11 @@ public class WorldRoom extends BaseObject {
     @Mark(name = "背景")
     private String background;
 
-
+    /**
+     * room内是否检测到玩家达到犯罪值npc主动攻击
+     */
+    @Mark(name = "是否主动攻击")
+    private boolean canAttack;
 
     public boolean isPeaceful() {
         return peaceful;
@@ -99,5 +103,13 @@ public class WorldRoom extends BaseObject {
 
     public void setBackground(String background) {
         this.background = background;
+    }
+
+    public boolean isCanAttack() {
+        return canAttack;
+    }
+
+    public void setCanAttack(boolean canAttack) {
+        this.canAttack = canAttack;
     }
 }

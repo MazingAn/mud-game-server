@@ -72,6 +72,7 @@ public class PlayerCharacterStatus {
         status.put("good_and_evil", new SimpleStatus("good_and_evil", "善恶", playerCharacter.getGoodAndEvil(), ++order));
         status.put("tili", new SimpleStatus("tili", "体力", playerCharacter.getTili(), ++order));
         status.put("xiayi", new SimpleStatus("xiayi", "侠义", playerCharacter.getXiayi(), ++order));
+        status.put("crime_value", new SimpleStatus("crime_value", "犯罪值", playerCharacter.getCrimeValue(), ++order));
         status.put("can_double_equip", new SimpleStatus("can_double_equip", "能否双持", playerCharacter.canDoubleEquip(), ++order));
 
         Map<String, Map<String, Object>> customAttr = playerCharacter.getCustomerAttr();

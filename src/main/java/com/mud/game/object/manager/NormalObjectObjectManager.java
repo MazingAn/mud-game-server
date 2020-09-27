@@ -76,7 +76,6 @@ public class NormalObjectObjectManager {
         ObjectFunctionHandler.useObject(playerCharacter, playerCharacter, normalObjectObject);
         //提示
         playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
-        playerCharacter.msg(new MsgMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
         //使用成功从背包移除物品
         PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, normalObjectObject, 1);
     }

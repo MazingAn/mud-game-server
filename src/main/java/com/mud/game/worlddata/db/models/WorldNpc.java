@@ -81,6 +81,9 @@ public class WorldNpc extends BaseObject {
     @Mark(name = "图标")
     private String icon;
 
+    @Mark(name = "犯罪值控制命令")
+    private Boolean crimeControlCmd;
+
 
     public String getLocation() {
         return location;
@@ -216,5 +219,17 @@ public class WorldNpc extends BaseObject {
 
     public void setTransfer(boolean transfer) {
         this.transfer = transfer;
+    }
+
+    public boolean isTeacher() {
+        return isTeacher;
+    }
+
+    public Boolean getCrimeControlCmd() {
+        return crimeControlCmd;
+    }
+
+    public void setCrimeControlCmd(Boolean crimeControlCmd) {
+        this.crimeControlCmd = crimeControlCmd;
     }
 }

@@ -71,7 +71,6 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("loot", Loot.class);
         playerCharacterCommandSet.put("friends", LoadFriends.class);
         playerCharacterCommandSet.put("add_friend", RequestFriend.class);
-        playerCharacterCommandSet.put("left_teacher", LeftTeacher.class);
         playerCharacterCommandSet.put("accept_friend", AcceptFriend.class);
         playerCharacterCommandSet.put("friend_chat", FriendChat.class);
         playerCharacterCommandSet.put("find_teacher", FindTeacher.class);
@@ -135,6 +134,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("buy_back_pawn_shop", BuyBackPawnShop.class);
         playerCharacterCommandSet.put("left_teacher", LeftTeacher.class);
         playerCharacterCommandSet.put("learn_from_friend", LearnFromFriend.class);
+        playerCharacterCommandSet.put("cut_back_crimevalue", CutBackCrimevalue.class);
     }
 
     /**
