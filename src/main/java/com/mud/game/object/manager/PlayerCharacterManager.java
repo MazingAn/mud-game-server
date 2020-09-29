@@ -213,11 +213,13 @@ public class PlayerCharacterManager {
             //仇人上线提醒
             Map<String, SimpleCharacter> enemyMap = playerCharacter.getEnemys();
             for (String id : enemyMap.keySet()) {
-                Session targetSession = null;
-                targetSession = GameSessionService.getSessionByCallerId(id);
-                WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
-                if (targetSession != null) {
-                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldRoomObject.getName()))));
+                 if (!enemyMap.get(id).isIs_be_killed()) {
+                    Session targetSession = null;
+                    targetSession = GameSessionService.getSessionByCallerId(id);
+                    WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+                    if (targetSession != null) {
+                        targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldRoomObject.getName()))));
+                    }
                 }
             }
 

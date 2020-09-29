@@ -73,6 +73,9 @@ public class SellToPawnShop extends BaseCommand {
                         sellPawnShopObject.setOwner(playerCharacter.getId());
                         sellPawnShopObject.setCommonObjectInfoList(new ArrayList<CommonObjectInfo>());
                     }
+                    if (sellPawnShopObject.getCommonObjectInfoList() == null) {
+                        sellPawnShopObject.setCommonObjectInfoList(new ArrayList<>());
+                    }
                     if (sellPawnShopObject.getCommonObjectInfoList().size() == SALE_RECORD_NUM) {
                         sellPawnShopObject.getCommonObjectInfoList().remove(sellPawnShopObject.getCommonObjectInfoList().size() - 1);
                     }

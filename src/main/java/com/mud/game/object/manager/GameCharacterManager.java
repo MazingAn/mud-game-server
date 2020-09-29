@@ -266,8 +266,8 @@ public class GameCharacterManager {
                 System.out.println("没有找到对应的属性：" + attrKey);
             }
             // 持久化
-            CommonCharacter commonCharacter1 = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
-            if (commonCharacter1 == null) {
+            CommonCharacter commonbeKilledCharacter = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
+            if (commonbeKilledCharacter == null) {
                 GameCharacterManager.saveCharacter(character);
             } else {
                 AutoContestHandler.addCommonCharacter(character.getId() + commonCharacter.getId(), character);
@@ -281,8 +281,8 @@ public class GameCharacterManager {
         // 检测角色死亡
         //判断非切磋或切磋时死亡
         if (character.getHp() <= 0) {
-            CommonCharacter commonCharacter1 = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
-            if (commonCharacter1 == null) {
+            CommonCharacter commonbeKilledCharacter = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
+            if (commonbeKilledCharacter == null) {
                 GameCharacterManager.die(character, commonCharacter, true);
             } else {
                 GameCharacterManager.die(character, commonCharacter, false);
@@ -504,6 +504,8 @@ public class GameCharacterManager {
      *
      * @param commonCharacter 击杀者
      * @param character       角色死亡之后更新信息到客户端
+     * @param b               是否为攻击
+     *                        <p>
      *                        延时触发复活
      */
     public static void die(CommonCharacter character, CommonCharacter commonCharacter, Boolean b) {
@@ -511,17 +513,14 @@ public class GameCharacterManager {
         character.setCanAttck(false);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         if (b) {
-            saveCharacter(character);
             characterMoveOut(character);
             if (!character.getName().contains("的尸体")) {
                 character.setName(character.getName() + "的尸体");
             }
             characterMoveIn(character);
-            //如果击杀者和被击杀者都是玩家的话，增加击杀者的犯罪值
+            //如果击杀者和被击杀者都是玩家的话，增加击杀者的犯罪值  —— 将击杀者的加入被击杀者的仇人列表
             if (character instanceof PlayerCharacter && commonCharacter instanceof PlayerCharacter) {
-                PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(commonCharacter.getId());
-                playerCharacter.setCrimeValue(playerCharacter.getCrimeValue() + 1);
-                MongoMapper.playerCharacterRepository.save(playerCharacter);
+                setCrimeValueAndEnemys(commonCharacter, character);
             }
         }
         if (character instanceof WorldNpcObject) {
@@ -536,6 +535,37 @@ public class GameCharacterManager {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
             character.msg(new RebornCommandsMessage((PlayerCharacter) character));
         }
+    }
+
+    /**
+     * 玩家击杀玩家设置犯罪值以及仇人
+     *
+     * @param commonCharacter
+     * @param character
+     */
+    private static void setCrimeValueAndEnemys(CommonCharacter commonCharacter, CommonCharacter character) {
+        //增加击杀者的犯罪值
+        PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(commonCharacter.getId());
+        playerCharacter.setCrimeValue(playerCharacter.getCrimeValue() + 1);
+        if (playerCharacter.getEnemys() == null) {
+            playerCharacter.setEnemys(new HashMap<>());
+        }
+        if (!playerCharacter.getEnemys().containsKey(character.getId())) {
+            character.setName(character.getName().replaceAll("的尸体", ""));
+            playerCharacter.getEnemys().put(character.getId(), new SimpleCharacter(character, false));
+        }
+
+        MongoMapper.playerCharacterRepository.save(playerCharacter);
+        //将击杀者的加入被击杀者的仇人列表
+        PlayerCharacter beKilledCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
+        if (beKilledCharacter.getEnemys() == null) {
+            beKilledCharacter.setEnemys(new HashMap<>());
+        }
+        if (!beKilledCharacter.getEnemys().containsKey(commonCharacter.getId()) || beKilledCharacter.getEnemys().get(commonCharacter.getId()).isIs_be_killed()) {
+            commonCharacter.setName(commonCharacter.getName().replaceAll("的尸体", ""));
+            beKilledCharacter.getEnemys().put(commonCharacter.getId(), new SimpleCharacter(commonCharacter, true));
+        }
+        MongoMapper.playerCharacterRepository.save(beKilledCharacter);
     }
 
     /**

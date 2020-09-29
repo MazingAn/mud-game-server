@@ -14,6 +14,7 @@ public class FriendListMessage {
 
     public FriendListMessage(PlayerCharacter playerCharacter) {
         this.friends = new HashMap<>();
+        //好友列表以及好友申请列表
         Set<SimpleCharacter> apply = new HashSet<>();
         Set<SimpleCharacter> passed = new HashSet<>();
         Boolean isMessage = false;
@@ -32,6 +33,14 @@ public class FriendListMessage {
         }
         friends.put("apply", apply);
         friends.put("passed", passed);
+        //仇人列表
+        Set<SimpleCharacter> enemys = new HashSet<>();
+        for (String key : playerCharacter.getEnemys().keySet()) {
+            if (!playerCharacter.getEnemys().get(key).isIs_be_killed()) {
+                enemys.add(playerCharacter.getEnemys().get(key));
+            }
+        }
+        friends.put("enemys", enemys);
     }
 
 
