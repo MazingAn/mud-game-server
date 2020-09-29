@@ -2,6 +2,7 @@ package com.mud.game.object.typeclass;
 
 import com.mud.game.object.supertypeclass.WorldObject;
 import com.mud.game.structs.GamePosition;
+import com.mud.game.utils.modelsutils.Mark;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,11 @@ public class WorldRoomObject extends WorldObject {
      * room内是否检测到玩家达到犯罪值npc主动攻击
      */
     private boolean canAttack;
+    /**
+     * 是否在本房间击杀不增加犯罪值
+     */
+    @Mark(name = "是否在不增加犯罪值")
+    private boolean notLegal;
 
     public WorldRoomObject() {
         this.players = new HashSet<String>();
@@ -136,5 +142,13 @@ public class WorldRoomObject extends WorldObject {
 
     public void setCanAttack(boolean canAttack) {
         this.canAttack = canAttack;
+    }
+
+    public boolean isNotLegal() {
+        return notLegal;
+    }
+
+    public void setNotLegal(boolean notLegal) {
+        this.notLegal = notLegal;
     }
 }

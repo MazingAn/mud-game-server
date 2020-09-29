@@ -135,6 +135,8 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.strengthenMaterialRepository);
             case "QualityMaterial":
                 return new Importor(stream, fileName, DbMapper.qualityMaterialRepository);
+            case "DataDictionary":
+                return new Importor(stream, fileName, DbMapper.dataDictionaryRepository);
             default:
                 return null;
         }

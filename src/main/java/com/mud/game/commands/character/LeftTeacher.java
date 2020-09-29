@@ -5,6 +5,7 @@ import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
+import com.mud.game.handler.GraduationHandler;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -64,6 +65,7 @@ public class LeftTeacher extends BaseCommand {
         CombatHandler.addCombatSense(targetObject.getId() + playerCharacter.getId(), combatSense);
         CombatHandler.addCombatSense(playerCharacter.getId() + targetObject.getId(), combatSense);
         AutoContestHandler.addCommonCharacter(targetObject.getId() + playerCharacter.getId(), targetObject);
+        GraduationHandler.addGraduationList(playerCharacter.getId());
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);
         normalCombat.startContest(playerCharacter, targetObject, combatSense);

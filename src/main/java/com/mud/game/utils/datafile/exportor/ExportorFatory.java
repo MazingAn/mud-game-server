@@ -132,6 +132,8 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.strengthenMaterialRepository, outFilePath, tableName, type);
             case "QualityMaterial":
                 return new Exportor(DbMapper.qualityMaterialRepository, outFilePath, tableName, type);
+            case "DataDictionary":
+                return new Exportor(DbMapper.dataDictionaryRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

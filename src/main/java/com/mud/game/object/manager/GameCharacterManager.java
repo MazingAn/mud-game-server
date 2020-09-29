@@ -548,7 +548,9 @@ public class GameCharacterManager {
     private static void setCrimeValueAndEnemys(CommonCharacter commonCharacter, CommonCharacter character) {
         //增加击杀者的犯罪值
         PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(commonCharacter.getId());
-        playerCharacter.setCrimeValue(playerCharacter.getCrimeValue() + 1);
+        if (!MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation()).isNotLegal()) {
+            playerCharacter.setCrimeValue(playerCharacter.getCrimeValue() + 1);
+        }
         if (playerCharacter.getEnemys() == null) {
             playerCharacter.setEnemys(new HashMap<>());
         }
