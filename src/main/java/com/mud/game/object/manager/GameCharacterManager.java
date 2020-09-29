@@ -4,6 +4,7 @@ import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.commands.character.CastSkill;
 import com.mud.game.handler.AutoContestHandler;
+import com.mud.game.handler.GraduationHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -281,11 +282,12 @@ public class GameCharacterManager {
         // 检测角色死亡
         //判断非切磋或切磋时死亡
         if (character.getHp() <= 0) {
-            CommonCharacter commonbeKilledCharacter = AutoContestHandler.getCommonCharacter(character.getId() + commonCharacter.getId());
-            if (commonbeKilledCharacter == null) {
-                GameCharacterManager.die(character, commonCharacter, true);
-            } else {
+            if (GraduationHandler.existsGraduationList(character.getId() + commonCharacter.getId()) || GraduationHandler.existsGraduationList(commonCharacter.getId() + character.getId())) {
                 GameCharacterManager.die(character, commonCharacter, false);
+                GraduationHandler.removeGraduationList(character.getId() + commonCharacter.getId());
+                GraduationHandler.removeGraduationList(commonCharacter.getId() + character.getId());
+            } else {
+                GameCharacterManager.die(character, commonCharacter, true);
             }
         }
 

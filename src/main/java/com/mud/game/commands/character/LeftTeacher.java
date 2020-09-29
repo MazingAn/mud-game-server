@@ -42,7 +42,7 @@ public class LeftTeacher extends BaseCommand {
 
     @Override
     public void execute() throws JSONException {
-        //请教师傅必须满状态、战斗不能让其他人参与 建立一个独立的场景
+        //请教师傅必须满状态
         JSONObject args = getArgs();
         Session session = getSession();
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();
@@ -56,7 +56,6 @@ public class LeftTeacher extends BaseCommand {
         targetObject.setHp(targetObject.getMax_hp());
         targetObject.setMp(targetObject.getMax_mp());
         targetObject.setBuffers(new HashMap<String, Set<String>>());
-        //TODO 请教技能cd单独配置
         ArrayList<CommonCharacter> redTeam = new ArrayList<>();
         ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
         redTeam.add(playerCharacter);
