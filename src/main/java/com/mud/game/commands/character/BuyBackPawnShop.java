@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -67,6 +68,10 @@ public class BuyBackPawnShop extends BaseCommand {
                 PlayerCharacterManager.castMoney(playerCharacter, "OBJECT_YINLIANG", objectBindPrice.getPrice() * commonObjectInfo.getNumber());
                 //从记录表里删除这条记录
                 commonObjectInfoThe = commonObjectInfo;
+                //购买成功之后返回物品信息
+                playerCharacter.msg(new HashMap<String, Object>() {{
+                    put("buy_back_pawn_shop_back", commonObjectInfo);
+                }});
             }
         }
 

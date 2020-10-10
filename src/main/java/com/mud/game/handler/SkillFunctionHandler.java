@@ -50,9 +50,8 @@ public class SkillFunctionHandler {
      * @param caller        技能的释放者
      * @param target        技能作用的目标
      * @param skillObject   技能对象
-     * @param isAutoContest
      */
-    public static void useSkill(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, Boolean isAutoContest) {
+    public static void useSkill(CommonCharacter caller, CommonCharacter target, SkillObject skillObject) {
         String functionStr = skillObject.getSkillFunction();
         if (functionStr == null || functionStr.trim().equals("")) {
             return;
@@ -72,22 +71,15 @@ public class SkillFunctionHandler {
                 //构建战斗输出
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
-                //判断是否持久化数据-出师不需要持久化师傅的数据
-                if (isAutoContest && target instanceof WorldNpcObject) {
-                    //保存师傅的数据
-                    AutoContestHandler.addCommonCharacter(target.getId() + caller.getId(), target);
-                } else {
-                    GameCharacterManager.saveCharacter(target);
-                }
-
+                GameCharacterManager.saveCharacter(target);
                 CombatSense sense = CombatHandler.getCombatSense(caller.getId());
                 if (sense == null) {
                     //切磋场景
                     sense = CombatHandler.getCombatSense(caller.getId() + target.getId());
                 }
                 sense.msgContents(new SkillCastMessage(skillCastInfo));
-                //设置技能cd TODO  切磋
-                SkillCdHandler.addSkillCd(caller.getId() + skillObject.getDataKey(), new Date());
+                //设置技能cd
+                SkillCdHandler.addSkillCd(caller.getId(), new Date());
                 //返回技能冷却时间
                 if (skillObject.getCd() != 0) {
                     sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd(), skillObject.getId(), skillObject.getDataKey())));

@@ -91,7 +91,7 @@ public class FighterManager {
                             if (target.getHp() <= sense.getMinHp()) {
                                 target = FighterManager.setRandomTarget(character, sense.getBlueTeam());
                             }
-                            GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller), false);
+                            GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
                             if (sense.isCombatFinished()) {
                                 sense.onCombatFinish();
                             }
@@ -126,7 +126,7 @@ public class FighterManager {
         //从内存中获取战斗人员信息
         Runnable runnable = new Runnable() {
             @Override
-            public void run() {
+            public synchronized void run() {
                 if (!sense.isCombatFinished()) {
                     CommonCharacter playerCharacterCommonCharacter = playerCharacter;
                     if (playerCharacter instanceof WorldNpcObject) {
@@ -146,7 +146,7 @@ public class FighterManager {
                             if (targetObjectCommonCharacter.getHp() <= 0) {
                                 targetObjectCommonCharacter = FighterManager.setRandomTarget(playerCharacterCommonCharacter, sense.getBlueTeam());
                             }
-                            GameCharacterManager.castSkill(playerCharacterCommonCharacter, targetObjectCommonCharacter, GameCharacterManager.getDefaultSkill(playerCharacterCommonCharacter), true);
+                            GameCharacterManager.castSkill(playerCharacterCommonCharacter, targetObjectCommonCharacter, GameCharacterManager.getDefaultSkill(playerCharacterCommonCharacter));
                             if (sense.isCombatFinished()) {
                                 sense.onCombatFinish();
                             }

@@ -12,6 +12,10 @@ import org.yeauty.pojo.Session;
 
 /**
  * 计算物品价格
+ *
+ * {"cmd":"check_price",
+ * "args":<object's dataKey>
+ * }
  */
 public class CheckPrice extends BaseCommand {
     /**

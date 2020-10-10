@@ -68,7 +68,7 @@ public class SkillObjectManager {
         /*
          * 计算技能的效果
          * */
-        SkillFunctionHandler.useSkill(caller, target, skillObject, false);
+        SkillFunctionHandler.useSkill(caller, target, skillObject);
     }
 
     /**
@@ -312,11 +312,10 @@ public class SkillObjectManager {
      *  @param skillObject 要执行的技能
      * @param caller      技能的释放者
      * @param target      技能作用的对象
-     * @param isAutoContest
      */
-    public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target, Boolean isAutoContest) {
+    public static void castSkill(SkillObject skillObject, CommonCharacter caller, CommonCharacter target) {
         if (!skillObject.isPassive()) {
-            SkillFunctionHandler.useSkill(caller, target, skillObject,isAutoContest);
+            SkillFunctionHandler.useSkill(caller, target, skillObject);
         }
 
     }

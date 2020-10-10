@@ -213,7 +213,7 @@ public class PlayerCharacterManager {
             //仇人上线提醒
             Map<String, SimpleCharacter> enemyMap = playerCharacter.getEnemys();
             for (String id : enemyMap.keySet()) {
-                 if (!enemyMap.get(id).isIs_be_killed()) {
+                if (!enemyMap.get(id).isIs_be_killed()) {
                     Session targetSession = null;
                     targetSession = GameSessionService.getSessionByCallerId(id);
                     WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
@@ -668,7 +668,8 @@ public class PlayerCharacterManager {
             // 添加攻击命令
             cmds.add(new EmbeddedCommand("攻击", "attack", target.getId()));
             // 添加切磋命令
-            cmds.add(new EmbeddedCommand("切磋", "learn_from_friend", target.getId()));
+            cmds.add(new EmbeddedCommand("切磋", "request_learn_from_friend", target.getId()));
+            // cmds.add(new EmbeddedCommand("切磋", "learn_from_friend", target.getId()));
         }
         return cmds;
     }

@@ -147,6 +147,7 @@ public class GameCharacterManager {
          * */
         // 检查是不是角色的默认属性,使用反射检查玩家是否有这个属性，如果没有会抛出NoSuchFieldException，那么则可能在自定义属性中
         try {
+            character = GameCharacterManager.getCharacterObject(character.getId());
             Field field = character.getClass().getField(attrKey);
             String valueStr = value.toString();
             if ("int".equals(field.getType().getName()) || "Integer".equals(field.getType().getName())) {
@@ -459,8 +460,8 @@ public class GameCharacterManager {
      * @param target      CommonCharacter 技能作用对象
      * @param skillObject SkillObject 技能实例
      */
-    public static void castSkill(CommonCharacter character, CommonCharacter target, SkillObject skillObject, Boolean isAutoContest) {
-        SkillObjectManager.castSkill(skillObject, character, target, isAutoContest);
+    public static void castSkill(CommonCharacter character, CommonCharacter target, SkillObject skillObject) {
+        SkillObjectManager.castSkill(skillObject, character, target);
     }
 
     /**

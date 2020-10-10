@@ -102,4 +102,9 @@ public class GameWords {
     public static final String CANNOT_CREATE_QUEST = "{r无法创建任务{n";
     // 使用道具
     public static final String USE_OBJECT = "你使用了{g%s{n";
+
+    //切磋信息
+    //拒绝切磋
+    public static final String REFUSE_LEARN_FROM_FRIEND = "{g%s{n拒绝了你的切磋请求";
+
 }

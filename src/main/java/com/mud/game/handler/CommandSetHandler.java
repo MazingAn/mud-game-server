@@ -128,13 +128,15 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("equipment_title", EquipmentTitle.class);
         playerCharacterCommandSet.put("take_off_title", TakeOffTitle.class);
         playerCharacterCommandSet.put("discard", Discard.class);
-        playerCharacterCommandSet.put("check_price", CheckPrice.class);
+       // playerCharacterCommandSet.put("check_price", CheckPrice.class);
         playerCharacterCommandSet.put("open_pawn_shop", OpenPawnShop.class);
         playerCharacterCommandSet.put("sell_to_pawn_shop", SellToPawnShop.class);
         playerCharacterCommandSet.put("buy_back_pawn_shop", BuyBackPawnShop.class);
         playerCharacterCommandSet.put("left_teacher", LeftTeacher.class);
         playerCharacterCommandSet.put("learn_from_friend", LearnFromFriend.class);
         playerCharacterCommandSet.put("cut_back_crimevalue", CutBackCrimevalue.class);
+        playerCharacterCommandSet.put("refuse_learn_from_friend", RefuseLearnFromFriend.class);
+        playerCharacterCommandSet.put("request_learn_from_friend", RequestLearnFromFriend.class);
     }
 
     /**

@@ -5,7 +5,6 @@ import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.GraduationHandler;
-import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -15,8 +14,11 @@ import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
 
-/***
- * 切磋
+/**
+ * 和玩家切磋
+ * <p>
+ * cmd:learn_from_friend
+ * args : 'player.s id' //玩家id
  */
 public class LearnFromFriend extends BaseCommand {
     /**
@@ -33,7 +35,6 @@ public class LearnFromFriend extends BaseCommand {
 
     @Override
     public void execute() throws JSONException {
-//出师 师傅必须满状态  (可以让其他人同时攻击，但是出师玩家有血量下限，非出师玩家可以死亡)
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         CombatSense combatSense = CombatHandler.getCombatSense(caller.getId());
         JSONObject args = getArgs();

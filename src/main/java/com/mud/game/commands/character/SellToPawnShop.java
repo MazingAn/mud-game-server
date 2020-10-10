@@ -1,6 +1,7 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonObject;
@@ -18,6 +19,7 @@ import org.yeauty.pojo.Session;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.mud.game.constant.Constant.SALE_RECORD_NUM;
@@ -95,11 +97,14 @@ public class SellToPawnShop extends BaseCommand {
                 MongoMapper.bagpackObjectRepository.save(bagpackObject);
                 PlayerCharacterManager.addMoney(playerCharacter, "OBJECT_YINLIANG", objectBindPrice.getPrice() * commonObjectInfo.getNumber());
                 PlayerCharacterManager.showBagpack(playerCharacter);
+                playerCharacter.msg(new HashMap<String, Object>() {{
+                    put("sell_to_pawn_shop_back", commonObjectInfo);
+                }});
             } else {
-                playerCharacter.msg("出售失败！");
+                playerCharacter.msg(new ToastMessage("出售失败！"));
             }
         } else {
-            playerCharacter.msg("出售失败！");
+            playerCharacter.msg(new ToastMessage("出售失败！"));
         }
     }
 }

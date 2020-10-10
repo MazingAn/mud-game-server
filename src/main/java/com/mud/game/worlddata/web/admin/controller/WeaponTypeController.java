@@ -39,11 +39,6 @@ public class WeaponTypeController {
         return DbMapper.weaponTypeRepository.save(newWeaponType);
     }
 
-    @PostMapping("/aaaaaaaaaaaaaa")
-    @ApiOperation("增aaaaaaaaaaaaaaaa加事件绑定")
-    public void aaaaaaa(@Valid @RequestBody WeaponType newWeaponType) {
-        new LoadGems(null, null, null, null);
-    }
 
     /**
      * 查询WeaponType

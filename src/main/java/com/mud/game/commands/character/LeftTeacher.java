@@ -25,7 +25,7 @@ import java.util.Set;
  * 双方血量需要低于10%战斗结束 、
  * <p>
  * {"cmd":"left_teacher",
- * "args":<shop's key>
+ * "args":<npc's key>
  * }
  */
 public class LeftTeacher extends BaseCommand {
@@ -54,9 +54,6 @@ public class LeftTeacher extends BaseCommand {
             return;
         }
         //初始化npc状态
-        targetObject.setHp(targetObject.getMax_hp());
-        targetObject.setMp(targetObject.getMax_mp());
-        targetObject.setBuffers(new HashMap<String, Set<String>>());
         ArrayList<CommonCharacter> redTeam = new ArrayList<>();
         ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
         redTeam.add(playerCharacter);
