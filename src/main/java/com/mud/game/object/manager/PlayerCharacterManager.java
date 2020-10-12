@@ -1703,6 +1703,9 @@ public class PlayerCharacterManager {
             //   moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图到复活点
             showStatus(playerCharacter);
             PlayerCharacterManager.lookAround(playerCharacter);
+            //地图个人信息更新
+            GameCharacterManager.characterMoveOut(playerCharacter);
+            GameCharacterManager.characterMoveIn(playerCharacter);
         } else {
             playerCharacter.msg(new ToastMessage("你没有让自己原地复活的灵丹妙药！"));
         }

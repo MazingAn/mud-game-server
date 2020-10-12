@@ -554,10 +554,9 @@ public class GameCharacterManager {
         MongoMapper.playerCharacterRepository.save(playerCharacter);
         //将击杀者的加入被击杀者的仇人列表
         if (!MongoMapper.enemyObjectRepository.existsByPlayerIdAndEnemyId(character.getId(), playerCharacter.getId())) {
+            commonCharacter.setName(commonCharacter.getName().replaceAll("的尸体", ""));
             MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), new SimpleCharacter(commonCharacter)));
         }
-
-
     }
 
     /**
