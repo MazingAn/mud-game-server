@@ -1,13 +1,11 @@
 package com.mud.game.messages;
 
+import com.mud.game.object.typeclass.EnemyObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class FriendListMessage {
     public Map<String, Set<SimpleCharacter>> friends;
@@ -35,10 +33,9 @@ public class FriendListMessage {
         friends.put("passed", passed);
         //仇人列表
         Set<SimpleCharacter> enemys = new HashSet<>();
-        for (String key : playerCharacter.getEnemys().keySet()) {
-            if (!playerCharacter.getEnemys().get(key).isIs_be_killed()) {
-                enemys.add(playerCharacter.getEnemys().get(key));
-            }
+        List<EnemyObject> enemyObjectList = MongoMapper.enemyObjectRepository.findListEnemyObjectByPlayerId(playerCharacter.getId());
+        for (int i = 0; i < enemyObjectList.size(); i++) {
+            enemys.add(enemyObjectList.get(i).getEnemyInfo());
         }
         friends.put("enemys", enemys);
     }

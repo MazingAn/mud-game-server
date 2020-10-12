@@ -12,10 +12,6 @@ public class SimpleCharacter {
     private boolean provide_quest;
     private boolean complete_quest;
     private boolean can_attack;
-    /**
-     * 是否是被击杀者
-     */
-    private boolean is_be_killed;
 
     public SimpleCharacter() {
     }
@@ -29,18 +25,6 @@ public class SimpleCharacter {
         this.provide_quest = false;
         this.complete_quest = false;
         this.can_attack = character.canAttck;
-    }
-
-    public SimpleCharacter(CommonCharacter character, boolean is_be_killed) {
-        this.dbref = character.getId();
-        this.name = character.getName();
-        this.gender = character.getGender();
-        this.age = character.getAge();
-        this.school = character.getSchool();
-        this.provide_quest = false;
-        this.complete_quest = false;
-        this.can_attack = character.canAttck;
-        this.is_be_killed = is_be_killed;
     }
 
     public boolean isCan_attack() {
@@ -109,13 +93,5 @@ public class SimpleCharacter {
 
     public void setComplete_quest(boolean complete_quest) {
         this.complete_quest = complete_quest;
-    }
-
-    public boolean isIs_be_killed() {
-        return is_be_killed;
-    }
-
-    public void setIs_be_killed(boolean is_be_killed) {
-        this.is_be_killed = is_be_killed;
     }
 }

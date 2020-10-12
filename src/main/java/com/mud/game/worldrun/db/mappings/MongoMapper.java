@@ -31,6 +31,7 @@ public class MongoMapper<F, S> {
     public static SkillBookObjectRepository skillBookObjectRepository;
     public static MailObjectRepository mailObjectRepository;
     public static SellPawnShopObjectRepository sellPawnShopObjectRepository;
+    public static EnemyObjectRepository enemyObjectRepository;
 
 
     @Autowired
@@ -126,6 +127,11 @@ public class MongoMapper<F, S> {
     @Autowired
     public void setSellPawnShopObjectRepository(SellPawnShopObjectRepository sellPawnShopObjectRepository) {
         MongoMapper.sellPawnShopObjectRepository = sellPawnShopObjectRepository;
+    }
+
+    @Autowired
+    public void setEnemyObjectRepository(EnemyObjectRepository enemyObjectRepository) {
+        MongoMapper.enemyObjectRepository = enemyObjectRepository;
     }
 }
 

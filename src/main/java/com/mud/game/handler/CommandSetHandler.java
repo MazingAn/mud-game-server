@@ -137,6 +137,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("cut_back_crimevalue", CutBackCrimevalue.class);
         playerCharacterCommandSet.put("refuse_learn_from_friend", RefuseLearnFromFriend.class);
         playerCharacterCommandSet.put("request_learn_from_friend", RequestLearnFromFriend.class);
+        playerCharacterCommandSet.put("delete_enemy", DeleteEnemy.class);
     }
 
     /**

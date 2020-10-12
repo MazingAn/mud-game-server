@@ -156,6 +156,7 @@ public class HangUpManager {
             GameCharacterManager.changeStatus(playerCharacter, "max_hp", recoveredMaxHp);
             playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MAX_HP, recoveredMaxHp)));
         }
+        playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter.getId());
         if (playerCharacter.getMax_hp() >= playerCharacter.getLimit_hp()) {
             playerCharacter.setMax_hp(playerCharacter.getLimit_hp());
         }

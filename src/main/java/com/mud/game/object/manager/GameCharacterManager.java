@@ -192,13 +192,12 @@ public class GameCharacterManager {
                 // 如果自定义属性中也没有找到，那这这不步操作肯定是运维人员配置的有问题，这部操作就GG了，测试期间先打印一下
                 System.out.println("没有找到对应的属性：" + attrKey);
             }
-            // 持久化
-            GameCharacterManager.saveCharacter(character);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.out.println("无法转换类型");
         }
-
+        // 持久化
+        GameCharacterManager.saveCharacter(character);
         // 检测角色死亡
         if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
@@ -552,25 +551,13 @@ public class GameCharacterManager {
         if (!MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation()).isNotLegal()) {
             playerCharacter.setCrimeValue(playerCharacter.getCrimeValue() + 1);
         }
-        if (playerCharacter.getEnemys() == null) {
-            playerCharacter.setEnemys(new HashMap<>());
-        }
-        if (!playerCharacter.getEnemys().containsKey(character.getId())) {
-            character.setName(character.getName().replaceAll("的尸体", ""));
-            playerCharacter.getEnemys().put(character.getId(), new SimpleCharacter(character, false));
-        }
-
         MongoMapper.playerCharacterRepository.save(playerCharacter);
         //将击杀者的加入被击杀者的仇人列表
-        PlayerCharacter beKilledCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
-        if (beKilledCharacter.getEnemys() == null) {
-            beKilledCharacter.setEnemys(new HashMap<>());
+        if (!MongoMapper.enemyObjectRepository.existsByPlayerIdAndEnemyId(character.getId(), playerCharacter.getId())) {
+            MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), new SimpleCharacter(commonCharacter)));
         }
-        if (!beKilledCharacter.getEnemys().containsKey(commonCharacter.getId()) || beKilledCharacter.getEnemys().get(commonCharacter.getId()).isIs_be_killed()) {
-            commonCharacter.setName(commonCharacter.getName().replaceAll("的尸体", ""));
-            beKilledCharacter.getEnemys().put(commonCharacter.getId(), new SimpleCharacter(commonCharacter, true));
-        }
-        MongoMapper.playerCharacterRepository.save(beKilledCharacter);
+
+
     }
 
     /**

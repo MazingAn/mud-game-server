@@ -13,8 +13,8 @@ public class GameWords {
     public static final String NEED_NOT_CURE = "你的{g气血充盈{n，不需要{r疗伤{n！";
     public static final String PLAYER_CURE_END = "{g你已经恢复到最佳状态！{n";
 
-    public static final String PLAYER_RECOVER_MP = "你回复了{g%s{n点最气血";
-    public static final String PLAYER_RECOVER_MAX_MP = "你回复了{g%s{n点最大气血";
+    public static final String PLAYER_RECOVER_MP = "你回复了{g%s{n点内力";
+    public static final String PLAYER_RECOVER_MAX_MP = "你回复了{g%s{n点最大内力";
     public static final String NEED_NOT_MEDITATE = "你的{g内力充沛{n，不需要{r打坐{n！";
     public static final String PLAYER_MEDITATE_END = "{g你已经恢复到最佳状态！{n";
 
@@ -106,5 +106,11 @@ public class GameWords {
     //切磋信息
     //拒绝切磋
     public static final String REFUSE_LEARN_FROM_FRIEND = "{g%s{n拒绝了你的切磋请求";
+
+
+    //仇人
+    //删除仇人提示
+    public static final String DELETE_ENEMY_INFO = "{g%s{n已经从你的仇人列表中移除";
+
 
 }

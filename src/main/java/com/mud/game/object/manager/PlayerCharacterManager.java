@@ -35,8 +35,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_ATTACK;
-import static com.mud.game.utils.resultutils.GameWords.ENEMY_ONLINE_REMINDER;
-import static com.mud.game.utils.resultutils.GameWords.FRIEND_ONLINE_REMINDER;
+import static com.mud.game.utils.resultutils.GameWords.*;
 
 public class PlayerCharacterManager {
 
@@ -210,19 +209,20 @@ public class PlayerCharacterManager {
                     targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName()))));
                 }
             }
-            //仇人上线提醒
-            Map<String, SimpleCharacter> enemyMap = playerCharacter.getEnemys();
-            for (String id : enemyMap.keySet()) {
-                if (!enemyMap.get(id).isIs_be_killed()) {
-                    Session targetSession = null;
-                    targetSession = GameSessionService.getSessionByCallerId(id);
+            //仇人上线提示
+            //新
+            //TODO 仇人上线提示
+            //TODO 仇人删除
+            //TODO 好友对象删除标记属性
+            List<EnemyObject> enemyObjectList = MongoMapper.enemyObjectRepository.findListEnemyObjectByEnemyId(playerCharacter.getId());
+            for (int i = 0; i < enemyObjectList.size(); i++) {
+                Session targetSession = null;
+                targetSession = GameSessionService.getSessionByCallerId(enemyObjectList.get(i).getPlayerId());
+                if (targetSession != null) {
                     WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
-                    if (targetSession != null) {
-                        targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldRoomObject.getName()))));
-                    }
+                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldRoomObject.getName()))));
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage("进入游戏失败，请稍后重试")));
@@ -782,6 +782,7 @@ public class PlayerCharacterManager {
 
     /**
      * 删除/拒绝好友请求
+     * 删除好友
      *
      * @param caller
      * @param friendId
@@ -826,6 +827,31 @@ public class PlayerCharacterManager {
         session.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(caller)));
         MongoMapper.playerCharacterRepository.save(caller);
     }
+
+    /**
+     * 删除仇人
+     *
+     * @param caller
+     * @param enemyId
+     * @param session
+     */
+    public static void deleteEnemy(PlayerCharacter caller, String enemyId, Session session) {
+        /*
+         * @ 仇人列表移除
+         * @ 发送删除结果信息
+         * */
+        EnemyObject enemyObject = MongoMapper.enemyObjectRepository.findByPlayerIdAndEnemyId(caller.getId(), enemyId);
+        if (null == enemyObject) {
+            caller.msg(new ToastMessage("删除失败！"));
+            return;
+        }
+        //执行删除好友
+        MongoMapper.enemyObjectRepository.delete(enemyObject);
+        caller.msg(new ToastMessage(String.format(DELETE_ENEMY_INFO, enemyObject.getEnemyInfo().getName())));
+        //返回给前端的被删除仇人的信息
+        caller.msg(new DeleteEnemyMessage(enemyObject.getEnemyInfo()));
+    }
+
 
     /**
      * 发送消息给其他玩家
@@ -1855,4 +1881,5 @@ public class PlayerCharacterManager {
         }
         return null;
     }
+
 }
