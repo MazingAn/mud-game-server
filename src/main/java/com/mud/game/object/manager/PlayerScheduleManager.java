@@ -41,6 +41,9 @@ public class PlayerScheduleManager {
         }
         scheduledExecutorServiceMap.remove(callerId);
         PlayerCharacter caller = MongoMapper.playerCharacterRepository.findPlayerCharacterById(callerId);
+        if (caller == null) {
+            return;
+        }
         caller.setState(CharacterState.STATE_NORMAL);
         MongoMapper.playerCharacterRepository.save(caller);
         Session session = GameSessionService.getSessionByCallerId(callerId);

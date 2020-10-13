@@ -47,11 +47,14 @@ public class SkillFunctionHandler {
     /**
      * 使用效果
      *
-     * @param caller        技能的释放者
-     * @param target        技能作用的目标
-     * @param skillObject   技能对象
+     * @param caller      技能的释放者
+     * @param target      技能作用的目标
+     * @param skillObject 技能对象
      */
     public static void useSkill(CommonCharacter caller, CommonCharacter target, SkillObject skillObject) {
+        if (skillObject == null) {
+            return;
+        }
         String functionStr = skillObject.getSkillFunction();
         if (functionStr == null || functionStr.trim().equals("")) {
             return;
@@ -72,7 +75,12 @@ public class SkillFunctionHandler {
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
                 GameCharacterManager.saveCharacter(target);
-                CombatSense sense = CombatHandler.getCombatSense(caller.getId());
+                CombatSense sense = null;
+                if (caller instanceof WorldNpcObject) {
+                    sense = NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());
+                } else {
+                    sense = CombatHandler.getCombatSense(caller.getId());
+                }
                 if (sense == null) {
                     //切磋场景
                     sense = CombatHandler.getCombatSense(caller.getId() + target.getId());

@@ -2,14 +2,16 @@ package com.mud.game.combat;
 
 import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
+import com.mud.game.handler.NpcCombatHandler;
 import com.mud.game.messages.JoinCombatMessage;
+import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
-import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.structs.CharacterState;
+import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.utils.collections.ListUtils;
 
 import java.util.ArrayList;
@@ -70,35 +72,42 @@ public class FighterManager {
     /**
      * 战斗开始后，角色默认使用自动攻击的方式展开战斗
      *
-     * @param character 要进行自动攻击的角色
+     * @param commonCharacter
+     * @param character       要进行自动攻击的角色
      */
-    public static void startAutoCombat(CommonCharacter character) {
+    public static void startAutoCombat(CommonCharacter character, CommonCharacter commonCharacter) {
         // 设置对手，开始普通攻击
         String characterId = character.getId();
-        CombatSense sense = CombatHandler.getCombatSense(characterId);
+        CombatSense sense = null;
+        if (character instanceof WorldNpcObject) {
+            sense = NpcCombatHandler.getNpcCombatSense(characterId, commonCharacter.getId());
+        } else {
+            sense = CombatHandler.getCombatSense(characterId);
+        }
         ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(characterId);
+        CombatSense finalSense = sense;
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (!sense.isCombatFinished()) {
-                    if (!character.autoCombatPause && character.getHp() > sense.getMinHp()) {
+                if (!finalSense.isCombatFinished()) {
+                    if (!character.autoCombatPause && character.getHp() > finalSense.getMinHp()) {
                         CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
                         CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
                         if (!character.isCanCombat()) {
                             character.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
                         } else {
                             //如果目标已死亡，重新选定目标
-                            if (target.getHp() <= sense.getMinHp()) {
-                                target = FighterManager.setRandomTarget(character, sense.getBlueTeam());
+                            if (target.getHp() <= finalSense.getMinHp()) {
+                                target = FighterManager.setRandomTarget(character, finalSense.getBlueTeam());
                             }
                             GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));
-                            if (sense.isCombatFinished()) {
-                                sense.onCombatFinish();
+                            if (finalSense.isCombatFinished()) {
+                                finalSense.onCombatFinish();
                             }
                         }
                     }
                 } else {
-                    sense.onCombatFinish();
+                    finalSense.onCombatFinish();
                 }
             }
         };

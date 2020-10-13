@@ -3,16 +3,21 @@ package com.mud.game.combat;
 import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.GraduationHandler;
+import com.mud.game.handler.NpcCombatHandler;
 import com.mud.game.messages.CombatFinishMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.RebornCommandsMessage;
+import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * 战斗场景类
@@ -124,17 +129,18 @@ public class CombatSense {
             for (CommonCharacter character : redTeam) {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-                checkDied(character);
+                checkDied(character, blueTeam);
                 checkGraduation(character, blueTeam);
+                initializeNpc(character);
             }
             for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-
                 PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
                 character.msg(new MsgMessage("你已经死了！"));
                 character.msg(new RebornCommandsMessage(playerCharacter));
-                checkDied(character);
+                checkDied(character, redTeam);
+                initializeNpc(character);
             }
         } else {
             for (CommonCharacter character : redTeam) {
@@ -144,13 +150,15 @@ public class CombatSense {
                 PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(character.getId());
                 character.msg(new MsgMessage("你已经死了！"));
                 character.msg(new RebornCommandsMessage(playerCharacter));
-                checkDied(character);
+                checkDied(character, blueTeam);
+                initializeNpc(character);
             }
             for (CommonCharacter character : blueTeam) {
                 character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-                checkDied(character);
+                checkDied(character, redTeam);
                 checkGraduation(character, redTeam);
+                initializeNpc(character);
             }
         }
     }
@@ -164,17 +172,43 @@ public class CombatSense {
 
     }
 
+    /**
+     * npc初始化
+     * 玩家攻击npc战斗结束后判断该npc是否死亡以及是否还在战斗中，若否则初始化npc状态
+     *
+     * @param character npc对象
+     */
+    public void initializeNpc(CommonCharacter character) {
+        character = GameCharacterManager.getCharacterObject(character.getId());
+        if (character.getHp() > minHp && character instanceof WorldNpcObject && (NpcCombatHandler.getNpcCombatSense(character.getId()) == null || NpcCombatHandler.getNpcCombatSense(character.getId()).size() == 0)) {
+            if (character.getLimit_hp() == 0) character.setLimit_hp(200);
+            if (character.getLimit_mp() == 0) character.setLimit_mp(200);
+            character.setMax_hp(character.getLimit_hp());
+            character.setHp(character.getMax_hp());
+            character.setMax_mp(character.getLimit_mp());
+            character.setMp(character.getMp());
+            //清空状态
+            character.setBuffers(new HashMap<>());
+            GameCharacterManager.saveCharacter(character);
+        }
+    }
 
     /**
      * 检测玩家是否死亡，如果死亡发送复活命令
      */
-    private void checkDied(CommonCharacter character) {
+    private void checkDied(CommonCharacter character, ArrayList<CommonCharacter> team) {
         AutoContestHandler.removeCommonCharacter(character.getId() + character.getTarget());
         AutoContestHandler.removeCommonCharacter(character.getTarget() + character.getId());
         if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
         }
-        CombatHandler.removeCombatSense(character.getId());
+        if (character instanceof PlayerCharacter) {
+            CombatHandler.removeCombatSense(character.getId());
+        } else {
+            for (int i = 0; i < team.size(); i++) {
+                NpcCombatHandler.removeNpcCombatSense(character.getId(), team.get(i).getId());
+            }
+        }
     }
 
     /**

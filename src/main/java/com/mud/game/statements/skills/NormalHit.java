@@ -6,8 +6,10 @@ import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
+import com.mud.game.handler.NpcCombatHandler;
 import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.object.manager.SkillObjectManager;
+import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
@@ -35,7 +37,12 @@ public class NormalHit extends BaseAttackSkillStatement {
         SkillObject skillObject = getSkillObject();
         String key = getKey();
         String[] args = getArgs();
-        CombatSense sense = CombatHandler.getCombatSense(caller.getId());
+        CombatSense sense = null;
+        if (caller instanceof WorldNpcObject) {
+            sense = NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());
+        } else {
+            sense = CombatHandler.getCombatSense(caller.getId());
+        }
         SkillCastInfo skillCastInfo = null;
         //判断能否进行攻击
         //计算伤害
