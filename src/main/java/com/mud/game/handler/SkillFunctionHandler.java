@@ -74,7 +74,7 @@ public class SkillFunctionHandler {
                 //构建战斗输出
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
-                GameCharacterManager.saveCharacter(target);
+               // GameCharacterManager.saveCharacter(target);
                 CombatSense sense = null;
                 if (caller instanceof WorldNpcObject) {
                     sense = NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());

@@ -3,10 +3,7 @@ package com.mud.game.object.manager;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.combat.NormalCombat;
-import com.mud.game.handler.CombatHandler;
-import com.mud.game.handler.ConditionHandler;
-import com.mud.game.handler.ObjectFunctionHandler;
-import com.mud.game.handler.SkillTypeHandler;
+import com.mud.game.handler.*;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -348,7 +345,7 @@ public class PlayerCharacterManager {
             combatSense.getBlueTeam().addAll(commonCharacterList);
         }
         for (CommonCharacter commonCharacter : commonCharacterList) {
-            CombatHandler.addCombatSense(commonCharacter.getId(), combatSense);
+            NpcCombatHandler.addNpcCombatSense(commonCharacter.getId(), caller.getId(), combatSense);
         }
         CombatHandler.addCombatSense(caller.getId(), combatSense);
 

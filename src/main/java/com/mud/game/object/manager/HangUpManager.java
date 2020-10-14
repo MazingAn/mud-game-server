@@ -6,6 +6,7 @@ import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.structs.CharacterState;
+import com.mud.game.structs.PlayerCharacterStatus;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.HangupObject;
@@ -121,9 +122,9 @@ public class HangUpManager {
     private static void playerHangUp(PlayerCharacter playerCharacter, CharacterState currentAction, List<HangupObject> hangupObjectList) {
         try {
             if (currentAction.equals(CharacterState.STATE_CURE)) {//处理玩家疗伤
-                onPlayerCure(playerCharacter);
+                PlayerCharacterManager.showStatus(onPlayerCure(playerCharacter));
             } else if (currentAction.equals(CharacterState.STATE_MEDITATE)) {
-                onPlayerMeditate(playerCharacter);
+                PlayerCharacterManager.showStatus(onPlayerMeditate(playerCharacter));
             } else {//其他类型挂机逻辑
                 // TODO:发送随机的句子
                 sendRandomNotify(playerCharacter, currentAction);
@@ -134,7 +135,6 @@ public class HangUpManager {
                 int addedValue = addRandomPotential(playerCharacter);
                 playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_GET_RANDOM_POTENTIAL, addedValue, addedValue)));
             }
-            PlayerCharacterManager.showStatus(playerCharacter);
         } catch (Exception e) {
             System.out.println("在玩家挂机的时候发生错误，挂机人：" + playerCharacter.getName() + ";  挂机操作：" + currentAction);
         }
@@ -145,14 +145,15 @@ public class HangUpManager {
      *
      * @param playerCharacter 玩家
      */
-    private static void onPlayerCure(PlayerCharacter playerCharacter) {
+    private static PlayerCharacter onPlayerCure(PlayerCharacter playerCharacter) {
         int recoveredHp = (int) (playerCharacter.getMax_hp() * 0.1);
-        int recoveredMaxHp = (int) (playerCharacter.getLimit_hp() * 0.1);
+        int recoveredLimitHp = (int) (playerCharacter.getLimit_hp() * 0.1);
+        int recoveredMaxHp = (int) (playerCharacter.getMax_hp() * 0.1);
         if (recoveredHp > 0) {
             GameCharacterManager.changeStatus(playerCharacter, "hp", recoveredHp);
             playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_HP, recoveredHp)));
         }
-        if (recoveredMaxHp > 0) {
+        if (recoveredLimitHp > recoveredMaxHp) {
             GameCharacterManager.changeStatus(playerCharacter, "max_hp", recoveredMaxHp);
             playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MAX_HP, recoveredMaxHp)));
         }
@@ -169,6 +170,7 @@ public class HangUpManager {
             PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
             playerCharacter.msg(new MsgMessage(GameWords.PLAYER_CURE_END));
         }
+        return playerCharacter;
     }
 
     /**
@@ -176,7 +178,7 @@ public class HangUpManager {
      *
      * @param playerCharacter 玩家
      */
-    private static void onPlayerMeditate(PlayerCharacter playerCharacter) {
+    private static PlayerCharacter onPlayerMeditate(PlayerCharacter playerCharacter) {
         int recoveredMp = (int) (playerCharacter.getMax_mp() * 0.1);
         int recoveredMaxMp = (int) (playerCharacter.getLimit_mp() * 0.1);
         if (recoveredMp > 0) {
@@ -199,6 +201,7 @@ public class HangUpManager {
             PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
             playerCharacter.msg(new MsgMessage(GameWords.PLAYER_MEDITATE_END));
         }
+        return playerCharacter;
     }
 
     /**

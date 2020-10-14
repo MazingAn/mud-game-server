@@ -58,6 +58,7 @@ public class FighterManager {
     public static CommonCharacter setRandomTarget(CommonCharacter character, ArrayList<CommonCharacter> targets) {
         List<CommonCharacter> commonCharacterList = new ArrayList<>();
         for (CommonCharacter commonCharacter : targets) {
+            commonCharacter = GameCharacterManager.getCharacterObject(commonCharacter.getId());
             if (commonCharacter.getHp() > 0) {
                 commonCharacterList.add(commonCharacter);
             }
@@ -89,12 +90,12 @@ public class FighterManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
+                CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
                 if (!finalSense.isCombatFinished()) {
-                    if (!character.autoCombatPause && character.getHp() > finalSense.getMinHp()) {
-                        CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
-                        CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
-                        if (!character.isCanCombat()) {
-                            character.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
+                    if (!caller.autoCombatPause && caller.getHp() > finalSense.getMinHp()) {
+                        if (!caller.isCanCombat()) {
+                            caller.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
                         } else {
                             //如果目标已死亡，重新选定目标
                             if (target.getHp() <= finalSense.getMinHp()) {

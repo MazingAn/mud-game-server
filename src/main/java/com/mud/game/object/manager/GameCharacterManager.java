@@ -139,7 +139,7 @@ public class GameCharacterManager {
      * @param attrKey   String 属性名称
      * @param value     Object 属性值
      */
-    public static void changeStatus(CommonCharacter character, String attrKey, Object value) {
+    public static CommonCharacter changeStatus(CommonCharacter character, String attrKey, Object value) {
         /*
          * @ 这个方法主要用来增加或减少角色的属性
          * @ 角色的属性分为默认属性，这部分属性可以直接通过get set方法获取和设置
@@ -202,7 +202,7 @@ public class GameCharacterManager {
         if (character.getHp() <= 0) {
             GameCharacterManager.die(character);
         }
-
+        return character;
     }
 
 

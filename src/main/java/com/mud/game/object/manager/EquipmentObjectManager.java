@@ -187,7 +187,7 @@ public class EquipmentObjectManager {
                     // 找到对应的属性名字 对应的数值
                     Object value = equipmentObject.getAttrs().get(attrKey).get("value");
                     // 应用属性名字和对应的数值到角色身上
-                    GameCharacterManager.changeStatus(character, attrKey, value);
+                    character = GameCharacterManager.changeStatus(character, attrKey, value);
                 }
             }
             // 添加装备宝石属性
@@ -198,7 +198,7 @@ public class EquipmentObjectManager {
                         // 找到对应的属性名字 对应的数值
                         Object value = gemObjectList.get(i).getAttrs().get(attrKey).get("value");
                         // 应用属性名字和对应的数值到角色身上
-                        GameCharacterManager.changeStatus(character, attrKey, value);
+                        character = GameCharacterManager.changeStatus(character, attrKey, value);
                     }
                 }
             }
@@ -235,7 +235,7 @@ public class EquipmentObjectManager {
                     for (String attrKey : equipmentObject.getAttrs().keySet()) {
                         Object valueStr = equipmentObject.getAttrs().get(attrKey).get("value");
                         float value = Float.parseFloat(valueStr.toString());
-                        GameCharacterManager.changeStatus(character, attrKey, value * -1);
+                        character = GameCharacterManager.changeStatus(character, attrKey, value * -1);
                     }
                 }
                 // 去掉装备宝石属性
@@ -245,7 +245,7 @@ public class EquipmentObjectManager {
                         for (String attrKey : gemObjectList.get(i).getAttrs().keySet()) {
                             Object valueStr = gemObjectList.get(i).getAttrs().get(attrKey).get("value");
                             float value = Float.parseFloat(valueStr.toString());
-                            GameCharacterManager.changeStatus(character, attrKey, value * -1);
+                            character = GameCharacterManager.changeStatus(character, attrKey, value * -1);
                         }
                     }
                 }

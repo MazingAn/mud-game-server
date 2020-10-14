@@ -9,6 +9,7 @@ import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.RebornCommandsMessage;
 import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -78,12 +79,7 @@ public class CombatSense {
         int aliveNumber = 0;
         for (CommonCharacter character : team) {
             //内存读取对象信息或从库里查询
-            CommonCharacter character1 = AutoContestHandler.getCommonCharacter(character.getId() + character.getTarget());
-            if (null == character1) {
-                character = GameCharacterManager.getCharacterObject(character.getId());
-            } else {
-                character = character1;
-            }
+            character = GameCharacterManager.getCharacterObject(character.getId());
             if (character.getHp() <= minHp) {
                 aliveNumber++;
             }
@@ -204,6 +200,7 @@ public class CombatSense {
         }
         if (character instanceof PlayerCharacter) {
             CombatHandler.removeCombatSense(character.getId());
+            PlayerCharacterManager.showStatus((PlayerCharacter) character);
         } else {
             for (int i = 0; i < team.size(); i++) {
                 NpcCombatHandler.removeNpcCombatSense(character.getId(), team.get(i).getId());
