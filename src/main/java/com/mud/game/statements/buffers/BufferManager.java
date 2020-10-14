@@ -99,7 +99,7 @@ public class BufferManager {
             //非连续效果，例如属性改变
             characterBuffer.apply();
         }
-
+        //取消buffer
         long duration = (long) (characterBuffer.duration * 1000);
         TimerTask task = new TimerTask() {
             @Override

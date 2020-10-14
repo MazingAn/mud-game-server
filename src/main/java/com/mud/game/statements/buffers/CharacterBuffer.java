@@ -100,6 +100,7 @@ public class CharacterBuffer {
                 boolean booleanValue = ((Boolean) change).booleanValue();
                 change = !booleanValue;
             }
+            target = GameCharacterManager.getCharacterObject(target.getId());
             GameCharacterManager.changeStatus(target, attrKey, change);
         } else {
             // 连续效果：中毒掉血
