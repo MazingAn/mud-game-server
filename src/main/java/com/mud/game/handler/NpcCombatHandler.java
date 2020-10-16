@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NpcCombatHandler {
+    /**
+     * npc 战斗数据
+     * npc和多个玩家战斗分别属于单独场景
+     */
     public static Map<String, HashMap<String, CombatSense>> npcCombatSenseMap = new HashMap<>();
 
     public static void addNpcCombatSense(String characterId, String targetId, CombatSense combatSense) {
