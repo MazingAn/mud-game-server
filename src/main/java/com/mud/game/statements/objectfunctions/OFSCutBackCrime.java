@@ -1,6 +1,7 @@
 package com.mud.game.statements.objectfunctions;
 
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.NormalObjectObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -29,6 +30,7 @@ public class OFSCutBackCrime extends BaseObjectFunctionStatement {
             caller.setCrimeValue(newCrimeValue);
             MongoMapper.playerCharacterRepository.save(caller);
             caller.msg(new ToastMessage(String.format(CUT_BACKCRIME_ATTACK, cutValue)));
+            PlayerCharacterManager.showStatus(caller);
         } else {
             caller.msg(new ToastMessage(CUT_BACKCRIME_ZERO_OBJECT));
         }

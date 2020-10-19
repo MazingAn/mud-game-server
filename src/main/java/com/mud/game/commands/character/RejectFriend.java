@@ -33,7 +33,7 @@ public class RejectFriend extends BaseCommand {
         JSONObject args = getArgs();
         try {
             String friendId = args.getString("args");
-            PlayerCharacterManager.rejectFriendRequest(caller, friendId, session);
+            PlayerCharacterManager.rejectFriendRequest(caller, friendId, session,true);
         } catch (Exception e) {
             System.out.println("哎呀！在删除好友/好友请求的时候出现了异常");
         }

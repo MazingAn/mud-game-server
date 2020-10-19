@@ -45,7 +45,7 @@ public class CutBackCrimevalue extends BaseCommand {
             return;
         }
         if (PlayerCharacterManager.castMoney(caller, "OBJECT_JINZI", money)) {
-            //减去犯罪值
+            //减少犯罪值
             int newCrimeValue = caller.getCrimeValue() - value > 0 ? caller.getCrimeValue() - value : 0;
             int cutValue = caller.getCrimeValue() - newCrimeValue;
             caller.setCrimeValue(newCrimeValue);

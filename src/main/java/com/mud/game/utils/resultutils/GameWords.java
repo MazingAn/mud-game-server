@@ -32,7 +32,7 @@ public class GameWords {
     public static final String DELETE_BE_APPLIED_FRIEND_REQUEST = "你删除了好友{r%s{n！"; //好友请求被同意
 
     //好友上线提示
-    public static final String FRIEND_ONLINE_REMINDER = "你的好友{g%s{n已上线！"; //好友上线提示
+    public static final String FRIEND_ONLINE_REMINDER = "你的好友{g%s{n已在{r%s-%s{n上线！"; //好友上线提示
     //仇人上线提示
     public static final String ENEMY_ONLINE_REMINDER = "你的仇人{r%s{n已在{r%s{n上线！";
     // 拜师

@@ -15,4 +15,6 @@ public interface EnemyObjectRepository extends MongoRepository<EnemyObject, Stri
     boolean existsByPlayerIdAndEnemyId(String playerId, String enemyId);
 
     EnemyObject findByPlayerIdAndEnemyId(String id, String enemyId);
+
+    void deleteEnemyObjectByEnemyIdAndPlayerId(String friendId, String id);
 }

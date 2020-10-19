@@ -23,7 +23,6 @@ import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.lang.reflect.Constructor;
@@ -196,14 +195,17 @@ public class PlayerCharacterManager {
             if (recipientList != null && recipientList.size() > 0) {
                 playerCharacter.msg(new MailObjectMessage(playerCharacter, recipientList));
             }
-
+            WorldRoomObject worldRoomObject = null;
+            WorldAreaObject worldAreaObject = null;
             //给好友发送上线信息
             Map<String, SimpleCharacter> friendMap = playerCharacter.getFriends();
             for (String id : friendMap.keySet()) {
                 Session targetSession = null;
                 targetSession = GameSessionService.getSessionByCallerId(id);
                 if (targetSession != null) {
-                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName()))));
+                    worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+                    worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
+                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()))));
                 }
             }
             //仇人上线提示
@@ -216,8 +218,9 @@ public class PlayerCharacterManager {
                 Session targetSession = null;
                 targetSession = GameSessionService.getSessionByCallerId(enemyObjectList.get(i).getPlayerId());
                 if (targetSession != null) {
-                    WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
-                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldRoomObject.getName()))));
+                    worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
+                    worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
+                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()))));
                 }
             }
         } catch (Exception e) {
@@ -764,6 +767,9 @@ public class PlayerCharacterManager {
         targetsFriends.put(playerCharacter.getId(), new SimpleCharacter(playerCharacter));
         friend.setFriends(targetsFriends);
         friend.setFriendRequests(targetsFriendRequests);
+        //  删除双方的仇人信息
+        MongoMapper.enemyObjectRepository.deleteEnemyObjectByEnemyIdAndPlayerId(friendId, playerCharacter.getId());
+        MongoMapper.enemyObjectRepository.deleteEnemyObjectByEnemyIdAndPlayerId(playerCharacter.getId(), friendId);
         // 持久化
         MongoMapper.playerCharacterRepository.save(playerCharacter);
         MongoMapper.playerCharacterRepository.save(friend);
@@ -784,8 +790,9 @@ public class PlayerCharacterManager {
      * @param caller
      * @param friendId
      * @param session
+     * @param isShow
      */
-    public static void rejectFriendRequest(PlayerCharacter caller, String friendId, Session session) {
+    public static void rejectFriendRequest(PlayerCharacter caller, String friendId, Session session, boolean isShow) {
         /*
          * @ 拒绝好友的请求/删除好友
          * @ 把好友信息从申请列表移除/好友列表移除
@@ -805,23 +812,29 @@ public class PlayerCharacterManager {
             friend.getFriends().remove(caller.getId());
             // 持久化
             MongoMapper.playerCharacterRepository.save(friend);
-            if (friendsSession != null) {
+            if (friendsSession != null && isShow) {
                 // 发送新的好友列表给对方客户端
                 friendsSession.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(friend)));
             }
-            // 发送好友删除之后的消息
-            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.DELETE_BE_APPLIED_FRIEND_REQUEST, friend.getName()))));
+            if (isShow) {
+                // 发送好友删除之后的消息
+                session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.DELETE_BE_APPLIED_FRIEND_REQUEST, friend.getName()))));
+            }
         }
         //删除好友请求
         if (friendRequests.containsKey(friendId)) {
             friendRequests.remove(friendId);
-            if (friendsSession != null) {
+            if (friendsSession != null && isShow) {
                 friendsSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.PLAYER_BE_REFUSED_FRIEND_REQUEST, caller.getName()))));
             }
-            session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.PLAYER_REFUSE_FRIEND_REQUEST, friend.getName()))));
+            if (isShow) {
+                session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.PLAYER_REFUSE_FRIEND_REQUEST, friend.getName()))));
+            }
         }
-        // 发送新的好友列表的给己方客户端
-        session.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(caller)));
+        if (isShow) {
+            // 发送新的好友列表的给己方客户端
+            session.sendText(JsonResponse.JsonStringResponse(new FriendListMessage(caller)));
+        }
         MongoMapper.playerCharacterRepository.save(caller);
     }
 

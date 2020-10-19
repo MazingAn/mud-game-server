@@ -556,6 +556,8 @@ public class GameCharacterManager {
         if (!MongoMapper.enemyObjectRepository.existsByPlayerIdAndEnemyId(character.getId(), playerCharacter.getId())) {
             commonCharacter.setName(commonCharacter.getName().replaceAll("的尸体", ""));
             MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), new SimpleCharacter(commonCharacter)));
+            //删除好友信息
+            PlayerCharacterManager.rejectFriendRequest((PlayerCharacter)character, commonCharacter.getId(), null, false);
         }
     }
 
