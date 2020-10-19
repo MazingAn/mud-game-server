@@ -553,12 +553,15 @@ public class GameCharacterManager {
         }
         MongoMapper.playerCharacterRepository.save(playerCharacter);
         //将击杀者的加入被击杀者的仇人列表
-        if (!MongoMapper.enemyObjectRepository.existsByPlayerIdAndEnemyId(character.getId(), playerCharacter.getId())) {
-            commonCharacter.setName(commonCharacter.getName().replaceAll("的尸体", ""));
-            MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), new SimpleCharacter(commonCharacter)));
+        EnemyObject enemyObject = MongoMapper.enemyObjectRepository.findByPlayerIdAndEnemyId(character.getId(), playerCharacter.getId());
+        if (enemyObject == null) {
+            MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), 0, new SimpleCharacter(commonCharacter)));
             //删除好友信息
-            PlayerCharacterManager.rejectFriendRequest((PlayerCharacter)character, commonCharacter.getId(), null, false);
+            PlayerCharacterManager.rejectFriendRequest((PlayerCharacter) character, commonCharacter.getId(), null, false);
+        } else {
+            enemyObject.setLevel(enemyObject.getLevel() + 1);
         }
+        MongoMapper.enemyObjectRepository.save(enemyObject);
     }
 
     /**

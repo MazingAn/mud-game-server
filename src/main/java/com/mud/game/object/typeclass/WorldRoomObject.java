@@ -22,10 +22,6 @@ public class WorldRoomObject extends WorldObject {
     private Set<String> npcs;
     private Set<String> events;
     /**
-     * room内是否检测到玩家达到犯罪值npc主动攻击
-     */
-    private boolean canAttack;
-    /**
      * 是否在本房间击杀不增加犯罪值
      */
     @Mark(name = "是否在不增加犯罪值")
@@ -134,14 +130,6 @@ public class WorldRoomObject extends WorldObject {
 
     public void setCreators(Set<String> creators) {
         this.creators = creators;
-    }
-
-    public boolean isCanAttack() {
-        return canAttack;
-    }
-
-    public void setCanAttack(boolean canAttack) {
-        this.canAttack = canAttack;
     }
 
     public boolean isNotLegal() {

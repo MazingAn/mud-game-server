@@ -63,6 +63,7 @@ public class WorldNpcObjectManager {
         obj.setCanAttack(template.isCanAttack());
         obj.setTransfer(template.isTransfer());
         obj.setCrimeControlCmd(template.getCrimeControlCmd());
+        obj.setCanAttackByCrime(template.getCanAttackByCrime());
         // 玩家信息的初始化设置
         obj.setAfter_arm(0);
         obj.setAfter_body(0);
@@ -98,6 +99,7 @@ public class WorldNpcObjectManager {
         obj.setTeachCondition(template.getTeachCondition());
         obj.setRebornTime(template.getRebornTime());
         obj.setCrimeControlCmd(template.getCrimeControlCmd());
+        obj.setCanAttackByCrime(template.getCanAttackByCrime());
         // 初始化npc信息
         // 根据注册的信息设置角色信息
         obj.setName(template.getName());

@@ -36,6 +36,8 @@ public class WorldNpcObject extends CommonCharacter {
     public boolean transfer;
     //犯罪值控制命令
     private Boolean crimeControlCmd;
+    //犯罪值达到阈值攻击
+    private Boolean canAttackByCrime;
 
     public Set<String> getEvents() {
         return events;
@@ -158,5 +160,13 @@ public class WorldNpcObject extends CommonCharacter {
 
     public void setCrimeControlCmd(Boolean crimeControlCmd) {
         this.crimeControlCmd = crimeControlCmd;
+    }
+
+    public Boolean getCanAttackByCrime() {
+        return canAttackByCrime;
+    }
+
+    public void setCanAttackByCrime(Boolean canAttackByCrime) {
+        this.canAttackByCrime = canAttackByCrime;
     }
 }

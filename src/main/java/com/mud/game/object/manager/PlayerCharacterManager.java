@@ -317,13 +317,15 @@ public class PlayerCharacterManager {
                 simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
                 simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
                 npcs.add(simpleCharacter);
-                if (npc.getHp() > 0) {
+                //犯罪值引发npc
+                if (npc.getHp() > 0 && npc.getCanAttackByCrime()) {
                     commonCharacterList.add(npc);
                 }
             }
         }
         //犯罪值大于阈值，触发npc战斗
-        if (location.isCanAttack() && playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
+        if (playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
+            playerCharacter.msg(new ToastMessage("{r由于你的犯罪值过高，将会受到攻击！{g"));
             getAttack(playerCharacter, commonCharacterList);
         }
         location_info.put("npcs", npcs);
@@ -1710,12 +1712,13 @@ public class PlayerCharacterManager {
         String rebornObjectKey = ServerManager.gameSetting.getDefaultRebornObject();
         if (discardObject(playerCharacter, rebornObjectKey, 1)) {
             reborn(playerCharacter);
-            //   moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图到复活点
+            // moveTo(playerCharacter, getHome(playerCharacter).getDataKey());// 强制更新客户端地图到复活点
             showStatus(playerCharacter);
             PlayerCharacterManager.lookAround(playerCharacter);
             //地图个人信息更新
             GameCharacterManager.characterMoveOut(playerCharacter);
             GameCharacterManager.characterMoveIn(playerCharacter);
+            //地图中玩家数据更新
         } else {
             playerCharacter.msg(new ToastMessage("你没有让自己原地复活的灵丹妙药！"));
         }

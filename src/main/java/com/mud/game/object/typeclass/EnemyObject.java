@@ -15,6 +15,8 @@ public class EnemyObject {
     private String playerId;
     // 仇人Id
     private String enemyId;
+    // 等级
+    private int level;
     // 玩家的信息
     public SimpleCharacter enemyInfo;
 
@@ -22,6 +24,16 @@ public class EnemyObject {
         this.playerId = playerId;
         this.enemyId = enemyId;
         this.enemyInfo = enemyInfo;
+    }
+
+    public EnemyObject(String playerId, String enemyId, int level, SimpleCharacter enemyInfo) {
+        this.playerId = playerId;
+        this.enemyId = enemyId;
+        this.level = level;
+        this.enemyInfo = enemyInfo;
+    }
+
+    public EnemyObject() {
     }
 
     public String getId() {
@@ -54,5 +66,13 @@ public class EnemyObject {
 
     public void setEnemyInfo(SimpleCharacter enemyInfo) {
         this.enemyInfo = enemyInfo;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 }

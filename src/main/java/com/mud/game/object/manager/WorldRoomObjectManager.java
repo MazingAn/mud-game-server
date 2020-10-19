@@ -33,7 +33,6 @@ public class WorldRoomObjectManager {
         obj.setIcon(template.getIcon());
         obj.setLevel(template.getLevel());
         obj.setNotLegal(template.isNotLegal());
-        obj.setCanAttack(template.isCanAttack());
         obj.setLocation(template.getLocation());
         obj.setPeaceful(template.isPeaceful());
         obj.setPosition(new GamePosition(template.getPosition()));
@@ -55,7 +54,6 @@ public class WorldRoomObjectManager {
         obj.setHangUpCommand(template.getHangUpCommand());
         obj.setIcon(template.getIcon());
         obj.setLevel(template.getLevel());
-        obj.setCanAttack(template.isCanAttack());
         obj.setLocation(template.getLocation());
         obj.setNotLegal(template.isNotLegal());
         obj.setPosition(new GamePosition(template.getPosition()));

@@ -81,8 +81,11 @@ public class WorldNpc extends BaseObject {
     @Mark(name = "图标")
     private String icon;
 
-    @Mark(name = "犯罪值控制命令")
+    @Mark(name = "犯罪值控制能否交互")
     private Boolean crimeControlCmd;
+
+    @Mark(name = "犯罪值达到阈值攻击")
+    private Boolean canAttackByCrime;
 
 
     public String getLocation() {
@@ -231,5 +234,13 @@ public class WorldNpc extends BaseObject {
 
     public void setCrimeControlCmd(Boolean crimeControlCmd) {
         this.crimeControlCmd = crimeControlCmd;
+    }
+
+    public Boolean getCanAttackByCrime() {
+        return canAttackByCrime;
+    }
+
+    public void setCanAttackByCrime(Boolean canAttackByCrime) {
+        this.canAttackByCrime = canAttackByCrime;
     }
 }

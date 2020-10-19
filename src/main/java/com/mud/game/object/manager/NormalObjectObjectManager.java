@@ -72,12 +72,14 @@ public class NormalObjectObjectManager {
 
     public static void useObject(NormalObjectObject normalObjectObject, PlayerCharacter playerCharacter) {
         String function = normalObjectObject.getFunction();
-        //使用物品
-        ObjectFunctionHandler.useObject(playerCharacter, playerCharacter, normalObjectObject);
-        //提示
-        playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
+
         //使用成功从背包移除物品
         PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, normalObjectObject, 1);
+        //提示
+        playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
+        //使用物品
+        ObjectFunctionHandler.useObject(playerCharacter, playerCharacter, normalObjectObject);
+
     }
 
 }
