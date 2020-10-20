@@ -22,5 +22,7 @@ public class Constant {
     }};
     //当铺保存玩家多少出售记录
     public static final int SALE_RECORD_NUM = 5;
+    //切磋最小血量系数
+    public static final double CONTEST_MIN_HP_COEFFICIENT = 0.5;
 
 }

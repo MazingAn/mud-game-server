@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.mud.game.constant.Constant.CONTEST_MIN_HP_COEFFICIENT;
 import static com.mud.game.server.ServerManager.gameSetting;
 
 
@@ -93,12 +94,18 @@ public class FighterManager {
                 CommonCharacter caller = GameCharacterManager.getCharacterObject(characterId);
                 CommonCharacter target = GameCharacterManager.getCharacterObject(character.getTarget());
                 if (!finalSense.isCombatFinished()) {
-                    if (!caller.autoCombatPause && caller.getHp() > finalSense.getMinHp()) {
+                    double callerMinHp = finalSense.getMinHp();
+                    double targetMinHp = finalSense.getMinHp();
+                    if (finalSense.getMinHp() == -1) {
+                        callerMinHp = caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT;
+                        targetMinHp = target.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT;
+                    }
+                    if (!caller.autoCombatPause && caller.getHp() > callerMinHp) {
                         if (!caller.isCanCombat()) {
                             caller.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
                         } else {
                             //如果目标已死亡，重新选定目标
-                            if (target.getHp() <= finalSense.getMinHp()) {
+                            if (target.getHp() <= targetMinHp) {
                                 target = FighterManager.setRandomTarget(character, finalSense.getBlueTeam());
                             }
                             GameCharacterManager.castSkill(caller, target, GameCharacterManager.getDefaultSkill(caller));

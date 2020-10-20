@@ -46,13 +46,13 @@ public class LearnFromFriend extends BaseCommand {
             redTeam.add(caller);
             blueTeam.add(targetObject);
             //设置结束生命值
-            int minHp = 0;
-            if (caller.getMax_hp() > targetObject.getMax_hp()) {
-                minHp = targetObject.getMax_hp() / 10;
-            } else {
-                minHp = caller.getMax_hp() / 10;
-            }
-            combatSense = new CombatSense(redTeam, blueTeam, minHp);
+//            int minHp = 0;
+//            if (caller.getMax_hp() > targetObject.getMax_hp()) {
+//                minHp = targetObject.getMax_hp() / 10;
+//            } else {
+//                minHp = caller.getMax_hp() / 10;
+//            }
+            combatSense = new CombatSense(redTeam, blueTeam, -1);
         } else {
             combatSense.getBlueTeam().add(targetObject);
         }
