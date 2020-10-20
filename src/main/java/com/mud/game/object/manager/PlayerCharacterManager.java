@@ -288,6 +288,13 @@ public class PlayerCharacterManager {
                 objects.add(new SimpleObject(creator));
             }
         }
+        //战利品
+        if (TrophyHandler.getTrophy(playerCharacter.getLocation()) != null && !TrophyHandler.getTrophy(playerCharacter.getLocation()).isEmpty()) {
+            for (String id : TrophyHandler.getTrophy(playerCharacter.getLocation())) {
+                CommonObject commonObject = CommonObjectBuilder.findObjectById(id);
+                objects.add(new SimpleObject(commonObject));
+            }
+        }
         location_info.put("things", objects);
         // 可以看到的出口
         List<SimpleObject> exits = new ArrayList<SimpleObject>();
@@ -671,7 +678,6 @@ public class PlayerCharacterManager {
             cmds.add(new EmbeddedCommand("攻击", "attack", target.getId()));
             // 添加切磋命令
             cmds.add(new EmbeddedCommand("切磋", "request_learn_from_friend", target.getId()));
-            // cmds.add(new EmbeddedCommand("切磋", "learn_from_friend", target.getId()));
         }
         return cmds;
     }

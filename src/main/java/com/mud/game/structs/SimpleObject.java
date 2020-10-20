@@ -1,6 +1,7 @@
 package com.mud.game.structs;
 
 
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.supertypeclass.WorldObject;
 
 public class SimpleObject {
@@ -12,6 +13,12 @@ public class SimpleObject {
         this.key = object.getDataKey();
         this.dbref = object.getId();
         this.name = object.getName();
+    }
+
+    public SimpleObject(CommonObject commonObject) {
+        this.key = commonObject.getDataKey();
+        this.dbref = commonObject.getId();
+        this.name = commonObject.getName();
     }
 
     public String getKey() {

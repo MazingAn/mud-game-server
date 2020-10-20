@@ -5,6 +5,7 @@ import com.mongodb.Mongo;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.handler.QuestStatusHandler;
 import com.mud.game.handler.SkillTypeHandler;
+import com.mud.game.handler.TrophyHandler;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.TeachersSkillMessage;
 import com.mud.game.messages.ToastMessage;
@@ -188,16 +189,28 @@ public class WorldNpcObjectManager {
      */
     public static List<EmbeddedCommand> getAvailableCommands(WorldNpcObject npc, PlayerCharacter playerCharacter) {
         List<EmbeddedCommand> cmds = new ArrayList<>();
+        if (npc.getHp() <= 0) {
+            cmds.add(new EmbeddedCommand("查看", "pick_up_list", npc.getId()));
+            return cmds;
+        }
+        if (npc.canAttack && npc.getHp() > 0) {
+            cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
+        }
+        //出售
+        NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());
+        if (null != npcDangPu) {
+            cmds.add(new EmbeddedCommand("出售", "open_pawn_shop", npc.getId()));
+        }
+        //减少犯罪值
+        if (npc.getDataKey().equals(CUT_BACKCRIME_NPC_DATAKEY)) {
+            cmds.add(new EmbeddedCommand("减少犯罪值", "cut_back_crimevalue", npc.getId()));
+        }
         //如果玩家犯罪值大于阈值，则城镇不能操作npc
         // 判断npc是否可以无操作（城镇npc）
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_CMDS && npc.getCrimeControlCmd()) {
             return cmds;
         }
 
-        if (npc.getHp() <= 0) {
-            cmds.add(new EmbeddedCommand("查看", "pick_up_list", npc.getId()));
-            return cmds;
-        }
         // 拜师命令
         if (npc.isTeacher() && !(playerCharacter.getTeacher().equals(npc.getDataKey()))) {
             cmds.add(new EmbeddedCommand("拜师", "find_teacher", npc.getId()));
@@ -225,18 +238,7 @@ public class WorldNpcObjectManager {
                 cmds.add(new EmbeddedCommand(shop.getName(), "shopping", shop.getDataKey()));
             }
         }
-        if (npc.canAttack) {
-            cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
-        }
-        //减少犯罪值
-        if (npc.getDataKey().equals(CUT_BACKCRIME_NPC_DATAKEY)) {
-            cmds.add(new EmbeddedCommand("减少犯罪值", "cut_back_crimevalue", npc.getId()));
-        }
-        //出售
-        NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());
-        if (null != npcDangPu) {
-            cmds.add(new EmbeddedCommand("出售", "open_pawn_shop", npc.getId()));
-        }
+
         // TODO: 副本传送命令
 
         // 地图传送命令
@@ -442,7 +444,6 @@ public class WorldNpcObjectManager {
                     }
                 }
             }
-
             npcBoundItemSet.put(character.getId(), new NpcBoundItemInfo(new Date(), commonCharacter.getId(), npcBoundItemMap));
         }
     }

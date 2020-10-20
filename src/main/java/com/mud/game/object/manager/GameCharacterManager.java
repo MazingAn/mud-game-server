@@ -5,10 +5,13 @@ import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.commands.character.CastSkill;
 import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.GraduationHandler;
+import com.mud.game.handler.TrophyHandler;
 import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
+import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.statements.buffers.BufferManager;
@@ -16,6 +19,7 @@ import com.mud.game.statements.buffers.CharacterBuffer;
 import com.mud.game.structs.CombatCommand;
 import com.mud.game.structs.ObjectMoveInfo;
 import com.mud.game.structs.SimpleCharacter;
+import com.mud.game.structs.SimpleObject;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DefaultSkills;
@@ -580,6 +584,47 @@ public class GameCharacterManager {
                 character.setName(character.getName().replaceAll("的尸体", ""));
                 characterMoveIn(character);
                 GameCharacterManager.saveCharacter(character);
+                if (character instanceof WorldNpcObject) {
+                    if (npcBoundItemSet.get(character.getId()) == null || npcBoundItemSet.get(character.getId()).getNpcBoundItemMap() == null) {
+                        return;
+                    }
+                    //战利品掉落房间
+                    //生成地图上战利品
+                    Set<String> stringSet = new HashSet<>();
+                    for (String str : npcBoundItemSet.get(character.getId()).getNpcBoundItemMap().keySet()) {
+                        stringSet.add(str);
+                    }
+                    //被击杀者所在地图
+                    WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+                    TrophyHandler.addTrophy(worldRoomObject.getDataKey(), stringSet);
+                    for (String playerCharacter : worldRoomObject.getPlayers()) {
+                        PlayerCharacterManager.lookAround(MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter));
+                    }
+                    //战利品销毁计时器
+                    List<CommonObject> commonObjectList = new ArrayList<>();
+                    for (String id : stringSet) {
+                        commonObjectList.add(CommonObjectBuilder.findObjectById(id));
+                    }
+                    Timer timer = new Timer();
+                    float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+                    timer.schedule(objectMoveOutTimerTask(character, commonObjectList), (int) rebornTime * 1000);
+                }
+            }
+        };
+    }
+
+    /**
+     * 移除房间物品
+     *
+     * @param character
+     * @return
+     */
+    public static TimerTask objectMoveOutTimerTask(CommonCharacter character, List<CommonObject> commonObjectList) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                //移除前端物品
+                GameCharacterManager.objectMoveOut(commonObjectList, character.getLocation());
             }
         };
     }
@@ -595,6 +640,38 @@ public class GameCharacterManager {
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
         WorldRoomObjectManager.broadcast(room, new ObjectMoveOutMessage(moveInfo), character.getId());
+    }
+
+    /**
+     * 物品信息从当前房间列表移除
+     *
+     * @param commonObject 物体实例
+     * @param location     room dataKey
+     */
+    public static void objectMoveOut(CommonObject commonObject, String location) {
+        SimpleObject simpleObject = new SimpleObject(commonObject);
+        String type = "things";
+        ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleObject[]{simpleObject}));
+        WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(location);
+        WorldRoomObjectManager.broadcast(room, new ObjectMoveOutMessage(moveInfo), null);
+    }
+
+    /**
+     * 物品信息从当前房间列表移除
+     *
+     * @param commonObjectList 物体实例
+     * @param location         room dataKey
+     */
+    public static void objectMoveOut(List<CommonObject> commonObjectList, String location) {
+        List<Object> simpleObjectList = new ArrayList<>();
+        for (CommonObject commonObject : commonObjectList) {
+            simpleObjectList.add(new SimpleObject(commonObject));
+            TrophyHandler.removeTrophy(location, commonObject.getId());
+        }
+        String type = "things";
+        ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, simpleObjectList);
+        WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(location);
+        WorldRoomObjectManager.broadcast(room, new ObjectMoveOutMessage(moveInfo), null);
     }
 
     /**

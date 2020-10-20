@@ -138,6 +138,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("refuse_learn_from_friend", RefuseLearnFromFriend.class);
         playerCharacterCommandSet.put("request_learn_from_friend", RequestLearnFromFriend.class);
         playerCharacterCommandSet.put("delete_enemy", DeleteEnemy.class);
+        playerCharacterCommandSet.put("pick_up_in_room", PickUpInRoom.class);
     }
 
     /**

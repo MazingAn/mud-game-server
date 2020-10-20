@@ -178,7 +178,7 @@ public class WorldRoomObjectManager {
          * */
         Set<String> playerIds = room.getPlayers();
         for (String id : playerIds) {//检测房间内所有的玩家
-            if (!excludeId.equals(id)) {
+            if (excludeId == null || !excludeId.equals(id)) {
                 Session session = GameSessionService.getSessionByCallerId(id);
                 if (session != null) {
                     session.sendText(JsonResponse.JsonStringResponse(message));

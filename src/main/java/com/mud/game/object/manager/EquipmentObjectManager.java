@@ -21,6 +21,7 @@ import com.mud.game.worlddata.db.models.Equipment;
 import com.mud.game.worlddata.db.models.NormalObject;
 import com.mud.game.worlddata.db.models.StrengthenMaterial;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.apache.commons.lang.StringUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
@@ -322,7 +323,14 @@ public class EquipmentObjectManager {
     public static List<EmbeddedCommand> getAvailableCommands(EquipmentObject equipmentObject, PlayerCharacter playerCharacter) {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
-        if (equipmentObject.getOwner().equals(playerCharacter.getId())) {
+        if (StringUtils.isEmpty(equipmentObject.getOwner())) {
+            Map<String, Object> args = new HashMap<>();
+            args.put("dbref", equipmentObject.getId());
+            String position = equipmentObject.getEquippedPosition();
+            args.put("position", position);
+            cmds.add(new EmbeddedCommand("拾取", "pick_up_in_room", args));
+
+        } else if (equipmentObject.getOwner().equals(playerCharacter.getId())) {
             if (equipmentObject.isEquipped()) { // 已经装备显示卸掉命令
                 String position = equipmentObject.getEquippedPosition();
                 Map<String, Object> args = new HashMap<>();
