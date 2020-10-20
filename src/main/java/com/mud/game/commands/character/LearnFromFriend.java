@@ -45,13 +45,7 @@ public class LearnFromFriend extends BaseCommand {
             ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
             redTeam.add(caller);
             blueTeam.add(targetObject);
-            //设置结束生命值
-//            int minHp = 0;
-//            if (caller.getMax_hp() > targetObject.getMax_hp()) {
-//                minHp = targetObject.getMax_hp() / 10;
-//            } else {
-//                minHp = caller.getMax_hp() / 10;
-//            }
+            //设置结束生命值 minHp=-1 是结束战斗血量下限为当前目标的百分比
             combatSense = new CombatSense(redTeam, blueTeam, -1);
         } else {
             combatSense.getBlueTeam().add(targetObject);

@@ -210,7 +210,10 @@ public class WorldNpcObjectManager {
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_CMDS && npc.getCrimeControlCmd()) {
             return cmds;
         }
-
+        //切磋
+        if (npc.canAttack && npc.getHp() > 0) {
+            cmds.add(new EmbeddedCommand("切磋", "attack_test_npc", npc.getId()));
+        }
         // 拜师命令
         if (npc.isTeacher() && !(playerCharacter.getTeacher().equals(npc.getDataKey()))) {
             cmds.add(new EmbeddedCommand("拜师", "find_teacher", npc.getId()));

@@ -333,7 +333,7 @@ public class PlayerCharacterManager {
         //犯罪值大于阈值，触发npc战斗
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
             playerCharacter.msg(new ToastMessage("{r由于你的犯罪值过高，将会受到攻击！{g"));
-            getAttack(playerCharacter, commonCharacterList);
+            getAttack(playerCharacter, commonCharacterList, 0);
         }
         location_info.put("npcs", npcs);
         // 可以执行的命令
@@ -345,14 +345,14 @@ public class PlayerCharacterManager {
     /**
      * 自动发起战斗
      */
-    public static void getAttack(PlayerCharacter caller, List<CommonCharacter> commonCharacterList) {
+    public static void getAttack(PlayerCharacter caller, List<CommonCharacter> commonCharacterList, int minHp) {
         CombatSense combatSense = CombatHandler.getCombatSense(caller.getId());
         if (combatSense == null) {
             ArrayList<CommonCharacter> redTeam = new ArrayList<>();
             ArrayList<CommonCharacter> blueTeam = new ArrayList<>();
             redTeam.add(caller);
             blueTeam.addAll(commonCharacterList);
-            combatSense = new CombatSense(redTeam, blueTeam, 0);
+            combatSense = new CombatSense(redTeam, blueTeam, minHp);
         } else {
             combatSense.getBlueTeam().addAll(commonCharacterList);
         }
