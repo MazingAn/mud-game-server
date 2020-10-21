@@ -127,14 +127,14 @@ public class CombatSense {
         // 结束战斗
         if (winner.equals("red")) {
             for (CommonCharacter character : redTeam) {
-                character.msg(new CombatFinishMessage(true));
+                //  character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 checkGraduation(character, blueTeam);
                 initializeNpc(character);
             }
             for (CommonCharacter character : blueTeam) {
-                character.msg(new CombatFinishMessage(false));
+                // character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
 //                character.msg(new MsgMessage("你已经死了！"));
 //                character.msg(new RebornCommandsMessage(playerCharacter));
@@ -143,13 +143,13 @@ public class CombatSense {
             }
         } else {
             for (CommonCharacter character : redTeam) {
-                character.msg(new CombatFinishMessage(false));
+                // character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 initializeNpc(character);
             }
             for (CommonCharacter character : blueTeam) {
-                character.msg(new CombatFinishMessage(true));
+                //   character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 checkGraduation(character, redTeam);
@@ -202,12 +202,16 @@ public class CombatSense {
             character = GameCharacterManager.getCharacterObject(character.getId());
             if (character.getHp() <= minHpNew) {
                 if (character.getHp() <= 0) {
+                    character.msg(new CombatFinishMessage("death"));
                     character.msg(new MsgMessage("你已经死了！"));
                     GameCharacterManager.die(character);
                 } else {
+                    character.msg(new CombatFinishMessage("fail"));
                     character.msg(new MsgMessage("你已经输了！"));
                 }
                 character.msg(new RebornCommandsMessage((PlayerCharacter) character));
+            } else {
+                character.msg(new CombatFinishMessage("victory"));
             }
             CombatHandler.removeCombatSense(character.getId());
             PlayerCharacterManager.showStatus((PlayerCharacter) character);

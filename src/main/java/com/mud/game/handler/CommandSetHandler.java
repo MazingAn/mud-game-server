@@ -128,7 +128,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("equipment_title", EquipmentTitle.class);
         playerCharacterCommandSet.put("take_off_title", TakeOffTitle.class);
         playerCharacterCommandSet.put("discard", Discard.class);
-       // playerCharacterCommandSet.put("check_price", CheckPrice.class);
+        // playerCharacterCommandSet.put("check_price", CheckPrice.class);
         playerCharacterCommandSet.put("open_pawn_shop", OpenPawnShop.class);
         playerCharacterCommandSet.put("sell_to_pawn_shop", SellToPawnShop.class);
         playerCharacterCommandSet.put("buy_back_pawn_shop", BuyBackPawnShop.class);
@@ -140,6 +140,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("delete_enemy", DeleteEnemy.class);
         playerCharacterCommandSet.put("pick_up_in_room", PickUpInRoom.class);
         playerCharacterCommandSet.put("attack_test_npc", AttackTestNpc.class);
+        playerCharacterCommandSet.put("discard_by_number", DiscardByNumber.class);
     }
 
     /**

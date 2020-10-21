@@ -5,21 +5,21 @@ import java.util.Map;
 
 public class CombatFinishMessage {
 
-    private Map<String, Boolean> combat_finish;
+    private Map<String, String> combat_finish;
 
     public CombatFinishMessage() {
     }
 
-    public CombatFinishMessage(boolean win) {
+    public CombatFinishMessage(String status) {
         this.combat_finish = new HashMap<>();
-        this.combat_finish.put("win", win);
+        this.combat_finish.put("win", status);
     }
 
-    public Map<String, Boolean> getCombat_finish() {
+    public Map<String, String> getCombat_finish() {
         return combat_finish;
     }
 
-    public void setCombat_finish(Map<String, Boolean> combat_finish) {
+    public void setCombat_finish(Map<String, String> combat_finish) {
         this.combat_finish = combat_finish;
     }
 }
