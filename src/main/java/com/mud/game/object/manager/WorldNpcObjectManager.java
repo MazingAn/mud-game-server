@@ -162,8 +162,9 @@ public class WorldNpcObjectManager {
      * @param npc             玩家查看的NPC
      * @param playerCharacter 玩家
      * @param session         玩家通信隧道
+     * @param isShow
      */
-    public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) {
+    public static void onPlayerLook(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session, boolean isShow) {
         /*
          * @ 当玩家查看NPC的时候返回NPC信息和可用命令
          * */
@@ -178,7 +179,9 @@ public class WorldNpcObjectManager {
 
         NpcAppearance appearance = new NpcAppearance(npc);
         // 设置玩家可以对此物体执行的命令
-        appearance.setCmds(WorldNpcObjectManager.getAvailableCommands(npc, playerCharacter));
+        if (isShow) {
+            appearance.setCmds(WorldNpcObjectManager.getAvailableCommands(npc, playerCharacter));
+        }
         lookMessage.put("look_obj", appearance);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
@@ -368,10 +371,16 @@ public class WorldNpcObjectManager {
          * */
         //删除所有旧的技能
         clearSkills(npc);
+        if (npc.getName().equals("赵志敬")) {
+            System.out.printf("1");
+        }
         // 创建新技能并把新技能的id追加过来
         Set<String> skills = new HashSet<>();
         Iterable<DefaultSkills> defaultSkills = DbMapper.defaultSkillsRepository.findDefaultSkillsByTarget(npc.getDataKey());
         for (DefaultSkills skillRecord : defaultSkills) {
+            if (MongoMapper.worldNpcObjectRepository.existsById(npc.getId())) {
+                npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(npc.getId());
+            }
             try {
                 SkillObject skillObject = SkillObjectManager.create(skillRecord.getSkillKey());
                 skillObject.setOwner(npc.getId());

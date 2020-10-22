@@ -43,14 +43,16 @@ public class GemObjectManager {
         return gemObject;
     }
 
-    public static void onPlayerLook(GemObject gemObject, PlayerCharacter playerCharacter, Session session) {
+    public static void onPlayerLook(GemObject gemObject, PlayerCharacter playerCharacter, Session session, boolean isShow) {
         /*
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */
         Map<String, Object> lookMessage = new HashMap<>();
         GemObjectAppearance appearance = new GemObjectAppearance(gemObject);
         // 设置玩家可以对此物体执行的命令
-        appearance.setCmds(getAvailableCommands(gemObject, playerCharacter));
+        if (isShow) {
+            appearance.setCmds(getAvailableCommands(gemObject, playerCharacter));
+        }
         lookMessage.put("look_obj", appearance);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
@@ -59,7 +61,7 @@ public class GemObjectManager {
         /*获得装备可操作命令*/
         List<EmbeddedCommand> cmds = new ArrayList<>();
         if (gemObject.isCanDiscard()) {
-           // cmds.add(new EmbeddedCommand("丢弃", "discard", gemObject.getId()));
+            // cmds.add(new EmbeddedCommand("丢弃", "discard", gemObject.getId()));
         }
         return cmds;
     }

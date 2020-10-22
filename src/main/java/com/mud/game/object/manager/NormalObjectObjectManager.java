@@ -58,14 +58,16 @@ public class NormalObjectObjectManager {
         return cmds;
     }
 
-    public static void onPlayerLook(NormalObjectObject normalObjectObject, PlayerCharacter playerCharacter, Session session) {
+    public static void onPlayerLook(NormalObjectObject normalObjectObject, PlayerCharacter playerCharacter, Session session, boolean isShow) {
         /*
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */
         Map<String, Object> lookMessage = new HashMap<>();
         NormalObjectAppearance appearance = new NormalObjectAppearance(normalObjectObject);
         // 设置玩家可以对此物体执行的命令
-        appearance.setCmds(getAvailableCommands(normalObjectObject, playerCharacter));
+        if (isShow) {
+            appearance.setCmds(getAvailableCommands(normalObjectObject, playerCharacter));
+        }
         lookMessage.put("look_obj", appearance);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
@@ -76,7 +78,7 @@ public class NormalObjectObjectManager {
         //使用成功从背包移除物品
         PlayerCharacterManager.removeObjectsFromBagpack(playerCharacter, normalObjectObject, 1);
         //提示
-        playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT,normalObjectObject.getName())));
+        playerCharacter.msg(new ToastMessage(String.format(GameWords.USE_OBJECT, normalObjectObject.getName())));
         //使用物品
         ObjectFunctionHandler.useObject(playerCharacter, playerCharacter, normalObjectObject);
 

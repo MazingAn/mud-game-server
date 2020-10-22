@@ -36,11 +36,6 @@ public class Attack extends BaseCommand {
 
     @Override
     public void execute() throws JSONException {
-        // NPC新建集合Map<npcId,HashMap<playerId,combatSense>>保存场景,防止多个玩家同时攻击同一个npc导致npc的战斗场景被覆盖。
-        // npc 死亡后若不在战斗中初始化状态
-        //1、开始攻击加入
-        //2、释放技能（目前未实现独立场景下技能cd独立）
-        //3、npc不在战斗中并且未死亡的情况下初始化状态
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         String target = args.getString("args");

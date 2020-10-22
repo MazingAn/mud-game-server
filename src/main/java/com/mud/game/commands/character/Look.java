@@ -13,16 +13,19 @@ import org.yeauty.pojo.Session;
 /**
  * 玩家查看游戏世界中的其他对象
  * 返回这个对象的描述
- *
+ * <p>
  * 使用示例：
  * <pre>
  *      {
  *          "cmd" : "look",
- *          "args" : "target_dbref" //被查看者的ID
+ *          "args" :
+ *          {
+ *              "targetId":"",  //被查看的id
+ *              "isShow":true //是否展示cmd
+ *          }
  *      }
  * </pre>
- *
- * */
+ */
 
 public class Look extends BaseCommand {
     public Look(String key, Object caller, JSONObject args, Session session) {
@@ -34,36 +37,37 @@ public class Look extends BaseCommand {
         JSONObject args = getArgs();
         Session session = getSession();
         PlayerCharacter playerCharacter = (PlayerCharacter) getCaller();
-        String targetId = args.getString("args");
+        String targetId = args.getString("targetId");
+        boolean isShow = args.getBoolean("isShow");
         long start = System.currentTimeMillis();
-        if(MongoMapper.worldObjectObjectRepository.existsById(targetId)){
+        if (MongoMapper.worldObjectObjectRepository.existsById(targetId)) {
             WorldObjectObject target = MongoMapper.worldObjectObjectRepository.findWorldObjectObjectById(targetId);
-            WorldObjectObjectManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.worldObjectCreatorRepository.existsById(targetId)){
+            WorldObjectObjectManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.worldObjectCreatorRepository.existsById(targetId)) {
             WorldObjectCreator target = MongoMapper.worldObjectCreatorRepository.findWorldObjectCreatorById(targetId);
-            WorldObjectCreatorManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.worldNpcObjectRepository.existsById(targetId)){
+            WorldObjectCreatorManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.worldNpcObjectRepository.existsById(targetId)) {
             WorldNpcObject target = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(targetId);
-            WorldNpcObjectManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.playerCharacterRepository.existsById(targetId)){
+            WorldNpcObjectManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.playerCharacterRepository.existsById(targetId)) {
             PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
-            PlayerCharacterManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.equipmentObjectRepository.existsById(targetId)){
+            PlayerCharacterManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.equipmentObjectRepository.existsById(targetId)) {
             EquipmentObject target = MongoMapper.equipmentObjectRepository.findEquipmentObjectById(targetId);
-            EquipmentObjectManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.skillBookObjectRepository.existsById(targetId)){
+            EquipmentObjectManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.skillBookObjectRepository.existsById(targetId)) {
             SkillBookObject target = MongoMapper.skillBookObjectRepository.findSkillBookObjectById(targetId);
-            SkillBookObjectManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.normalObjectObjectRepository.existsById(targetId)){
+            SkillBookObjectManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.normalObjectObjectRepository.existsById(targetId)) {
             NormalObjectObject target = MongoMapper.normalObjectObjectRepository.findNormalObjectObjectById(targetId);
-            NormalObjectObjectManager.onPlayerLook(target, playerCharacter, session);
-        }else if(MongoMapper.gemObjectRepository.existsById(targetId)){
+            NormalObjectObjectManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else if (MongoMapper.gemObjectRepository.existsById(targetId)) {
             GemObject target = MongoMapper.gemObjectRepository.findGemObjectById(targetId);
-            GemObjectManager.onPlayerLook(target, playerCharacter, session);
-        }else{
+            GemObjectManager.onPlayerLook(target, playerCharacter, session, isShow);
+        } else {
             playerCharacter.msg(new ToastMessage("没有找到这件物品的详细信息！"));
         }
         long end = System.currentTimeMillis();
-        System.out.println("查看一个物体，耗费时间："+(end-start)+"ms");
+        System.out.println("查看一个物体，耗费时间：" + (end - start) + "ms");
     }
 }

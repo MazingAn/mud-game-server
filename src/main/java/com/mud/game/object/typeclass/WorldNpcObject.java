@@ -34,7 +34,7 @@ public class WorldNpcObject extends CommonCharacter {
     public Set<String> shops;
     // 是否可以传送玩家
     public boolean transfer;
-    //犯罪值控制命令
+    //犯罪值控制命令是否返回
     private Boolean crimeControlCmd;
     //犯罪值达到阈值攻击
     private Boolean canAttackByCrime;

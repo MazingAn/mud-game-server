@@ -1,6 +1,7 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.mud.game.constant.Constant.CONTEST_MIN_HP_COEFFICIENT;
 
 /**
  * 玩家发送切磋请求给被切磋的玩家
@@ -49,16 +52,25 @@ public class RequestLearnFromFriend extends BaseCommand {
         String targetId = args.getString("args");
         PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
 
+        if (caller.getHp() <= caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
+            caller.msg(new ToastMessage("{r你的血量过低，不能发起切磋！{g"));
+            return;
+        }
+
+        if (target.getHp() <= target.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
+            caller.msg(new ToastMessage("{r" +target.getName() + "的血量过低，不能发起切磋！{g"));
+            return;
+        }
         Map<String, Object> lookMessage = new HashMap<>();
         PlayerCharacterAppearance appearance = new PlayerCharacterAppearance(target);
         appearance.setDesc(PlayerCharacterManager.descriptionForTarget(caller, target));
-        appearance.setCmds(getAvailableCommands(caller, target));
+        appearance.setCmds(getAvailableCommands(caller));
         lookMessage.put("look_obj", appearance);
         Session session = GameSessionService.getSessionByCallerId(targetId);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }
 
-    private List<EmbeddedCommand> getAvailableCommands(PlayerCharacter caller, PlayerCharacter target) {
+    private List<EmbeddedCommand> getAvailableCommands(PlayerCharacter caller) {
         // 设置玩家可以操作的命令
         List<EmbeddedCommand> cmds = new ArrayList<>();
         cmds.add(new EmbeddedCommand("同意", "learn_from_friend", caller.getId()));

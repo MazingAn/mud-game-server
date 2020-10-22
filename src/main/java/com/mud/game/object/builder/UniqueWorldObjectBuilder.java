@@ -129,6 +129,7 @@ public class UniqueWorldObjectBuilder {
                     }else{
                         object = WorldNpcObjectManager.build(template);
                     }
+                    object = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(object.getId());
                     MongoMapper.worldNpcObjectRepository.save(object);
                 }
                 break;

@@ -1,7 +1,7 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
-import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
@@ -13,6 +13,8 @@ import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mud.game.constant.Constant.CONTEST_MIN_HP_COEFFICIENT;
 
 /**
  * 和npc切磋
@@ -44,6 +46,15 @@ public class AttackTestNpc extends BaseCommand {
         JSONObject args = getArgs();
         String dbref = args.getString("args");
         WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(dbref);
+        if (caller.getHp() <= caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
+            caller.msg(new ToastMessage("{r你的血量过低，不能切磋！{g"));
+            return;
+        }
+
+        if (worldNpcObject.getHp() <= worldNpcObject.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
+            caller.msg(new ToastMessage("{r" + worldNpcObject.getName() + "的血量过低，不能切磋！{g"));
+            return;
+        }
         List<CommonCharacter> commonCharacterList = new ArrayList<>();
         commonCharacterList.add(worldNpcObject);
         PlayerCharacterManager.getAttack(caller, commonCharacterList, -1);

@@ -353,14 +353,16 @@ public class EquipmentObjectManager {
     /**
      * 玩家查看装备时候的回调
      */
-    public static void onPlayerLook(EquipmentObject equipmentObject, PlayerCharacter playerCharacter, Session session) {
+    public static void onPlayerLook(EquipmentObject equipmentObject, PlayerCharacter playerCharacter, Session session, boolean isShow) {
         /*
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */
         Map<String, Object> lookMessage = new HashMap<>();
         EquipmentObjectAppearance appearance = new EquipmentObjectAppearance(equipmentObject);
         // 设置玩家可以对此物体执行的命令
-        appearance.setCmds(EquipmentObjectManager.getAvailableCommands(equipmentObject, playerCharacter));
+        if(isShow){
+            appearance.setCmds(EquipmentObjectManager.getAvailableCommands(equipmentObject, playerCharacter));
+        }
         lookMessage.put("look_obj", appearance);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
     }

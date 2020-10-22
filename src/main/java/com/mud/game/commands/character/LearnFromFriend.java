@@ -5,6 +5,7 @@ import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.GraduationHandler;
+import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -13,6 +14,8 @@ import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
+
+import static com.mud.game.constant.Constant.CONTEST_MIN_HP_COEFFICIENT;
 
 /**
  * 和玩家切磋
@@ -40,6 +43,15 @@ public class LearnFromFriend extends BaseCommand {
         JSONObject args = getArgs();
         String target = args.getString("args");
         CommonCharacter targetObject = MongoMapper.playerCharacterRepository.findPlayerCharacterById(target);
+        if (caller.getHp() <= caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
+            caller.msg(new ToastMessage("{r你的血量过低，不能切磋！{g"));
+            return;
+        }
+
+        if (targetObject.getHp() <= targetObject.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
+            caller.msg( new ToastMessage("{r" +targetObject.getName() + "的血量过低，不能切磋！{g"));
+            return;
+        }
         if (combatSense == null) {
             ArrayList<CommonCharacter> redTeam = new ArrayList<>();
             ArrayList<CommonCharacter> blueTeam = new ArrayList<>();

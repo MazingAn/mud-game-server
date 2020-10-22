@@ -106,7 +106,7 @@ public class SkillObjectManager {
      * @param position    技能装备的位置
      * @param session     通信通道
      */
-    public static void equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session) {
+    public static CommonCharacter equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session) {
         //是否是外功
         Boolean isForeignPower = skillObject.getPositions().contains("left_hand");
         /*
@@ -187,6 +187,7 @@ public class SkillObjectManager {
             castSkill(skillObject, character, position);
             saveCharacterEquippedSkill(character, position, session, equippedSkills);
         }
+        return character;
     }
 
     /**
@@ -281,9 +282,9 @@ public class SkillObjectManager {
         character.setEquippedSkills(equippedSkills);
         if (session == null) {
             // session 为 null 则为npc， 持久化npc信息
-            MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
+            // MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
         } else {
-            MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
+            // MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
             PlayerCharacterManager.returnAllSkills((PlayerCharacter) character);
             PlayerCharacterManager.showStatus((PlayerCharacter) character);
             PlayerCharacterManager.getSkillsByPosition((PlayerCharacter) character, position);
@@ -297,19 +298,21 @@ public class SkillObjectManager {
      * @param character   要使用技能的角色
      * @param position    被动技能应用的位置
      */
-    public static void castSkill(SkillObject skillObject, CommonCharacter character, String position) {
+    public static CommonCharacter castSkill(SkillObject skillObject, CommonCharacter character, String position) {
         if (skillObject.isPassive()) {
             for (SkillEffect effect : skillObject.getEffects()) {
                 if (effect.getPosition().equals(position)) {
-                    GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
+                    character = GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
                 }
             }
         }
+        return character;
     }
 
     /**
      * 执行技能，限定主动技能
-     *  @param skillObject 要执行的技能
+     *
+     * @param skillObject 要执行的技能
      * @param caller      技能的释放者
      * @param target      技能作用的对象
      */

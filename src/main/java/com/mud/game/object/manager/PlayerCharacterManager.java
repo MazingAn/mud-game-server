@@ -330,9 +330,11 @@ public class PlayerCharacterManager {
                 }
             }
         }
+
         //犯罪值大于阈值，触发npc战斗
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
             playerCharacter.msg(new ToastMessage("{r由于你的犯罪值过高，将会受到攻击！{g"));
+            getLookMessage(playerCharacter);
             getAttack(playerCharacter, commonCharacterList, 0);
         }
         location_info.put("npcs", npcs);
@@ -340,6 +342,20 @@ public class PlayerCharacterManager {
         location_info.put("cmds", WorldRoomObjectManager.getAvailableCommands(location, playerCharacter));
         playerCharacter.msg(new LookAroundMessage(location_info));
         playerCharacter.msg(new CurrentLocationMessage(new RoomInfo(location)));
+    }
+
+    private static void getLookMessage(PlayerCharacter playerCharacter) {
+
+        Map<String, Object> lookMessage = new HashMap<>();
+        PlayerCharacterAppearance appearance = new PlayerCharacterAppearance(playerCharacter);
+        appearance.setDesc("由于你的犯罪值过高，将会受到攻击！");
+        List<EmbeddedCommand> cmds = new ArrayList<>();
+        cmds.add(new EmbeddedCommand("确定", "puppet", playerCharacter.getId()));
+        appearance.setCmds(cmds);
+        lookMessage.put("look_obj", appearance);
+        Session session = GameSessionService.getSessionByCallerId(playerCharacter.getId());
+        session.sendText(JsonResponse.JsonStringResponse(lookMessage));
+
     }
 
     /**
@@ -534,13 +550,16 @@ public class PlayerCharacterManager {
      * @param target  被查看的角色
      * @param caller  查看者角色
      * @param session 通信通道
+     * @param isShow
      */
-    public static void onPlayerLook(PlayerCharacter target, PlayerCharacter caller, Session session) {
+    public static void onPlayerLook(PlayerCharacter target, PlayerCharacter caller, Session session, boolean isShow) {
 
         Map<String, Object> lookMessage = new HashMap<>();
         PlayerCharacterAppearance appearance = new PlayerCharacterAppearance(target);
         // 设置玩家可以对此物体执行的命令
-        appearance.setCmds(getAvailableCommands(caller, target));
+        if (isShow) {
+            appearance.setCmds(getAvailableCommands(caller, target));
+        }
         appearance.setDesc(descriptionForTarget(caller, target));
         lookMessage.put("look_obj", appearance);
         session.sendText(JsonResponse.JsonStringResponse(lookMessage));
