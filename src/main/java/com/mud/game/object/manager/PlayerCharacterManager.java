@@ -317,20 +317,21 @@ public class PlayerCharacterManager {
         // 可以看到的NPC
         List<CommonCharacter> commonCharacterList = new ArrayList<>();
         List<SimpleCharacter> npcs = new ArrayList<>();
-        for (String npcDataKey : location.getNpcs()) {
-            WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
-            if (GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)) {
-                SimpleCharacter simpleCharacter = new SimpleCharacter(npc);
-                simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
-                simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
-                npcs.add(simpleCharacter);
-                //犯罪值引发npc
-                if (npc.getHp() > 0 && npc.getCanAttackByCrime()) {
-                    commonCharacterList.add(npc);
+        if (null != location.getNpcs()) {
+            for (String npcDataKey : location.getNpcs()) {
+                WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+                if (GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)) {
+                    SimpleCharacter simpleCharacter = new SimpleCharacter(npc);
+                    simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
+                    simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
+                    npcs.add(simpleCharacter);
+                    //犯罪值引发npc
+                    if (npc.getHp() > 0 && npc.getCanAttackByCrime()) {
+                        commonCharacterList.add(npc);
+                    }
                 }
             }
         }
-
         //犯罪值大于阈值，触发npc战斗
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
             playerCharacter.msg(new ToastMessage("{r由于你的犯罪值过高，将会受到攻击！{g"));

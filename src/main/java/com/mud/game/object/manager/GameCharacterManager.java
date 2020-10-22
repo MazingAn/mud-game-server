@@ -495,14 +495,8 @@ public class GameCharacterManager {
             character.setName(character.getName() + "的尸体");
         }
         characterMoveIn(character);
-        if (character instanceof WorldNpcObject) {
-            Timer timer = new Timer();
-            float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
-            timer.schedule(reborn(character), (int) rebornTime * 1000);
-        } else {
-            GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
-            character.msg(new RebornCommandsMessage((PlayerCharacter) character));
-        }
+        GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
+        character.msg(new RebornCommandsMessage((PlayerCharacter) character));
     }
 
     /**
@@ -531,11 +525,12 @@ public class GameCharacterManager {
         }
         if (character instanceof WorldNpcObject) {
             if (b) {
-                Timer timer = new Timer();
-                float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
-                timer.schedule(reborn(character), (int) rebornTime * 1000);
                 //生成战利品
                 WorldNpcObjectManager.getTrophy(character, commonCharacter);
+                //战利品掉落触发计时器
+                Timer timer = new Timer();
+                float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+                timer.schedule(dropTrophy(character), (int) rebornTime * 1000);
             }
         } else {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
@@ -578,37 +573,58 @@ public class GameCharacterManager {
         return new TimerTask() {
             @Override
             public void run() {
+                //移除尸体
                 characterMoveOut(character);
                 character.setHp(character.getMax_hp());
                 character.setCanAttck(true);
                 character.setName(character.getName().replaceAll("的尸体", ""));
                 characterMoveIn(character);
                 GameCharacterManager.saveCharacter(character);
-                if (character instanceof WorldNpcObject) {
-                    if (npcBoundItemSet.get(character.getId()) == null || npcBoundItemSet.get(character.getId()).getNpcBoundItemMap() == null) {
-                        return;
-                    }
-                    //战利品掉落房间
-                    //生成地图上战利品
-                    Set<String> stringSet = new HashSet<>();
-                    for (String str : npcBoundItemSet.get(character.getId()).getNpcBoundItemMap().keySet()) {
-                        stringSet.add(str);
-                    }
-                    //被击杀者所在地图
-                    WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
-                    TrophyHandler.addTrophy(worldRoomObject.getDataKey(), stringSet);
-                    for (String playerCharacter : worldRoomObject.getPlayers()) {
-                        PlayerCharacterManager.lookAround(MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter));
-                    }
-                    //战利品销毁计时器
-                    List<CommonObject> commonObjectList = new ArrayList<>();
-                    for (String id : stringSet) {
-                        commonObjectList.add(CommonObjectBuilder.findObjectById(id));
-                    }
-                    Timer timer = new Timer();
-                    float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
-                    timer.schedule(objectMoveOutTimerTask(character, commonObjectList), (int) rebornTime * 1000);
+            }
+        };
+    }
+
+    /**
+     * 战利品掉落
+     *
+     * @param character 角色实例
+     * @return TimerTask 延时任务实例
+     */
+    public static TimerTask dropTrophy(CommonCharacter character) {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                //角色复活计时器
+                Timer timer = new Timer();
+                float rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+
+                timer.schedule(reborn(character), (int) rebornTime * 1000);
+                //执行战利品掉落
+                if (npcBoundItemSet.get(character.getId()) == null || npcBoundItemSet.get(character.getId()).getNpcBoundItemMap() == null) {
+                    return;
                 }
+                //战利品掉落房间
+                //生成地图上战利品
+                Set<String> stringSet = new HashSet<>();
+                for (String str : npcBoundItemSet.get(character.getId()).getNpcBoundItemMap().keySet()) {
+                    stringSet.add(str);
+                }
+                //被击杀者所在地图
+                WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+                TrophyHandler.addTrophy(worldRoomObject.getDataKey(), stringSet);
+                for (String playerCharacter : worldRoomObject.getPlayers()) {
+                    PlayerCharacterManager.lookAround(MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter));
+                }
+                //移除尸体
+                characterMoveOut(character);
+                //战利品销毁计时器
+                List<CommonObject> commonObjectList = new ArrayList<>();
+                for (String id : stringSet) {
+                    commonObjectList.add(CommonObjectBuilder.findObjectById(id));
+                }
+                timer = new Timer();
+                rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
+                timer.schedule(objectMoveOutTimerTask(character, commonObjectList), (int) rebornTime * 1000);
             }
         };
     }
@@ -639,6 +655,9 @@ public class GameCharacterManager {
         String type = character instanceof WorldNpcObject ? "npcs" : "players";
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+        //房间内删除npc
+        room.getNpcs().remove(character.getDataKey());
+        MongoMapper.worldRoomObjectRepository.save(room);
         WorldRoomObjectManager.broadcast(room, new ObjectMoveOutMessage(moveInfo), character.getId());
     }
 
@@ -684,6 +703,11 @@ public class GameCharacterManager {
         String type = character instanceof WorldNpcObject ? "npcs" : "players";
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+        //房间内加入npc
+        if(!room.getNpcs().contains(character.getDataKey())){
+            room.getNpcs().add(character.getDataKey());
+            MongoMapper.worldRoomObjectRepository.save(room);
+        }
         WorldRoomObjectManager.broadcast(room, new ObjectMoveInMessage(moveInfo), character.getId());
     }
 
