@@ -4,6 +4,7 @@ import com.mud.game.object.typeclass.EnemyObject;
 import com.mud.game.object.typeclass.EnemyRecordObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.EnemyInfo;
+import com.mud.game.structs.FriendInfo;
 import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
@@ -20,7 +21,7 @@ public class FriendListMessage {
         Boolean isMessage = false;
         for (String key : playerCharacter.getFriends().keySet()) {
             if (playerCharacter.getFriends().get(key) == null) {
-                playerCharacter.getFriends().put(key, new SimpleCharacter(MongoMapper.playerCharacterRepository.findPlayerCharacterById(key)));
+                playerCharacter.getFriends().put(key, new FriendInfo(new SimpleCharacter(MongoMapper.playerCharacterRepository.findPlayerCharacterById(key)), 0));
                 isMessage = true;
             }
             passed.add(playerCharacter.getFriends().get(key));
@@ -39,7 +40,7 @@ public class FriendListMessage {
         List<EnemyObject> enemyObjectList = MongoMapper.enemyObjectRepository.findListEnemyObjectByPlayerId(playerCharacter.getId());
         for (int i = 0; i < enemyObjectList.size(); i++) {
             enemyRecordObjectList = MongoMapper.enemyRecordObjectRepository.findEnemyRecordObjectByPlayerIdAndEnemyId(playerCharacter.getId(), enemyObjectList.get(i).getEnemyInfo().getDbref());
-            enemys.add(new EnemyInfo(enemyObjectList.get(i).getEnemyInfo(), enemyObjectList.get(i).getLevel(),enemyRecordObjectList));
+            enemys.add(new EnemyInfo(enemyObjectList.get(i).getEnemyInfo(), enemyObjectList.get(i).getLevel(), enemyRecordObjectList));
         }
         friends.put("enemys", enemys);
     }

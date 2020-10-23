@@ -199,7 +199,7 @@ public class PlayerCharacterManager {
             WorldRoomObject worldRoomObject = null;
             WorldAreaObject worldAreaObject = null;
             //给好友发送上线信息
-            Map<String, SimpleCharacter> friendMap = playerCharacter.getFriends();
+            Map<String, FriendInfo> friendMap = playerCharacter.getFriends();
             for (String id : friendMap.keySet()) {
                 Session targetSession = null;
                 targetSession = GameSessionService.getSessionByCallerId(id);
@@ -782,18 +782,18 @@ public class PlayerCharacterManager {
          * */
         PlayerCharacter friend = MongoMapper.playerCharacterRepository.findPlayerCharacterById(friendId);
         // 把好友请求从 requestFriends 移动到 friends 里面
-        Map<String, SimpleCharacter> friends = playerCharacter.getFriends();
+        Map<String, FriendInfo> friends = playerCharacter.getFriends();
         Map<String, SimpleCharacter> friendRequests = playerCharacter.getFriendRequests();
         SimpleCharacter simpleFriendInfo = friendRequests.get(friendId);
-        friends.put(friendId, simpleFriendInfo);
+        friends.put(friendId, new FriendInfo(simpleFriendInfo, 0));
         friendRequests.remove(friendId);
         playerCharacter.setFriendRequests(friendRequests);
         playerCharacter.setFriends(friends);
         // 把对面好友的 requestFriends 和 friends 两个Map进行同步
-        Map<String, SimpleCharacter> targetsFriends = friend.getFriends();
+        Map<String, FriendInfo> targetsFriends = friend.getFriends();
         Map<String, SimpleCharacter> targetsFriendRequests = friend.getFriendRequests();
         targetsFriendRequests.remove(playerCharacter.getId());
-        targetsFriends.put(playerCharacter.getId(), new SimpleCharacter(playerCharacter));
+        targetsFriends.put(playerCharacter.getId(), new FriendInfo(new SimpleCharacter(playerCharacter), 0));
         friend.setFriends(targetsFriends);
         friend.setFriendRequests(targetsFriendRequests);
         //  删除双方的仇人信息
@@ -829,7 +829,7 @@ public class PlayerCharacterManager {
          * */
         PlayerCharacter friend = MongoMapper.playerCharacterRepository.findPlayerCharacterById(friendId);
         // 好友列表
-        Map<String, SimpleCharacter> friends = caller.getFriends();
+        Map<String, FriendInfo> friends = caller.getFriends();
         // 请求列表
         Map<String, SimpleCharacter> friendRequests = caller.getFriendRequests();
         //对方session
