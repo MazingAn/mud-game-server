@@ -26,6 +26,7 @@ import com.mud.game.worlddata.db.models.DefaultSkills;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.mud.game.handler.SkillCdHandler.skillCdMap;
@@ -554,13 +555,25 @@ public class GameCharacterManager {
         //将击杀者的加入被击杀者的仇人列表
         EnemyObject enemyObject = MongoMapper.enemyObjectRepository.findByPlayerIdAndEnemyId(character.getId(), playerCharacter.getId());
         if (enemyObject == null) {
-            MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), 0, new SimpleCharacter(commonCharacter)));
+            MongoMapper.enemyObjectRepository.save(new EnemyObject(character.getId(), playerCharacter.getId(), 1, new SimpleCharacter(commonCharacter)));
             //删除好友信息
             PlayerCharacterManager.rejectFriendRequest((PlayerCharacter) character, commonCharacter.getId(), null, false);
         } else {
             enemyObject.setLevel(enemyObject.getLevel() + 1);
+            MongoMapper.enemyObjectRepository.save(enemyObject);
         }
-        MongoMapper.enemyObjectRepository.save(enemyObject);
+        //保存击杀记录
+        saveEnemyRecordObject(commonCharacter, character);
+    }
+
+    /**
+     * @param commonCharacter 击杀者
+     * @param character       被击杀者
+     */
+    public static void saveEnemyRecordObject(CommonCharacter commonCharacter, CommonCharacter character) {
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        MongoMapper.enemyRecordObjectRepository.save(new EnemyRecordObject(character.getId(), commonCharacter.getId(), df.format(new Date()), character.getLocation()));
     }
 
     /**
@@ -704,7 +717,7 @@ public class GameCharacterManager {
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
         //房间内加入npc
-        if(!room.getNpcs().contains(character.getDataKey())){
+        if (!room.getNpcs().contains(character.getDataKey())) {
             room.getNpcs().add(character.getDataKey());
             MongoMapper.worldRoomObjectRepository.save(room);
         }

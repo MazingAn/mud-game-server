@@ -27,6 +27,17 @@ public class SimpleCharacter {
         this.can_attack = character.canAttck;
     }
 
+    public SimpleCharacter(SimpleCharacter simpleCharacter) {
+        this.dbref = simpleCharacter.getDbref();
+        this.name = simpleCharacter.getName();
+        this.gender = simpleCharacter.getGender();
+        this.age = simpleCharacter.getAge();
+        this.school = simpleCharacter.getSchool();
+        this.provide_quest = false;
+        this.complete_quest = false;
+        this.can_attack = simpleCharacter.can_attack;
+    }
+
     public boolean isCan_attack() {
         return can_attack;
     }
