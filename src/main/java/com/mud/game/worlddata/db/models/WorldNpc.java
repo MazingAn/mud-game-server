@@ -87,6 +87,8 @@ public class WorldNpc extends BaseObject {
     @Mark(name = "犯罪值达到阈值攻击")
     private Boolean canAttackByCrime;
 
+    @Mark(name = "是否游荡")
+    private Boolean canWanderRoom;
 
     public String getLocation() {
         return location;
@@ -242,5 +244,13 @@ public class WorldNpc extends BaseObject {
 
     public void setCanAttackByCrime(Boolean canAttackByCrime) {
         this.canAttackByCrime = canAttackByCrime;
+    }
+
+    public Boolean getCanWanderRoom() {
+        return canWanderRoom;
+    }
+
+    public void setCanWanderRoom(Boolean canWanderRoom) {
+        this.canWanderRoom = canWanderRoom;
     }
 }

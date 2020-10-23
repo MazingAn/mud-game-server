@@ -48,4 +48,9 @@ public class NpcCombatHandler {
     public static HashMap<String, CombatSense> getNpcCombatSense(String characterId) {
         return npcCombatSenseMap.get(characterId);
     }
+
+
+    public static boolean containsKey(String characterId) {
+        return npcCombatSenseMap.containsKey(characterId);
+    }
 }

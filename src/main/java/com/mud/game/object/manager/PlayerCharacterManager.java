@@ -317,18 +317,18 @@ public class PlayerCharacterManager {
         // 可以看到的NPC
         List<CommonCharacter> commonCharacterList = new ArrayList<>();
         List<SimpleCharacter> npcs = new ArrayList<>();
-        if (null != location.getNpcs()) {
-            for (String npcDataKey : location.getNpcs()) {
-                WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
-                if (GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)) {
-                    SimpleCharacter simpleCharacter = new SimpleCharacter(npc);
-                    simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
-                    simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
-                    npcs.add(simpleCharacter);
-                    //犯罪值引发npc
-                    if (npc.getHp() > 0 && npc.getCanAttackByCrime()) {
-                        commonCharacterList.add(npc);
-                    }
+        List<String> list_1 = new ArrayList<>(location.getNpcs());
+        list_1.removeAll(Collections.singleton(null));
+        for (String npcDataKey : list_1) {
+            WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
+            if (GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)) {
+                SimpleCharacter simpleCharacter = new SimpleCharacter(npc);
+                simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
+                simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
+                npcs.add(simpleCharacter);
+                //犯罪值引发npc
+                if (npc.getHp() > 0 && npc.getCanAttackByCrime()) {
+                    commonCharacterList.add(npc);
                 }
             }
         }

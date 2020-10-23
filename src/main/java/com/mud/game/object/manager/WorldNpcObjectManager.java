@@ -2,10 +2,9 @@ package com.mud.game.object.manager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mongodb.Mongo;
+import com.mud.game.combat.FighterManager;
 import com.mud.game.combat.NpcBoundItemInfo;
-import com.mud.game.handler.QuestStatusHandler;
-import com.mud.game.handler.SkillTypeHandler;
-import com.mud.game.handler.TrophyHandler;
+import com.mud.game.handler.*;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.TeachersSkillMessage;
 import com.mud.game.messages.ToastMessage;
@@ -26,10 +25,14 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_CMDS;
 import static com.mud.game.constant.PostConstructConstant.CUT_BACKCRIME_NPC_DATAKEY;
 import static com.mud.game.object.manager.GameCharacterManager.npcBoundItemSet;
+import static com.mud.game.server.ServerManager.gameSetting;
 
 public class WorldNpcObjectManager {
 
@@ -72,6 +75,7 @@ public class WorldNpcObjectManager {
         obj.setAfter_smart(0);
         obj.setAfter_looks(0);
         obj.setAfter_lucky(0);
+        obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
         MongoMapper.worldNpcObjectRepository.save(obj);
         // 加载默认技能信息
@@ -126,6 +130,7 @@ public class WorldNpcObjectManager {
         obj.setAfter_smart(0);
         obj.setAfter_looks(0);
         obj.setAfter_lucky(0);
+        obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
         // 删除旧的技能
         clearSkills(obj);
@@ -140,6 +145,7 @@ public class WorldNpcObjectManager {
         bindDialogues(obj);
         // 绑定npc商店
         bindShops(obj);
+        MongoMapper.worldNpcObjectRepository.save(obj);
         // 把npc放到房间内
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(obj.getLocation());
         WorldRoomObjectManager.updateNpc(room, obj);
@@ -371,9 +377,6 @@ public class WorldNpcObjectManager {
          * */
         //删除所有旧的技能
         clearSkills(npc);
-        if (npc.getName().equals("赵志敬")) {
-            System.out.printf("1");
-        }
         // 创建新技能并把新技能的id追加过来
         Set<String> skills = new HashSet<>();
         Iterable<DefaultSkills> defaultSkills = DbMapper.defaultSkillsRepository.findDefaultSkillsByTarget(npc.getDataKey());
@@ -432,6 +435,7 @@ public class WorldNpcObjectManager {
         }
     }
 
+
     /**
      * npc死亡生成掉落物品
      *
@@ -463,7 +467,7 @@ public class WorldNpcObjectManager {
     //生成区间内随机数
     private static int randomInterval(int levelMinLevel, int levelMaxLevel) {
         Random random = new Random();
-        return random.nextInt(levelMaxLevel - levelMinLevel + 1) + levelMinLevel;
+        return random.nextInt(levelMaxLevel - levelMinLevel) + levelMinLevel;
     }
 
     /**
@@ -488,6 +492,65 @@ public class WorldNpcObjectManager {
         return true;
     }
 
+    public static void worldNpcWanderRoom() {
+        //从内存中获取战斗人员信息
+        Runnable runnable = new Runnable() {
+            @Override
+            public synchronized void run() {
+                //TODO　战斗中或死亡后不能移动
+                List<WorldNpcObject> worldNpcObjectList = MongoMapper.worldNpcObjectRepository.findListWorldNpcObjectByCanWanderRoom(true);
+                List<WorldNpcWanderRoom> worldNpcWanderRoomList = null;
+                WorldNpcWanderRoom worldNpcWanderRoom = null;
+                for (WorldNpcObject worldNpcObject : worldNpcObjectList) {
+                    if (!NpcCombatHandler.containsKey(worldNpcObject.getId()) && worldNpcObject.getHp() > 0) {
+                        //指定游荡路线
+                        worldNpcWanderRoomList = DbMapper.worldNpcWanderRoomRepository.findListWorldNpcWanderRoomByNpcDataKey(worldNpcObject.getDataKey());
+                        if (worldNpcWanderRoomList.size() > 0) {
+                            worldNpcWanderRoom = DbMapper.worldNpcWanderRoomRepository.findWorldNpcWanderRoomByNpcDataKeyAndRoomDataKey(worldNpcObject.getDataKey(), worldNpcObject.getLocation());
+                            if (worldNpcWanderRoom != null) {
+                                worldNpcWanderRoomList.remove(worldNpcWanderRoom);
+                            }
+                            String roomDataKey = worldNpcWanderRoomList.get(WorldNpcObjectManager.randomInterval(0, worldNpcWanderRoomList.size())).getRoomDataKey();
+                            GameCharacterManager.characterMoveOut(worldNpcObject);
+                            moveTo(worldNpcObject, roomDataKey);
+                        } else {
+                            //未指定游荡路线，取当前地图的所有房间随机游荡
+                            WorldRoomObject oldRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(worldNpcObject.getLocation());
+                            List<WorldRoomObject> worldRoomObjectList = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByLocation(oldRoom.getLocation());
+                            worldRoomObjectList.remove(oldRoom);
+                            if (worldRoomObjectList.size() == 0) {
+                                return;
+                            }
+                            String roomDataKey = worldRoomObjectList.get(WorldNpcObjectManager.randomInterval(0, worldRoomObjectList.size())).getDataKey();
+                            GameCharacterManager.characterMoveOut(worldNpcObject);
+                            moveTo(worldNpcObject, roomDataKey);
+                        }
+
+                    }
+                }
+            }
+        };
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(runnable, 600, (int) (gameSetting.getGlobalCD() * 10000), TimeUnit.MILLISECONDS);
+    }
+
+    public static void moveTo(WorldNpcObject worldNpcObject, String roomKey) {
+        WorldRoomObject oldRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(worldNpcObject.getLocation());
+        WorldRoomObject newRoom = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(roomKey);
+        WorldRoomObjectManager.removeOfflinePlayer(oldRoom);
+        WorldRoomObjectManager.removeOfflinePlayer(newRoom);
+        //改变房间信息
+        oldRoom.getNpcs().remove(worldNpcObject.getDataKey());
+        MongoMapper.worldRoomObjectRepository.save(oldRoom);
+        newRoom.getNpcs().add(worldNpcObject.getDataKey());
+        MongoMapper.worldRoomObjectRepository.save(newRoom);
+        worldNpcObject.setLocation(roomKey);
+        MongoMapper.worldNpcObjectRepository.save(worldNpcObject);
+        //发送npc移动消息
+        WorldRoomObjectManager.onPlayerCharacterMove(worldNpcObject, oldRoom, newRoom);
+
+
+    }
 
     public static boolean getTrophyCheckOne(PlayerCharacter caller, WorldNpcObject worldNpcObject, NpcBoundItemInfo npcBoundItemInfo, String objectDataKey) {
         if (worldNpcObject.getHp() > 0) {

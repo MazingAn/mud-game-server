@@ -3,11 +3,14 @@ package com.mud.game.server;
 import com.mud.game.handler.*;
 import com.mud.game.object.builder.UniqueWorldObjectBuilder;
 import com.mud.game.object.manager.HangUpManager;
+import com.mud.game.object.manager.WorldNpcObjectManager;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.updator.GameObjectUpdator;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.GameSetting;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+
+import java.util.Timer;
 
 public class ServerManager {
 
@@ -59,7 +62,8 @@ public class ServerManager {
         // 创建默认频道...
         System.out.println("创建默认频道...");
         ChannelHandler.initChannels();
-
+        //创建npc游荡定时器
+        WorldNpcObjectManager.worldNpcWanderRoom();
         System.out.println("服务器启动完成！");
     }
 

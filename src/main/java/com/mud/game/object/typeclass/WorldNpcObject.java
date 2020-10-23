@@ -38,6 +38,8 @@ public class WorldNpcObject extends CommonCharacter {
     private Boolean crimeControlCmd;
     //犯罪值达到阈值攻击
     private Boolean canAttackByCrime;
+    //是否游荡
+    private Boolean canWanderRoom;
 
     public Set<String> getEvents() {
         return events;
@@ -168,5 +170,13 @@ public class WorldNpcObject extends CommonCharacter {
 
     public void setCanAttackByCrime(Boolean canAttackByCrime) {
         this.canAttackByCrime = canAttackByCrime;
+    }
+
+    public Boolean getCanWanderRoom() {
+        return canWanderRoom;
+    }
+
+    public void setCanWanderRoom(Boolean canWanderRoom) {
+        this.canWanderRoom = canWanderRoom;
     }
 }

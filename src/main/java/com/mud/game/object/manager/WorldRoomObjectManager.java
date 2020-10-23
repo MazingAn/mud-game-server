@@ -2,6 +2,7 @@ package com.mud.game.object.manager;
 
 import com.mud.game.handler.RoomCommandHandler;
 import com.mud.game.net.session.GameSessionService;
+import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.GamePosition;
@@ -142,7 +143,7 @@ public class WorldRoomObjectManager {
      * @param oldRoom         离开的房间
      * @param newRoom         进入的房间
      */
-    public static void onPlayerCharacterMove(PlayerCharacter playerCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom) {
+    public static void onPlayerCharacterMove(CommonCharacter playerCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom) {
 
         if (!oldRoom.getId().equals(newRoom.getId())) {
             // 进入离开文字信息
