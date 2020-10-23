@@ -3,14 +3,17 @@ package com.mud.game.object.manager;
 import com.mud.game.handler.ObjectFunctionHandler;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.typeclass.BagpackObject;
 import com.mud.game.object.typeclass.NormalObjectObject;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.structs.CommonObjectInfo;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.NormalObjectAppearance;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.NormalObject;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ public class NormalObjectObjectManager {
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */
         Map<String, Object> lookMessage = new HashMap<>();
-        NormalObjectAppearance appearance = new NormalObjectAppearance(normalObjectObject);
+        NormalObjectAppearance appearance = new NormalObjectAppearance(normalObjectObject,playerCharacter);
         // 设置玩家可以对此物体执行的命令
         if (isShow) {
             appearance.setCmds(getAvailableCommands(normalObjectObject, playerCharacter));

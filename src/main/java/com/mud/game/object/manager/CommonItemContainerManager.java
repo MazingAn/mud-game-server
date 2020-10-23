@@ -2,8 +2,12 @@ package com.mud.game.object.manager;
 
 import com.mud.game.object.supertypeclass.CommonItemContainer;
 import com.mud.game.object.supertypeclass.CommonObject;
+import com.mud.game.object.typeclass.BagpackObject;
+import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.structs.CommonObjectInfo;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static com.mud.game.constant.Constant.REMOVE_ITEM_FLASE_LIST;
@@ -214,6 +218,22 @@ public class CommonItemContainerManager {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取背包内查看物品的数量
+     *
+     * @param playerCharacter
+     * @param id
+     * @return
+     */
+    public static int findObjectNumberById(PlayerCharacter playerCharacter, String id) {
+        //获取背包内查看物品的数量
+        BagpackObject container = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
+        Map<String, CommonObjectInfo> valuess = container.getItems();
+        String itemId = CommonItemContainerManager.findCellById(container, id);
+        CommonObjectInfo commonObjectInfo = valuess.get(itemId);
+        return commonObjectInfo.getNumber();
     }
 
     public static String findFullCellKeyByDataKey(CommonItemContainer container, String objectKey) {

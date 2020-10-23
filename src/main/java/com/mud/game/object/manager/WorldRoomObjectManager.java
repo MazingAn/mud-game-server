@@ -139,19 +139,20 @@ public class WorldRoomObjectManager {
      * 在玩家移动的时候要给其他玩家发送玩家的动态<br>
      * 玩家移动之后要更新房间内保存的玩家列表并增量更新到客户端<br>
      *
-     * @param playerCharacter 移动的玩家
+     * @param commonCharacter 移动的玩家/npc
      * @param oldRoom         离开的房间
      * @param newRoom         进入的房间
      */
-    public static void onPlayerCharacterMove(CommonCharacter playerCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom) {
+    public static void onPlayerCharacterMove(CommonCharacter commonCharacter, WorldRoomObject oldRoom, WorldRoomObject newRoom) {
 
         if (!oldRoom.getId().equals(newRoom.getId())) {
             // 进入离开文字信息
-            String playerLeftMessage = String.format(GameWords.PLAYER_LEFT_ROOM, playerCharacter.getName(), oldRoom.getName(), newRoom.getName());
-            String playerJoinMessage = String.format(GameWords.PLAYER_JOIN_ROOM, playerCharacter.getName(), oldRoom.getName(), newRoom.getName());
+            String playerLeftMessage = String.format(GameWords.PLAYER_LEFT_ROOM, commonCharacter.getName(), oldRoom.getName(), newRoom.getName());
+            String playerJoinMessage = String.format(GameWords.PLAYER_JOIN_ROOM, commonCharacter.getName(), oldRoom.getName(), newRoom.getName());
             // 玩家自身信息
-            SimpleCharacter simpleCharacter = new SimpleCharacter(playerCharacter);
-            ObjectMoveInfo playerMoveInfo = new ObjectMoveInfo("players", Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
+            SimpleCharacter simpleCharacter = new SimpleCharacter(commonCharacter);
+            String type = commonCharacter instanceof WorldNpcObject ? "npcs" : "players";
+            ObjectMoveInfo playerMoveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
 
             // 离开信息组合
             Map<String, Object> oldRoomMessage = new HashMap<String, Object>();
@@ -164,8 +165,8 @@ public class WorldRoomObjectManager {
             newRoomMessage.put("obj_moved_in", playerMoveInfo.getInfo());
 
             // 推送信息
-            WorldRoomObjectManager.broadcast(oldRoom, oldRoomMessage, playerCharacter.getId());
-            WorldRoomObjectManager.broadcast(newRoom, newRoomMessage, playerCharacter.getId());
+            WorldRoomObjectManager.broadcast(oldRoom, oldRoomMessage, commonCharacter.getId());
+            WorldRoomObjectManager.broadcast(newRoom, newRoomMessage, commonCharacter.getId());
         }
 
     }

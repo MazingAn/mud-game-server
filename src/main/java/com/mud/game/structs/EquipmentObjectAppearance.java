@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class EquipmentObjectAppearance {
     /*
-    * @ 返回给客户端的装备信息的数据结构
-    */
+     * @ 返回给客户端的装备信息的数据结构
+     */
     private String dbref;
     private String name;
     private String weapon_type;
@@ -27,6 +27,7 @@ public class EquipmentObjectAppearance {
     private int opend_slot;
     private int total_slot;
     private boolean can_strength;
+    private int number;
 
     public EquipmentObjectAppearance(EquipmentObject equipmentObject) {
         this.dbref = equipmentObject.getId();
@@ -45,6 +46,15 @@ public class EquipmentObjectAppearance {
         this.opend_slot = equipmentObject.getOpendSlot();
         this.total_slot = equipmentObject.getMaxSlot();
         this.can_strength = false;
+        this.number = equipmentObject.getTotalNumber();
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getDbref() {

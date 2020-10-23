@@ -48,7 +48,7 @@ public class GemObjectManager {
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */
         Map<String, Object> lookMessage = new HashMap<>();
-        GemObjectAppearance appearance = new GemObjectAppearance(gemObject);
+        GemObjectAppearance appearance = new GemObjectAppearance(gemObject,playerCharacter);
         // 设置玩家可以对此物体执行的命令
         if (isShow) {
             appearance.setCmds(getAvailableCommands(gemObject, playerCharacter));

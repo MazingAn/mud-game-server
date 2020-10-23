@@ -188,6 +188,7 @@ public class PlayerCharacterManager {
             // 如果死亡发送复活命令
             if (playerCharacter.getHp() <= 0) {
                 GameSessionService.updateCallerType(playerCharacterId, CallerType.DIE);
+                playerCharacter.msg(new CombatFinishMessage("death"));
                 playerCharacter.msg(new RebornCommandsMessage(playerCharacter));
             }
             //当前用户接受邮件列表

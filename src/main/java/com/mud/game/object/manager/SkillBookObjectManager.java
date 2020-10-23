@@ -80,7 +80,7 @@ public class SkillBookObjectManager {
          * @ 当玩家查看装备的时候返回装备信息和可执行的命令（操作）
          * */
         Map<String, Object> lookMessage = new HashMap<>();
-        SkillBookObjectAppearance appearance = new SkillBookObjectAppearance(skillBookObject);
+        SkillBookObjectAppearance appearance = new SkillBookObjectAppearance(skillBookObject,playerCharacter);
         // 设置玩家可以对此物体执行的命令
         if (isShow) {
             appearance.setCmds(getAvailableCommands(skillBookObject, playerCharacter));
