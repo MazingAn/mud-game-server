@@ -33,6 +33,7 @@ import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_CMDS;
 import static com.mud.game.constant.PostConstructConstant.CUT_BACKCRIME_NPC_DATAKEY;
 import static com.mud.game.object.manager.GameCharacterManager.npcBoundItemSet;
 import static com.mud.game.server.ServerManager.gameSetting;
+import static com.mud.game.utils.resultutils.GameWords.CRIME_VALUE_CMDS_INFO;
 
 public class WorldNpcObjectManager {
 
@@ -217,6 +218,7 @@ public class WorldNpcObjectManager {
         //如果玩家犯罪值大于阈值，则城镇不能操作npc
         // 判断npc是否可以无操作（城镇npc）
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_CMDS && npc.getCrimeControlCmd()) {
+            playerCharacter.msg(new ToastMessage(CRIME_VALUE_CMDS_INFO));
             return cmds;
         }
         //切磋
@@ -506,9 +508,14 @@ public class WorldNpcObjectManager {
                         //指定游荡路线
                         worldNpcWanderRoomList = DbMapper.worldNpcWanderRoomRepository.findListWorldNpcWanderRoomByNpcDataKey(worldNpcObject.getDataKey());
                         if (worldNpcWanderRoomList.size() > 0) {
-                            worldNpcWanderRoom = DbMapper.worldNpcWanderRoomRepository.findWorldNpcWanderRoomByNpcDataKeyAndRoomDataKey(worldNpcObject.getDataKey(), worldNpcObject.getLocation());
-                            if (worldNpcWanderRoom != null) {
-                                worldNpcWanderRoomList.remove(worldNpcWanderRoom);
+                            //删除npc目前所在fang'j
+                            Iterator<WorldNpcWanderRoom> iterator = worldNpcWanderRoomList.iterator();
+                            while (iterator.hasNext()) {
+                                WorldNpcWanderRoom u = iterator.next();
+                                if (u.getRoomDataKey().equals(worldNpcObject.getLocation())) {
+                                    iterator.remove();//使用迭代器的删除方法删除
+                                    break;
+                                }
                             }
                             String roomDataKey = worldNpcWanderRoomList.get(WorldNpcObjectManager.randomInterval(0, worldNpcWanderRoomList.size())).getRoomDataKey();
                             GameCharacterManager.characterMoveOut(worldNpcObject);

@@ -31,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_ATTACK;
+import static com.mud.game.constant.PostConstructConstant.DISCARD_CONTENTS;
 import static com.mud.game.utils.resultutils.GameWords.*;
 
 public class PlayerCharacterManager {
@@ -1643,6 +1644,39 @@ public class PlayerCharacterManager {
                 MongoMapper.normalObjectObjectRepository.save(normalObjectObject);
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * 根据key销毁物品
+     *
+     * @param playerCharacter 玩家
+     * @param dbref           物品Key
+     * @param number          数量
+     * @return boolean 是否成功
+     */
+    public static boolean discardObjectById(PlayerCharacter playerCharacter, String dbref, int number) {
+        if (number <= CommonItemContainerManager.findObjectNumberById(playerCharacter, dbref)) {
+            //保存
+            CommonObject commonObject = CommonObjectBuilder.findObjectById(dbref);
+            commonObject.setTotalNumber(commonObject.getTotalNumber() - number);
+            CommonObjectBuilder.save(commonObject);
+            //删除背包物品
+            BagpackObject container = MongoMapper.bagpackObjectRepository.findBagpackObjectById(playerCharacter.getBagpack());
+            Map<String, CommonObjectInfo> valuess = container.getItems();
+            String itemId = CommonItemContainerManager.findCellById(container, dbref);
+            CommonObjectInfo commonObjectInfo = valuess.get(itemId);
+            if (commonObjectInfo.getNumber() - number == 0) {
+                container.getItems().remove(itemId);
+            } else {
+                commonObjectInfo.setNumber(commonObjectInfo.getNumber() - number);
+                container.getItems().put(itemId, commonObjectInfo);
+            }
+            MongoMapper.bagpackObjectRepository.save(container);
+            playerCharacter.msg(new ToastMessage(String.format(DISCARD_CONTENTS_INFO, number, commonObject.getUnitName(), commonObject.getName())));
+            playerCharacter.msg(DISCARD_CONTENTS);
+            PlayerCharacterManager.showBagpack(playerCharacter);
         }
         return false;
     }

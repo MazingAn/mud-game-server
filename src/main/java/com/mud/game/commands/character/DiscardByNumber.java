@@ -1,6 +1,7 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.object.manager.CommonItemContainerManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import org.json.JSONException;
@@ -40,8 +41,8 @@ public class DiscardByNumber extends BaseCommand {
         //TODO  物品可销毁
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
-        String dataKey = args.getString("dataKey");
+        String dbref = args.getString("dbref");
         int number = args.getInt("number");
-        PlayerCharacterManager.discardObject(caller, dataKey, number);
+        PlayerCharacterManager.discardObjectById(caller, dbref, number);
     }
 }

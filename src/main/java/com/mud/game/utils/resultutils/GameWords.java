@@ -113,4 +113,12 @@ public class GameWords {
     public static final String DELETE_ENEMY_INFO = "{g%s{n已经从你的仇人列表中移除";
 
 
+    //丢弃提示
+    public static final String DISCARD_CONTENTS_INFO = "你丢掉了{g%s%s%s{n";
+
+    //犯罪值达到阈值，不能与npc互动
+    public static final String CRIME_VALUE_CMDS_INFO = "{r犯罪值达到阈值，不能与npc互动!{n";
+
+
+
 }
