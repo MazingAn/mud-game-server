@@ -129,7 +129,7 @@ public class SkillObjectManager {
                 killName = "基本招架";
             }
             character.msg(new ToastMessage("没有学习" + killName + "，无法装备技能"));
-        } else if (!character.getState().equals(CharacterState.STATE_NORMAL)) {
+        } else if (character instanceof PlayerCharacter && !character.getState().equals(CharacterState.STATE_NORMAL)) {
             character.msg(new ToastMessage("你正在学习，无法装备技能"));
         } else if (skillObject.getEquippedPositions().contains(position)) {
             // 检查是否已将装备了这个技能
@@ -168,7 +168,7 @@ public class SkillObjectManager {
                 basicSkillObject.getEquippedPositions().add(position);
                 MongoMapper.skillObjectRepository.save(basicSkillObject);
                 // 执行技能效果
-                castSkill(basicSkillObject, character, position);
+                character = castSkill(basicSkillObject, character, position);
             }
             // 装备技能本身
             positionSkills.add(skillObject.getId());
@@ -184,7 +184,7 @@ public class SkillObjectManager {
                 MongoMapper.skillObjectRepository.save(subSkillObject);
             }
             // 执行技能
-            castSkill(skillObject, character, position);
+            character = castSkill(skillObject, character, position);
             saveCharacterEquippedSkill(character, position, session, equippedSkills);
         }
         return character;
@@ -282,9 +282,9 @@ public class SkillObjectManager {
         character.setEquippedSkills(equippedSkills);
         if (session == null) {
             // session 为 null 则为npc， 持久化npc信息
-            // MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
+            MongoMapper.worldNpcObjectRepository.save((WorldNpcObject) character);
         } else {
-            // MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
+            MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
             PlayerCharacterManager.returnAllSkills((PlayerCharacter) character);
             PlayerCharacterManager.showStatus((PlayerCharacter) character);
             PlayerCharacterManager.getSkillsByPosition((PlayerCharacter) character, position);

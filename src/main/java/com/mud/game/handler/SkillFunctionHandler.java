@@ -87,7 +87,7 @@ public class SkillFunctionHandler {
                 }
                 sense.msgContents(new SkillCastMessage(skillCastInfo));
                 //设置技能cd
-                SkillCdHandler.addSkillCd(caller.getId(), new Date());
+                SkillCdHandler.addSkillCd(caller.getId()+skillObject.getDataKey(), new Date());
                 //返回技能冷却时间
                 if (skillObject.getCd() != 0) {
                     sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd(), skillObject.getId(), skillObject.getDataKey())));

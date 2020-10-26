@@ -42,6 +42,8 @@ public class WorldNpcObjectManager {
      */
     public static WorldNpcObject build(WorldNpc template) {
         WorldNpcObject obj = new WorldNpcObject();
+        // 加载默认技能信息
+        obj = bindDefaultSkills(obj);
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
@@ -78,9 +80,6 @@ public class WorldNpcObjectManager {
         obj.setAfter_lucky(0);
         obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
-        MongoMapper.worldNpcObjectRepository.save(obj);
-        // 加载默认技能信息
-        bindDefaultSkills(obj);
         // 加载掉落信息
         bindLootList(obj);
         // 加载绑定的事件
@@ -97,7 +96,9 @@ public class WorldNpcObjectManager {
         return obj;
     }
 
-    public static void update(WorldNpcObject obj, WorldNpc template) {
+    public static WorldNpcObject update(WorldNpcObject obj, WorldNpc template) {
+        //加载默认技能信息
+        obj = bindDefaultSkills(obj);
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
         obj.setTeacher(template.getIsTeacher());
@@ -135,8 +136,6 @@ public class WorldNpcObjectManager {
         obj.setShowCondition(template.getShowCondition());
         // 删除旧的技能
         clearSkills(obj);
-        //加载默认技能信息
-        bindDefaultSkills(obj);
         // TODO 加载默认装备信息
         // 加载掉落信息
         bindLootList(obj);
@@ -146,12 +145,12 @@ public class WorldNpcObjectManager {
         bindDialogues(obj);
         // 绑定npc商店
         bindShops(obj);
-        MongoMapper.worldNpcObjectRepository.save(obj);
         // 把npc放到房间内
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(obj.getLocation());
         WorldRoomObjectManager.updateNpc(room, obj);
         // 设置NPC的基本属性
         resetHealth(obj);
+        return obj;
     }
 
     public static void resetHealth(WorldNpcObject obj) {
@@ -371,7 +370,7 @@ public class WorldNpcObjectManager {
         npc.setSkills(new HashSet<>());
     }
 
-    private static void bindDefaultSkills(WorldNpcObject npc) {
+    private static WorldNpcObject bindDefaultSkills(WorldNpcObject npc) {
         /*
          * 为NPC绑定默认技能
          * 查询npc默认技能记录
@@ -383,9 +382,6 @@ public class WorldNpcObjectManager {
         Set<String> skills = new HashSet<>();
         Iterable<DefaultSkills> defaultSkills = DbMapper.defaultSkillsRepository.findDefaultSkillsByTarget(npc.getDataKey());
         for (DefaultSkills skillRecord : defaultSkills) {
-            if (MongoMapper.worldNpcObjectRepository.existsById(npc.getId())) {
-                npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(npc.getId());
-            }
             try {
                 SkillObject skillObject = SkillObjectManager.create(skillRecord.getSkillKey());
                 skillObject.setOwner(npc.getId());
@@ -399,7 +395,7 @@ public class WorldNpcObjectManager {
                 // 如果默认技能是可装备的 则直接装备
                 if (skillRecord.isEquipped()) {
                     String position = skillRecord.getPosition();
-                    SkillObjectManager.equipTo(skillObject, npc, position, null);
+                    npc = (WorldNpcObject) SkillObjectManager.equipTo(skillObject, npc, position, null);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -408,6 +404,7 @@ public class WorldNpcObjectManager {
 
         }
         npc.setSkills(skills);
+        return npc;
     }
 
     public static void getCanTeachSkills(WorldNpcObject npc, PlayerCharacter playerCharacter, Session session) {
