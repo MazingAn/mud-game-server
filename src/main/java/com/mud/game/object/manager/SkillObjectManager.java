@@ -106,7 +106,7 @@ public class SkillObjectManager {
      * @param position    技能装备的位置
      * @param session     通信通道
      */
-    public static CommonCharacter equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session) {
+    public static CommonCharacter equipTo(SkillObject skillObject, CommonCharacter character, String position, Session session, boolean isApply) {
         //是否是外功
         Boolean isForeignPower = skillObject.getPositions().contains("left_hand");
         /*
@@ -168,7 +168,7 @@ public class SkillObjectManager {
                 basicSkillObject.getEquippedPositions().add(position);
                 MongoMapper.skillObjectRepository.save(basicSkillObject);
                 // 执行技能效果
-                character = castSkill(basicSkillObject, character, position);
+                character = castSkill(basicSkillObject, character, position, isApply);
             }
             // 装备技能本身
             positionSkills.add(skillObject.getId());
@@ -184,7 +184,7 @@ public class SkillObjectManager {
                 MongoMapper.skillObjectRepository.save(subSkillObject);
             }
             // 执行技能
-            character = castSkill(skillObject, character, position);
+            character = castSkill(skillObject, character, position, isApply);
             saveCharacterEquippedSkill(character, position, session, equippedSkills);
         }
         return character;
@@ -298,11 +298,15 @@ public class SkillObjectManager {
      * @param character   要使用技能的角色
      * @param position    被动技能应用的位置
      */
-    public static CommonCharacter castSkill(SkillObject skillObject, CommonCharacter character, String position) {
+    public static CommonCharacter castSkill(SkillObject skillObject, CommonCharacter character, String position, Boolean isApply) {
         if (skillObject.isPassive()) {
             for (SkillEffect effect : skillObject.getEffects()) {
                 if (effect.getPosition().equals(position)) {
-                    character = GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
+                    if (isApply) {
+                        character = GameCharacterManager.changeNpcStatus(character, effect.getAttrKey(), effect.getValue());
+                    } else {
+                        character = GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
+                    }
                 }
             }
         }
@@ -559,7 +563,7 @@ public class SkillObjectManager {
         if (skillObject.getEquippedPositions().size() > 0) {
             Set<String> positions = skillObject.getEquippedPositions();
             for (String position : positions) {
-                SkillObjectManager.castSkill(skillObject, playerCharacter, position);
+                SkillObjectManager.castSkill(skillObject, playerCharacter, position, false);
             }
         }
         MongoMapper.skillObjectRepository.save(skillObject);

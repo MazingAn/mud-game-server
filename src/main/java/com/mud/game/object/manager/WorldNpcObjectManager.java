@@ -42,8 +42,6 @@ public class WorldNpcObjectManager {
      */
     public static WorldNpcObject build(WorldNpc template) {
         WorldNpcObject obj = new WorldNpcObject();
-        // 加载默认技能信息
-        obj = bindDefaultSkills(obj);
         obj.setDataKey(template.getDataKey());
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
@@ -80,6 +78,8 @@ public class WorldNpcObjectManager {
         obj.setAfter_lucky(0);
         obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
+        // 加载默认技能信息
+        bindDefaultSkills(obj);
         // 加载掉落信息
         bindLootList(obj);
         // 加载绑定的事件
@@ -97,8 +97,27 @@ public class WorldNpcObjectManager {
     }
 
     public static WorldNpcObject update(WorldNpcObject obj, WorldNpc template) {
+        // 玩家信息的初始化设置
+        obj.setAfter_arm(0);
+        obj.setAfter_body(0);
+        obj.setAfter_bone(0);
+        obj.setAfter_smart(0);
+        obj.setAfter_looks(0);
+        obj.setAfter_lucky(0);
+        obj.setArm(20);
+        obj.setBody(20);
+        obj.setBone(20);
+        obj.setSmart(20);
+        obj.setLooks(20);
+        obj.setLucky(20);
+        // 从玩家模版加载初始化信息
+        CharacterModel npcTemplate = DbMapper.characterModelRepository.findCharacterModelByDataKey(template.getModel());
+        obj.setCustomerAttr(Attr2Map.characterAttrTrans(npcTemplate.getAttrs()));
+        // 删除旧的技能
+        clearSkills(obj);
         //加载默认技能信息
         obj = bindDefaultSkills(obj);
+
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
         obj.setTeacher(template.getIsTeacher());
@@ -111,31 +130,14 @@ public class WorldNpcObjectManager {
         // 根据注册的信息设置角色信息
         obj.setName(template.getName());
         obj.setGender(template.getGender());
-        obj.setArm(20);
-        obj.setBody(20);
-        obj.setBone(20);
-        obj.setSmart(20);
-        obj.setLooks(20);
-        obj.setLucky(20);
-        // 从玩家模版加载初始化信息
-        CharacterModel npcTemplate = DbMapper.characterModelRepository.findCharacterModelByDataKey(template.getModel());
-        obj.setCustomerAttr(Attr2Map.characterAttrTrans(npcTemplate.getAttrs()));
         obj.setTitle(template.getTitle());
         obj.setSchoolTitle(template.getSchoolTitle());
         obj.setSchool(template.getSchool());
         obj.setCanAttack(template.isCanAttack());
         obj.setTransfer(template.isTransfer());
-        // 玩家信息的初始化设置
-        obj.setAfter_arm(0);
-        obj.setAfter_body(0);
-        obj.setAfter_bone(0);
-        obj.setAfter_smart(0);
-        obj.setAfter_looks(0);
-        obj.setAfter_lucky(0);
         obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
-        // 删除旧的技能
-        clearSkills(obj);
+
         // TODO 加载默认装备信息
         // 加载掉落信息
         bindLootList(obj);
@@ -395,7 +397,7 @@ public class WorldNpcObjectManager {
                 // 如果默认技能是可装备的 则直接装备
                 if (skillRecord.isEquipped()) {
                     String position = skillRecord.getPosition();
-                    npc = (WorldNpcObject) SkillObjectManager.equipTo(skillObject, npc, position, null);
+                    npc = (WorldNpcObject) SkillObjectManager.equipTo(skillObject, npc, position, null, true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

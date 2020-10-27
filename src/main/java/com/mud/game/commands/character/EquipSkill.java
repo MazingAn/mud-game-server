@@ -24,7 +24,7 @@ import org.yeauty.pojo.Session;
  *        }
  *    }
  * </pre>
- * */
+ */
 public class EquipSkill extends BaseCommand {
 
     public EquipSkill(String key, Object caller, JSONObject args, Session session) {
@@ -34,14 +34,14 @@ public class EquipSkill extends BaseCommand {
     @Override
     public void execute() throws JSONException {
         /*
-        * 玩家装备技能到身上
-        * */
+         * 玩家装备技能到身上
+         * */
         Session session = getSession();
         PlayerCharacter caller = (PlayerCharacter) getCaller();
         JSONObject args = getArgs();
         String skillId = args.getString("dbref");
         String position = args.getString("position");
         SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
-        SkillObjectManager.equipTo(skillObject, caller, position, session);
+        SkillObjectManager.equipTo(skillObject, caller, position, session, false);
     }
 }

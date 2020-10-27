@@ -152,7 +152,11 @@ public class GameCharacterManager {
          * */
         // 检查是不是角色的默认属性,使用反射检查玩家是否有这个属性，如果没有会抛出NoSuchFieldException，那么则可能在自定义属性中
         try {
-            character = GameCharacterManager.getCharacterObject(character.getId());
+
+            CommonCharacter commonCharacter = GameCharacterManager.getCharacterObject(character.getId());
+            if (commonCharacter != null) {
+                character = commonCharacter;
+            }
             Field field = character.getClass().getField(attrKey);
             String valueStr = value.toString();
             if ("int".equals(field.getType().getName()) || "Integer".equals(field.getType().getName())) {
@@ -210,6 +214,77 @@ public class GameCharacterManager {
         return character;
     }
 
+    /**
+     * 同步npc的某个属性
+     *
+     * @param character CommonCharacter 角色
+     * @param attrKey   String 属性名称
+     * @param value     Object 属性值
+     */
+    public static CommonCharacter changeNpcStatus(CommonCharacter character, String attrKey, Object value) {
+        /*
+         * @ 这个方法主要用来增加或减少角色的属性
+         * @ 角色的属性分为默认属性，这部分属性可以直接通过get set方法获取和设置
+         * @ 还有一部分属性是自定义属性， 这部分属性是在数据库里面自己定义的，需要修改CustomertAttr
+         * */
+        // 检查是不是角色的默认属性,使用反射检查玩家是否有这个属性，如果没有会抛出NoSuchFieldException，那么则可能在自定义属性中
+        try {
+            Field field = character.getClass().getField(attrKey);
+            String valueStr = value.toString();
+            if ("int".equals(field.getType().getName()) || "Integer".equals(field.getType().getName())) {
+                if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                field.setInt(character, field.getInt(character) + Integer.parseInt(valueStr));
+            } else if ("float".equalsIgnoreCase(field.getType().getName())) {
+                field.setFloat(character, field.getFloat(character) + Float.parseFloat(valueStr));
+            } else if ("double".equalsIgnoreCase(field.getType().getName())) {
+                field.setDouble(character, field.getDouble(character) + Double.parseDouble(valueStr));
+            } else if ("String".equals(field.getType().getName())) {
+                field.set(character, valueStr);
+            } else if ("byte".equalsIgnoreCase(field.getType().getName())) {
+                if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                field.setByte(character, (byte) (field.getByte(character) + Byte.parseByte(valueStr)));
+            } else if ("long".equalsIgnoreCase(field.getType().getName())) {
+                if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                field.setLong(character, field.getLong(character) + Long.parseLong(valueStr));
+            } else if ("boolean".equalsIgnoreCase(field.getType().getName())) {
+                field.setBoolean(character, Boolean.parseBoolean(valueStr));
+            } else {
+                field.set(character, value);
+            }
+            // 检查时都有后天属性发生变动，这个时候应该追加其影响的其他属性
+            checkOnAfterAttrChange(character, attrKey, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            // 既然抛出了上述异常，那么这个属性可能在自定义属性中
+            Map<String, Map<String, Object>> cattr = character.getCustomerAttr();
+            if (cattr.containsKey(attrKey)) {
+                // 根据属性的类型运算
+                Object originValue = cattr.get(attrKey).get("value");
+                if (originValue.getClass() == Integer.class) {
+                    String valueStr = value.toString();
+                    if (valueStr.contains(".")) valueStr = valueStr.split("\\.")[0];
+                    int finalValue = (int) originValue + Integer.parseInt(valueStr);
+                    cattr.get(attrKey).put("value", finalValue);
+                }
+                if (originValue.getClass() == Float.class) {
+                    float finalValue = (float) originValue + (float) value;
+                    cattr.get(attrKey).put("value", finalValue);
+                }
+            } else {
+                // 如果自定义属性中也没有找到，那这这不步操作肯定是运维人员配置的有问题，这部操作就GG了，测试期间先打印一下
+                System.out.println("没有找到对应的属性：" + attrKey);
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            System.out.println("无法转换类型");
+        }
+        // 持久化
+        GameCharacterManager.saveCharacter(character);
+        // 检测角色死亡
+        if (character.getHp() <= 0) {
+            GameCharacterManager.die(character);
+        }
+        return character;
+    }
 
     /**
      * 修改角色的某个属性
