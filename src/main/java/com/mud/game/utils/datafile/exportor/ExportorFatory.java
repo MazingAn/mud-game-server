@@ -134,6 +134,8 @@ public class ExportorFatory {
                 return new Exportor(DbMapper.qualityMaterialRepository, outFilePath, tableName, type);
             case "DataDictionary":
                 return new Exportor(DbMapper.dataDictionaryRepository, outFilePath, tableName, type);
+            case "WorldNpcWanderRoom":
+                return new Exportor(DbMapper.worldNpcWanderRoomRepository, outFilePath, tableName, type);
             default:
                 return null;
         }

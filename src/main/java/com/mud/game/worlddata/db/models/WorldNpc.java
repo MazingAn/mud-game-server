@@ -82,13 +82,13 @@ public class WorldNpc extends BaseObject {
     private String icon;
 
     @Mark(name = "犯罪值控制能否交互")
-    private Boolean crimeControlCmd;
+    private boolean crimeControlCmd;
 
     @Mark(name = "犯罪值达到阈值攻击")
-    private Boolean canAttackByCrime;
+    private boolean canAttackByCrime;
 
     @Mark(name = "是否游荡")
-    private Boolean canWanderRoom;
+    private boolean canWanderRoom;
 
     public String getLocation() {
         return location;

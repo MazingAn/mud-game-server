@@ -137,6 +137,8 @@ public class ImportorFactor {
                 return new Importor(stream, fileName, DbMapper.qualityMaterialRepository);
             case "DataDictionary":
                 return new Importor(stream, fileName, DbMapper.dataDictionaryRepository);
+            case "WorldNpcWanderRoom":
+                return new Importor(stream, fileName, DbMapper.worldNpcWanderRoomRepository);
             default:
                 return null;
         }
