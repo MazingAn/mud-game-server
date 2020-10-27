@@ -53,6 +53,12 @@ public class Attack extends BaseCommand {
             blueTeam.add(targetObject);
             combatSense = new CombatSense(redTeam, blueTeam, 0);
         } else {
+            //玩家不能和同一npc创建多个场景
+            for (CommonCharacter commonCharacter : combatSense.getBlueTeam()) {
+                if (commonCharacter.getId().equals(target)) {
+                    return;
+                }
+            }
             combatSense.getBlueTeam().add(targetObject);
         }
 

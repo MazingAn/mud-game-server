@@ -16,10 +16,7 @@ import com.mud.game.object.typeclass.*;
 import com.mud.game.server.ServerManager;
 import com.mud.game.statements.buffers.BufferManager;
 import com.mud.game.statements.buffers.CharacterBuffer;
-import com.mud.game.structs.CombatCommand;
-import com.mud.game.structs.ObjectMoveInfo;
-import com.mud.game.structs.SimpleCharacter;
-import com.mud.game.structs.SimpleObject;
+import com.mud.game.structs.*;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.DefaultSkills;
@@ -567,9 +564,7 @@ public class GameCharacterManager {
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         saveCharacter(character);
         characterMoveOut(character);
-        if (!character.getName().contains("的尸体")) {
-            character.setName(character.getName() + "的尸体");
-        }
+        character.setState(CharacterState.STATE_DEATH);
         characterMoveIn(character);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         character.msg(new RebornCommandsMessage((PlayerCharacter) character));
@@ -590,14 +585,12 @@ public class GameCharacterManager {
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         if (b) {
             characterMoveOut(character);
-            if (!character.getName().contains("的尸体")) {
-                character.setName(character.getName() + "的尸体");
-            }
-            characterMoveIn(character);
+            character.setState(CharacterState.STATE_DEATH);
             //如果击杀者和被击杀者都是玩家的话，增加击杀者的犯罪值  —— 将击杀者的加入被击杀者的仇人列表
             if (character instanceof PlayerCharacter && commonCharacter instanceof PlayerCharacter) {
                 setCrimeValueAndEnemys(commonCharacter, character);
             }
+            characterMoveIn(character);
         }
         if (character instanceof WorldNpcObject) {
             if (b) {
@@ -665,7 +658,7 @@ public class GameCharacterManager {
                 characterMoveOut(character);
                 character.setHp(character.getMax_hp());
                 character.setCanAttck(true);
-                character.setName(character.getName().replaceAll("的尸体", ""));
+                character.setState(CharacterState.STATE_NORMAL);
                 characterMoveIn(character);
                 GameCharacterManager.saveCharacter(character);
             }
@@ -788,6 +781,9 @@ public class GameCharacterManager {
      */
     public static void characterMoveIn(CommonCharacter character) {
         SimpleCharacter simpleCharacter = new SimpleCharacter(character);
+        if (character.getState().equals(CharacterState.STATE_DEATH)) {
+            simpleCharacter.setName(character.getName() + "的尸体");
+        }
         String type = character instanceof WorldNpcObject ? "npcs" : "players";
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
@@ -796,6 +792,7 @@ public class GameCharacterManager {
             room.getNpcs().add(character.getDataKey());
             MongoMapper.worldRoomObjectRepository.save(room);
         }
+
         WorldRoomObjectManager.broadcast(room, new ObjectMoveInMessage(moveInfo), character.getId());
     }
 

@@ -6,6 +6,7 @@ import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.WorldNpcObjectManager;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.updator.GameObjectUpdator;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.GameSetting;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
@@ -31,7 +32,7 @@ public class ServerManager {
         // 复活所有NPC
         for (WorldNpcObject npc : MongoMapper.worldNpcObjectRepository.findAll()) {
             npc.setHp(npc.getMax_hp());
-            npc.setName(npc.getName().replaceAll("的尸体", ""));
+            npc.setState(CharacterState.STATE_NORMAL);
             MongoMapper.worldNpcObjectRepository.save(npc);
         }
 

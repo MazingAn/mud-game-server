@@ -13,4 +13,5 @@ public enum CharacterState {
     STATE_VERTIGO, //眩晕状态
     STATE_BUSY, //忙乱状态
     STATE_COMBAT, //战斗状态
+    STATE_DEATH, //死亡状态
 }

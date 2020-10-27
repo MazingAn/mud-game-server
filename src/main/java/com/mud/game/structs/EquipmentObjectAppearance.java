@@ -46,7 +46,7 @@ public class EquipmentObjectAppearance {
         this.opend_slot = equipmentObject.getOpendSlot();
         this.total_slot = equipmentObject.getMaxSlot();
         this.can_strength = false;
-        this.number = equipmentObject.getTotalNumber();
+        this.number = 1;
     }
 
     public int getNumber() {

@@ -311,6 +311,9 @@ public class PlayerCharacterManager {
         List<SimpleCharacter> playerCharacters = new ArrayList<SimpleCharacter>();
         for (String playerId : location.getPlayers()) {
             PlayerCharacter otherPlayerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerId);
+            if (otherPlayerCharacter.getState().equals(CharacterState.STATE_DEATH)) {
+                otherPlayerCharacter.setName(otherPlayerCharacter.getName() + "的尸体");
+            }
             if (isVisibleForOtherPlayerCharacter(playerCharacter, otherPlayerCharacter)) {
                 playerCharacters.add(new SimpleCharacter(otherPlayerCharacter));
             }
@@ -324,6 +327,9 @@ public class PlayerCharacterManager {
         for (String npcDataKey : list_1) {
             WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
             if (GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)) {
+                if (npc.getState().equals(CharacterState.STATE_DEATH)) {
+                    npc.setName(npc.getName() + "的尸体");
+                }
                 SimpleCharacter simpleCharacter = new SimpleCharacter(npc);
                 simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
                 simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
@@ -1807,7 +1813,7 @@ public class PlayerCharacterManager {
      */
     public static void reborn(PlayerCharacter playerCharacter) {
         playerCharacter.setHp(playerCharacter.getMax_hp());
-        playerCharacter.setName(playerCharacter.getName().replaceAll("的尸体", ""));
+        playerCharacter.setState(CharacterState.STATE_NORMAL);
         GameSessionService.updateCallerType(playerCharacter.getId(), CallerType.CHARACTER);
         GameCharacterManager.saveCharacter(playerCharacter);
         playerCharacter.msg(new MsgMessage("一道白光闪过，你又活蹦乱跳了！"));
