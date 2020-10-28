@@ -705,7 +705,7 @@ public class GameCharacterManager {
                 }
                 timer = new Timer();
                 rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
-                timer.schedule(objectMoveOutTimerTask(character, commonObjectList), (int) rebornTime * 1000);
+                timer.schedule(objectMoveOutTimerTask(character, commonObjectList), (int) rebornTime * 1500);
             }
         };
     }

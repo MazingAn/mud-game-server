@@ -212,9 +212,6 @@ public class PlayerCharacterManager {
             }
             //仇人上线提示
             //新
-            //TODO 仇人上线提示
-            //TODO 仇人删除
-            //TODO 好友对象删除标记属性
             List<EnemyObject> enemyObjectList = MongoMapper.enemyObjectRepository.findListEnemyObjectByEnemyId(playerCharacter.getId());
             for (int i = 0; i < enemyObjectList.size(); i++) {
                 Session targetSession = null;
@@ -223,6 +220,7 @@ public class PlayerCharacterManager {
                     worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
                     worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
                     targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()))));
+                    targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:"+String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName())+",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
                 }
             }
         } catch (Exception e) {

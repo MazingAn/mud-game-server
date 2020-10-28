@@ -207,11 +207,6 @@ public class WorldNpcObjectManager {
         if (npc.canAttack && npc.getHp() > 0) {
             cmds.add(new EmbeddedCommand("攻击", "attack", npc.getId()));
         }
-        //出售
-        NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());
-        if (null != npcDangPu) {
-            cmds.add(new EmbeddedCommand("出售", "open_pawn_shop", npc.getId()));
-        }
         //减少犯罪值
         if (npc.getDataKey().equals(CUT_BACKCRIME_NPC_DATAKEY)) {
             cmds.add(new EmbeddedCommand("减少犯罪值", "cut_back_crimevalue", npc.getId()));
@@ -221,6 +216,11 @@ public class WorldNpcObjectManager {
         if (playerCharacter.getCrimeValue() >= CRIME_VALUE_CMDS && npc.getCrimeControlCmd()) {
             playerCharacter.msg(new ToastMessage(CRIME_VALUE_CMDS_INFO));
             return cmds;
+        }
+        //出售
+        NpcDangPu npcDangPu = DbMapper.npcDangPuRepository.findNpcDangPuByNpc(npc.getDataKey());
+        if (null != npcDangPu) {
+            cmds.add(new EmbeddedCommand("出售", "open_pawn_shop", npc.getId()));
         }
         //切磋
         if (npc.canAttack && npc.getHp() > 0) {

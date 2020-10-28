@@ -20,6 +20,7 @@ public class PlayerCharacterAppearance {
     private int mp;
     private int max_mp;
     private int limit_mp;
+    private CharacterState state;
     private boolean is_player;
     private List<EmbeddedCommand> cmds;
 
@@ -33,6 +34,7 @@ public class PlayerCharacterAppearance {
         this.limit_mp = playerCharacter.getLimit_mp();
         this.is_player = true;
         this.name = playerCharacter.getName();
+        this.state = playerCharacter.getState();
         if (StringUtils.isNotBlank(playerCharacter.getSchool())) {
             this.school = DbMapper.schoolRepository.findSchoolByDataKey(playerCharacter.school).getName();
         } else {
@@ -43,6 +45,14 @@ public class PlayerCharacterAppearance {
         } else {
             this.title = "";
         }
+    }
+
+    public CharacterState getState() {
+        return state;
+    }
+
+    public void setState(CharacterState state) {
+        this.state = state;
     }
 
     public String getSchool() {

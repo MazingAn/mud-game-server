@@ -12,6 +12,7 @@ public class SimpleCharacter {
     private boolean provide_quest;
     private boolean complete_quest;
     private boolean can_attack;
+    private CharacterState state;
 
     public SimpleCharacter() {
     }
@@ -25,6 +26,7 @@ public class SimpleCharacter {
         this.provide_quest = false;
         this.complete_quest = false;
         this.can_attack = character.canAttck;
+        this.state = character.getState();
     }
 
     public SimpleCharacter(SimpleCharacter simpleCharacter) {
@@ -36,6 +38,15 @@ public class SimpleCharacter {
         this.provide_quest = false;
         this.complete_quest = false;
         this.can_attack = simpleCharacter.can_attack;
+        this.state = simpleCharacter.getState();
+    }
+
+    public CharacterState getState() {
+        return state;
+    }
+
+    public void setState(CharacterState state) {
+        this.state = state;
     }
 
     public boolean isCan_attack() {

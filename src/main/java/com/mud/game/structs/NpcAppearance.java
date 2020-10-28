@@ -13,6 +13,7 @@ public class NpcAppearance extends GameObjectAppearance {
     private int mp;
     private int max_mp;
     private boolean is_player;
+    private CharacterState state;
 
     public NpcAppearance(WorldNpcObject npc) {
         super(npc);
@@ -32,6 +33,15 @@ public class NpcAppearance extends GameObjectAppearance {
         this.max_hp = npc.getMax_hp();
         this.max_mp = npc.getMax_mp();
         this.is_player = false;
+        this.state = npc.getState();
+    }
+
+    public CharacterState getState() {
+        return state;
+    }
+
+    public void setState(CharacterState state) {
+        this.state = state;
     }
 
     public boolean isIs_player() {
