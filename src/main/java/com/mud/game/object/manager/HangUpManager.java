@@ -3,16 +3,18 @@ package com.mud.game.object.manager;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.structs.CharacterState;
-import com.mud.game.structs.PlayerCharacterStatus;
 import com.mud.game.utils.resultutils.GameWords;
 import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.HangupObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class HangUpManager {
     /**
@@ -122,7 +124,7 @@ public class HangUpManager {
     private static void playerHangUp(PlayerCharacter playerCharacter, CharacterState currentAction, List<HangupObject> hangupObjectList) {
         try {
             if (currentAction.equals(CharacterState.STATE_CURE)) {//处理玩家疗伤
-                PlayerCharacterManager.showStatus(onPlayerCure(playerCharacter));
+                PlayerCharacterManager.showStatus((PlayerCharacter) onPlayerCure(playerCharacter));
             } else if (currentAction.equals(CharacterState.STATE_MEDITATE)) {
                 PlayerCharacterManager.showStatus(onPlayerMeditate(playerCharacter));
             } else {//其他类型挂机逻辑
@@ -145,19 +147,17 @@ public class HangUpManager {
      *
      * @param playerCharacter 玩家
      */
-    private static PlayerCharacter onPlayerCure(PlayerCharacter playerCharacter) {
+    public static CommonCharacter onPlayerCure(CommonCharacter playerCharacter) {
         int recoveredHp = (int) (playerCharacter.getMax_hp() * 0.1);
         int recoveredLimitHp = (int) (playerCharacter.getLimit_hp() * 0.1);
         int recoveredMaxHp = (int) (playerCharacter.getMax_hp() * 0.1);
         if (recoveredHp > 0) {
             GameCharacterManager.changeStatus(playerCharacter, "hp", recoveredHp);
-            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_HP, recoveredHp)));
         }
         if (recoveredLimitHp > recoveredMaxHp) {
             GameCharacterManager.changeStatus(playerCharacter, "max_hp", recoveredMaxHp);
-            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MAX_HP, recoveredMaxHp)));
         }
-        playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter.getId());
+        playerCharacter = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(playerCharacter.getId());
         if (playerCharacter.getMax_hp() >= playerCharacter.getLimit_hp()) {
             playerCharacter.setMax_hp(playerCharacter.getLimit_hp());
         }
@@ -168,7 +168,6 @@ public class HangUpManager {
         if (playerCharacter.getHp() == playerCharacter.getMax_hp() &&
                 playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()) {
             PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
-            playerCharacter.msg(new MsgMessage(GameWords.PLAYER_CURE_END));
         }
         return playerCharacter;
     }

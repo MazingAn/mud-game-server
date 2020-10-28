@@ -208,6 +208,8 @@ public class PlayerCharacterManager {
                     worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
                     worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
                     targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()))));
+                    targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:"+String.format(FRIEND_ONLINE_REMINDER,playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName())+",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
+
                 }
             }
             //仇人上线提示

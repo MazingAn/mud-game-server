@@ -8,6 +8,7 @@ import com.mud.game.messages.CombatFinishMessage;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.RebornCommandsMessage;
 import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
@@ -16,7 +17,8 @@ import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.mud.game.constant.Constant.CONTEST_MIN_HP_COEFFICIENT;
 
@@ -127,29 +129,23 @@ public class CombatSense {
         // 结束战斗
         if (winner.equals("red")) {
             for (CommonCharacter character : redTeam) {
-                //  character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 checkGraduation(character, blueTeam);
                 initializeNpc(character);
             }
             for (CommonCharacter character : blueTeam) {
-                // character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
-//                character.msg(new MsgMessage("你已经死了！"));
-//                character.msg(new RebornCommandsMessage(playerCharacter));
                 checkDied(character, redTeam, getMinHp());
                 initializeNpc(character);
             }
         } else {
             for (CommonCharacter character : redTeam) {
-                // character.msg(new CombatFinishMessage(false));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 initializeNpc(character);
             }
             for (CommonCharacter character : blueTeam) {
-                //   character.msg(new CombatFinishMessage(true));
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 checkGraduation(character, redTeam);
@@ -176,16 +172,40 @@ public class CombatSense {
     public void initializeNpc(CommonCharacter character) {
         character = GameCharacterManager.getCharacterObject(character.getId());
         if (character.getHp() > minHp && character instanceof WorldNpcObject && (NpcCombatHandler.getNpcCombatSense(character.getId()) == null || NpcCombatHandler.getNpcCombatSense(character.getId()).size() == 0)) {
-            if (character.getLimit_hp() == 0) character.setLimit_hp(200);
-            if (character.getLimit_mp() == 0) character.setLimit_mp(200);
-            character.setMax_hp(character.getLimit_hp());
-            character.setHp(character.getMax_hp());
-            character.setMax_mp(character.getLimit_mp());
-            character.setMp(character.getMp());
+//            if (character.getLimit_hp() == 0) character.setLimit_hp(200);
+//            if (character.getLimit_mp() == 0) character.setLimit_mp(200);
+//            character.setMax_hp(character.getLimit_hp());
+//            character.setHp(character.getMax_hp());
+//            character.setMax_mp(character.getLimit_mp());
+//            character.setMp(character.getMp());
+
             //清空状态
-            character.setBuffers(new HashMap<>());
-            GameCharacterManager.saveCharacter(character);
+            //  character.setBuffers(new HashMap<>());
+            //GameCharacterManager.saveCharacter(character);
+//            Runnable runnable = HangUpManager.start(caller, CharacterState.STATE_CURE,0);
+//            if(runnable != null){
+//                ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(caller.getId());
+//                service.scheduleAtFixedRate(runnable, 0, 3000, TimeUnit.MILLISECONDS);
+//            }
+            // 开始疗伤挂机
+            Runnable runnable = onPlayerCure(character);
+            if (runnable != null) {
+                ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(character.getId());
+                service.scheduleAtFixedRate(runnable, 0, 10000, TimeUnit.MILLISECONDS);
+            }
+
         }
+    }
+
+    private Runnable onPlayerCure(CommonCharacter character) {
+        Runnable runnable = new Runnable() {
+            // run方法将周期性运行
+            @Override
+            public void run() {
+                HangUpManager.onPlayerCure(character);
+            }
+        };
+        return runnable;
     }
 
     /**
