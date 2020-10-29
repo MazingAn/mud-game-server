@@ -5,6 +5,7 @@ import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.NpcCombatHandler;
+import com.mud.game.object.manager.PlayerScheduleManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldNpcObject;
@@ -69,7 +70,8 @@ public class Attack extends BaseCommand {
             CombatHandler.addCombatSense(targetObject.getId(), combatSense);
         }
         CombatHandler.addCombatSense(caller.getId(), combatSense);
-
+        //若在疗伤状态，则取消
+        PlayerScheduleManager.shutdownExecutorByCallerId(targetObject.getId());
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);
         normalCombat.startCombat(combatSense);

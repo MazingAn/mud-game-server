@@ -1,9 +1,11 @@
 package com.mud.game.object.manager;
 
 import com.mud.game.algorithm.CommonAlgorithm;
+import com.mud.game.combat.CombatSense;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.commands.character.CastSkill;
 import com.mud.game.handler.AutoContestHandler;
+import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.GraduationHandler;
 import com.mud.game.handler.TrophyHandler;
 import com.mud.game.messages.*;
@@ -580,16 +582,23 @@ public class GameCharacterManager {
      *                        延时触发复活
      */
     public static void die(CommonCharacter character, CommonCharacter commonCharacter, Boolean b) {
+        boolean isReadTeam = false;
         character.setHp(0);
         character.setCanAttck(false);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         if (b) {
             characterMoveOut(character);
             character.setState(CharacterState.STATE_DEATH);
+            //判断击杀者是否为主动发起战斗请求
+            CombatSense combatSense = CombatHandler.getCombatSense(commonCharacter.getId());
+            if (combatSense != null) {
+                isReadTeam = isReadTeam(combatSense.getRedTeam(), commonCharacter);
+            }
             //如果击杀者和被击杀者都是玩家的话，增加击杀者的犯罪值  —— 将击杀者的加入被击杀者的仇人列表
-            if (character instanceof PlayerCharacter && commonCharacter instanceof PlayerCharacter) {
+            if (character instanceof PlayerCharacter && commonCharacter instanceof PlayerCharacter && isReadTeam) {
                 setCrimeValueAndEnemys(commonCharacter, character);
             }
+
             characterMoveIn(character);
         }
         if (character instanceof WorldNpcObject) {
@@ -605,6 +614,16 @@ public class GameCharacterManager {
             GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
             character.msg(new RebornCommandsMessage((PlayerCharacter) character));
         }
+    }
+
+    private static boolean isReadTeam(ArrayList<CommonCharacter> redTeam, CommonCharacter commonCharacter) {
+        boolean isReadTeam = false;
+        for (CommonCharacter character : redTeam) {
+            if (character.getId().equals(commonCharacter.getId())) {
+                isReadTeam = true;
+            }
+        }
+        return isReadTeam;
     }
 
     /**
