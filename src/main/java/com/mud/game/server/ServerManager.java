@@ -65,6 +65,8 @@ public class ServerManager {
         ChannelHandler.initChannels();
         //创建npc游荡定时器
         WorldNpcObjectManager.worldNpcWanderRoom();
+        //创建收破烂的拾取战利品定时器
+        WorldNpcObjectManager.shoupolanPickUp();
         System.out.println("服务器启动完成！");
     }
 

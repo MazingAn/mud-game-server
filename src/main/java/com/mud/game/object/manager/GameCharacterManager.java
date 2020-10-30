@@ -725,7 +725,7 @@ public class GameCharacterManager {
                 }
                 timer = new Timer();
                 rebornTime = Math.max(((WorldNpcObject) character).getRebornTime(), 1);
-                timer.schedule(objectMoveOutTimerTask(character, commonObjectList), (int) rebornTime * 1500);
+                timer.schedule(objectMoveOutTimerTask(character.getLocation(), commonObjectList), (int) rebornTime * 1500);
             }
         };
     }
@@ -733,15 +733,15 @@ public class GameCharacterManager {
     /**
      * 移除房间物品
      *
-     * @param character
+     * @param location
      * @return
      */
-    public static TimerTask objectMoveOutTimerTask(CommonCharacter character, List<CommonObject> commonObjectList) {
+    public static TimerTask objectMoveOutTimerTask(String location, List<CommonObject> commonObjectList) {
         return new TimerTask() {
             @Override
             public void run() {
                 //移除前端物品
-                GameCharacterManager.objectMoveOut(commonObjectList, character.getLocation());
+                GameCharacterManager.objectMoveOut(commonObjectList, location);
             }
         };
     }
@@ -802,7 +802,7 @@ public class GameCharacterManager {
     public static void characterMoveIn(CommonCharacter character) {
         SimpleCharacter simpleCharacter = new SimpleCharacter(character);
         if (character.getState().equals(CharacterState.STATE_DEATH)) {
-           // simpleCharacter.setName(character.getName() + "的尸体");
+            // simpleCharacter.setName(character.getName() + "的尸体");
         }
         String type = character instanceof WorldNpcObject ? "npcs" : "players";
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));

@@ -1,19 +1,17 @@
 package com.mud.game.object.manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mongodb.Mongo;
-import com.mud.game.combat.FighterManager;
 import com.mud.game.combat.NpcBoundItemInfo;
 import com.mud.game.handler.*;
 import com.mud.game.messages.MsgMessage;
 import com.mud.game.messages.TeachersSkillMessage;
 import com.mud.game.messages.ToastMessage;
-import com.mud.game.object.account.Player;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
-import com.mud.game.structs.*;
+import com.mud.game.structs.EmbeddedCommand;
+import com.mud.game.structs.NpcAppearance;
+import com.mud.game.structs.SimpleSkill;
 import com.mud.game.utils.jsonutils.Attr2Map;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
@@ -21,7 +19,6 @@ import com.mud.game.worlddata.db.mappings.DbMapper;
 import com.mud.game.worlddata.db.models.*;
 import com.mud.game.worlddata.db.models.supermodel.BaseCommonObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.yeauty.pojo.Session;
 
 import java.util.*;
@@ -461,7 +458,11 @@ public class WorldNpcObjectManager {
                     }
                 }
             }
-            npcBoundItemSet.put(character.getId(), new NpcBoundItemInfo(new Date(), commonCharacter.getId(), npcBoundItemMap));
+            if (character.getDataKey().equals("NPC_YZ_shoupolan") && ShouPoLanDeBagpackHandler.ShouPoLanDeBagpack.size() > 0) {
+                npcBoundItemMap.putAll(ShouPoLanDeBagpackHandler.ShouPoLanDeBagpack);
+                ShouPoLanDeBagpackHandler.ShouPoLanDeBagpack = new HashMap<>();
+            }
+            npcBoundItemSet.put(character.getId(), new NpcBoundItemInfo(commonCharacter.getId(), npcBoundItemMap));
         }
     }
 
@@ -485,11 +486,11 @@ public class WorldNpcObjectManager {
             return false;
         }
         //判断当前时间是否在开放拾取的时间内
-        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 50) {
-            if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
-                return false;
-            }
-        }
+//        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 50) {
+//            if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
@@ -565,11 +566,11 @@ public class WorldNpcObjectManager {
             return false;
         }
         //判断当前时间是否在开放拾取的时间内
-        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 50) {
-            if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
-                return false;
-            }
-        }
+//        if (calLastedTime(npcBoundItemInfo.getCreateTime()) <= 50) {
+//            if (!caller.getId().equals(npcBoundItemInfo.getKillerId())) {
+//                return false;
+//            }
+//        }
         if (null == npcBoundItemInfo.getNpcBoundItemMap() || !npcBoundItemInfo.getNpcBoundItemMap().containsKey(objectDataKey)) {
             return false;
         }
@@ -582,5 +583,51 @@ public class WorldNpcObjectManager {
         long b = startDate.getTime();
         int c = (int) ((a - b) / 1000);
         return c;
+    }
+
+    /**
+     * 收破烂的npc拾取物品定时器
+     */
+    public static void shoupolanPickUp() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public synchronized void run() {
+                WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey("NPC_YZ_shoupolan");
+                if (NpcCombatHandler.containsKey(worldNpcObject.getId()) || worldNpcObject.getHp() <= 0) {
+                    return;
+                }
+                WorldRoomObject worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(worldNpcObject.getLocation());
+                Set<String> stringSet = TrophyHandler.getTrophy(worldRoomObject.getDataKey());
+                if (stringSet == null || stringSet.size() == 0) {
+                    return;
+                }
+                CommonObject commonObject = null;
+                List<CommonObject> commonObjectList = new ArrayList<>();
+                //收破烂的是否捡到物品
+                boolean isGet = false;
+                for (String id : stringSet) {
+                    commonObject = CommonObjectBuilder.findObjectById(id);
+                    if (commonObject != null) {
+                        //收破烂的拾取物品
+                        ShouPoLanDeBagpackHandler.addShouPoLanDeBagpack(id, commonObject.getTotalNumber());
+                        //销毁物品添加
+                        commonObjectList.add(commonObject);
+                        isGet = true;
+                    }
+                }
+                //房间物品销毁
+                if (isGet) {
+                    //保存掉落战利品数据
+                    TrophyHandler.removeTrophy(worldRoomObject.getDataKey());
+                    //销毁前端物品
+                    GameCharacterManager.objectMoveOut(commonObjectList, worldRoomObject.getDataKey());
+                    Map<String, Object> roomMessage = new HashMap<String, Object>();
+                    roomMessage.put("msg", "{r战利品已被收破烂的捡走！{n");
+                    WorldRoomObjectManager.broadcast(worldRoomObject, roomMessage, null);
+                }
+            }
+        };
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(runnable, 0, (int) (gameSetting.getGlobalCD() * 3000), TimeUnit.MILLISECONDS);
     }
 }

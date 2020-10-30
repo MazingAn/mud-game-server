@@ -12,6 +12,10 @@ public class TrophyHandler {
     public static Map<String, Set<String>> TrophyMap = new HashMap<>();
 
     public static void addTrophy(String key, Set<String> stringList) {
+        if (stringList.size() == 0) {
+            removeTrophy(key);
+            return;
+        }
         if (TrophyMap.get(key) == null || TrophyMap.get(key).isEmpty()) {
             TrophyMap.put(key, stringList);
         } else {

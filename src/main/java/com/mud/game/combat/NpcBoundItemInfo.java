@@ -5,10 +5,6 @@ import java.util.Map;
 
 public class NpcBoundItemInfo {
     /**
-     * npc死亡生成战利品时间
-     */
-    private Date createTime;
-    /**
      * 击杀者id
      */
     private String killerId;
@@ -17,18 +13,12 @@ public class NpcBoundItemInfo {
      */
     private Map<String, Integer> npcBoundItemMap;
 
-    public NpcBoundItemInfo(Date createTime, String killerId, Map<String, Integer> npcBoundItemMap) {
-        this.createTime = createTime;
+    public NpcBoundItemInfo(String killerId, Map<String, Integer> npcBoundItemMap) {
         this.killerId = killerId;
         this.npcBoundItemMap = npcBoundItemMap;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public NpcBoundItemInfo() {
     }
 
     public String getKillerId() {
