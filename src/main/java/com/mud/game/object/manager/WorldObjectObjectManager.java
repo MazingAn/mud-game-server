@@ -26,6 +26,7 @@ public class WorldObjectObjectManager {
         obj.setName(template.getName());
         obj.setIcon(template.getIcon());
         obj.setLocation(template.getLocation());
+        obj.setTypeClass(template.getTypeClass());
         obj.setShowCondition(template.getShowCondition());
         bindEvents(obj);
         // 把物体放到房间内
@@ -40,6 +41,7 @@ public class WorldObjectObjectManager {
         obj.setName(template.getName());
         obj.setIcon(template.getIcon());
         obj.setLocation(template.getLocation());
+        obj.setTypeClass(template.getTypeClass());
         bindEvents(obj);
         // 把物体放到房间内
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(obj.getLocation());

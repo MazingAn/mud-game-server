@@ -30,8 +30,7 @@ import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.mud.game.constant.PostConstructConstant.CRIME_VALUE_ATTACK;
-import static com.mud.game.constant.PostConstructConstant.DISCARD_CONTENTS;
+import static com.mud.game.constant.PostConstructConstant.*;
 import static com.mud.game.utils.resultutils.GameWords.*;
 
 public class PlayerCharacterManager {
@@ -208,7 +207,7 @@ public class PlayerCharacterManager {
                     worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
                     worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
                     targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()))));
-                    targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:"+String.format(FRIEND_ONLINE_REMINDER,playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName())+",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
+                    targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:" + String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()) + ",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
 
                 }
             }
@@ -222,7 +221,7 @@ public class PlayerCharacterManager {
                     worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
                     worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
                     targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()))));
-                    targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:"+String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName())+",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
+                    targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:" + String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()) + ",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
                 }
             }
         } catch (Exception e) {
@@ -307,20 +306,37 @@ public class PlayerCharacterManager {
             }
         }
         location_info.put("exits", exits);
+
         // 可以看到的玩家
+        List<CommonCharacter> commonCharacterList = new ArrayList<>();
         List<SimpleCharacter> playerCharacters = new ArrayList<SimpleCharacter>();
+        List<EnemyObject> enemyObjectList = MongoMapper.enemyObjectRepository.findListEnemyObjectByPlayerId(playerCharacter.getId());
+        List<String> enemyStrList = new ArrayList<>();
+        for (EnemyObject enemyObject : enemyObjectList) {
+            if (enemyObject.getLevel() > ENEMY_LEVEL_VALUE) {
+                enemyStrList.add(enemyObject.getEnemyId());
+            }
+        }
         for (String playerId : location.getPlayers()) {
             PlayerCharacter otherPlayerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerId);
             if (otherPlayerCharacter.getState().equals(CharacterState.STATE_DEATH)) {
-                otherPlayerCharacter.setName(otherPlayerCharacter.getName() + "的尸体");
+                //otherPlayerCharacter.setName(otherPlayerCharacter.getName() + "的尸体");
             }
             if (isVisibleForOtherPlayerCharacter(playerCharacter, otherPlayerCharacter)) {
                 playerCharacters.add(new SimpleCharacter(otherPlayerCharacter));
             }
+            //添加仇恨值过高玩家
+            EnemyObject enemyObject = MongoMapper.enemyObjectRepository.findByPlayerIdAndEnemyId(otherPlayerCharacter.getId(), playerCharacter.getId());
+            if (enemyObject != null && enemyObject.getLevel() > 5 && !commonCharacterList.contains(otherPlayerCharacter) && otherPlayerCharacter.getHp() > 0) {
+                commonCharacterList.add(otherPlayerCharacter);
+            }
+            if (enemyStrList.contains(otherPlayerCharacter.getId()) && !commonCharacterList.contains(otherPlayerCharacter) && otherPlayerCharacter.getHp() > 0) {
+                commonCharacterList.add(otherPlayerCharacter);
+            }
         }
         location_info.put("players", playerCharacters);
+
         // 可以看到的NPC
-        List<CommonCharacter> commonCharacterList = new ArrayList<>();
         List<SimpleCharacter> npcs = new ArrayList<>();
         List<String> list_1 = new ArrayList<>(location.getNpcs());
         list_1.removeAll(Collections.singleton(null));
@@ -328,22 +344,22 @@ public class PlayerCharacterManager {
             WorldNpcObject npc = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectByDataKey(npcDataKey);
             if (GameWorldManager.isNpcVisibleForPlayerCharacter(npc, playerCharacter)) {
                 if (npc.getState().equals(CharacterState.STATE_DEATH)) {
-                    npc.setName(npc.getName() + "的尸体");
+                    //npc.setName(npc.getName() + "的尸体");
                 }
                 SimpleCharacter simpleCharacter = new SimpleCharacter(npc);
                 simpleCharacter.setProvide_quest(WorldNpcObjectManager.canProvideQuest(npc, playerCharacter));
                 simpleCharacter.setComplete_quest(WorldNpcObjectManager.canTurnInQuest(npc, playerCharacter));
                 npcs.add(simpleCharacter);
                 //犯罪值引发npc
-                if (npc.getHp() > 0 && npc.getCanAttackByCrime()) {
+                if (npc.getHp() > 0 && npc.getCanAttackByCrime() && playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK) {
                     commonCharacterList.add(npc);
                 }
             }
         }
         //犯罪值大于阈值，触发npc战斗
-        if (playerCharacter.getCrimeValue() >= CRIME_VALUE_ATTACK && commonCharacterList.size() > 0) {
+        if (commonCharacterList.size() > 0) {
             playerCharacter.msg(new ToastMessage("{r由于你的犯罪值过高，将会受到攻击！{g"));
-            getLookMessage(playerCharacter);
+            getLookMessage(playerCharacter, "由于你的犯罪值过高，将会受到攻击！");
             getAttack(playerCharacter, commonCharacterList, 0);
         }
         location_info.put("npcs", npcs);
@@ -353,11 +369,11 @@ public class PlayerCharacterManager {
         playerCharacter.msg(new CurrentLocationMessage(new RoomInfo(location)));
     }
 
-    private static void getLookMessage(PlayerCharacter playerCharacter) {
+    private static void getLookMessage(PlayerCharacter playerCharacter, String message) {
 
         Map<String, Object> lookMessage = new HashMap<>();
         PlayerCharacterAppearance appearance = new PlayerCharacterAppearance(playerCharacter);
-        appearance.setDesc("由于你的犯罪值过高，将会受到攻击！");
+        appearance.setDesc(message);
         List<EmbeddedCommand> cmds = new ArrayList<>();
         cmds.add(new EmbeddedCommand("确定", "puppet", playerCharacter.getId()));
         appearance.setCmds(cmds);
@@ -383,9 +399,9 @@ public class PlayerCharacterManager {
         }
         for (CommonCharacter commonCharacter : commonCharacterList) {
             NpcCombatHandler.addNpcCombatSense(commonCharacter.getId(), caller.getId(), combatSense);
+            CombatHandler.addCombatSense(commonCharacter.getId(), combatSense);
         }
         CombatHandler.addCombatSense(caller.getId(), combatSense);
-
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);
         normalCombat.startCombat(combatSense);
@@ -697,7 +713,7 @@ public class PlayerCharacterManager {
          * @ 对于玩家之间来说 包含的命令有 加好友，秘语，切磋，攻击命令
          * */
         List<EmbeddedCommand> cmds = new ArrayList<>();
-        if (!caller.getId().equals(target.getId())) {
+        if (!caller.getId().equals(target.getId()) && target.getHp() > 0) {
             // 添加好友命令
             if (!target.getFriends().containsKey(caller.getId())) {
                 cmds.add(new EmbeddedCommand("结交", "add_friend", target.getId()));

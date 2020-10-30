@@ -537,7 +537,8 @@ public class WorldNpcObjectManager {
             }
         };
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(runnable, 600, (int) (gameSetting.getGlobalCD() * 10000), TimeUnit.MILLISECONDS);
+        service.scheduleAtFixedRate(runnable, 10000, (int) (gameSetting.getGlobalCD() * 10000), TimeUnit.MILLISECONDS);
+
     }
 
     public static void moveTo(WorldNpcObject worldNpcObject, String roomKey) {

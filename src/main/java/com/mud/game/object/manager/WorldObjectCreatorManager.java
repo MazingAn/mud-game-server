@@ -35,6 +35,7 @@ public class WorldObjectCreatorManager {
         obj.setLocation(template.getLocation());
         obj.setActionName(template.getActionName());
         obj.setLootNumber(template.getLootNumber());
+        obj.setTypeClass(template.getTypeClass());
         obj.setLootOnce(template.isLootOnce());
         obj.setRefreshTime(template.getRefreshTime());
         obj.setShowCondition(template.getShowCondition());
@@ -63,6 +64,7 @@ public class WorldObjectCreatorManager {
         obj.setLootNumber(template.getLootNumber());
         obj.setLootOnce(template.isLootOnce());
         obj.setRefreshTime(template.getRefreshTime());
+        obj.setTypeClass(template.getTypeClass());
         obj.setShowCondition(template.getShowCondition());
         bindLootList(obj);
         bindEvents(obj);

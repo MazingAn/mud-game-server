@@ -153,11 +153,13 @@ public class HangUpManager {
         int recoveredMaxHp = (int) (playerCharacter.getMax_hp() * 0.1);
         if (recoveredHp > 0) {
             GameCharacterManager.changeStatus(playerCharacter, "hp", recoveredHp);
+            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_HP, recoveredHp)));
         }
         if (recoveredLimitHp > recoveredMaxHp) {
             GameCharacterManager.changeStatus(playerCharacter, "max_hp", recoveredMaxHp);
+            playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MAX_HP, recoveredMaxHp)));
         }
-        playerCharacter = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(playerCharacter.getId());
+        playerCharacter = GameCharacterManager.getCharacterObject(playerCharacter.getId());
         if (playerCharacter.getMax_hp() >= playerCharacter.getLimit_hp()) {
             playerCharacter.setMax_hp(playerCharacter.getLimit_hp());
         }
@@ -165,9 +167,10 @@ public class HangUpManager {
             playerCharacter.setHp(playerCharacter.getMax_hp());
         }
         GameCharacterManager.saveCharacter(playerCharacter);
-        if (playerCharacter.getHp() == playerCharacter.getMax_hp() &&
-                playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()) {
+        if (playerCharacter.getHp() == playerCharacter.getMax_hp() && playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()) {
             PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
+            playerCharacter.msg(new MsgMessage(GameWords.PLAYER_CURE_END));
+
         }
         return playerCharacter;
     }

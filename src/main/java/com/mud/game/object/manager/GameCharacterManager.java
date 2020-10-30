@@ -570,6 +570,7 @@ public class GameCharacterManager {
         characterMoveIn(character);
         GameSessionService.updateCallerType(character.getId(), CallerType.DIE);
         character.msg(new RebornCommandsMessage((PlayerCharacter) character));
+        GameCharacterManager.saveCharacter(character);
     }
 
     /**
@@ -801,7 +802,7 @@ public class GameCharacterManager {
     public static void characterMoveIn(CommonCharacter character) {
         SimpleCharacter simpleCharacter = new SimpleCharacter(character);
         if (character.getState().equals(CharacterState.STATE_DEATH)) {
-            simpleCharacter.setName(character.getName() + "的尸体");
+           // simpleCharacter.setName(character.getName() + "的尸体");
         }
         String type = character instanceof WorldNpcObject ? "npcs" : "players";
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));

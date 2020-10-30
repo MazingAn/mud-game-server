@@ -17,7 +17,6 @@ public class BaseGameObject {
     private String name;
     private String description;
     private String location;
-
     public String getId() {
         return id;
     }
