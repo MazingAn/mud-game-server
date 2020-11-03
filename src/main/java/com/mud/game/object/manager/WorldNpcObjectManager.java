@@ -45,6 +45,7 @@ public class WorldNpcObjectManager {
         obj.setTeacher(template.getIsTeacher());
         obj.setLearnByObject(template.isCanLearnByObject());
         obj.setTeachCondition(template.getTeachCondition());
+        obj.setGiveEvil(template.getGiveEvil());
         // 初始化npc信息
         // 根据注册的信息设置角色信息
         obj.setName(template.getName());
@@ -114,7 +115,7 @@ public class WorldNpcObjectManager {
         clearSkills(obj);
         //加载默认技能信息
         obj = bindDefaultSkills(obj);
-
+        obj.setGiveEvil(template.getGiveEvil());
         obj.setDescription(template.getDescription());
         obj.setLocation(template.getLocation());
         obj.setTeacher(template.getIsTeacher());
@@ -502,13 +503,12 @@ public class WorldNpcObjectManager {
                 //TODO　战斗中或死亡后不能移动
                 List<WorldNpcObject> worldNpcObjectList = MongoMapper.worldNpcObjectRepository.findListWorldNpcObjectByCanWanderRoom(true);
                 List<WorldNpcWanderRoom> worldNpcWanderRoomList = null;
-                WorldNpcWanderRoom worldNpcWanderRoom = null;
                 for (WorldNpcObject worldNpcObject : worldNpcObjectList) {
                     if (!NpcCombatHandler.containsKey(worldNpcObject.getId()) && worldNpcObject.getHp() > 0) {
                         //指定游荡路线
                         worldNpcWanderRoomList = DbMapper.worldNpcWanderRoomRepository.findListWorldNpcWanderRoomByNpcDataKey(worldNpcObject.getDataKey());
                         if (worldNpcWanderRoomList.size() > 0) {
-                            //删除npc目前所在fang'j
+                            //删除npc目前所在房间
                             Iterator<WorldNpcWanderRoom> iterator = worldNpcWanderRoomList.iterator();
                             while (iterator.hasNext()) {
                                 WorldNpcWanderRoom u = iterator.next();

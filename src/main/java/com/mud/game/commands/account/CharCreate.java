@@ -2,14 +2,19 @@ package com.mud.game.commands.account;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.account.Player;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerManager;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
+
+import java.util.HashSet;
 
 
 /**
@@ -46,6 +51,16 @@ public class CharCreate extends BaseCommand {
         int smart = innateValues.getInt(3);
         PlayerCharacter playerCharacter = PlayerCharacterManager.create(name, gender, arm, bone, body, smart, getSession());
         if (playerCharacter != null) {
+            SkillObject skillObject = SkillObjectManager.create("skill_taopao");
+            skillObject.setOwner(playerCharacter.getId());
+            skillObject.setLevel(1);
+            skillObject = MongoMapper.skillObjectRepository.save(skillObject);
+
+            SkillObject finalSkillObject = skillObject;
+            playerCharacter.setSkills(new HashSet<String>() {{
+                add(finalSkillObject.getId());
+            }});
+            MongoMapper.playerCharacterRepository.save(playerCharacter);
             PlayerCharacterManager.puppet(playerCharacter.getId(), getSession());
         }
         Player player = MongoMapper.playerRepository.findPlayerById(playerCharacter.getPlayer());

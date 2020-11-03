@@ -53,12 +53,12 @@ public class RequestLearnFromFriend extends BaseCommand {
         PlayerCharacter target = MongoMapper.playerCharacterRepository.findPlayerCharacterById(targetId);
 
         if (caller.getHp() <= caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
-            caller.msg(new ToastMessage("{r你的血量过低，不能发起切磋！{g"));
+            caller.msg(new ToastMessage("{r你有伤在身，伤愈才能切磋！{g"));
             return;
         }
 
         if (target.getHp() <= target.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT) {
-            caller.msg(new ToastMessage("{r" +target.getName() + "的血量过低，不能发起切磋！{g"));
+            caller.msg(new ToastMessage("{r" +target.getName() + "有伤在身，伤愈才能切磋！{g"));
             return;
         }
         Map<String, Object> lookMessage = new HashMap<>();

@@ -50,13 +50,13 @@ public class PickUpList extends BaseCommand {
         NpcBoundItemInfo npcBoundItemInfo = GameCharacterManager.npcBoundItemSet.get(dbref);
         WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(dbref);
         if (null == npcBoundItemInfo) {
-            caller.msg(new ToastMessage("{g" + worldNpcObject.getName() + "上没什么都没有！{n"));
+            caller.msg(new ToastMessage("{g" + worldNpcObject.getName() + "的尸体上没什么都没有！{n"));
             return;
         }
         //拿到战利品
         Map<String, Integer> npcBoundItemMap = npcBoundItemInfo.getNpcBoundItemMap();
         if (null == npcBoundItemMap || npcBoundItemMap.size() == 0) {
-            caller.msg(new ToastMessage("{g" + worldNpcObject.getName() + "上没什么都没有！{n"));
+            caller.msg(new ToastMessage("{g" + worldNpcObject.getName() + "的尸体上没什么都没有！{n"));
             return;
         }
         //不为空

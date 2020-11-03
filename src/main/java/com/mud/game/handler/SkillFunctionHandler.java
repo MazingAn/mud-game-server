@@ -11,11 +11,8 @@ import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.statements.buffers.AddBuffer;
-import com.mud.game.statements.skills.IncrementsAttr;
-import com.mud.game.statements.skills.MangLuan;
-import com.mud.game.statements.skills.ZhongDu;
+import com.mud.game.statements.skills.*;
 import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
-import com.mud.game.statements.skills.NormalHit;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.structs.SkillCdInfo;
 
@@ -74,7 +71,7 @@ public class SkillFunctionHandler {
                 //构建战斗输出
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
-               // GameCharacterManager.saveCharacter(target);
+                // GameCharacterManager.saveCharacter(target);
                 CombatSense sense = null;
                 if (caller instanceof WorldNpcObject) {
                     sense = NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());
@@ -87,7 +84,7 @@ public class SkillFunctionHandler {
                 }
                 sense.msgContents(new SkillCastMessage(skillCastInfo));
                 //设置技能cd
-                SkillCdHandler.addSkillCd(caller.getId()+skillObject.getDataKey(), new Date());
+                SkillCdHandler.addSkillCd(caller.getId() + skillObject.getDataKey(), new Date());
                 //返回技能冷却时间
                 if (skillObject.getCd() != 0) {
                     sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd(), skillObject.getId(), skillObject.getDataKey())));
@@ -145,6 +142,8 @@ public class SkillFunctionHandler {
         actionSkillFunctionSet.put("mangluan", MangLuan.class);
         // 中毒
         actionSkillFunctionSet.put("zhongdu", ZhongDu.class);
+        // 逃跑
+        actionSkillFunctionSet.put("taopao", TaoPao.class);
     }
 
 }

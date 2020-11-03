@@ -548,6 +548,9 @@ public class GameCharacterManager {
      * @param character CommonCharacter
      */
     public static void saveCharacter(CommonCharacter character) {
+        if (character.getHp() <= 0) {
+            character.setState(CharacterState.STATE_DEATH);
+        }
         if (character instanceof PlayerCharacter)
             MongoMapper.playerCharacterRepository.save((PlayerCharacter) character);
         else if (character instanceof WorldNpcObject)
@@ -603,6 +606,12 @@ public class GameCharacterManager {
             characterMoveIn(character);
         }
         if (character instanceof WorldNpcObject) {
+            if (commonCharacter instanceof PlayerCharacter) {
+                PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(commonCharacter.getId());
+                WorldNpcObject worldNpcObject = MongoMapper.worldNpcObjectRepository.findWorldNpcObjectById(character.getId());
+                playerCharacter.setGoodAndEvil(playerCharacter.getGoodAndEvil() + worldNpcObject.getGiveEvil());
+                MongoMapper.playerCharacterRepository.save(playerCharacter);
+            }
             if (b) {
                 //生成战利品
                 WorldNpcObjectManager.getTrophy(character, commonCharacter);
@@ -801,9 +810,6 @@ public class GameCharacterManager {
      */
     public static void characterMoveIn(CommonCharacter character) {
         SimpleCharacter simpleCharacter = new SimpleCharacter(character);
-        if (character.getState().equals(CharacterState.STATE_DEATH)) {
-            // simpleCharacter.setName(character.getName() + "的尸体");
-        }
         String type = character instanceof WorldNpcObject ? "npcs" : "players";
         ObjectMoveInfo moveInfo = new ObjectMoveInfo(type, Arrays.asList(new SimpleCharacter[]{simpleCharacter}));
         WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
@@ -859,7 +865,7 @@ public class GameCharacterManager {
         List<CombatCommand> commands = new ArrayList<>();
         for (String skillObjectId : character.getSkills()) {
             SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillObjectId);
-            if (!skillObject.isPassive() && skillObject.getEquippedPositions().size() > 0) {
+            if (skillObject.getDataKey().equals("skill_taopao") || (!skillObject.isPassive() && (skillObject.getEquippedPositions().size() > 0))) {
                 commands.add(new CombatCommand(skillObject.getName(), skillObject.getDataKey(), skillObject.getIcon()));
             }
         }
@@ -904,4 +910,8 @@ public class GameCharacterManager {
         return equippedWeapons;
     }
 
+    public static void showStatus(PlayerCharacter caller, String id) {
+        PlayerCharacter playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(id);
+        caller.msg(new CharacterStatus(playerCharacter));
+    }
 }

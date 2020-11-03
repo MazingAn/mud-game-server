@@ -3,7 +3,6 @@ package com.mud.game.commands.character;
 import com.mud.game.combat.CombatSense;
 import com.mud.game.combat.NormalCombat;
 import com.mud.game.commands.BaseCommand;
-import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.GraduationHandler;
 import com.mud.game.object.supertypeclass.CommonCharacter;
@@ -14,9 +13,6 @@ import org.json.JSONObject;
 import org.yeauty.pojo.Session;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 玩家向师傅发起请教
@@ -61,7 +57,6 @@ public class LeftTeacher extends BaseCommand {
         CombatSense combatSense = new CombatSense(redTeam, blueTeam, 0);
         CombatHandler.addCombatSense(targetObject.getId() + playerCharacter.getId(), combatSense);
         CombatHandler.addCombatSense(playerCharacter.getId() + targetObject.getId(), combatSense);
-        AutoContestHandler.addCommonCharacter(targetObject.getId() + playerCharacter.getId(), targetObject);
         GraduationHandler.addGraduationList(playerCharacter.getId());
         NormalCombat normalCombat = new NormalCombat();
         normalCombat.init(combatSense);

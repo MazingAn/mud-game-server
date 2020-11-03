@@ -5,6 +5,7 @@ import com.mud.game.messages.PlayerCharacterStateMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
+import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.object.typeclass.WorldRoomObject;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.utils.resultutils.GameWords;
@@ -169,8 +170,13 @@ public class HangUpManager {
         GameCharacterManager.saveCharacter(playerCharacter);
         if (playerCharacter.getHp() == playerCharacter.getMax_hp() && playerCharacter.getMax_hp() == playerCharacter.getLimit_hp()) {
             PlayerScheduleManager.shutdownExecutorByCallerId(playerCharacter.getId());
-            playerCharacter.msg(new MsgMessage(GameWords.PLAYER_CURE_END));
-
+            if (playerCharacter instanceof WorldNpcObject) {
+                playerCharacter.setState(CharacterState.STATE_NORMAL);
+                GameCharacterManager.saveCharacter(playerCharacter);
+                WorldRoomObjectManager.broadcast(MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation()), "{g" + playerCharacter.getName() + "已经恢复到最佳状态!{n", playerCharacter.getId());
+            } else {
+                playerCharacter.msg(new MsgMessage(GameWords.PLAYER_CURE_END));
+            }
         }
         return playerCharacter;
     }
@@ -181,8 +187,8 @@ public class HangUpManager {
      * @param playerCharacter 玩家
      */
     private static PlayerCharacter onPlayerMeditate(PlayerCharacter playerCharacter) {
-        int recoveredMp = (int) (playerCharacter.getMax_mp() * 0.1);
-        int recoveredMaxMp = (int) (playerCharacter.getLimit_mp() * 0.1);
+        int recoveredMp = (int) (playerCharacter.getMax_mp() * 0.1) + playerCharacter.getAfter_bone();
+        int recoveredMaxMp = (int) (playerCharacter.getLimit_mp() * 0.1) + playerCharacter.getAfter_bone();
         if (recoveredMp > 0) {
             GameCharacterManager.changeStatus(playerCharacter, "mp", recoveredMp);
             playerCharacter.msg(new ToastMessage(String.format(GameWords.PLAYER_RECOVER_MP, recoveredMp)));

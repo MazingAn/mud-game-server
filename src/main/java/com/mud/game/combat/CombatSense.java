@@ -6,17 +6,20 @@ import com.mud.game.handler.GraduationHandler;
 import com.mud.game.handler.NpcCombatHandler;
 import com.mud.game.messages.CombatFinishMessage;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.ObjectMoveOutMessage;
 import com.mud.game.messages.RebornCommandsMessage;
-import com.mud.game.object.manager.GameCharacterManager;
-import com.mud.game.object.manager.HangUpManager;
-import com.mud.game.object.manager.PlayerCharacterManager;
-import com.mud.game.object.manager.PlayerScheduleManager;
+import com.mud.game.object.manager.*;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.object.typeclass.WorldRoomObject;
+import com.mud.game.structs.CharacterState;
+import com.mud.game.structs.ObjectMoveInfo;
+import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -189,6 +192,13 @@ public class CombatSense {
 //            }
             // 开始疗伤挂机
             Runnable runnable = onPlayerCure(character);
+            // 疗伤
+            WorldRoomObject room = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(character.getLocation());
+            //房间内提示
+            WorldRoomObjectManager.broadcast(room, "{g" + character.getName() + "开始疗伤!{n", character.getId());
+            //修改状态
+            character.setState(CharacterState.STATE_CURE);
+            GameCharacterManager.saveCharacter(character);
             if (runnable != null) {
                 ScheduledExecutorService service = PlayerScheduleManager.createOrGetExecutorServiceForCaller(character.getId());
                 service.scheduleAtFixedRate(runnable, 0, 10000, TimeUnit.MILLISECONDS);

@@ -40,6 +40,16 @@ public class WorldNpcObject extends CommonCharacter {
     private Boolean canAttackByCrime;
     //是否游荡
     private Boolean canWanderRoom;
+    //提供善恶值
+    private int giveEvil;
+
+    public int getGiveEvil() {
+        return giveEvil;
+    }
+
+    public void setGiveEvil(int giveEvil) {
+        this.giveEvil = giveEvil;
+    }
 
     public Set<String> getEvents() {
         return events;

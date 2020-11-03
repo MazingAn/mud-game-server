@@ -1,5 +1,6 @@
 package com.mud.game.object.manager;
 
+import com.mud.game.commands.character.Strengthen;
 import com.mud.game.handler.EquipmentPositionHandler;
 import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.CheckStrengthenMessage;
@@ -313,7 +314,13 @@ public class EquipmentObjectManager {
                 session.sendText(JsonResponse.JsonStringResponse(String.format(equipmentObject.getName(), new MsgMessage(GameWords.EQUIPMENT_ALREADY_EQUIPPED))));
             return false;
         }
+        //检测装备是否可以装备到指定位置
+        Set<String> equipmentStrSet = equipmentObject.getPositions();
+        if (!equipmentStrSet.contains(position)) {
+            return false;
+        }
         // 检查装备和技能是否匹配
+
         return true;
     }
 
@@ -360,7 +367,7 @@ public class EquipmentObjectManager {
         Map<String, Object> lookMessage = new HashMap<>();
         EquipmentObjectAppearance appearance = new EquipmentObjectAppearance(equipmentObject);
         // 设置玩家可以对此物体执行的命令
-        if(isShow){
+        if (isShow) {
             appearance.setCmds(EquipmentObjectManager.getAvailableCommands(equipmentObject, playerCharacter));
         }
         lookMessage.put("look_obj", appearance);

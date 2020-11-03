@@ -206,7 +206,7 @@ public class PlayerCharacterManager {
                 if (targetSession != null) {
                     worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
                     worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
-                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()))));
+                    //  targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()))));
                     targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:" + String.format(FRIEND_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName(), worldRoomObject.getName()) + ",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
 
                 }
@@ -220,7 +220,7 @@ public class PlayerCharacterManager {
                 if (targetSession != null) {
                     worldRoomObject = MongoMapper.worldRoomObjectRepository.findWorldRoomObjectByDataKey(playerCharacter.getLocation());
                     worldAreaObject = MongoMapper.worldAreaObjectRepository.findWorldAreaObjectByDataKey(worldRoomObject.getLocation());
-                    targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()))));
+                    // targetSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()))));
                     targetSession.sendText(JsonResponse.JsonStringResponse("【谣言】系统:([name:系统,dbref:undefined,info:" + String.format(ENEMY_ONLINE_REMINDER, playerCharacter.getName(), worldAreaObject.getName()) + ",channel_type:rumor,goods_name:undefined,goods_dbref:undefined,])"));
                 }
             }
@@ -722,6 +722,8 @@ public class PlayerCharacterManager {
             cmds.add(new EmbeddedCommand("攻击", "attack", target.getId()));
             // 添加切磋命令
             cmds.add(new EmbeddedCommand("切磋", "request_learn_from_friend", target.getId()));
+            // 查看        PlayerCharacterManager.showStatus(caller);
+            cmds.add(new EmbeddedCommand("查看", "show_character_status", target.getId()));
         }
         return cmds;
     }
