@@ -278,7 +278,7 @@ public class HangUpManager {
     }
 
     //生成区间内随机数
-    private static int randomInterval(int levelMinLevel, int levelMaxLevel) {
+    public static int randomInterval(int levelMinLevel, int levelMaxLevel) {
         Random random = new Random();
         return random.nextInt(levelMaxLevel - levelMinLevel) + levelMinLevel;
     }

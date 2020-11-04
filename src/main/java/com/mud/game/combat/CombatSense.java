@@ -172,9 +172,9 @@ public class CombatSense {
      *
      * @param character npc对象
      */
-    public void initializeNpc(CommonCharacter character) {
+    public static void initializeNpc(CommonCharacter character) {
         character = GameCharacterManager.getCharacterObject(character.getId());
-        if (character.getHp() > minHp && character instanceof WorldNpcObject && (NpcCombatHandler.getNpcCombatSense(character.getId()) == null || NpcCombatHandler.getNpcCombatSense(character.getId()).size() == 0)) {
+        if (character.getHp() < character.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT && character instanceof WorldNpcObject && !character.getState().equals(CharacterState.STATE_DEATH) && (NpcCombatHandler.getNpcCombatSense(character.getId()) == null || NpcCombatHandler.getNpcCombatSense(character.getId()).size() == 0)) {
 //            if (character.getLimit_hp() == 0) character.setLimit_hp(200);
 //            if (character.getLimit_mp() == 0) character.setLimit_mp(200);
 //            character.setMax_hp(character.getLimit_hp());
@@ -207,7 +207,7 @@ public class CombatSense {
         }
     }
 
-    private Runnable onPlayerCure(CommonCharacter character) {
+    private static Runnable onPlayerCure(CommonCharacter character) {
         Runnable runnable = new Runnable() {
             // run方法将周期性运行
             @Override

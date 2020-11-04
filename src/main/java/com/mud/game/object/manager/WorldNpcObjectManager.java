@@ -9,6 +9,7 @@ import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
 import com.mud.game.object.typeclass.*;
+import com.mud.game.structs.CharacterState;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.NpcAppearance;
 import com.mud.game.structs.SimpleSkill;
@@ -504,7 +505,7 @@ public class WorldNpcObjectManager {
                 List<WorldNpcObject> worldNpcObjectList = MongoMapper.worldNpcObjectRepository.findListWorldNpcObjectByCanWanderRoom(true);
                 List<WorldNpcWanderRoom> worldNpcWanderRoomList = null;
                 for (WorldNpcObject worldNpcObject : worldNpcObjectList) {
-                    if (!NpcCombatHandler.containsKey(worldNpcObject.getId()) && worldNpcObject.getHp() > 0) {
+                    if (!NpcCombatHandler.containsKey(worldNpcObject.getId()) && worldNpcObject.getState().equals(CharacterState.STATE_NORMAL)) {
                         //指定游荡路线
                         worldNpcWanderRoomList = DbMapper.worldNpcWanderRoomRepository.findListWorldNpcWanderRoomByNpcDataKey(worldNpcObject.getDataKey());
                         if (worldNpcWanderRoomList.size() > 0) {
