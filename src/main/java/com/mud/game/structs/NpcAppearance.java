@@ -35,7 +35,7 @@ public class NpcAppearance extends GameObjectAppearance {
         this.is_player = false;
         this.state = npc.getState();
         if (npc.getState().equals(CharacterState.STATE_DEATH)) {
-            this.setDesc(this.getDesc()+"可惜已变成了一具尸体！");
+            this.setDesc(StringUtils.isEmpty(npc.getDeathDesc()) ? "此npc暂无死亡描述" : npc.getDeathDesc());
         }
     }
 

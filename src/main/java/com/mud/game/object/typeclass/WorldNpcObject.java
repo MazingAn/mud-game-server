@@ -42,6 +42,16 @@ public class WorldNpcObject extends CommonCharacter {
     private Boolean canWanderRoom;
     //提供善恶值
     private int giveEvil;
+    //死亡描述
+    private String deathDesc;
+
+    public String getDeathDesc() {
+        return deathDesc;
+    }
+
+    public void setDeathDesc(String deathDesc) {
+        this.deathDesc = deathDesc;
+    }
 
     public int getGiveEvil() {
         return giveEvil;

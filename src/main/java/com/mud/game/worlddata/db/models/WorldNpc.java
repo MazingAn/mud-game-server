@@ -90,6 +90,41 @@ public class WorldNpc extends BaseObject {
     @Mark(name = "是否游荡")
     private boolean canWanderRoom;
 
+    @Mark(name = "死亡描述")
+    private String deathDesc;
+
+    public boolean isCrimeControlCmd() {
+        return crimeControlCmd;
+    }
+
+    public void setCrimeControlCmd(boolean crimeControlCmd) {
+        this.crimeControlCmd = crimeControlCmd;
+    }
+
+    public boolean isCanAttackByCrime() {
+        return canAttackByCrime;
+    }
+
+    public void setCanAttackByCrime(boolean canAttackByCrime) {
+        this.canAttackByCrime = canAttackByCrime;
+    }
+
+    public boolean isCanWanderRoom() {
+        return canWanderRoom;
+    }
+
+    public void setCanWanderRoom(boolean canWanderRoom) {
+        this.canWanderRoom = canWanderRoom;
+    }
+
+    public String getDeathDesc() {
+        return deathDesc;
+    }
+
+    public void setDeathDesc(String deathDesc) {
+        this.deathDesc = deathDesc;
+    }
+
     public String getLocation() {
         return location;
     }

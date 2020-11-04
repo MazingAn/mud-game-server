@@ -77,6 +77,7 @@ public class WorldNpcObjectManager {
         obj.setAfter_lucky(0);
         obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
+        obj.setDeathDesc(template.getDeathDesc());
         // 加载默认技能信息
         bindDefaultSkills(obj);
         // 加载掉落信息
@@ -136,7 +137,7 @@ public class WorldNpcObjectManager {
         obj.setTransfer(template.isTransfer());
         obj.setCanWanderRoom(template.getCanWanderRoom());
         obj.setShowCondition(template.getShowCondition());
-
+        obj.setDeathDesc(template.getDeathDesc());
         // TODO 加载默认装备信息
         // 加载掉落信息
         bindLootList(obj);
