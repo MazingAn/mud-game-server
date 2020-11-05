@@ -11,6 +11,7 @@ import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.UserOptionCode;
 import com.mud.game.worldrun.db.mappings.MongoMapper;
+import org.apache.commons.lang.StringUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.HashSet;
@@ -32,7 +33,7 @@ public class PlayerManager {
     public static Player create(String username, String password, Session session) {
         username = username.toLowerCase();
         // 检查账号是否重复
-        if (MongoMapper.playerRepository.existsByUsername(username)) {
+        if (StringUtils.isNotEmpty(username) || MongoMapper.playerRepository.existsByUsername(username)) {
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USERNAME_EXIST_ERROR)));
             return null;
         } else {

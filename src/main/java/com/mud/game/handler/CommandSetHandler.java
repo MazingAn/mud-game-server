@@ -6,6 +6,7 @@ import com.mud.game.commands.character.*;
 import com.mud.game.commands.common.Idle;
 import com.mud.game.commands.unlogin.Connect;
 import com.mud.game.commands.unlogin.Create;
+import com.mud.game.commands.unlogin.WeiXinConnect;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class CommandSetHandler {
         unLoginCommandSet.put("idle", Idle.class);
         unLoginCommandSet.put("create", Create.class);
         unLoginCommandSet.put("connect", Connect.class);
+        unLoginCommandSet.put("wexin_connect", WeiXinConnect.class);
     }
 
     /**

@@ -1237,7 +1237,6 @@ public class PlayerCharacterManager {
                 playerCharacter.getEquippedSkills().get("zhishi").add(skillObject.getId());
                 MongoMapper.skillObjectRepository.save(skillObject);
             }
-
             SkillObjectManager.bindSubSkills(skillObject, playerCharacter.getId(), 1);
             // 绑定之后强制更新skillObject
             skillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillObject.getId());
@@ -1246,6 +1245,10 @@ public class PlayerCharacterManager {
             for (String subSkillId : skillObject.getSubSKills()) {
                 playerCharacter.getSkills().add(subSkillId);
             }
+            //如果是基本技能，默认增加属性
+//            if (skillObject.getCategoryType().equals("SCT_JIBEN")) {
+//                playerCharacter = (PlayerCharacter) SkillObjectManager.castBaseSkill(skillObject, playerCharacter);
+//            }
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.LEARNED_SKILL, skillObject.getName()))));
             updatedSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.LEARNED_SKILL, skillObject.getName()))));

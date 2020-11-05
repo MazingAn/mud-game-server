@@ -313,6 +313,15 @@ public class SkillObjectManager {
         return character;
     }
 
+    public static CommonCharacter castBaseSkill(SkillObject skillObject, CommonCharacter character) {
+        if (skillObject.isPassive()) {
+            for (SkillEffect effect : skillObject.getEffects()) {
+                character = GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
+            }
+        }
+        return character;
+    }
+
     /**
      * 执行技能，限定主动技能
      *
@@ -355,6 +364,36 @@ public class SkillObjectManager {
                     // 修改字符串类型数字
                     GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
                 }
+            }
+        }
+    }
+
+    public static void undoSkill(SkillObject skillObject, CommonCharacter character) {
+        for (SkillEffect effect : skillObject.getEffects()) {
+            if (effect.getValue().getClass().equals(Double.class) || effect.getValue().getClass().equals(double.class)) {
+                // 修改double类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), (double) effect.getValue() * -1);
+            } else if (effect.getValue().getClass().equals(float.class) || effect.getValue().getClass().equals(Float.class)) {
+                // 修改float类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), (float) effect.getValue() * -1);
+            } else if (effect.getValue().getClass().equals(Integer.class) || effect.getValue().getClass().equals(int.class)) {
+                // 修改int类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), (int) effect.getValue() * -1);
+            } else if (effect.getValue().getClass().equals(Long.class) || effect.getValue().getClass().equals(long.class)) {
+                // 修改long类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long) effect.getValue() * -1);
+            } else if (effect.getValue().getClass().equals(Short.class) || effect.getValue().getClass().equals(short.class)) {
+                // 修改long类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long) effect.getValue() * -1);
+            } else if (effect.getValue().getClass().equals(Byte.class) || effect.getValue().getClass().equals(byte.class)) {
+                // 修改long类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), (long) effect.getValue() * -1);
+            } else if (effect.getValue().getClass().equals(Boolean.class) || effect.getValue().getClass().equals(boolean.class)) {
+                // 修改double类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), !(boolean) effect.getValue());
+            } else if (effect.getValue().getClass().equals(String.class)) {
+                // 修改字符串类型数字
+                GameCharacterManager.changeStatus(character, effect.getAttrKey(), effect.getValue());
             }
         }
     }
@@ -557,6 +596,8 @@ public class SkillObjectManager {
                 SkillObjectManager.undoSkill(skillObject, playerCharacter, position);
             }
         }
+
+
         // 重新计算技能效果
         SkillObjectManager.calculusEffects(playerCharacter, null, skillObject);
         // 如果技能已经装备 在重新计算技能属性之之后，应用技能的效果
@@ -569,6 +610,48 @@ public class SkillObjectManager {
         MongoMapper.skillObjectRepository.save(skillObject);
         session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP, skillObject.getName(), skillObject.getLevel()))));
     }
+//    private static void levelUp(SkillObject skillObject, PlayerCharacter playerCharacter, Session session) {
+//        /*
+//         * 升级一个技能
+//         * */
+//        // 升级技能
+//        skillObject.setLevel(skillObject.getLevel() + 1);
+//        // 同步子技能
+//        for (String subSkillObjectId : skillObject.getSubSKills()) {
+//            try {
+//                SkillObject subSkillObject = MongoMapper.skillObjectRepository.findSkillObjectById(subSkillObjectId);
+//                subSkillObject.setLevel(skillObject.getLevel());
+//            } catch (Exception e) {
+//                System.out.println("没有找到对应的子技能");
+//            }
+//        }
+//        // 如果技能已经装备 在重新计算技能属性之前，取消技能的效果
+//        if (skillObject.getCategoryType().equals("SCT_JIBEN") || skillObject.getEquippedPositions().size() > 0) {
+//            if (skillObject.getCategoryType().equals("SCT_JIBEN")) {
+//                SkillObjectManager.undoSkill(skillObject, playerCharacter);
+//            } else {
+//                Set<String> positions = skillObject.getEquippedPositions();
+//                for (String position : positions) {
+//                    SkillObjectManager.undoSkill(skillObject, playerCharacter, position);
+//                }
+//            }
+//        }
+//        // 重新计算技能效果
+//        SkillObjectManager.calculusEffects(playerCharacter, null, skillObject);
+//        // 如果技能已经装备 在重新计算技能属性之之后，应用技能的效果
+//        if (skillObject.getCategoryType().equals("SCT_JIBEN") || skillObject.getEquippedPositions().size() > 0) {
+//            if (skillObject.getCategoryType().equals("SCT_JIBEN")) {
+//                SkillObjectManager.castBaseSkill(skillObject, playerCharacter);
+//            } else {
+//                Set<String> positions = skillObject.getEquippedPositions();
+//                for (String position : positions) {
+//                    SkillObjectManager.castSkill(skillObject, playerCharacter, position, false);
+//                }
+//            }
+//        }
+//        MongoMapper.skillObjectRepository.save(skillObject);
+//        session.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.SKILL_LEVEL_UP, skillObject.getName(), skillObject.getLevel()))));
+//    }
 
     public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, HarmInfo harmInfo) {
         // 生成战斗信息

@@ -16,6 +16,7 @@ public class MongoMapper<F, S> {
     public static WorldRoomObjectRepository worldRoomObjectRepository;
     public static WorldExitObjectRepository worldExitObjectRepository;
     public static PlayerRepository playerRepository;
+    public static WeiXinPlayerRepository weiXinPlayerRepository;
     public static PlayerCharacterRepository playerCharacterRepository;
     public static WorldObjectObjectRepository worldObjectObjectRepository;
     public static WorldObjectCreatorRepository worldObjectCreatorRepository;
@@ -34,6 +35,10 @@ public class MongoMapper<F, S> {
     public static EnemyObjectRepository enemyObjectRepository;
     public static EnemyRecordObjectRepository enemyRecordObjectRepository;
 
+    @Autowired
+    public void setWeiXinPlayerRepository(WeiXinPlayerRepository weiXinPlayerRepository) {
+        MongoMapper.weiXinPlayerRepository = weiXinPlayerRepository;
+    }
 
     @Autowired
     public void setWorldAreaObjectRepository(WorldAreaObjectRepository worldAreaObjectRepository) {

@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.account.Player;
 import com.mud.game.object.manager.PlayerManager;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
+
+import javax.print.DocFlavor;
 
 
 /**
@@ -22,7 +25,7 @@ import org.yeauty.pojo.Session;
  *              }
  * *        }
  * </pre>
- * */
+ */
 public class Create extends BaseCommand {
 
 
@@ -36,9 +39,12 @@ public class Create extends BaseCommand {
         String password = this.getArgs().getString("password");
         boolean connect = this.getArgs().getBoolean("connect");
         Session session = this.getSession();
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(username)) {
+            return;
+        }
         Player player = PlayerManager.create(username, password, session);
-        if(player != null && connect){
-            PlayerManager.login(username,password, session);
+        if (player != null && connect) {
+            PlayerManager.login(username, password, session);
         }
     }
 }
