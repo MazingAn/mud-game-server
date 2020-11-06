@@ -6,6 +6,7 @@ import com.mud.game.messages.LoginSuccessMessage;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
+import com.mud.game.object.account.WeiXinPlayer;
 import com.mud.game.structs.SimpleCharacter;
 import com.mud.game.utils.passwordutils.ShaPassword;
 import com.mud.game.utils.jsonutils.JsonResponse;
@@ -33,7 +34,7 @@ public class PlayerManager {
     public static Player create(String username, String password, Session session) {
         username = username.toLowerCase();
         // 检查账号是否重复
-        if (StringUtils.isNotEmpty(username) || MongoMapper.playerRepository.existsByUsername(username)) {
+        if (MongoMapper.playerRepository.existsByUsername(username)) {
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USERNAME_EXIST_ERROR)));
             return null;
         } else {
@@ -144,5 +145,25 @@ public class PlayerManager {
         } else {
             return UserOptionCode.USER_NOT_EXIST_ERROR;
         }
+    }
+
+    public static WeiXinPlayer weixinCreate(Session session, String unionid, String name) {
+        //创建新的账户
+        WeiXinPlayer player = new WeiXinPlayer();
+        player.setUnionId(unionid);
+        player.setUsername(name);
+        player.setPlayerCharacters(new HashSet<>());
+        MongoMapper.weiXinPlayerRepository.save(player);
+        return player;
+    }
+    /**
+     * 显示玩家的角色
+     *
+     * @param player  Player 玩家账户
+     * @param session Session 客户端连接session
+     */
+    public static void showWeiXinCharacters(WeiXinPlayer player, Session session) {
+        Set<SimpleCharacter> char_all = player.getPlayerCharacters();
+        session.sendText(JsonResponse.JsonStringResponse(new CharAllMessage(char_all)));
     }
 }

@@ -44,6 +44,14 @@ public class PostConstructConstant {
      * 仇恨值触发主动攻击
      */
     public static int ENEMY_LEVEL_VALUE;
+    /**
+     * 微信第三方登录appid
+     */
+    public static String WEIXIN_APPID;
+    /**
+     * 微信第三方登录secret
+     */
+    public static String WEIXIN_SECRET;
 
     @PostConstruct
     public void init() {
@@ -55,6 +63,8 @@ public class PostConstructConstant {
         CUT_BACKCRIME_ZERO_NPC = dataDictionaryRepository.findDataDictionaryByDataKey("CUT_BACKCRIME_ZERO_NPC").getContent();
         CUT_BACKCRIME_ATTACK = dataDictionaryRepository.findDataDictionaryByDataKey("CUT_BACKCRIME_ATTACK").getContent();
         CUT_BACKCRIME_NPC_DATAKEY = dataDictionaryRepository.findDataDictionaryByDataKey("CUT_BACKCRIME_NPC_DATAKEY").getContent();
+        WEIXIN_APPID = dataDictionaryRepository.findDataDictionaryByDataKey("WEIXIN_APPID").getContent();
+        WEIXIN_SECRET = dataDictionaryRepository.findDataDictionaryByDataKey("WEIXIN_SECRET").getContent();
     }
 
     /**

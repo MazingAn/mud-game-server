@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Map;
+
 @FeignClient(
         name = "weixin",
         url = "https://api.weixin.qq.com")
@@ -21,7 +23,7 @@ public interface IWeixinFeign {
      * @return
      */
     @RequestMapping(value = "/sns/oauth2/access_token", method = RequestMethod.GET, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
-    JSONObject getAccessToken(@RequestParam String appid, @RequestParam String secret, @RequestParam String code, @RequestParam String grant_type);
+    Map<String, Object> getAccessToken(@RequestParam("appid") String appid, @RequestParam("secret") String secret, @RequestParam("code") String code, @RequestParam("grant_type") String grant_type);
 
     /**
      * 刷新token
@@ -51,8 +53,8 @@ public interface IWeixinFeign {
      * @param openid       普通用户的标识，对当前开发者帐号唯一
      * @return
      */
-    @RequestMapping(value = "/sns/userinfo", method = RequestMethod.GET)
-    JSONObject userinfo(@RequestParam String access_token, @RequestParam String openid);
+    @RequestMapping(value = "/sns/userinfo", method = RequestMethod.GET, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+    Map<String, Object> userinfo(@RequestParam("access_token") String access_token, @RequestParam("openid") String openid);
 
     @RequestMapping(value = "/a", method = RequestMethod.GET)
     JSONObject getA(@RequestParam String appid, @RequestParam String secret, @RequestParam String code, @RequestParam String grant_type);

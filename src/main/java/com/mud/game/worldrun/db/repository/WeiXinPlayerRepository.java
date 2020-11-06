@@ -7,4 +7,6 @@ public interface WeiXinPlayerRepository extends MongoRepository<WeiXinPlayer, St
     boolean existsByUnionId(String unionID);
 
     WeiXinPlayer findWeiXinPlayerByUnionId(String unionID);
+
+    WeiXinPlayer findWeiXinPlayerById(String playerId);
 }

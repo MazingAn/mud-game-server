@@ -8,6 +8,7 @@ import com.mud.game.messages.*;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
+import com.mud.game.object.account.WeiXinPlayer;
 import com.mud.game.object.builder.CommonObjectBuilder;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.supertypeclass.CommonObject;
@@ -76,6 +77,7 @@ public class PlayerCharacterManager {
             playerCharacter.setAfter_bone(0);
             playerCharacter.setAfter_looks(0);
             playerCharacter.setAfter_lucky(0);
+            playerCharacter.setCanAttck(true);
             playerCharacter.setAfter_smart(0);
             playerCharacter.setTeacher("");
             playerCharacter.setTili(1000);
@@ -114,11 +116,21 @@ public class PlayerCharacterManager {
             // 加载玩家默认物品
             loadDefaultObjects(playerCharacter);
             // 同时更新player信息
+
             Player player = MongoMapper.playerRepository.findPlayerById(playerId);
-            Set<SimpleCharacter> infos = player.getPlayerCharacters();
-            infos.add(new SimpleCharacter(playerCharacter));
-            player.setPlayerCharacters(infos);
-            MongoMapper.playerRepository.save(player);
+            if (player != null) {
+                Set<SimpleCharacter> infos = player.getPlayerCharacters();
+                infos.add(new SimpleCharacter(playerCharacter));
+                player.setPlayerCharacters(infos);
+                MongoMapper.playerRepository.save(player);
+            }
+            WeiXinPlayer weiXinPlayer = MongoMapper.weiXinPlayerRepository.findWeiXinPlayerById(playerId);
+            if (weiXinPlayer != null) {
+                Set<SimpleCharacter> infos = weiXinPlayer.getPlayerCharacters();
+                infos.add(new SimpleCharacter(playerCharacter));
+                weiXinPlayer.setPlayerCharacters(infos);
+                MongoMapper.weiXinPlayerRepository.save(weiXinPlayer);
+            }
             return playerCharacter;
         }
     }

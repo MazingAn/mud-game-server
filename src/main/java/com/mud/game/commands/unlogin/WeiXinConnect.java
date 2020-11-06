@@ -2,7 +2,10 @@ package com.mud.game.commands.unlogin;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.feign.FeignService.WeixinService;
+import com.mud.game.messages.LoginSuccessMessage;
 import com.mud.game.messages.ToastMessage;
+import com.mud.game.net.session.CallerType;
+import com.mud.game.net.session.GameSessionService;
 import com.mud.game.object.account.Player;
 import com.mud.game.object.account.WeiXinPlayer;
 import com.mud.game.object.manager.PlayerManager;
@@ -12,6 +15,11 @@ import com.mud.game.worldrun.db.mappings.MongoMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.yeauty.pojo.Session;
+
+import java.util.Map;
+
+import static com.mud.game.constant.PostConstructConstant.WEIXIN_APPID;
+import static com.mud.game.constant.PostConstructConstant.WEIXIN_SECRET;
 
 
 /**
@@ -45,22 +53,25 @@ public class WeiXinConnect extends BaseCommand {
         String state = this.getArgs().getString("state");
 
         try {
-            JSONObject obj = WeixinService.weixinFeign.getAccessToken("wx77311c371826f8aa", "6ab5366ade1c754980fcb8f7e8a312ee", code, "authorization_code");
-            if (obj.get("access_token") != null) {
-                String token = obj.getString("access_token");
-                String openid = obj.getString("openid");
-                obj = WeixinService.weixinFeign.userinfo(token, openid);
-                if (obj.get("unionID") != null) {
-                    String unionID = obj.getString("unionID");
-                    Player player = null;
-                    if (MongoMapper.weiXinPlayerRepository.existsByUnionId(unionID)) {
-                        WeiXinPlayer weiXinPlayer = MongoMapper.weiXinPlayerRepository.findWeiXinPlayerByUnionId(unionID);
-                        player = MongoMapper.playerRepository.findPlayerById(weiXinPlayer.getPlayerId());
+            Map<String, Object> map = WeixinService.weixinFeign.getAccessToken(WEIXIN_APPID, WEIXIN_SECRET, code, "authorization_code");
+            if (map.get("access_token") != null) {
+                String token = map.get("access_token").toString();
+                String openid = map.get("openid").toString();
+                map = WeixinService.weixinFeign.userinfo(token, openid);
+                if (map.get("unionid") != null) {
+                    String unionid = map.get("unionid").toString();
+                    WeiXinPlayer player = null;
+                    if (MongoMapper.weiXinPlayerRepository.existsByUnionId(unionid)) {
+                        player = MongoMapper.weiXinPlayerRepository.findWeiXinPlayerByUnionId(unionid);
                     } else {
-                        player = PlayerManager.create(null, null, session);
-                        MongoMapper.weiXinPlayerRepository.save(new WeiXinPlayer(player.getId(), unionID));
+                        player = PlayerManager.weixinCreate(session, unionid, map.get("nickname").toString());
                     }
-                    PlayerManager.showCharacters(player, session);
+                    // 根据session的id拿到老的callerID
+                    String oldId = GameSessionService.getCallerIdBySessionId(session.id());
+                    // 转交session给新的caller
+                    GameSessionService.updateCallerId(oldId, player.getId(), CallerType.ACCOUNT);
+                    //session.sendText(JsonResponse.JsonStringResponse(new LoginSuccessMessage(player)));
+                    PlayerManager.showWeiXinCharacters(player, session);
                 }
             }
         } catch (Exception e) {
