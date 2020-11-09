@@ -1036,8 +1036,9 @@ public class PlayerCharacterManager {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacter.getId());
-                    learnSkill(playerCharacter, skillKey, updatedSession, teacher);
+                    PlayerCharacter playerCharacters = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter.getId());
+                    Session updatedSession = GameSessionService.getSessionByCallerId(playerCharacters.getId());
+                    learnSkill(playerCharacters, skillKey, updatedSession, teacher);
                 }
             };
             return runnable;
@@ -1257,15 +1258,11 @@ public class PlayerCharacterManager {
             for (String subSkillId : skillObject.getSubSKills()) {
                 playerCharacter.getSkills().add(subSkillId);
             }
-            //如果是基本技能，默认增加属性
-//            if (skillObject.getCategoryType().equals("SCT_JIBEN")) {
-//                playerCharacter = (PlayerCharacter) SkillObjectManager.castBaseSkill(skillObject, playerCharacter);
-//            }
             MongoMapper.playerCharacterRepository.save(playerCharacter);
             updatedSession.sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format(GameWords.LEARNED_SKILL, skillObject.getName()))));
             updatedSession.sendText(JsonResponse.JsonStringResponse(new MsgMessage(String.format(GameWords.LEARNED_SKILL, skillObject.getName()))));
         }
-
+        playerCharacter = MongoMapper.playerCharacterRepository.findPlayerCharacterById(playerCharacter.getId());
         returnAllSkills(playerCharacter);
         showStatus(playerCharacter);
         return skillObject;
