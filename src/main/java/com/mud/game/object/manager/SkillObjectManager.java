@@ -1,5 +1,8 @@
 package com.mud.game.object.manager;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.handler.SkillActionHandler;
 import com.mud.game.handler.SkillFunctionHandler;
@@ -12,6 +15,7 @@ import com.mud.game.object.typeclass.*;
 import com.mud.game.structs.CharacterState;
 import com.mud.game.structs.EmbeddedCommand;
 import com.mud.game.structs.SkillEffect;
+import com.mud.game.structs.SkillXiShu;
 import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
@@ -56,7 +60,16 @@ public class SkillObjectManager {
             skillObject.setIcon(template.getIcon());
             skillObject.setSkillFunction(template.getSkillFunction());
             skillObject.setOwner(null);
+            skillObject.setIcon(template.getIcon());
             skillObject.setBasicSkill(template.getBasicSkill());
+
+            Set skillXiShus = new HashSet<>();
+            JSONArray jsonObject = JSON.parseArray(template.getXiShu());
+            for (Object json : jsonObject) {
+                JSONObject jo = JSONObject.parseObject(json.toString());
+                skillXiShus.add(new SkillXiShu(jo.getString("attrKey"), jo.getDouble("value"), jo.getDouble("coefficient")));
+            }
+            skillObject.setXiShu(skillXiShus);
         } catch (Exception e) {
             System.out.println(skillObject.getDataKey() + "创建的时候出现异常");
             e.printStackTrace();
@@ -150,6 +163,9 @@ public class SkillObjectManager {
                     if (oldSkill != null) {
                         if (!oldSkill.getCategoryType().equals("SCT_JIBEN")) {
                             character = undoSkill(oldSkill, character, position);
+                            for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+                                character = GameCharacterManager.changeStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue() * -1);
+                            }
                         }
                         oldSkill.getEquippedPositions().remove(position);
                         MongoMapper.skillObjectRepository.save(oldSkill);
@@ -172,6 +188,13 @@ public class SkillObjectManager {
                 // 执行技能效果
                 if (!basicSkillObject.getCategoryType().equals("SCT_JIBEN")) {
                     character = castSkill(basicSkillObject, character, position, isApply);
+                    for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+                        if (isApply) {
+                            character = GameCharacterManager.changeNpcStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue());
+                        } else {
+                            character = GameCharacterManager.changeStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue());
+                        }
+                    }
                 }
             }
             // 装备技能本身
@@ -190,6 +213,13 @@ public class SkillObjectManager {
             // 执行技能
             if (!skillObject.getCategoryType().equals("SCT_JIBEN")) {
                 character = castSkill(skillObject, character, position, isApply);
+                for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+                    if (isApply) {
+                        character = GameCharacterManager.changeNpcStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue());
+                    } else {
+                        character = GameCharacterManager.changeStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue());
+                    }
+                }
             }
             saveCharacterEquippedSkill(character, position, session, equippedSkills);
         }
@@ -252,6 +282,9 @@ public class SkillObjectManager {
                             SkillObject willTakeOffSkillObject = MongoMapper.skillObjectRepository.findSkillObjectById(skillId);
                             if (!skillObject.getId().equals(skillId)) {
                                 character = undoSkill(willTakeOffSkillObject, character, position);
+                                for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+                                    character = GameCharacterManager.changeStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue() * -1);
+                                }
                             }
                             // 持久化技能信息
                             willTakeOffSkillObject.getEquippedPositions().remove(position);
@@ -262,6 +295,9 @@ public class SkillObjectManager {
                     } else {
                         // 撤销这个技能子玩家身上的效果
                         character = undoSkill(skillObject, character, position);
+                        for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+                            character = GameCharacterManager.changeStatus(character, skillXiShu.getAttrKey(), skillXiShu.getValue() * -1);
+                        }
                         // 持久化技能信息
                         skillObject.getEquippedPositions().remove(position);
                         MongoMapper.skillObjectRepository.save(skillObject);
@@ -611,12 +647,18 @@ public class SkillObjectManager {
         for (String position : positions) {
             playerCharacter = (PlayerCharacter) SkillObjectManager.undoSkill(skillObject, playerCharacter, position);
         }
+        for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+            playerCharacter = (PlayerCharacter) GameCharacterManager.changeStatus(playerCharacter, skillXiShu.getAttrKey(), skillXiShu.getValue() * -1);
+        }
         // 重新计算技能效果
         SkillObjectManager.calculusEffects(playerCharacter, null, skillObject);
         // 如果技能已经装备 在重新计算技能属性之之后，应用技能的效果
         if (skillObject.getEquippedPositions().size() > 0 || skillObject.getCategoryType().equals("SCT_JIBEN")) {
             for (String position : positions) {
                 playerCharacter = (PlayerCharacter) SkillObjectManager.castSkill(skillObject, playerCharacter, position, false);
+            }
+            for (SkillXiShu skillXiShu : skillObject.getXiShu()) {
+                playerCharacter = (PlayerCharacter) GameCharacterManager.changeStatus(playerCharacter, skillXiShu.getAttrKey(), skillXiShu.getValue());
             }
         }
         MongoMapper.skillObjectRepository.save(skillObject);

@@ -2,7 +2,10 @@ package com.mud.game.object.supertypeclass;
 
 import com.mud.game.structs.CharacterState;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class CommonCharacter extends BaseGameObject {
     //基本信息
@@ -59,6 +62,97 @@ public class CommonCharacter extends BaseGameObject {
     // 自动攻击是否暂停
     public boolean autoCombatPause;
 
+    public float daoXiShu;
+    public float jianXishu;
+    public float quanXishu;
+    public float qiMenXishu;
+    public float neigongXishu;
+    public float qingGongXishu;
+    public float duXiShu;
+    public float yiXiShu;
+    public float zaXueXiShu;
+    public float xueXiXishu;
+
+
+    public float getDaoXiShu() {
+        return daoXiShu;
+    }
+
+    public void setDaoXiShu(float daoXiShu) {
+        this.daoXiShu = daoXiShu;
+    }
+
+    public float getJianXishu() {
+        return jianXishu;
+    }
+
+    public void setJianXishu(float jianXishu) {
+        this.jianXishu = jianXishu;
+    }
+
+    public float getQuanXishu() {
+        return quanXishu;
+    }
+
+    public void setQuanXishu(float quanXishu) {
+        this.quanXishu = quanXishu;
+    }
+
+    public float getQiMenXishu() {
+        return qiMenXishu;
+    }
+
+    public void setQiMenXishu(float qiMenXishu) {
+        this.qiMenXishu = qiMenXishu;
+    }
+
+    public float getNeigongXishu() {
+        return neigongXishu;
+    }
+
+    public void setNeigongXishu(float neigongXishu) {
+        this.neigongXishu = neigongXishu;
+    }
+
+    public float getQingGongXishu() {
+        return qingGongXishu;
+    }
+
+    public void setQingGongXishu(float qingGongXishu) {
+        this.qingGongXishu = qingGongXishu;
+    }
+
+    public float getDuXiShu() {
+        return duXiShu;
+    }
+
+    public void setDuXiShu(float duXiShu) {
+        this.duXiShu = duXiShu;
+    }
+
+    public float getYiXiShu() {
+        return yiXiShu;
+    }
+
+    public void setYiXiShu(float yiXiShu) {
+        this.yiXiShu = yiXiShu;
+    }
+
+    public float getZaXueXiShu() {
+        return zaXueXiShu;
+    }
+
+    public void setZaXueXiShu(float zaXueXiShu) {
+        this.zaXueXiShu = zaXueXiShu;
+    }
+
+    public float getXueXiXishu() {
+        return xueXiXishu;
+    }
+
+    public void setXueXiXishu(float xueXiXishu) {
+        this.xueXiXishu = xueXiXishu;
+    }
 
     public CommonCharacter() {
         this.state = CharacterState.STATE_NORMAL;

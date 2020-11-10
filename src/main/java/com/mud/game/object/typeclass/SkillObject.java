@@ -1,6 +1,8 @@
 package com.mud.game.object.typeclass;
 
 import com.mud.game.structs.SkillEffect;
+import com.mud.game.structs.SkillXiShu;
+import com.mud.game.utils.modelsutils.Mark;
 
 import javax.persistence.Id;
 import java.util.*;
@@ -33,6 +35,15 @@ public class SkillObject {
     private Long cdFinishTime;
     private int currentPotentialBalance; // 当前级别所充值的潜能
     private int chargedPotential; // 累计充值的潜能
+    private Set<SkillXiShu> xiShu; //增加系数
+
+    public Set<SkillXiShu> getXiShu() {
+        return xiShu;
+    }
+
+    public void setXiShu(Set<SkillXiShu> xiShu) {
+        this.xiShu = xiShu;
+    }
 
     public String getId() {
         return id;
@@ -155,7 +166,7 @@ public class SkillObject {
     }
 
     public Set<String> getSubSKills() {
-        if(subSKills == null) return new HashSet<String>();
+        if (subSKills == null) return new HashSet<String>();
         return subSKills;
     }
 
@@ -242,4 +253,6 @@ public class SkillObject {
     public void setChargedPotential(int chargedPotential) {
         this.chargedPotential = chargedPotential;
     }
+
+
 }

@@ -1,9 +1,7 @@
 package com.mud.game.structs;
 
-import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
-import com.mud.game.structs.CombatStatus;
 
 import java.util.HashMap;
 import java.util.Map;

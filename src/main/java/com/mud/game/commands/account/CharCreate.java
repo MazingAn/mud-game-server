@@ -2,7 +2,6 @@ package com.mud.game.commands.account;
 
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.object.account.Player;
-import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.manager.PlayerCharacterManager;
 import com.mud.game.object.manager.PlayerManager;
 import com.mud.game.object.manager.SkillObjectManager;

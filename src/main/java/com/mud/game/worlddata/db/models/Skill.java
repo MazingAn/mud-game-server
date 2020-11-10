@@ -9,55 +9,65 @@ import javax.persistence.*;
 @Mark(name = "技能")
 public class Skill {
     @Id
-    @GeneratedValue( strategy = GenerationType.AUTO)
-    @Mark(name="编号")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Mark(name = "编号")
     private Long id;
     @Column(unique = true)
-    @Mark(name="标识")
+    @Mark(name = "标识")
     private String dataKey;
-    @Mark(name="类型类")
+    @Mark(name = "类型类")
     private String typeClass;
-    @Mark(name="名称")
+    @Mark(name = "名称")
     private String name;
-    @Mark(name="基本技能", link = "basicSkill")
+    @Mark(name = "基本技能", link = "basicSkill")
     private String basicSkill;
-    @Mark(name="描述")
+    @Mark(name = "描述")
     @Column(length = 2048)
     private String description;
-    @Mark(name="门派", link = "school")
+    @Mark(name = "门派", link = "school")
     private String school;
-    @Mark(name="执行显示")
+    @Mark(name = "执行显示")
     private String message;
-    @Mark(name="cd")
+    @Mark(name = "cd")
     private float cd;
-    @Mark(name="执行时间")
+    @Mark(name = "执行时间")
     private float actionTime;
-    @Mark(name="是否被动")
+    @Mark(name = "是否被动")
     private boolean passive;
-    @Mark(name="技能函数")
+    @Mark(name = "技能函数")
     @Column(length = 4096)
     private String skillFunction;
-    @Mark(name="学习条件")
+    @Mark(name = "学习条件")
     @Column(length = 2048)
     private String learnCondition;
-    @Mark(name="消耗内力")
+    @Mark(name = "消耗内力")
     private int expandMp;
-    @Mark(name="品级")
+    @Mark(name = "品级")
     private int quality;
-    @Mark(name="功能类型", link = "skillFunctionType")
+    @Mark(name = "功能类型", link = "skillFunctionType")
     private String functionType; //功能类型
-    @Mark(name="分类类型", link = "skillCategoryType")
+    @Mark(name = "分类类型", link = "skillCategoryType")
     private String categoryType; //分类类型
-    @Mark(name="装备位置", link = "skillPosition", multi = true)
+    @Mark(name = "装备位置", link = "skillPosition", multi = true)
     private String positions; //可以装备到的位置
-    @Mark(name="子技能", link = "uniqueSkill", multi = true)
+    @Mark(name = "子技能", link = "uniqueSkill", multi = true)
     @Column(length = 4096)
     private String subSkills; //包含的子技能
-    @Mark(name="武器类型", link = "weaponType")
+    @Mark(name = "武器类型", link = "weaponType")
     @Column(length = 1024)
     private String weaponType; //技能适用于什么武器
-    @Mark(name="图标")
-    private  String icon; //技能图标
+    @Mark(name = "图标")
+    private String icon; //技能图标
+    @Mark(name = "增加系数")
+    private String xiShu;
+
+    public String getXiShu() {
+        return xiShu;
+    }
+
+    public void setXiShu(String xiShu) {
+        this.xiShu = xiShu;
+    }
 
     public Long getId() {
         return id;

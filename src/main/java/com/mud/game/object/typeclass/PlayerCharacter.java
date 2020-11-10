@@ -29,16 +29,6 @@ public class PlayerCharacter extends CommonCharacter {
     public int ennergy;
     public String teacher;
     public int contribution;
-    public float daoXiShu;
-    public float jianXishu;
-    public float quanXishu;
-    public float qiMenXishu;
-    public float neigongXishu;
-    public float qingGongXishu;
-    public float duXiShu;
-    public float yiXiShu;
-    public float zaXueXiShu;
-    public float xueXiXishu;
     public String family;
     public int xiayi;
     public int crimeValue;
@@ -164,86 +154,6 @@ public class PlayerCharacter extends CommonCharacter {
 
     public void setContribution(int contribution) {
         this.contribution = contribution;
-    }
-
-    public float getDaoXiShu() {
-        return daoXiShu;
-    }
-
-    public void setDaoXiShu(float daoXiShu) {
-        this.daoXiShu = daoXiShu;
-    }
-
-    public float getJianXishu() {
-        return jianXishu;
-    }
-
-    public void setJianXishu(float jianXishu) {
-        this.jianXishu = jianXishu;
-    }
-
-    public float getQuanXishu() {
-        return quanXishu;
-    }
-
-    public void setQuanXishu(float quanXishu) {
-        this.quanXishu = quanXishu;
-    }
-
-    public float getQiMenXishu() {
-        return qiMenXishu;
-    }
-
-    public void setQiMenXishu(float qiMenXishu) {
-        this.qiMenXishu = qiMenXishu;
-    }
-
-    public float getNeigongXishu() {
-        return neigongXishu;
-    }
-
-    public void setNeigongXishu(float neigongXishu) {
-        this.neigongXishu = neigongXishu;
-    }
-
-    public float getQingGongXishu() {
-        return qingGongXishu;
-    }
-
-    public void setQingGongXishu(float qingGongXishu) {
-        this.qingGongXishu = qingGongXishu;
-    }
-
-    public float getDuXiShu() {
-        return duXiShu;
-    }
-
-    public void setDuXiShu(float duXiShu) {
-        this.duXiShu = duXiShu;
-    }
-
-    public float getYiXiShu() {
-        return yiXiShu;
-    }
-
-    public void setYiXiShu(float yiXiShu) {
-        this.yiXiShu = yiXiShu;
-    }
-
-    public float getZaXueXiShu() {
-        return zaXueXiShu;
-    }
-
-    public void setZaXueXiShu(float zaXueXiShu) {
-        this.zaXueXiShu = zaXueXiShu;
-    }
-
-    public float getXueXiXishu() {
-        return xueXiXishu;
-    }
-
-    public void setXueXiXishu(float xueXiXishu) {
-        this.xueXiXishu = xueXiXishu;
     }
 
     public String getFamily() {
