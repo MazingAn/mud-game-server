@@ -144,6 +144,7 @@ public class CommandSetHandler {
         playerCharacterCommandSet.put("attack_test_npc", AttackTestNpc.class);
         playerCharacterCommandSet.put("discard_by_number", DiscardByNumber.class);
         playerCharacterCommandSet.put("show_character_status", ShowCharacterStatus.class);
+        playerCharacterCommandSet.put("get_login", GetLogin.class);
     }
 
     /**

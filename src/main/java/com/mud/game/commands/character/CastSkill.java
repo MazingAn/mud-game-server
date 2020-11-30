@@ -1,11 +1,13 @@
 package com.mud.game.commands.character;
 
 import com.mud.game.commands.BaseCommand;
+import com.mud.game.messages.SkillCdMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.PlayerCharacter;
 import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.structs.SkillCdInfo;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.resultutils.GameWords;
 import org.json.JSONException;
@@ -53,12 +55,29 @@ public class CastSkill extends BaseCommand {
         boolean combat = args.getBoolean("combat");
         CommonCharacter target = GameCharacterManager.getCharacterObject(targetId);
         SkillObject skillObject = GameCharacterManager.getCharacterSkillByDataKey(caller, skillKey);
+        float skillCd = Float.parseFloat(caller.getCustomerAttr().get("skill_cd").get("value").toString());
         //TODO 先放在map里，之后集成redis处理技能cd问题
-        if (skillCdMap.containsKey(caller.getId() + skillKey) && calLastedTime(skillCdMap.get(caller.getId() + skillKey)) < skillObject.getCd()) {
+        if (!judgmentCombat(caller)) {
+            caller.msg(new ToastMessage("你现在的状态，无法释放技能！"));
+        } else if (skillCdMap.containsKey(caller.getId() + skillKey) && calLastedTime(skillCdMap.get(caller.getId() + skillKey)) < (skillObject.getCd() * skillCd)) {
             getSession().sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format("技能" + skillObject.getName() + "正在冷却！"))));
         } else {
             GameCharacterManager.castSkill(caller, target, skillObject);
         }
+    }
+
+    /**
+     * 判断能否释放技能
+     *
+     * @param caller
+     * @return
+     */
+    private boolean judgmentCombat(PlayerCharacter caller) {
+        if (!caller.isCanCombat()) {
+            //无视忙乱技能
+            return false;
+        }
+        return true;
     }
 
     //获取技能施放时间

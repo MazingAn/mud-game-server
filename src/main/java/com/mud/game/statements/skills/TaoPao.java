@@ -13,12 +13,16 @@ import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
+import com.mud.game.utils.StateConstants;
 import com.mud.game.worlddata.db.models.WorldNpcWanderRoom;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import static com.mud.game.utils.StateConstants.CHECK_GOTO_ROOM_STATE;
+import static com.mud.game.utils.StateConstants.CHECK_TAOPAO_STATE;
 
 public class TaoPao extends BaseAttackSkillStatement {
     /**
@@ -39,6 +43,10 @@ public class TaoPao extends BaseAttackSkillStatement {
         //基本参数
         CommonCharacter caller = getCaller();
         CommonCharacter target = getTarget();
+        //判断当前状态能否逃跑
+        if (!StateConstants.checkState(caller, CHECK_TAOPAO_STATE)) {
+            caller.msg(new ToastMessage("当前状态不能逃跑"));
+        }
         // 关闭战斗场景
         if (!getEscapeProbability(caller, target)) {
             caller.msg(new ToastMessage("逃跑失败！"));

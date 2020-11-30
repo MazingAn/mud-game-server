@@ -1,5 +1,6 @@
 package com.mud.game.object.supertypeclass;
 
+import com.mud.game.structs.AttackState;
 import com.mud.game.structs.CharacterState;
 
 import java.util.HashMap;
@@ -32,8 +33,8 @@ public class CommonCharacter extends BaseGameObject {
     public int after_smart; //先天悟性
     public int after_looks; //先天容貌
     public int after_lucky; //先天福缘
-    public boolean canCombat = true; //能否进行攻击
-    public boolean canAttck = true; //能否进行战斗
+    public boolean canCombat; //能否进行攻击
+    public boolean canAttck; //能否进行战斗
     //装备信息
     public List<String> equipments;
     public Map<String, String> equippedEquipments;
@@ -47,6 +48,7 @@ public class CommonCharacter extends BaseGameObject {
 
     // 角色的游戏状态
     public CharacterState state;
+
     // 角色的目标
     public String target;
 
@@ -72,7 +74,6 @@ public class CommonCharacter extends BaseGameObject {
     public float yiXiShu;
     public float zaXueXiShu;
     public float xueXiXishu;
-
 
     public float getDaoXiShu() {
         return daoXiShu;

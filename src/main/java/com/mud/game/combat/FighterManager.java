@@ -1,24 +1,39 @@
 package com.mud.game.combat;
 
+import com.mud.game.algorithm.AttackAlgorithm;
+import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.handler.AutoContestHandler;
 import com.mud.game.handler.CombatHandler;
 import com.mud.game.handler.NpcCombatHandler;
+import com.mud.game.handler.SkillCdHandler;
 import com.mud.game.messages.JoinCombatMessage;
+import com.mud.game.messages.SkillCastMessage;
+import com.mud.game.messages.SkillCdMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.object.manager.GameCharacterManager;
+import com.mud.game.object.manager.HangUpManager;
 import com.mud.game.object.manager.PlayerScheduleManager;
+import com.mud.game.object.manager.SkillObjectManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.object.typeclass.WorldNpcObject;
+import com.mud.game.statements.skills.ZhuiJi;
 import com.mud.game.structs.CharacterState;
+import com.mud.game.structs.SkillCastInfo;
+import com.mud.game.structs.SkillCdInfo;
+import com.mud.game.utils.StateConstants;
 import com.mud.game.utils.collections.ListUtils;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.mud.game.constant.Constant.CONTEST_MIN_HP_COEFFICIENT;
 import static com.mud.game.server.ServerManager.gameSetting;
+import static com.mud.game.utils.StateConstants.*;
 
 
 /**
@@ -98,7 +113,9 @@ public class FighterManager {
                         callerMinHp = caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT;
                         targetMinHp = target.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT;
                     }
-                    if (!caller.autoCombatPause && caller.getHp() > callerMinHp) {
+                    //攻击之前的逻辑
+                    beforeAttackLogic(caller, target);
+                    if (!caller.autoCombatPause && caller.getHp() > callerMinHp && StateConstants.checkState(caller, CHECK_ATTACK_STATE)) {
                         if (!caller.isCanCombat()) {
                             caller.msg(new ToastMessage("你现在的状态，无法进行战斗！"));
                         } else {
@@ -110,6 +127,8 @@ public class FighterManager {
                             if (finalSense.isCombatFinished()) {
                                 finalSense.onCombatFinish();
                             }
+                            //攻击之后的逻辑
+                            afterAttackLogic(caller, target);
                         }
                     }
                 } else {
@@ -119,6 +138,37 @@ public class FighterManager {
         };
         int delay = (sense.getBlueTeam().contains(character)) ? 0 : (int) (gameSetting.getGlobalCD() * 1000 / 2);
         service.scheduleAtFixedRate(runnable, delay, (int) (gameSetting.getGlobalCD() * 1000), TimeUnit.MILLISECONDS);
+    }
+
+    private static void beforeAttackLogic(CommonCharacter caller, CommonCharacter target) {
+        //判断是否被降低攻速
+        if (!StateConstants.checkState(caller, CHECK_ATTACK_SPEED_REDUCE_STATE)) {
+            Robot r = null;
+            try {
+                r = new Robot();
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
+            r.delay(1000);
+        }
+    }
+
+    private static void afterAttackLogic(CommonCharacter caller, CommonCharacter target) {
+        if (caller.getBuffers().containsKey("追击")) {
+            //百分之50几率追击
+            if (HangUpManager.randomInterval(0, 1) == 1) {
+                new ZhuiJi(caller, target, GameCharacterManager.getDefaultSkill(caller), "追击", null);
+            }
+        }
+        if (target.getBuffers().containsKey("反击")) {
+            //反击实现
+            new ZhuiJi(target, caller, GameCharacterManager.getDefaultSkill(target), "反击", null);
+        }
+        if (target.getBuffers().containsKey("九阳真炎")) {
+            //受到攻击会反伤火焰伤害
+            new ZhuiJi(target, caller, GameCharacterManager.getDefaultSkill(target), "九阳真炎", null);
+        }
+
     }
 
     public static void stopAutoCombat(CommonCharacter character) {
@@ -176,5 +226,114 @@ public class FighterManager {
         };
         int delay = (sense.getBlueTeam().contains(playerCharacter)) ? 0 : (int) (gameSetting.getGlobalCD() * 1000 / 2);
         service.scheduleAtFixedRate(runnable, delay, (int) (gameSetting.getGlobalCD() * 1000), TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * 群攻
+     *
+     * @param caller
+     * @param target
+     * @param skillObject
+     * @param addCoefficient 加成系数
+     */
+    public static void autoCombatAoeAttack(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, double addCoefficient) {
+        // 设置对手，开始普通攻击
+        String characterId = caller.getId();
+        CombatSense sense = null;
+        if (caller instanceof WorldNpcObject) {
+            sense = NpcCombatHandler.getNpcCombatSense(characterId, target.getId());
+        } else {
+            sense = CombatHandler.getCombatSense(characterId);
+        }
+        CombatSense finalSense = sense;
+        caller = GameCharacterManager.getCharacterObject(characterId);
+        if (!finalSense.isCombatFinished()) {
+            double callerMinHp = finalSense.getMinHp();
+            double targetMinHp = finalSense.getMinHp();
+            double coefficient = 1;
+            if (!caller.autoCombatPause && caller.getHp() > callerMinHp && StateConstants.checkState(caller, CHECK_ATTACK_STATE)) {
+                for (CommonCharacter commonCharacter : sense.getBlueTeam()) {
+                    commonCharacter = GameCharacterManager.getCharacterObject(commonCharacter.getId());
+                    if (finalSense.getMinHp() == -1) {
+                        callerMinHp = caller.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT;
+                        targetMinHp = commonCharacter.getMax_hp() * CONTEST_MIN_HP_COEFFICIENT;
+                    }
+                    //如果目标已死亡，重新选定目标
+                    if (commonCharacter.getHp() <= targetMinHp) {
+                        commonCharacter = FighterManager.setRandomTarget(caller, finalSense.getBlueTeam());
+                    } else {
+                        //计算伤害
+                        coefficient = coefficient + addCoefficient;
+                        HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, commonCharacter, skillObject, coefficient);
+                        //应用伤害
+                        GameCharacterManager.changeStatus(commonCharacter, "hp", harmInfo.finalHarm * -1, caller);
+                        //判断是否吸血
+                        if (caller.getBuffers().containsKey(CHECK_XUEMODAOFAXI_STATE)) {
+                            GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
+                        }
+                        //构建战斗输出
+                        String combatCastStr = SkillObjectManager.getCastMessage(caller, commonCharacter, skillObject, harmInfo);
+                        SkillCastInfo skillCastInfo = new SkillCastInfo(caller, commonCharacter, skillObject, combatCastStr);
+                        sense.msgContents(new SkillCastMessage(skillCastInfo));
+                    }
+                    if (finalSense.isCombatFinished()) {
+                        finalSense.onCombatFinish();
+                    }
+                }
+
+            }
+        } else {
+            finalSense.onCombatFinish();
+        }
+        //设置技能cd
+        SkillCdHandler.addSkillCd(caller.getId() + skillObject.getDataKey(), new Date());
+        //返回技能冷却时间
+        if (skillObject.getCd() != 0) {
+            float skillCd = Float.parseFloat(caller.getCustomerAttr().get("skill_cd").get("value").toString());
+            sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd() * skillCd, skillObject.getId(), skillObject.getDataKey())));
+        }
+    }
+
+    /**
+     * 单体攻击
+     *
+     * @param caller
+     * @param target
+     * @param skillObject
+     * @param coefficient
+     */
+    public static void autoCombatAttack(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, float coefficient) {
+        target = GameCharacterManager.getCharacterObject(target.getId());
+        //构建战斗输出
+        HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target, skillObject);
+        harmInfo.finalHarm = coefficient;
+        //应用伤害
+        GameCharacterManager.changeStatus(target, "hp", new Double(harmInfo.finalHarm * -1).intValue(), caller);
+        //判断是否吸血
+        if (caller.getBuffers().containsKey(CHECK_XUEMODAOFAXI_STATE)) {
+            caller = GameCharacterManager.getCharacterObject(caller.getId());
+            GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
+        }
+        //构建战斗输出
+        String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
+        SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
+        CombatSense sense = null;
+        if (caller instanceof WorldNpcObject) {
+            sense = NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());
+        } else {
+            sense = CombatHandler.getCombatSense(caller.getId());
+        }
+        if (sense == null) {
+            //切磋场景
+            sense = CombatHandler.getCombatSense(caller.getId() + target.getId());
+        }
+        sense.msgContents(new SkillCastMessage(skillCastInfo));
+        //设置技能cd
+        SkillCdHandler.addSkillCd(caller.getId() + skillObject.getDataKey(), new Date());
+        //返回技能冷却时间
+        if (skillObject.getCd() != 0) {
+            float skillCd = Float.parseFloat(caller.getCustomerAttr().get("skill_cd").get("value").toString());
+            sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd() * skillCd, skillObject.getId(), skillObject.getDataKey())));
+        }
     }
 }

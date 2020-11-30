@@ -37,16 +37,11 @@ public class NormalHit extends BaseAttackSkillStatement {
         SkillObject skillObject = getSkillObject();
         String key = getKey();
         String[] args = getArgs();
-        CombatSense sense = null;
-        if (caller instanceof WorldNpcObject) {
-            sense = NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());
-        } else {
-            sense = CombatHandler.getCombatSense(caller.getId());
-        }
+        CombatSense sense = CombatSense.getSence(caller, target);
         SkillCastInfo skillCastInfo = null;
         //判断能否进行攻击
         //计算伤害
-        HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target);
+        HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target, skillObject);
         //应用伤害
         GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
         //构建战斗输出

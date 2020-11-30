@@ -8,14 +8,12 @@ import com.mud.game.handler.SkillActionHandler;
 import com.mud.game.handler.SkillFunctionHandler;
 import com.mud.game.handler.SkillPositionHandler;
 import com.mud.game.messages.MsgMessage;
+import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.messages.ToastMessage;
 import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.*;
-import com.mud.game.structs.CharacterState;
-import com.mud.game.structs.EmbeddedCommand;
-import com.mud.game.structs.SkillEffect;
-import com.mud.game.structs.SkillXiShu;
+import com.mud.game.structs.*;
 import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
@@ -670,6 +668,13 @@ public class SkillObjectManager {
     public static String getCastMessage(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, HarmInfo harmInfo) {
         // 生成战斗信息
         String message = "";
+        //战斗输出
+        if (caller.getBuffers().containsKey("反击")) {
+            message = "(反击)";
+        }
+        if (caller.getBuffers().containsKey("追击")) {
+            message = "(追击)";
+        }
         EquipmentObject weapon = GameCharacterManager.getOneEquippedWeapon(caller);
         if (!skillObject.getMessage().trim().equals("")) {
             message = skillObject.getMessage()

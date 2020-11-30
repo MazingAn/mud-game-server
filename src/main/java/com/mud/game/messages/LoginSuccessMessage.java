@@ -1,6 +1,7 @@
 package com.mud.game.messages;
 
 import com.mud.game.object.account.Player;
+import com.mud.game.object.typeclass.PlayerCharacter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +14,6 @@ public class LoginSuccessMessage {
         object.put("dbref", player.getId());
         object.put("name", player.getUsername());
         login = object;
-
     }
 
     public Map<String, String> getLogin() {

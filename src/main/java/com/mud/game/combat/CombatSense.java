@@ -73,6 +73,14 @@ public class CombatSense {
         this.minHp = minHp;
     }
 
+    public static CombatSense getSence(CommonCharacter caller, CommonCharacter target) {
+        if (caller instanceof WorldNpcObject) {
+            return NpcCombatHandler.getNpcCombatSense(caller.getId(), target.getId());
+        } else {
+            return CombatHandler.getCombatSense(caller.getId());
+        }
+    }
+
     /**
      * 获得队伍中存活（还可以战斗）的角色的数量
      *

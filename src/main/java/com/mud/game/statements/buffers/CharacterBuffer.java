@@ -7,6 +7,7 @@ import com.mud.game.object.manager.FightBufferScheduleManager;
 import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
+import com.mud.game.structs.AttackState;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.utils.regxutils.StringChecker;
 
@@ -50,9 +51,10 @@ public class CharacterBuffer {
 
             Object change = changedValue;
             boolean isNumber = StringChecker.isNumber(changedValue.toString());
-            if (isNumber)
+            if (isNumber) {
                 change = goodBuffer ? (float) changedValue * 1 : (float) changedValue * -1;
-            GameCharacterManager.changeStatus(target, attrKey, change);
+                target = GameCharacterManager.changeStatus(target, attrKey, change);
+            }
 
 
 //            boolean isNumber = false;
@@ -92,16 +94,18 @@ public class CharacterBuffer {
         if (!this.persistent) {
             Object change = changedValue;
             boolean isNumber = StringChecker.isNumber(changedValue.toString());
-            if (isNumber)
-                change = goodBuffer ? (float) changedValue * -1 : (float) changedValue * 1;
-
             boolean isBoolean = StringChecker.isBoolean(changedValue);
-            if (isBoolean) {
+            if (isNumber) {
+                change = goodBuffer ? (float) changedValue * -1 : (float) changedValue * 1;
+            } else if (isBoolean) {
                 boolean booleanValue = ((Boolean) change).booleanValue();
                 change = !booleanValue;
+            } else {
+                change = AttackState.STATE_NORMAL;
             }
             target = GameCharacterManager.getCharacterObject(target.getId());
-            GameCharacterManager.changeStatus(target, attrKey, change);
+            target = GameCharacterManager.changeStatus(target, attrKey, change);
+            GameCharacterManager.saveCharacter(target);
         } else {
             // 连续效果：中毒掉血
             FightBufferScheduleManager.shutdownExecutorByBufferId(bufferId);

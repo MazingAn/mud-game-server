@@ -34,6 +34,7 @@ public class MangLuan extends BaseAttackSkillStatement {
         String key = getKey();
         String[] args = getArgs();
         float duration = Float.parseFloat(args[0]);
+        beforeAttack();
         //增加一个忙乱buffer
         GameCharacterManager.addBuffer("忙乱", duration, 0, 1, false,
                 "canCombat", false, target, skillObject, false, caller);
