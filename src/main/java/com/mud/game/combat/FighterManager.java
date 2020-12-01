@@ -23,6 +23,7 @@ import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.structs.SkillCdInfo;
 import com.mud.game.utils.StateConstants;
 import com.mud.game.utils.collections.ListUtils;
+import com.mud.game.worldrun.db.mappings.MongoMapper;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -151,24 +152,44 @@ public class FighterManager {
             }
             r.delay(1000);
         }
+        //判断被攻击方是否能被攻击
+        if (!StateConstants.checkState(caller, CHECK_ATTACK_BE_STATE)) {
+            return;
+        }
     }
 
     private static void afterAttackLogic(CommonCharacter caller, CommonCharacter target) {
-        if (caller.getBuffers().containsKey("追击")) {
+        if (!StateConstants.checkState(caller, "追击")) {
             //百分之50几率追击
             if (HangUpManager.randomInterval(0, 1) == 1) {
                 new ZhuiJi(caller, target, GameCharacterManager.getDefaultSkill(caller), "追击", null);
             }
         }
-        if (target.getBuffers().containsKey("反击")) {
+        if (!StateConstants.checkState(target, "反击") && StateConstants.checkState(target, CHECK_COUNTERATTACK_BE_STATE)) {
             //反击实现
             new ZhuiJi(target, caller, GameCharacterManager.getDefaultSkill(target), "反击", null);
         }
-        if (target.getBuffers().containsKey("九阳真炎")) {
+        if (!StateConstants.checkState(target, "九阳真炎")) {
             //受到攻击会反伤火焰伤害
             new ZhuiJi(target, caller, GameCharacterManager.getDefaultSkill(target), "九阳真炎", null);
         }
-
+        List<String> STATE = new ArrayList<String>() {
+            {
+                add("不老长春");
+            }
+        };
+        if (StateConstants.checkState(target, STATE) && Math.random() <= 0.2) {
+            SkillObject skillObject = MongoMapper.skillObjectRepository.findSkillObjectByDataKeyAndOwner("skill_juezhao_bulaochangchun", target.getId());
+            //增加一个不老长春buffer
+            GameCharacterManager.addBuffer("不老长春", 10, 0, 1, true,
+                    null, 2, target, skillObject, true, caller);
+        }
+        if (!StateConstants.checkState(caller,"化功")) {
+            //化功实现 攻击造成伤害的同时减少敌人伤害200%内力
+            int aAttack = Integer.parseInt(caller.getCustomerAttr().get("attack").get("value").toString());
+            target = GameCharacterManager.getCharacterObject(target.getId());
+            GameCharacterManager.changeStatus(target, "mp", new Double((aAttack * 2) > target.getMp() ? target.getMp() : (aAttack * 2)).intValue() * -1, caller);
+        }
     }
 
     public static void stopAutoCombat(CommonCharacter character) {
@@ -268,7 +289,7 @@ public class FighterManager {
                         //应用伤害
                         GameCharacterManager.changeStatus(commonCharacter, "hp", harmInfo.finalHarm * -1, caller);
                         //判断是否吸血
-                        if (caller.getBuffers().containsKey(CHECK_XUEMODAOFAXI_STATE)) {
+                        if (!StateConstants.checkState(caller,CHECK_XUEMODAOFAXI_STATE)) {
                             GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
                         }
                         //构建战斗输出
@@ -310,7 +331,7 @@ public class FighterManager {
         //应用伤害
         GameCharacterManager.changeStatus(target, "hp", new Double(harmInfo.finalHarm * -1).intValue(), caller);
         //判断是否吸血
-        if (caller.getBuffers().containsKey(CHECK_XUEMODAOFAXI_STATE)) {
+        if (!StateConstants.checkState(caller,CHECK_XUEMODAOFAXI_STATE)) {
             caller = GameCharacterManager.getCharacterObject(caller.getId());
             GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
         }

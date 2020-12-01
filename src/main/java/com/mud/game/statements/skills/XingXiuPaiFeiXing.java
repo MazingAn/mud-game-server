@@ -28,6 +28,6 @@ public class XingXiuPaiFeiXing extends BaseAttackSkillStatement {
 
     @Override
     public void attack() throws JSONException, JsonProcessingException {
-        FighterManager.autoCombatAoeAttack(getCaller(), getTarget(),getSkillObject(),1.3);
+        FighterManager.autoCombatAoeAttack(getCaller(), getTarget(),getSkillObject(),0.3);
     }
 }

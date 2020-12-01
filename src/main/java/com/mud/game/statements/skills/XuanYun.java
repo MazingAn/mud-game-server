@@ -38,10 +38,10 @@ public class XuanYun extends BaseAttackSkillStatement {
         beforeAttack();
         if (caller.getMp() > target.getMp()) {
             //防御初始值
-            int bDefence = Integer.parseInt(getTarget().getCustomerAttr().get("defence").get("value").toString());
+            //int bDefence = Integer.parseInt(getTarget().getCustomerAttr().get("defence").get("value").toString());
             //增加一个眩晕buffer
             GameCharacterManager.addBuffer("眩晕", duration, 0, 1, false,
-                    "defence", bDefence, getTarget(), getSkillObject(), false, getCaller());
+                    null, null, getTarget(), getSkillObject(), false, getCaller());
         }
     }
 }

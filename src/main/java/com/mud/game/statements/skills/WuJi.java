@@ -1,6 +1,7 @@
 package com.mud.game.statements.skills;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
@@ -25,6 +26,13 @@ public class WuJi extends BaseAttackSkillStatement {
 
     @Override
     public void attack() throws JSONException, JsonProcessingException {
+        //基本参数
+        CommonCharacter caller = getCaller();
+        CommonCharacter target = getTarget();
+        SkillObject skillObject = getSkillObject();
 
+        CommonCharacter commonCharacter = GameCharacterManager.getCharacterObject(caller.getId());
+        commonCharacter.setMp(commonCharacter.getMax_mp());
+        GameCharacterManager.saveCharacter(commonCharacter);
     }
 }

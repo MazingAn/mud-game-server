@@ -16,6 +16,7 @@ import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
 import com.mud.game.structs.AttackState;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.structs.SkillCdInfo;
+import com.mud.game.utils.StateConstants;
 
 import java.lang.reflect.Constructor;
 import java.util.Date;
@@ -72,7 +73,7 @@ public class SkillFunctionHandler {
                 //应用伤害
                 GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
                 //判断是否吸血
-                if (caller.getBuffers().containsKey(CHECK_XUEMODAOFAXI_STATE)) {
+                if (!StateConstants.checkState(caller, CHECK_XUEMODAOFAXI_STATE)) {
                     GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
                 }
                 //构建战斗输出
@@ -95,7 +96,8 @@ public class SkillFunctionHandler {
                 //返回技能冷却时间
                 if (skillObject.getCd() != 0) {
                     float skillCd = Float.parseFloat(caller.getCustomerAttr().get("skill_cd").get("value").toString());
-                    sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd() * skillCd, skillObject.getId(), skillObject.getDataKey())));                }
+                    sense.msgContents(new SkillCdMessage(new SkillCdInfo(skillObject.getCd() * skillCd, skillObject.getId(), skillObject.getDataKey())));
+                }
                 //技能未命中
                 if (null == harmInfo) {
                     return;

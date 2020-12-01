@@ -54,11 +54,13 @@ public class AttackAlgorithm {
         double criticalRate = Double.parseDouble(a.getCustomerAttr().get("crit_rate").get("value").toString());
         double coefficient = 1;
         //减少暴击
-        if (b.getBuffers().containsKey("九阳护体")) {
+        if (!StateConstants.checkState(b, "九阳护体")) {
             coefficient = coefficient - 0.2;
         }
-        //减少暴击
-        if (b.getBuffers().containsKey("金刚伏魔圈")) {
+        if (!StateConstants.checkState(b, "象相")) {
+            coefficient = coefficient - 0.2;
+        }
+        if (!StateConstants.checkState(b, "枯荣")) {
             coefficient = coefficient - 0.2;
         }
         if (coefficient <= 0) {
@@ -111,16 +113,21 @@ public class AttackAlgorithm {
         return harmInfo;
     }
 
-    private static HarmInfo adjustmentAttack(HarmInfo harmInfo, CommonCharacter a, CommonCharacter b, double coefficient) {
+    private static HarmInfo adjustmentAttack(HarmInfo harmInfo, CommonCharacter a, CommonCharacter b, double addCoefficient) {
+        double coefficient = 1;
+        coefficient = coefficient + addCoefficient;
         //追魂状态伤害增益
-        if (a.getBuffers().containsKey("追魂")) {
-            coefficient = coefficient - 0.2;
+        if (!StateConstants.checkState(a, "追魂")) {
+            coefficient = coefficient + 0.2;
         }
         //减伤
-        if (b.getBuffers().containsKey("九阳护体")) {
+        if (!StateConstants.checkState(b, "九阳护体")) {
             coefficient = coefficient - 0.2;
         }
-        if (b.getBuffers().containsKey("金刚伏魔圈")) {
+        if (!StateConstants.checkState(b, "金刚伏魔圈")) {
+            coefficient = coefficient - 0.2;
+        }
+        if (!StateConstants.checkState(b, "真武七截")) {
             coefficient = coefficient - 0.2;
         }
         if (coefficient <= 0) {
@@ -147,7 +154,7 @@ public class AttackAlgorithm {
                 harmInfo.finalHarm = computeCriticalHarm(a, b);
             }
         }
-        harmInfo = AttackAlgorithm.adjustmentAttack(harmInfo, a, b, 1);
+        harmInfo = AttackAlgorithm.adjustmentAttack(harmInfo, a, b, coefficient);
         return harmInfo;
     }
 
@@ -155,18 +162,20 @@ public class AttackAlgorithm {
     /**
      * 连击
      */
-    public static void lianji(CommonCharacter a, CommonCharacter b, SkillObject skillObject, int number) {
+    public static void lianji(CommonCharacter a, CommonCharacter b, SkillObject skillObject, int number, double addCoefficient) {
         String[] castMessages = skillObject.getMessage().split(";");
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         CombatSense sense = CombatHandler.getCombatSense(a.getId());
         Runnable runnable = new Runnable() {
             int i = 0;
+            double coefficient = 1;
 
             @Override
             public void run() {
                 if (i < number && a.getHp() > 0 && b.getHp() > 0) {
                     //计算伤害
-                    HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(a, b, skillObject);
+                    HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(a, b, skillObject, coefficient);
+                    coefficient = coefficient + addCoefficient;
                     //应用伤害
                     GameCharacterManager.changeStatus(b, "hp", harmInfo.finalHarm * -1, a);
                     GameCharacterManager.saveCharacter(b);

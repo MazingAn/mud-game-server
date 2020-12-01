@@ -28,8 +28,8 @@ public class ZhuiHun extends BaseAttackSkillStatement {
     @Override
     public void attack() throws JSONException, JsonProcessingException {
         //添加追魂效果
-        GameCharacterManager.addBuffer("追魂", 10, 0, 1, true,
-                null, AttackState.STATE_ZHUIHUN, getTarget(), getSkillObject(), false, getCaller());
+        GameCharacterManager.addBuffer("追魂", 10, 0, 1, false,
+                null, null, getTarget(), getSkillObject(), false, getCaller());
 
     }
 }

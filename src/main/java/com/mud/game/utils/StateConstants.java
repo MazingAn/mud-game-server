@@ -44,6 +44,7 @@ public class StateConstants {
             CHECK_PRECISE_STATE.add("眩晕");
             CHECK_PRECISE_STATE.add("倒地");
             CHECK_PRECISE_STATE.add("解牛");
+            CHECK_PRECISE_STATE.add("天女散花");
         }
     };
     /**
@@ -55,10 +56,26 @@ public class StateConstants {
             CHECK_ZHAOJIA_STATE.add("倒地");
             CHECK_ZHAOJIA_STATE.add("解牛");
             CHECK_ZHAOJIA_STATE.add("无法招架");
+            CHECK_ZHAOJIA_STATE.add("天女散花");
         }
     };
 
-
+    /**
+     * 不可被攻击
+     */
+    public static List<String> CHECK_ATTACK_BE_STATE = new ArrayList<String>() {
+        {
+            CHECK_ATTACK_BE_STATE.add("隐身");
+        }
+    };
+    /**
+     * 不可被反击
+     */
+    public static List<String> CHECK_COUNTERATTACK_BE_STATE = new ArrayList<String>() {
+        {
+            CHECK_COUNTERATTACK_BE_STATE.add("隐身");
+        }
+    };
     /**
      * 降低攻速
      */
@@ -96,6 +113,20 @@ public class StateConstants {
             if (!checkBuffer(commonCharacter, str)) {
                 return false;
             }
+        }
+        return true;
+    }
+
+    /**
+     * 判断该对象是否没有此状态
+     *
+     * @param commonCharacter 对象
+     * @param checkState      状态
+     * @return
+     */
+    public static boolean checkState(CommonCharacter commonCharacter, String checkState) {
+        if (!checkBuffer(commonCharacter, checkState)) {
+            return false;
         }
         return true;
     }

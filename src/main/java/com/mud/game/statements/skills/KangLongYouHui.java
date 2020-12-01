@@ -7,6 +7,7 @@ import com.mud.game.combat.FighterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
+import com.mud.game.utils.StateConstants;
 import org.json.JSONException;
 
 /**
@@ -35,6 +36,6 @@ public class KangLongYouHui extends BaseAttackSkillStatement {
         //计算伤害
         HarmInfo harmInfo = AttackAlgorithm.computeFinalHarm(caller, target, skillObject);
         //造成攻击
-        FighterManager.autoCombatAttack(caller, target, skillObject, target.getBuffers().containsKey("眩晕") ? harmInfo.finalHarm * 5 : harmInfo.finalHarm);
+        FighterManager.autoCombatAttack(caller, target, skillObject, !StateConstants.checkState(target, "眩晕") ? harmInfo.finalHarm * 5 : harmInfo.finalHarm);
     }
 }

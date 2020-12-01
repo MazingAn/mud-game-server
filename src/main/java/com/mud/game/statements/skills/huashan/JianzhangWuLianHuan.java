@@ -2,14 +2,9 @@ package com.mud.game.statements.skills.huashan;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mud.game.algorithm.AttackAlgorithm;
-import com.mud.game.messages.AlertMessage;
-import com.mud.game.messages.MsgMessage;
-import com.mud.game.messages.SkillCastMessage;
-import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
-import com.mud.game.structs.SkillCastInfo;
 import org.json.JSONException;
 
 /**
@@ -49,7 +44,7 @@ public class JianzhangWuLianHuan extends BaseAttackSkillStatement {
 //        }
         try{
             beforeAttack();
-            AttackAlgorithm.lianji(caller, target, skillObject, 5);
+            AttackAlgorithm.lianji(caller, target, skillObject, 5, 0);
         }catch (Exception e) {
             e.printStackTrace();
             System.out.println("执行技能--剑掌五连环--执行失败");

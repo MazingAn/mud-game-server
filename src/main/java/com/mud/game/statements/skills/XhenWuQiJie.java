@@ -34,9 +34,8 @@ public class XhenWuQiJie extends BaseAttackSkillStatement {
         beforeAttack();
         double value = 0.2;
         //增加一个命中buffer
-        int bDefence = Integer.parseInt(caller.getCustomerAttr().get("defence").get("value").toString());
-        GameCharacterManager.addBuffer("纯阳", 5, 0, 1, true,
-                "defence", new Double(bDefence * value).intValue(), caller, skillObject, false, caller);
-
+        int precise = Integer.parseInt(caller.getCustomerAttr().get("precise").get("value").toString());
+        GameCharacterManager.addBuffer("真武七截", 5, 0, 1, true,
+                "precise", new Double(precise * value).intValue(), caller, skillObject, false, caller);
     }
 }

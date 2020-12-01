@@ -39,8 +39,8 @@ public class LingJiuGongTianNvSanHua extends BaseAttackSkillStatement {
         }
         //增加一个忙乱buffer
         for (CommonCharacter character : sense.getBlueTeam()) {
-            GameCharacterManager.addBuffer("无法闪避、招架", 10, 0, 1, false,
-                    "attackState", AttackState.STATE_NOTEVADEPARRY, character, getSkillObject(), false, getCaller());
+            GameCharacterManager.addBuffer("天女散花", 10, 0, 1, false,
+                    null, null, character, getSkillObject(), false, getCaller());
         }
 
     }

@@ -3,17 +3,20 @@ package com.mud.game.object.manager;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.algorithm.HarmInfo;
 import com.mud.game.handler.SkillActionHandler;
 import com.mud.game.handler.SkillFunctionHandler;
 import com.mud.game.handler.SkillPositionHandler;
 import com.mud.game.messages.MsgMessage;
-import com.mud.game.messages.SkillCastMessage;
 import com.mud.game.messages.ToastMessage;
-import com.mud.game.algorithm.CommonAlgorithm;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.*;
-import com.mud.game.structs.*;
+import com.mud.game.structs.CharacterState;
+import com.mud.game.structs.EmbeddedCommand;
+import com.mud.game.structs.SkillEffect;
+import com.mud.game.structs.SkillXiShu;
+import com.mud.game.utils.StateConstants;
 import com.mud.game.utils.collections.ListUtils;
 import com.mud.game.utils.jsonutils.JsonResponse;
 import com.mud.game.utils.jsonutils.JsonStrConvetor;
@@ -669,10 +672,10 @@ public class SkillObjectManager {
         // 生成战斗信息
         String message = "";
         //战斗输出
-        if (caller.getBuffers().containsKey("反击")) {
+        if (!StateConstants.checkState(caller, "反击")) {
             message = "(反击)";
         }
-        if (caller.getBuffers().containsKey("追击")) {
+        if (!StateConstants.checkState(caller, "追击")) {
             message = "(追击)";
         }
         EquipmentObject weapon = GameCharacterManager.getOneEquippedWeapon(caller);
