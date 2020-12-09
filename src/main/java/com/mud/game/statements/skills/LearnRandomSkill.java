@@ -1,10 +1,14 @@
 package com.mud.game.statements.skills;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.combat.SkillRecord;
+import com.mud.game.combat.UseLearnedSkillMap;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
 import org.json.JSONException;
+
+import java.util.List;
 
 /**
  * 释放学会的绝招攻击敌人
@@ -25,6 +29,15 @@ public class LearnRandomSkill extends BaseAttackSkillStatement {
 
     @Override
     public void attack() throws JSONException, JsonProcessingException {
+        //基本参数
+        CommonCharacter caller = getCaller();
+        CommonCharacter target = getTarget();
+        SkillObject skillObject = getSkillObject();
 
+        //获取敌人上次释放技能
+        List<SkillObject> skillObjectList = SkillRecord.getSkillObject(target.getId());
+        if (skillObjectList != null && skillObjectList.size() != 0) {
+            UseLearnedSkillMap.addSkill(caller.getId(), skillObjectList.get(skillObjectList.size() - 1));
+        }
     }
 }

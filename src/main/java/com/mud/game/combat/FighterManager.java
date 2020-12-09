@@ -184,7 +184,7 @@ public class FighterManager {
             GameCharacterManager.addBuffer("不老长春", 10, 0, 1, true,
                     null, 2, target, skillObject, true, caller);
         }
-        if (!StateConstants.checkState(caller,"化功")) {
+        if (!StateConstants.checkState(caller, "化功")) {
             //化功实现 攻击造成伤害的同时减少敌人伤害200%内力
             int aAttack = Integer.parseInt(caller.getCustomerAttr().get("attack").get("value").toString());
             target = GameCharacterManager.getCharacterObject(target.getId());
@@ -289,8 +289,13 @@ public class FighterManager {
                         //应用伤害
                         GameCharacterManager.changeStatus(commonCharacter, "hp", harmInfo.finalHarm * -1, caller);
                         //判断是否吸血
-                        if (!StateConstants.checkState(caller,CHECK_XUEMODAOFAXI_STATE)) {
-                            GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
+                        if (!StateConstants.checkState(caller, CHECK_XUEMODAOFAXI_STATE)) {
+                            double duration = 0.1;
+                            //判断是否在 血海无边的状态下
+                            if (StateConstants.checkState(caller, CHECK_XUEHAIWUBIAN_STATE)) {
+                                duration = 0.15;
+                            }
+                            GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * duration).intValue(), caller);
                         }
                         //构建战斗输出
                         String combatCastStr = SkillObjectManager.getCastMessage(caller, commonCharacter, skillObject, harmInfo);
@@ -331,9 +336,14 @@ public class FighterManager {
         //应用伤害
         GameCharacterManager.changeStatus(target, "hp", new Double(harmInfo.finalHarm * -1).intValue(), caller);
         //判断是否吸血
-        if (!StateConstants.checkState(caller,CHECK_XUEMODAOFAXI_STATE)) {
+        if (!StateConstants.checkState(caller, CHECK_XUEMODAOFAXI_STATE)) {
             caller = GameCharacterManager.getCharacterObject(caller.getId());
-            GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
+            double duration = 0.1;
+            //判断是否在 血海无边的状态下
+            if (StateConstants.checkState(caller, CHECK_XUEHAIWUBIAN_STATE)) {
+                duration = 0.15;
+            }
+            GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * duration).intValue(), caller);
         }
         //构建战斗输出
         String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);

@@ -16,8 +16,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.mud.game.server.ServerManager.gameSetting;
-import static com.mud.game.utils.StateConstants.CHECK_PRECISE_STATE;
-import static com.mud.game.utils.StateConstants.CRITICAL_SKILL_NAME;
+import static com.mud.game.utils.StateConstants.*;
 
 /**
  * 战斗时刻的计算
@@ -33,6 +32,23 @@ public class AttackAlgorithm {
         if (!StateConstants.checkState(b, CHECK_PRECISE_STATE)) {
             return true;
         }
+        int bDodge = Integer.parseInt(b.getCustomerAttr().get("dodge").get("value").toString());
+        int aPrecise = Integer.parseInt(a.getCustomerAttr().get("precise").get("value").toString());
+        return (bDodge - aPrecise) / (double) bDodge < Math.random();
+    }
+
+    /**
+     * 招架检测
+     * 招架几率  =
+     */
+    public static boolean canParry(CommonCharacter a, CommonCharacter b) {
+        //判断当前状态
+        if (!StateConstants.checkState(b, CHECK_ZHAOJIA_STATE)) {
+            return true;
+        }
+        //招架
+        int parry = Integer.parseInt(b.getCustomerAttr().get("parry").get("value").toString());
+
         int bDodge = Integer.parseInt(b.getCustomerAttr().get("dodge").get("value").toString());
         int aPrecise = Integer.parseInt(a.getCustomerAttr().get("precise").get("value").toString());
         return (bDodge - aPrecise) / (double) bDodge < Math.random();

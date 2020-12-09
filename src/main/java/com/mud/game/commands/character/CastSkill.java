@@ -1,5 +1,6 @@
 package com.mud.game.commands.character;
 
+import com.mud.game.combat.SkillRecord;
 import com.mud.game.commands.BaseCommand;
 import com.mud.game.messages.SkillCdMessage;
 import com.mud.game.messages.ToastMessage;
@@ -63,6 +64,7 @@ public class CastSkill extends BaseCommand {
             getSession().sendText(JsonResponse.JsonStringResponse(new ToastMessage(String.format("技能" + skillObject.getName() + "正在冷却！"))));
         } else {
             GameCharacterManager.castSkill(caller, target, skillObject);
+            SkillRecord.addRecord(caller.getId(), skillObject);
         }
     }
 

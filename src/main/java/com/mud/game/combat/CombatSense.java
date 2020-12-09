@@ -144,23 +144,27 @@ public class CombatSense {
                 checkDied(character, redTeam, getMinHp());
                 checkGraduation(character, blueTeam);
                 initializeNpc(character);
+                SkillRecord.removeRecord(character.getId());
             }
             for (CommonCharacter character : blueTeam) {
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 initializeNpc(character);
+                SkillRecord.removeRecord(character.getId());
             }
         } else {
             for (CommonCharacter character : redTeam) {
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 initializeNpc(character);
+                SkillRecord.removeRecord(character.getId());
             }
             for (CommonCharacter character : blueTeam) {
                 PlayerScheduleManager.shutdownExecutorByCallerId(character.getId());
                 checkDied(character, redTeam, getMinHp());
                 checkGraduation(character, redTeam);
                 initializeNpc(character);
+                SkillRecord.removeRecord(character.getId());
             }
         }
     }

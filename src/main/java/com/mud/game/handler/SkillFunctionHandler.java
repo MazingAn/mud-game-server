@@ -13,7 +13,6 @@ import com.mud.game.object.typeclass.WorldNpcObject;
 import com.mud.game.statements.buffers.AddBuffer;
 import com.mud.game.statements.skills.*;
 import com.mud.game.statements.skills.huashan.JianzhangWuLianHuan;
-import com.mud.game.structs.AttackState;
 import com.mud.game.structs.SkillCastInfo;
 import com.mud.game.structs.SkillCdInfo;
 import com.mud.game.utils.StateConstants;
@@ -23,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mud.game.utils.StateConstants.CHECK_XUEHAIWUBIAN_STATE;
 import static com.mud.game.utils.StateConstants.CHECK_XUEMODAOFAXI_STATE;
 
 /**
@@ -74,8 +74,12 @@ public class SkillFunctionHandler {
                 GameCharacterManager.changeStatus(target, "hp", harmInfo.finalHarm * -1, caller);
                 //判断是否吸血
                 if (!StateConstants.checkState(caller, CHECK_XUEMODAOFAXI_STATE)) {
-                    GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * 0.1).intValue(), caller);
-                }
+                    double duration = 0.1;
+                    //判断是否在 血海无边的状态下
+                    if (StateConstants.checkState(caller, CHECK_XUEHAIWUBIAN_STATE)) {
+                        duration = 0.15;
+                    }
+                    GameCharacterManager.changeStatus(caller, "hp", new Double(harmInfo.finalHarm * duration).intValue(), caller);                }
                 //构建战斗输出
                 String combatCastStr = SkillObjectManager.getCastMessage(caller, target, skillObject, harmInfo);
                 SkillCastInfo skillCastInfo = new SkillCastInfo(caller, target, skillObject, combatCastStr);
@@ -103,18 +107,35 @@ public class SkillFunctionHandler {
                     return;
                 }
             }
+            executionFunction(caller, target, skillObject, key, args, true);
+        }
+    }
 
-            //函数
-            Class clazz = null;
-            if (skillObject.isPassive()) clazz = passiveSkillFunctionSet.get(key);
-            else clazz = actionSkillFunctionSet.get(key);
-            try {
-                Constructor c = clazz.getConstructor(CommonCharacter.class, CommonCharacter.class, SkillObject.class, String.class, String[].class);
-                c.newInstance(caller, target, skillObject, key, args);
-            } catch (Exception e) {
-                System.out.println(String.format("玩家在执行命令%s的时候触发了异常", key));
-                e.printStackTrace();
-            }
+    /**
+     * 执行技能函数
+     *
+     * @param caller
+     * @param target
+     * @param skillObject
+     * @param key
+     * @param args
+     * @param canXY
+     */
+    private static void executionFunction(CommonCharacter caller, CommonCharacter target, SkillObject skillObject, String key, String[] args, boolean canXY) {
+        //函数
+        Class clazz = null;
+        if (skillObject.isPassive()) clazz = passiveSkillFunctionSet.get(key);
+        else clazz = actionSkillFunctionSet.get(key);
+        try {
+            Constructor c = clazz.getConstructor(CommonCharacter.class, CommonCharacter.class, SkillObject.class, String.class, String[].class);
+            c.newInstance(caller, target, skillObject, key, args);
+        } catch (Exception e) {
+            System.out.println(String.format("玩家在执行命令%s的时候触发了异常", key));
+            e.printStackTrace();
+        }
+        //星移
+        if (canXY && StateConstants.checkState(target, "星移")) {
+            executionFunction(target, caller, skillObject, key, args, false);
         }
     }
 

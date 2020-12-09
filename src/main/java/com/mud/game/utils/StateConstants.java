@@ -100,6 +100,7 @@ public class StateConstants {
      * 增加吸血10%，持续8秒
      */
     public static String CHECK_XUEMODAOFAXI_STATE = "吸血";
+    public static String CHECK_XUEHAIWUBIAN_STATE = "血海无边";
 
     /**
      * 判断该对象是否没有此状态

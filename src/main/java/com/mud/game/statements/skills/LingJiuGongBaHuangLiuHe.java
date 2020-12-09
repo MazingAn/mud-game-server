@@ -30,5 +30,26 @@ public class LingJiuGongBaHuangLiuHe extends BaseAttackSkillStatement {
         CommonCharacter caller = getCaller();
         CommonCharacter target = getTarget();
         SkillObject skillObject = getSkillObject();
+        double value = 0.3;
+        //增加一个防御buffer
+        int bDefence = Integer.parseInt(caller.getCustomerAttr().get("defence").get("value").toString());
+        GameCharacterManager.addBuffer("八荒六合", 5, 0, 1, true,
+                "defence", new Double(bDefence * value).intValue(), caller, skillObject, false, caller);
+        //增加一个攻击buffer
+        int attack = Integer.parseInt(caller.getCustomerAttr().get("attack").get("value").toString());
+        GameCharacterManager.addBuffer("八荒六合", 5, 0, 1, true,
+                "attack", new Double(attack * value).intValue(), caller, skillObject, false, caller);
+        //增加一个命中buffer
+        int precise = Integer.parseInt(caller.getCustomerAttr().get("precise").get("value").toString());
+        GameCharacterManager.addBuffer("八荒六合", 5, 0, 1, true,
+                "precise", new Double(precise * value).intValue(), caller, skillObject, false, caller);
+        //增加一个躲闪buffer
+        int dodge = Integer.parseInt(caller.getCustomerAttr().get("dodge").get("value").toString());
+        GameCharacterManager.addBuffer("八荒六合", 5, 0, 1, true,
+                "precise", new Double(dodge * value).intValue(), caller, skillObject, false, caller);
+        //增加一个招架buffer
+        int parry = Integer.parseInt(caller.getCustomerAttr().get("parry").get("value").toString());
+        GameCharacterManager.addBuffer("八荒六合", 5, 0, 1, true,
+                "parry", new Double(parry * value).intValue(), caller, skillObject, false, caller);
     }
 }

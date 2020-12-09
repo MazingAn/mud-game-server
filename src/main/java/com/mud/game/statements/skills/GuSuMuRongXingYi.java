@@ -1,6 +1,7 @@
 package com.mud.game.statements.skills;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
@@ -25,6 +26,15 @@ public class GuSuMuRongXingYi extends BaseAttackSkillStatement {
 
     @Override
     public void attack() throws JSONException, JsonProcessingException {
+        //基本参数
+        CommonCharacter caller = getCaller();
+        CommonCharacter target = getTarget();
+        SkillObject skillObject = getSkillObject();
+        String key = getKey();
+        beforeAttack();
+        //增加一个防御buffer
+        GameCharacterManager.addBuffer("星移", 10, 0, 1, true,
+                null, null, caller, skillObject, false, caller);
 
     }
 }

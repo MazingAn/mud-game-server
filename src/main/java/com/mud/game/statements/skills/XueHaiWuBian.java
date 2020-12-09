@@ -1,10 +1,13 @@
 package com.mud.game.statements.skills;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mud.game.object.manager.GameCharacterManager;
 import com.mud.game.object.supertypeclass.CommonCharacter;
 import com.mud.game.object.typeclass.SkillObject;
 import com.mud.game.statements.BaseAttackSkillStatement;
 import org.json.JSONException;
+
+import static com.mud.game.utils.StateConstants.CHECK_XUEHAIWUBIAN_STATE;
 
 /**
  * 增加血刀技能效果50%持续5秒
@@ -25,6 +28,15 @@ public class XueHaiWuBian extends BaseAttackSkillStatement {
 
     @Override
     public void attack() throws JSONException, JsonProcessingException {
+        //基本参数
+        CommonCharacter caller = getCaller();
+        CommonCharacter target = getTarget();
+        SkillObject skillObject = getSkillObject();
+        String key = getKey();
+        beforeAttack();
+        //增加一个防御buffer
+        GameCharacterManager.addBuffer(CHECK_XUEHAIWUBIAN_STATE, 10, 0, 1, true,
+                null, null, caller, skillObject, false, caller);
 
     }
 }
