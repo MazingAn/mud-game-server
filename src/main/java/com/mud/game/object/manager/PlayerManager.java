@@ -1,7 +1,9 @@
 package com.mud.game.object.manager;
 
+import com.mud.game.feign.FeignService.RecordService;
 import com.mud.game.messages.AlertMessage;
 import com.mud.game.messages.CharAllMessage;
+import com.mud.game.messages.DivideMessage;
 import com.mud.game.messages.LoginSuccessMessage;
 import com.mud.game.net.session.CallerType;
 import com.mud.game.net.session.GameSessionService;
@@ -16,6 +18,8 @@ import org.apache.commons.lang.StringUtils;
 import org.yeauty.pojo.Session;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,6 +41,10 @@ public class PlayerManager {
         if (MongoMapper.playerRepository.existsByUsername(username)) {
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USERNAME_EXIST_ERROR)));
             return null;
+        }
+        Map<String, Object> map = RecordService.recordFeign.addPlayer(username, password);
+        if (!map.get("code").equals("0")) {
+            session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(map.get("msg").toString())));
         } else {
             //创建新的账户
             Player player = new Player();
@@ -46,6 +54,7 @@ public class PlayerManager {
             MongoMapper.playerRepository.save(player);
             return player;
         }
+        return null;
     }
 
     /**
@@ -82,6 +91,7 @@ public class PlayerManager {
             return null;
         }
     }
+
 
     /**
      * 显示玩家的角色
@@ -156,6 +166,7 @@ public class PlayerManager {
         MongoMapper.weiXinPlayerRepository.save(player);
         return player;
     }
+
     /**
      * 显示玩家的角色
      *

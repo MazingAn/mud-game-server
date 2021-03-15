@@ -40,11 +40,12 @@ public class PlayerCharacterManager {
      * 角色管理
      * 负责角色的创建，销毁，进入游戏，状态返回
      */
-    public static PlayerCharacter create(String name, String gender, int arm, int bone, int body, int smart, Session session) {
+    public static PlayerCharacter create(String name, String gender, int arm, int bone, int body, int smart, Session session, String divide) {
         /*
          * @ 创建一个玩家角色
          * */
-        if (MongoMapper.playerCharacterRepository.existsByName(name)) {
+        //判断用户名是否已占用  不能和npc相同
+        if (MongoMapper.playerCharacterRepository.existsByName(name) || MongoMapper.worldNpcObjectRepository.existsByName(name)) {
             session.sendText(JsonResponse.JsonStringResponse(new AlertMessage(UserOptionCode.USERNAME_EXIST_ERROR)));
             return null;
         } else {
@@ -127,7 +128,7 @@ public class PlayerCharacterManager {
             WeiXinPlayer weiXinPlayer = MongoMapper.weiXinPlayerRepository.findWeiXinPlayerById(playerId);
             if (weiXinPlayer != null) {
                 Set<SimpleCharacter> infos = weiXinPlayer.getPlayerCharacters();
-                infos.add(new SimpleCharacter(playerCharacter));
+                infos.add(new SimpleCharacter(playerCharacter, divide));
                 weiXinPlayer.setPlayerCharacters(infos);
                 MongoMapper.weiXinPlayerRepository.save(weiXinPlayer);
             }

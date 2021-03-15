@@ -41,6 +41,7 @@ public interface IWeixinFeign {
      *
      * @param access_token 调用接口凭证
      * @param openid       普通用户标识，对该公众帐号唯一
+     *
      * @return
      */
     @RequestMapping(value = "/sns/auth", method = RequestMethod.GET, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
@@ -56,6 +57,4 @@ public interface IWeixinFeign {
     @RequestMapping(value = "/sns/userinfo", method = RequestMethod.GET, consumes = "application/x-www-form-urlencoded;charset=UTF-8")
     Map<String, Object> userinfo(@RequestParam("access_token") String access_token, @RequestParam("openid") String openid);
 
-    @RequestMapping(value = "/a", method = RequestMethod.GET)
-    JSONObject getA(@RequestParam String appid, @RequestParam String secret, @RequestParam String code, @RequestParam String grant_type);
 }

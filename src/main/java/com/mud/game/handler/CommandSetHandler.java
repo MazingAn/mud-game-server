@@ -1,11 +1,13 @@
 package com.mud.game.handler;
 
 import com.mud.game.commands.account.CharCreate;
+import com.mud.game.commands.account.GetDivide;
 import com.mud.game.commands.account.Puppet;
 import com.mud.game.commands.character.*;
 import com.mud.game.commands.common.Idle;
 import com.mud.game.commands.unlogin.Connect;
 import com.mud.game.commands.unlogin.Create;
+import com.mud.game.commands.unlogin.Divide;
 import com.mud.game.commands.unlogin.WeiXinConnect;
 
 import java.util.HashMap;
@@ -49,6 +51,7 @@ public class CommandSetHandler {
         unLoginCommandSet.put("idle", Idle.class);
         unLoginCommandSet.put("create", Create.class);
         unLoginCommandSet.put("connect", Connect.class);
+        unLoginCommandSet.put("divide", Divide.class);
         unLoginCommandSet.put("wexin_connect", WeiXinConnect.class);
     }
 
@@ -58,6 +61,7 @@ public class CommandSetHandler {
     public static void initAccountCommandSet() {
         accountCommandSet.put("idle", Idle.class);
         accountCommandSet.put("char_create", CharCreate.class);
+        accountCommandSet.put("get_divide", GetDivide.class);
         accountCommandSet.put("puppet", Puppet.class);
     }
 

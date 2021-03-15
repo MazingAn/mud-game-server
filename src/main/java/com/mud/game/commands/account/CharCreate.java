@@ -41,6 +41,7 @@ public class CharCreate extends BaseCommand {
 
     @Override
     public void execute() throws JSONException {
+        String divide = getArgs().getString("divide");
         String name = getArgs().getString("name");
         String gender = getArgs().getString("gender");
         JSONArray innateValues = getArgs().getJSONArray("innate_values");
@@ -48,7 +49,7 @@ public class CharCreate extends BaseCommand {
         int bone = innateValues.getInt(1);
         int body = innateValues.getInt(2);
         int smart = innateValues.getInt(3);
-        PlayerCharacter playerCharacter = PlayerCharacterManager.create(name, gender, arm, bone, body, smart, getSession());
+        PlayerCharacter playerCharacter = PlayerCharacterManager.create(name, gender, arm, bone, body, smart, getSession(),divide);
         if (playerCharacter != null) {
             SkillObject skillObject = SkillObjectManager.create("skill_taopao");
             skillObject.setOwner(playerCharacter.getId());

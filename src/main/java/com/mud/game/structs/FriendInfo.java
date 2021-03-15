@@ -13,10 +13,6 @@ public class FriendInfo extends SimpleCharacter {
         super(simpleCharacter);
         this.level = level;
     }
-    public FriendInfo() {
-
-    }
-
     public int getLevel() {
         return level;
     }
@@ -24,4 +20,6 @@ public class FriendInfo extends SimpleCharacter {
     public void setLevel(int level) {
         this.level = level;
     }
+
+
 }

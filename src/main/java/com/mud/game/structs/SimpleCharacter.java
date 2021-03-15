@@ -2,6 +2,7 @@ package com.mud.game.structs;
 
 import com.mud.game.handler.SchoolHandler;
 import com.mud.game.object.supertypeclass.CommonCharacter;
+import com.mud.game.object.typeclass.PlayerCharacter;
 
 public class SimpleCharacter {
     private String dbref;
@@ -13,8 +14,19 @@ public class SimpleCharacter {
     private boolean complete_quest;
     private boolean can_attack;
     private CharacterState state;
+    private String divide;
 
-    public SimpleCharacter() {
+    public SimpleCharacter(CommonCharacter character, String divide) {
+        this.dbref = character.getId();
+        this.name = character.getName();
+        this.gender = character.getGender();
+        this.age = character.getAge();
+        this.school = character.getSchool();
+        this.provide_quest = false;
+        this.complete_quest = false;
+        this.can_attack = character.canAttck;
+        this.state = character.getState();
+        this.divide = divide;
     }
 
     public SimpleCharacter(CommonCharacter character) {
@@ -39,6 +51,14 @@ public class SimpleCharacter {
         this.complete_quest = false;
         this.can_attack = simpleCharacter.can_attack;
         this.state = simpleCharacter.getState();
+    }
+
+    public String getDivide() {
+        return divide;
+    }
+
+    public void setDivide(String divide) {
+        this.divide = divide;
     }
 
     public CharacterState getState() {
